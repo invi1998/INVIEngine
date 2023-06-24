@@ -103,7 +103,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	}
 	else
 	{
-		ENGINE_LOG_ERROR("ÒýÇæ´´½¨Ê§°Ü")
 		ReturnValue = 1;
 	}
 
