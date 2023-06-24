@@ -177,6 +177,7 @@
     <ClCompile Include="simple_library\third_party_library\tinyxml\tinyxml.cpp" />
     <ClCompile Include="simple_library\third_party_library\tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="simple_library\third_party_library\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="Engine\Platform\Windows\WindowsMessageProcessing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\WinMainCommandParameters.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="simple_library\public\simple_math\transformation\vector\vector_color.h" />
     <ClInclude Include="simple_library\third_party_library\tinyxml\tinystr.h" />
     <ClInclude Include="simple_library\third_party_library\tinyxml\tinyxml.h" />
+    <ClInclude Include="Engine\Platform\Windows\WindowsMessageProcessing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

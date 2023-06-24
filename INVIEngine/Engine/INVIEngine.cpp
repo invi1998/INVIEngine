@@ -3,6 +3,68 @@
 #include "EngineFactory.h"
 #include "Log/SimpleLog.h"
 
+
+int Init(FEngine* Engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCMD)
+{
+	int ReturnValue = Engine->PreInit(
+#if defined(_WIN32)
+		FWinMainCommandParameters(hInstance, prevInstance, cmdLine, showCMD)
+#endif
+	);
+	if (ReturnValue != 0)
+	{
+		ENGINE_LOG_ERROR("[%i]Engine pre initialization error, check and initialization problem.", ReturnValue)
+			return ReturnValue;
+	}
+
+	ReturnValue = Engine->Init();
+	if (ReturnValue != 0)
+	{
+		ENGINE_LOG_ERROR("[%i]Engine initialization error, please check the initialization problem.", ReturnValue)
+			return ReturnValue;
+	}
+
+	ReturnValue = Engine->PostInit();
+	if (ReturnValue != 0)
+	{
+		ENGINE_LOG_ERROR("[%i]Engine post initialization error, please check initialization problem.", ReturnValue)
+			return ReturnValue;
+	}
+
+	return ReturnValue;
+}
+
+void Tick(FEngine* Engine)
+{
+	
+}
+
+int Exit(FEngine* Engine)
+{
+	int ReturnValue = Engine->PreExit();
+	if (ReturnValue != 0)
+	{
+		ENGINE_LOG_ERROR("[%i]Engine pre exit failed.", ReturnValue)
+			return ReturnValue;
+	}
+
+	ReturnValue = Engine->Exit();
+	if (ReturnValue != 0)
+	{
+		ENGINE_LOG_ERROR("[%i]Engine exit failed.", ReturnValue)
+			return ReturnValue;
+	}
+
+	ReturnValue = Engine->PostExit();
+	if (ReturnValue != 0)
+	{
+		ENGINE_LOG_ERROR("[%i]Engine post exit failed.", ReturnValue)
+			return ReturnValue;
+	}
+}
+
+
+
 /**
  * \brief 
  * \param hInstance 当前窗口实例
@@ -28,56 +90,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	if (FEngine* Engine = FEngineFactory::CreateEngine())
 	{
-		ReturnValue = Engine->PreInit(
-#if defined(_WIN32)
-			FWinMainCommandParameters(hInstance, prevInstance, cmdLine, showCMD)
-#endif
-		);
-		if (ReturnValue != 0)
-		{
-			ENGINE_LOG_ERROR("[%i]Engine pre initialization error, check and initialization problem.", ReturnValue)
-			return ReturnValue;
-		}
-
-		ReturnValue = Engine->Init();
-		if (ReturnValue != 0)
-		{
-			ENGINE_LOG_ERROR("[%i]Engine initialization error, please check the initialization problem.", ReturnValue)
-			return ReturnValue;
-		}
-
-		ReturnValue = Engine->PostInit();
-		if (ReturnValue != 0)
-		{
-			ENGINE_LOG_ERROR("[%i]Engine post initialization error, please check initialization problem.", ReturnValue)
-			return ReturnValue;
-		}
+		Init(Engine, hInstance, prevInstance, cmdLine, showCMD);
 
 		while(true)
 		{
 			Engine->Tick();
 		}
 
-		ReturnValue = Engine->PreExit();
-		if (ReturnValue != 0)
-		{
-			ENGINE_LOG_ERROR("[%i]Engine pre exit failed.", ReturnValue)
-			return ReturnValue;
-		}
-
-		ReturnValue = Engine->Exit();
-		if (ReturnValue != 0)
-		{
-			ENGINE_LOG_ERROR("[%i]Engine exit failed.", ReturnValue)
-			return ReturnValue;
-		}
-
-		ReturnValue = Engine->PostExit();
-		if (ReturnValue != 0)
-		{
-			ENGINE_LOG_ERROR("[%i]Engine post exit failed.", ReturnValue)
-			return ReturnValue;
-		}
+		Exit(Engine);
 
 		return 0;
 	}

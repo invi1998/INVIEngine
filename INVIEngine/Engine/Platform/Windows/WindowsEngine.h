@@ -15,4 +15,7 @@ public:
 	virtual int Exit() override;
 	virtual int PostExit() override;
 
+private:
+	bool InitWindows(FWinMainCommandParameters InParameters);
+
 };
