@@ -1,0 +1,74 @@
+# Visual Studio project files
+*.obj
+*.pdb
+*.exe
+*.dll
+*.aps
+*.lib
+*.idb
+*.pdb
+*.ipch
+*.manifest
+*.res
+*.pch
+*.suo
+*.ilk
+*.ncb
+*.opendb
+[Tt]humbs.db
+*.sdf
+*.opensdf
+
+# Visual Studio temporary files
+*.[Cc]ache
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.log
+*.vspscc
+*.vssscc
+.build.manifest
+*.builds
+
+# Visual Studio code analysis
+*.ruleset
+*.dotSettings
+
+# Visual Studio 2015 cache/options directory
+.vs/
+
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Installshield output folder 
+[Ee]xpress/
+
+# DocProject is a documentation generator add-in
+DocProject/buildhelp/
+DocProject/Help/*.HxT
+DocProject/Help/*.HxC
+DocProject/Help/*.hhc
+DocProject/Help/*.hhk
+DocProject/Help/*.hhp
+DocProject/Help/Html2
+DocProject/Help/html
+
+# Click-Once directory
+publish/
