@@ -4,23 +4,34 @@
 
 int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
 {
+	// 初始化日志系统
+	const char LogPath[] = "../log";
+	init_log_system(LogPath);
+	ENGINE_LOG("日志初始化完毕")
+
 	// 处理命令
 
 
 	// 处理视口
-	InitWindows(InParameters);
+	if (InitWindows(InParameters))
+	{
+		
+	}
 
+	ENGINE_LOG("引擎预初始化完成")
 
 	return 0;
 }
 
 int FWindowsEngine::Init()
 {
+	ENGINE_LOG("引擎初始化完成")
 	return 0;
 }
 
 int FWindowsEngine::PostInit()
 {
+	ENGINE_LOG("引擎Post初始化完成")
 	return 0;
 }
 
@@ -31,16 +42,19 @@ void FWindowsEngine::Tick()
 
 int FWindowsEngine::PreExit()
 {
+	ENGINE_LOG("引擎预退出完成")
 	return 0;
 }
 
 int FWindowsEngine::Exit()
 {
+	ENGINE_LOG("引擎退出完成")
 	return 0;
 }
 
 int FWindowsEngine::PostExit()
 {
+	ENGINE_LOG("引擎退出post完成")
 	return 0;
 }
 
@@ -67,7 +81,8 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 
 	if (!RegisterAtom)
 	{
-		MessageBox(NULL, L"Register fail,", L"Error", MB_OK);
+		ENGINE_LOG_ERROR("窗口注册失败")
+		MessageBox(NULL, L"windows class 注册失败,", L"Error", MB_OK);
 	}
 
 	// 视口，视口风格，没有菜单
@@ -94,6 +109,7 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 	if (!hwnd)
 	{
 		// 窗口创建失败
+		ENGINE_LOG_ERROR("窗口创建失败")
 		MessageBox(0, L"窗口创建失败", 0, 0);
 		return false;
 	}
@@ -103,6 +119,8 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 
 	// 刷新窗口
 	UpdateWindow(hwnd);
+
+	ENGINE_LOG("窗口初始化完成")
 }
 
 

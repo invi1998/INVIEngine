@@ -1,5 +1,6 @@
 # Visual Studio project files
 *.obj
+*.tlog
 *.pdb
 *.exe
 *.dll
@@ -72,3 +73,8 @@ DocProject/Help/html
 
 # Click-Once directory
 publish/
+Debug/
+INVIEngine/Debug/
+x64/
+x32/
+x86/
