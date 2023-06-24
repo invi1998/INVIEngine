@@ -1,5 +1,7 @@
 #include "EngineMinimal.h"
 
+#include "EngineFactory.h"
+#include "Log/SimpleLog.h"
 
 /**
  * \brief 
@@ -21,10 +23,70 @@
  */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCMD)
 {
-	while(true)
+
+	int ReturnValue = 0;
+
+	if (FEngine* Engine = FEngineFactory::CreateEngine())
 	{
-		
+		ReturnValue = Engine->PreInit(
+#if defined(_WIN32)
+			FWinMainCommandParameters(hInstance, prevInstance, cmdLine, showCMD)
+#endif
+		);
+		if (ReturnValue != 0)
+		{
+			ENGINE_LOG_ERROR("[%i]Engine pre initialization error, check and initialization problem.", ReturnValue)
+			return ReturnValue;
+		}
+
+		ReturnValue = Engine->Init();
+		if (ReturnValue != 0)
+		{
+			ENGINE_LOG_ERROR("[%i]Engine initialization error, please check the initialization problem.", ReturnValue)
+			return ReturnValue;
+		}
+
+		ReturnValue = Engine->PostInit();
+		if (ReturnValue != 0)
+		{
+			ENGINE_LOG_ERROR("[%i]Engine post initialization error, please check initialization problem.", ReturnValue)
+			return ReturnValue;
+		}
+
+		while(true)
+		{
+			Engine->Tick();
+		}
+
+		ReturnValue = Engine->PreExit();
+		if (ReturnValue != 0)
+		{
+			ENGINE_LOG_ERROR("[%i]Engine pre exit failed.", ReturnValue)
+			return ReturnValue;
+		}
+
+		ReturnValue = Engine->Exit();
+		if (ReturnValue != 0)
+		{
+			ENGINE_LOG_ERROR("[%i]Engine exit failed.", ReturnValue)
+			return ReturnValue;
+		}
+
+		ReturnValue = Engine->PostExit();
+		if (ReturnValue != 0)
+		{
+			ENGINE_LOG_ERROR("[%i]Engine post exit failed.", ReturnValue)
+			return ReturnValue;
+		}
+
+		return 0;
+	}
+	else
+	{
+		ReturnValue = 1;
 	}
 
-	return 0;
+
+	ENGINE_LOG("[%i]The engine has exited.", ReturnValue)
+	return 1;
 }
