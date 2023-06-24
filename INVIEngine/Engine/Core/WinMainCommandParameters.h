@@ -15,10 +15,5 @@ public:
 	int ShowCMD;
 };
 
-inline FWinMainCommandParameters::FWinMainCommandParameters(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine,
-	int showCMD) : HInstance(hInstance), PrevInstance(prevInstance), CMDLine(cmdLine), ShowCMD(showCMD)
-{
-}
-
 #endif
 
