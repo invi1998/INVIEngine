@@ -1,3 +1,3 @@
 #pragma once
 
-#include "../simple_library/public/simple_library.h"
+#include <simple_library.h>
