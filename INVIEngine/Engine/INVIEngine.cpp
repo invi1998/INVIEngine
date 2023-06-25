@@ -91,9 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	if (FEngine* Engine = FEngineFactory::CreateEngine())
 	{
 		Init(Engine, hInstance, prevInstance, cmdLine, showCMD);
-
-		open_url("https://www.bilibili.com/");
-
+		
 		while(true)
 		{
 			Engine->Tick();
