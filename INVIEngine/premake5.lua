@@ -31,7 +31,11 @@ project "INVIEngine"
 	}
 
 	links
-	{}
+	{
+		"d3dcompiler.lib",
+		"D3D12.lib",
+		"dxgi.lib",
+	}
 
 	filter "system:windows"
 		systemversion "latest"

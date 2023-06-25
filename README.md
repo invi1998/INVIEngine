@@ -142,3 +142,46 @@ char32_t c2 = U'\U0001F60A';
 //DirectX::BoundingVolumeHierarchy：表示包围盒层级结构的结构体。
 //DirectX::Intersects：判断两个包围盒是否相交的函数。
 //DirectX::ComputeIntersection：计算包围盒之间的最小平移距离和碰撞点等信息的函数。
+
+
+
+## HRESULT错误码
+
+HRESULT是Windows操作系统中的一种错误码类型，它是由Microsoft定义的32位整数值，用于表示函数和方法的执行结果。HRESULT通常用于COM（Component Object Model）接口和Win32 API等Windows编程模型中，用于指示函数和方法的状态和错误信息
+
+​	// HRESULT
+​	// S_OK					0x00000000	执行成功
+​	// E_UNEXPECTED			0x8000FFFF	意外的失败
+​	// E_NOTIMPL			0x80004001	未实现
+​	// E_OUTOFMEMORY		0x8007000E	未能分配所需内存
+​	// E_INVALIDARG			0x80070057	一个或者多个参数无效
+​	// E_NOINTERFACE		0x80004002	不支持此接口
+​	// E_POINTER			0x80004003	无效指针
+​	// E_HANDLE				0x80070006	无效句柄
+​	// E_ABORT				0x80004004	操作终止
+​	// E_ACCESSDENIED		0x80070005	一般的访问被拒绝错误
+
+
+
+## DirectX渲染图形的步骤通常包括以下几个阶段：
+
+1. 初始化Direct3D 12：在应用程序启动时，需要初始化Direct3D 12设备和命令队列。这一步可以使用D3D12CreateDevice和ID3D12Device::CreateCommandQueue等函数来实现。
+2. 创建交换链和后台缓冲区：交换链是用于管理前后缓冲区的一种机制，它负责接收来自GPU的渲染结果，并将其显示到屏幕上。交换链可以通过IDXGIFactory4::CreateSwapChainForHwnd等函数创建。
+3. 创建顶点缓冲区和索引缓冲区：在场景中显示一个模型通常需要使用顶点缓冲区和索引缓冲区来存储模型数据。顶点缓冲区保存每个顶点的位置、法向量、纹理坐标等信息；索引缓冲区保存顶点索引，以便进行三角形列表或者三角形条带的绘制。顶点缓冲区和索引缓冲区可以通过ID3D12Device::CreateCommittedResource等函数创建。
+4. 编写着色器代码：着色器是用于计算每个像素颜色的程序。它们通常由 HLSL (High Level Shader Language) 编写并编译成字节码。着色器包括顶点着色器（Vertex Shader）、像素着色器（Pixel Shader）、几何着色器（Geometry Shader）等。
+5. 创建根签名和管线状态对象：根签名是用于描述着色器输入数据的结构体，管线状态对象则包含了管线的各种状态信息（如采样器、深度测试、光栅化等）。它们都可以使用ID3D12Device::CreateRootSignature和ID3D12Device::CreateGraphicsPipelineState等函数来创建。
+6. 设置命令列表：在渲染场景之前，需要设置命令列表来告诉GPU如何执行绘制操作。命令列表包括清空背景、设置根签名、设置管线状态对象、设置视口和裁剪矩形等。
+7. 执行命令列表：将命令列表提交给GPU，让它开始执行绘制操作。这可以通过调用ID3D12CommandQueue::ExecuteCommandLists函数来实现。
+8. 呈现：当GPU完成绘制操作后，需要呈现结果到屏幕上。这可以通过IDXGISwapChain3::Present函数来实现。
+
+
+
+## Warp高级光栅化平台
+
+DirectX WARP（Windows Advanced Rasterization Platform）是Windows 7及以上操作系统中的一个软件实现的Direct3D 11设备。它可以在不支持硬件加速的情况下运行Direct3D应用程序，以便在低性能或虚拟化环境中使用。
+
+WARP最初是为了让不支持DX11硬件加速的系统也能够运行DX11应用程序而开发的，并且随着DirectX版本的更新，WARP也得到了相应的升级。当前最新版本的WARP是WARP12，它是Direct3D 12 API的一种软件实现，在不支持Direct3D 12硬件功能的系统中提供了基本的Direct3D 12功能。
+
+WARP与硬件设备相比，其主要优势在于可移植性和灵活性。由于WARP是基于软件实现的，因此它可以在任何支持DirectX的Windows操作系统上运行，而不受硬件限制。此外，WARP还可以方便地用于测试、调试和性能分析等使用场景。
+
+不过需要注意的是，WARP由于是基于软件实现的，性能往往会比硬件设备差，特别是在处理大量数据时。因此，对于对性能有较高要求的应用程序，建议还是使用硬件设备来进行加速。
