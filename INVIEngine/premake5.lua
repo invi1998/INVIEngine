@@ -1,5 +1,5 @@
 project "INVIEngine"
-	kind "ConsoleApp"
+	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
@@ -16,7 +16,9 @@ project "INVIEngine"
 		"Engine/**.h",
 		"Engine/**.cpp",
 		"vendor/simple_library/**.h",
+		"vendor/simple_library/**.c",
 		"vendor/simple_library/**.cpp",
+        "vendor/simple_library/**.hpp",
 	}
 
 	defines
