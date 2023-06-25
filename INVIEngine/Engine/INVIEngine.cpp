@@ -92,6 +92,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	{
 		Init(Engine, hInstance, prevInstance, cmdLine, showCMD);
 
+		open_url("https://www.bilibili.com/");
+
 		while(true)
 		{
 			Engine->Tick();
