@@ -130,6 +130,9 @@ bool FWindowsEngine::InitDirect3D()
 	// E_ABORT				0x80004004	操作终止
 	// E_ACCESSDENIED		0x80070005	一般的访问被拒绝错误
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 创建DGI设备驱动
+
 	// 创建DGI实例
 	ANALYSIS_RESULT(CreateDXGIFactory1(IID_PPV_ARGS(&DXGiFactory)));
 
@@ -175,6 +178,38 @@ bool FWindowsEngine::InitDirect3D()
 	// ppFence：返回的指向围栏接口的指针的指针。在函数成功执行后，该指针将指向一个ID3D12Fence接口的实例。
 	ANALYSIS_RESULT(D3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&Fence)));
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 有了设备驱动后，我们就可以创建我们的命令对象了
+	// 初始化命令对象
+
+	// 创建命令队列
+	// D3D12_COMMAND_QUEUE_DESC是DirectX 12中的一个结构体类型，用于描述创建命令队列时的属性和参数。它包含以下几个成员变量：
+	// Type：命令队列的类型，可以是D3D12_COMMAND_LIST_TYPE_DIRECT、D3D12_COMMAND_LIST_TYPE_BUNDLE、D3D12_COMMAND_LIST_TYPE_COMPUTE或D3D12_COMMAND_LIST_TYPE_COPY之一。
+	// Priority：命令队列的优先级，可以是D3D12_COMMAND_QUEUE_PRIORITY_NORMAL或D3D12_COMMAND_QUEUE_PRIORITY_HIGH之一。
+	// Flags：命令队列的标志位，可以是D3D12_COMMAND_QUEUE_FLAG_NONE、D3D12_COMMAND_QUEUE_FLAG_DISABLE_GPU_TIMEOUT或D3D12_COMMAND_QUEUE_FLAG_DISABLE_GPU_IDLE_DEPENDENCY之一。
+	// NodeMask：CPU节点掩码，表示该命令队列可以由哪些CPU节点上的线程使用。如果需要在多个CPU节点上并发执行，则需要使用多个命令队列。
+	D3D12_COMMAND_QUEUE_DESC QueueDesc = {};		// 队列描述
+	QueueDesc.Type = D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT;				// 指定命令列表的类型(直接命令（直接可以在GPU上执行的命令)
+	QueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAGS::D3D12_COMMAND_QUEUE_FLAG_NONE;				// 指定命令队列的标志（不超时）
+	ANALYSIS_RESULT(D3dDevice->CreateCommandQueue(&QueueDesc, IID_PPV_ARGS(&CommandQueue)));
+
+	// 创建分配器
+	ANALYSIS_RESULT(D3dDevice->CreateCommandAllocator(
+		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
+		IID_PPV_ARGS(&CommandAllocator)
+	));
+
+	// 创建命令列表
+	ANALYSIS_RESULT(D3dDevice->CreateCommandList(
+		0,		// 默认一个GPU
+		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,	// 直接GPU执行类型
+		CommandAllocator.Get(),		// 将当前命令列表关联到分配器上
+		nullptr,	// 需要传入当前管线状态
+		IID_PPV_ARGS(GraphicsCommandList.GetAddressOf())
+	));
+
+	// 创建完命令列表，不要忘记将其关闭
+	GraphicsCommandList->Close();
 
 }
 
