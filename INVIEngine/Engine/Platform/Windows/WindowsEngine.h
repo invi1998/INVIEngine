@@ -16,13 +16,21 @@ public:
 	virtual int PostExit() override;
 
 protected:
+	// 驱动对象
 	ComPtr<IDXGIFactory4> DXGiFactory;	// 创建DirectX图形基础结构（DXGi）对象
 	ComPtr<ID3D12Device> D3dDevice;		// 创建命令分配器，命令列表，命令队列，Fence，资源，管道状态对象，堆，根签名，采样器和许多资源视图
 	ComPtr<ID3D12Fence> Fence;			// 一个用于同步CPU和一个或者多个GPU的对象
 
+	// 命令对象
 	ComPtr<ID3D12CommandQueue> CommandQueue;				// 命令队列
 	ComPtr<ID3D12CommandAllocator> CommandAllocator;		// 命令分配器（做存储命令和分配内存）
 	ComPtr<ID3D12GraphicsCommandList> GraphicsCommandList;	// 图形命令列表
+
+	// 交换链对象
+	ComPtr<IDXGISwapChain> SwapChain;		// 交换链
+
+	// 主窗口句柄
+	HWND MainWindowHandle;
 
 private:
 	// 初始化窗口

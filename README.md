@@ -176,3 +176,10 @@ HRESULT是Windows操作系统中的一种错误码类型，它是由Microsoft定
 
 
 
+# GDI
+
+GDI是Windows图形设备接口（Graphics Device Interface）的缩写，是Microsoft Windows操作系统中用于绘制平面图形和文本等的底层图形API。GDI提供了一系列函数和服务，使得开发人员可以在Windows应用程序中轻松绘制2D图形、文字和图像等。
+
+GDI支持多种输出设备和显示器，包括打印机、显示器、文件和内存等。它还提供了丰富的绘图对象和属性，如线条、矩形、椭圆、笔刷、字体和颜色等，以满足各种绘图需求。同时，GDI还提供了一些高级功能，如透明度、旋转、位图混合和蒙板等，可用于创建复杂的图形效果和动画。
+
+尽管现代的Windows应用程序通常使用更高级的图形API，如Direct2D、WPF和OpenGL等，但GDI仍然具有广泛的应用和重要性。特别是在老旧的Windows桌面应用程序中，如Office、Photoshop和WinZip等，GDI仍然是必不可少的API之一。

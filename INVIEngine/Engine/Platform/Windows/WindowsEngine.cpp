@@ -1,6 +1,7 @@
 #include "WindowsEngine.h"
 
 #include "WindowsMessageProcessing.h"
+#include "Config/EngineRenderConfig.h"
 #include "Debug/EngineDebug.h"
 
 int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
@@ -52,6 +53,8 @@ int FWindowsEngine::Exit()
 
 int FWindowsEngine::PostExit()
 {
+	FEngineRenderConfig::Destroy();
+
 	return 0;
 }
 
@@ -82,13 +85,13 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 	}
 
 	// 视口，视口风格，没有菜单
-	RECT Rect = { 0, 0, 1280, 720 };
+	RECT Rect = { 0, 0, FEngineRenderConfig::GetRenderConfig()->ScreenWidth, FEngineRenderConfig::GetRenderConfig()->ScreenHeight };
 	AdjustWindowRect(&Rect, WS_OVERLAPPEDWINDOW, NULL);
 
 	int windowWidth = Rect.right - Rect.left;
 	int windowHeight = Rect.bottom - Rect.top;
 
-	HWND hwnd = CreateWindowEx(
+	HWND MainWindowHandle = CreateWindowEx(
 		NULL,						// 窗口额外风格
 		L"INVIEngine",				// 窗口名称
 		L"INVI Engine",				// 显示到标题栏上的窗口名称
@@ -102,7 +105,7 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 		NULL						// 传递进窗口的额外参数
 	);
 
-	if (!hwnd)
+	if (!MainWindowHandle)
 	{
 		// 窗口创建失败
 		MessageBox(0, L"窗口创建失败", 0, 0);
@@ -110,10 +113,10 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 	}
 
 	// 显示窗口
-	ShowWindow(hwnd, SW_SHOW);
+	ShowWindow(MainWindowHandle, SW_SHOW);
 
 	// 刷新窗口
-	UpdateWindow(hwnd);
+	UpdateWindow(MainWindowHandle);
 }
 
 bool FWindowsEngine::InitDirect3D()
@@ -210,6 +213,35 @@ bool FWindowsEngine::InitDirect3D()
 
 	// 创建完命令列表，不要忘记将其关闭
 	GraphicsCommandList->Close();
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 交换链
+
+	// 清除交换链，保证我们创建一个新的交换链
+	SwapChain.Reset();
+
+	// 交换链描述对象
+	DXGI_SWAP_CHAIN_DESC SwapChainDesc;
+	// buffer描述
+	SwapChainDesc.BufferDesc.Width = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;					// 指定宽
+	SwapChainDesc.BufferDesc.Height = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;					// 指定高
+	SwapChainDesc.BufferDesc.RefreshRate.Numerator = FEngineRenderConfig::GetRenderConfig()->RefreshRate;	// 指定刷新率（分子）
+	SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;													// 指定刷新率（分母）
+	SwapChainDesc.BufferCount = FEngineRenderConfig::GetRenderConfig()->SwapChainCount;						// 指定交换连的buff数量（缓冲数量，一般都是双缓冲就够了）
+	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST;		// 指定扫描线的显示顺序（下场优先模式）
+	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;			// 将后台缓冲区(表面或资源)用作渲染目标，在其中绘制渲染结果。这是最常见的使用方式，也是默认值
+	// 采样描述
+	// 主窗口指定
+	SwapChainDesc.OutputWindow = MainWindowHandle;		// 指定窗口句柄
+	SwapChainDesc.Windowed = true;						// 以窗口模式运行(false是全屏）
+	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;	// 强制刷新模式，在每次呈现新帧时都清空前缓冲区，不保留其内容。这是最常见的交换方式，也是默认值。
+	SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 允许显示模式切换 (即允许我们自由的切换显示窗口，想全屏就全屏，想窗口就窗口）
+	
+
+	// 创建交换链
+	ANALYSIS_RESULT(DXGiFactory->CreateSwapChain(CommandQueue.Get(), &SwapChainDesc, SwapChain.GetAddressOf()));
+
 
 }
 
