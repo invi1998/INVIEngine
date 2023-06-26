@@ -185,3 +185,36 @@ WARP最初是为了让不支持DX11硬件加速的系统也能够运行DX11应�
 WARP与硬件设备相比，其主要优势在于可移植性和灵活性。由于WARP是基于软件实现的，因此它可以在任何支持DirectX的Windows操作系统上运行，而不受硬件限制。此外，WARP还可以方便地用于测试、调试和性能分析等使用场景。
 
 不过需要注意的是，WARP由于是基于软件实现的，性能往往会比硬件设备差，特别是在处理大量数据时。因此，对于对性能有较高要求的应用程序，建议还是使用硬件设备来进行加速。
+
+
+
+## IID_PPV_ARGS
+
+IID_PPV_ARGS是一种宏定义，用于简化获取接口指针的代码实现。其作用是将指向指针的指针转换为一个IID和一个void类型的指针，并用于参数中。
+
+该宏定义如下：
+
+```c++
+#define IID_PPV_ARGS(ppType) __uuidof(**(ppType)), reinterpret_cast<void**>(ppType)
+```
+
+其中，ppType是一个指向指针的指针，表示要获取的对象的接口类型。IID_PPV_ARGS将ppType转换为两个参数：
+
+- 第一个参数是一个GUID（全局唯一标识符），它通常用于标识对象的接口类型。__uuidof宏可以将类型转换为GUID类型。
+- 第二个参数是一个void类型的指针，它指向ppType指向的指针。reinterpret_cast可以将ppType转换为void类型的指针。
+
+使用IID_PPV_ARGS的过程示例：
+
+```c++
+ID3D12Device* pDevice;
+// ...
+HRESULT hr = D3D12CreateDevice(
+    nullptr,
+    D3D_FEATURE_LEVEL_11_0,
+    IID_PPV_ARGS(&pDevice)
+);
+```
+
+在这个例子中，IID_PPV_ARGS(&pDevice)表示希望获取一个ID3D12Device接口。当D3D12CreateDevice函数执行成功后，pDevice就会指向一个ID3D12Device接口的实例。
+
+总之，使用IID_PPV_ARGS不仅可以简化代码实现，还可以提高代码的可读性和减少错误发生的可能性。
