@@ -8,7 +8,7 @@ public:
 	FWindowsEngine();
 
 	virtual int PreInit(FWinMainCommandParameters InParameters) override;
-	virtual int Init() override;
+	virtual int Init(FWinMainCommandParameters InParameters) override;
 	virtual int PostInit() override;
 
 	virtual void Tick() override;
@@ -31,6 +31,11 @@ protected:
 	// 交换链对象
 	ComPtr<IDXGISwapChain> SwapChain;		// 交换链
 
+	// 描述符对象和堆
+	ComPtr<ID3D12DescriptorHeap> RTVHeap;		// 渲染目标视图
+	ComPtr<ID3D12DescriptorHeap> DSVHeap;		// 深度模板视图
+
+protected:
 	// 主窗口句柄
 	HWND MainWindowHandle;
 
@@ -42,6 +47,7 @@ protected:
 
 	// 纹理buffer格式
 	DXGI_FORMAT BufferFormat;
+
 
 private:
 	// 初始化窗口

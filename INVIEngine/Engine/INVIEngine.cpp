@@ -6,9 +6,13 @@
 
 int Init(FEngine* Engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCMD)
 {
+#if defined(_WIN32)
+	FWinMainCommandParameters WinMainParameters(hInstance, prevInstance, cmdLine, showCMD);
+#endif
+
 	int ReturnValue = Engine->PreInit(
 #if defined(_WIN32)
-		FWinMainCommandParameters(hInstance, prevInstance, cmdLine, showCMD)
+		WinMainParameters
 #endif
 	);
 	if (ReturnValue != 0)
@@ -17,7 +21,11 @@ int Init(FEngine* Engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdL
 			return ReturnValue;
 	}
 
-	ReturnValue = Engine->Init();
+	ReturnValue = Engine->Init(
+#if defined(_WIN32)
+		WinMainParameters
+#endif
+	);
 	if (ReturnValue != 0)
 	{
 		ENGINE_LOG_ERROR("[%i]Engine initialization error, please check the initialization problem.", ReturnValue)

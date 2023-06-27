@@ -14,28 +14,33 @@ FWindowsEngine::FWindowsEngine()
 
 int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
 {
+	// 处理日志
+	constexpr char LogPath[] = "../log";
+	init_log_system(LogPath);
+	ENGINE_LOG("Log init.");
+
 	// 处理命令
 
 
+	ENGINE_LOG("引擎预初始化完成");
+
+	return 0;
+}
+
+int FWindowsEngine::Init(FWinMainCommandParameters InParameters)
+{
 	// 处理视口
 	if (InitWindows(InParameters))
 	{
-		
+
 	}
 
 
 	if (InitDirect3D())
 	{
-		
+
 	}
 
-
-
-	return 0;
-}
-
-int FWindowsEngine::Init()
-{
 	return 0;
 }
 
@@ -267,12 +272,38 @@ bool FWindowsEngine::InitDirect3D()
 	// 采样描述(多重采样设置）
 	SwapChainDesc.SampleDesc.Count = bMSAA4XEnabled ? 4 : 0;	// 设置采样描述里的采样数量，先判断多重采样是否开启，如果开启，那么赋值为4（默认就是开启4重采样）否则就是0
 	SwapChainDesc.SampleDesc.Quality = bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;		// 设置采样描述的质量级别,投影需要判断是否开启多重采样，如果开启，赋值为我们之前设定的采样质量-1，否则为0
-	
 
 	// 创建交换链
 	ANALYSIS_RESULT(DXGiFactory->CreateSwapChain(CommandQueue.Get(), &SwapChainDesc, SwapChain.GetAddressOf()));
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// 资源描述符
 
+	// RTV
+	D3D12_DESCRIPTOR_HEAP_DESC RTVDescriptorHeapDesc; // 定义 描述描述符堆（Descriptor Heap）的属性和配置信息 RTV
+	// 配置描述符属性
+	RTVDescriptorHeapDesc.NumDescriptors = FEngineRenderConfig::GetRenderConfig()->SwapChainCount;						// 描述符数量，这里设置为2，是因为我们使用双缓冲（前台缓冲区，后台缓冲区，所以有两个渲染视图，所以需要两个RTV， 故这里配置2）
+	RTVDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;	// 指定描述符类型-渲染目标视图
+	RTVDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;	// 指定描述符默认用法
+	RTVDescriptorHeapDesc.NodeMask = 0;								// 指定描述符堆的节点掩码，用于多个GPU节点之间的通信与同步 (0表示不设置，使用默认GPU节点）
+	// 配置好属性就可以创建了
+	ANALYSIS_RESULT(D3dDevice->CreateDescriptorHeap(&RTVDescriptorHeapDesc, IID_PPV_ARGS(RTVHeap.GetAddressOf())));		// 使用设备驱动创建RTV描述符堆
+
+
+	// DSV
+	D3D12_DESCRIPTOR_HEAP_DESC DSVDescriptorHeapDesc; // 描述描述符堆（Descriptor Heap）的属性和配置信息 DSV
+	// 配置描述符属性
+	DSVDescriptorHeapDesc.NumDescriptors = 1;						// 描述符数量，深度缓冲区只需要一个就够了，深度缓冲信息是可以复用的
+	DSVDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;	// 指定描述符类型-深度模板视图
+	DSVDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;	// 指定描述符默认用法
+	DSVDescriptorHeapDesc.NodeMask = 0;								// 指定描述符堆的节点掩码，用于多个GPU节点之间的通信与同步 (0表示不设置，使用默认GPU节点）
+	// 配置好属性就可以创建了
+	ANALYSIS_RESULT(D3dDevice->CreateDescriptorHeap(&DSVDescriptorHeapDesc, IID_PPV_ARGS(DSVHeap.GetAddressOf())));		// 使用设备驱动创建DSV描述符堆
+
+
+	
+
+	return false;
 }
 
 

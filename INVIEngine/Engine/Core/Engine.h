@@ -18,7 +18,11 @@ public:
 	) = 0;
 
 	// 引擎初始化
-	virtual int Init() = 0;
+	virtual int Init(
+#if defined(_WIN32)
+		FWinMainCommandParameters InParameters
+#endif
+	) = 0;
 
 	// 引擎初始化完毕
 	virtual int PostInit() = 0;
