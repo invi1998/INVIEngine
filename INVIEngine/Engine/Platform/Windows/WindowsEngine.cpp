@@ -7,9 +7,13 @@
 FWindowsEngine::FWindowsEngine()
 	: M4XNumQualityLevels(0),
 	bMSAA4XEnabled(false),
-	BufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM) // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
+	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM) // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
 {
-
+	for (auto i : FEngineRenderConfig::GetRenderConfig()->SwapChainCount)
+	{
+		SwapChainBuffer.push_back(ComPtr<ID3D12Resource>());
+	}
+	
 }
 
 int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
@@ -46,6 +50,50 @@ int FWindowsEngine::Init(FWinMainCommandParameters InParameters)
 
 int FWindowsEngine::PostInit()
 {
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 将后台缓冲区绑定到渲染流水线
+
+	// 对我们的渲染目标缓冲进行reset
+	for (auto &buffer : SwapChainBuffer)
+	{
+		buffer.Reset();
+	}
+	// 深度模板也要进行Reset
+	DepthStencilBuffer.Reset();
+
+	// 对我们的交换链设置大小
+	SwapChain->ResizeBuffers(
+		FEngineRenderConfig::GetRenderConfig()->SwapChainCount,		// 缓冲区数量
+		FEngineRenderConfig::GetRenderConfig()->ScreenWidth,		// 屏幕宽度
+		FEngineRenderConfig::GetRenderConfig()->ScreenHeight,		// 屏幕高度
+		BackBufferFormat,											// 纹理格式
+		DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH						// 交换链标记（设置这个标记，我们就能通过ResetTarget来在窗口模式和全屏模式之间切换，当我们切换的时候，我们显示模式的那个窗口的分辨率就会进行自适应匹配）
+	);
+
+	// 将我们当前的资源绑定到渲染流水线上
+
+	// 获取当前RTV描述符的大小
+	RTVDescriptorSize = D3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	// 在我们创建了描述堆以后，我们是需要一个堆句柄来进行访问
+	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = RTVHeap->GetCPUDescriptorHandleForHeapStart();
+	HeapHandle.ptr = 0;
+	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
+	{
+		SwapChain->GetBuffer(i, IID_PPV_ARGS(&SwapChainBuffer[i]));
+		D3dDevice->CreateRenderTargetView(SwapChainBuffer[i].Get(), nullptr, HeapHandle);
+		// CreateRenderTargetView 创建渲染视图
+		// 参数1：指定渲染缓冲区
+		// 参数2：指定后台缓冲区格式，因为我们在创建描述堆的时候就已经指定了格式了，所以这里传入nullptr，表示默认
+		// 参数3：传入当前RTV渲染目标视图的句柄
+
+		// 创建好渲染视图后，需要做一个偏移的操作，从我们当前缓冲区偏移到下一个缓冲区（因为我们有两个缓冲区，一个前台缓冲区，一个后台缓冲区，偏移量为一个RTV的大小）
+		HeapHandle.ptr += RTVDescriptorSize;
+
+	}
+
+	ENGINE_LOG("引擎post初始化完毕");
+
 	return 0;
 }
 
@@ -263,7 +311,7 @@ bool FWindowsEngine::InitDirect3D()
 	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST;		// 指定扫描线的显示顺序（下场优先模式）
 	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;			// 将后台缓冲区(表面或资源)用作渲染目标，在其中绘制渲染结果。这是最常见的使用方式，也是默认值
 	// 设置纹理
-	SwapChainDesc.BufferDesc.Format = BufferFormat;		// 纹理格式
+	SwapChainDesc.BufferDesc.Format = BackBufferFormat;		// 纹理格式
 	// 窗口设置
 	SwapChainDesc.OutputWindow = MainWindowHandle;		// 指定窗口句柄
 	SwapChainDesc.Windowed = true;						// 以窗口模式运行(false是全屏）

@@ -35,6 +35,9 @@ protected:
 	ComPtr<ID3D12DescriptorHeap> RTVHeap;		// 渲染目标视图
 	ComPtr<ID3D12DescriptorHeap> DSVHeap;		// 深度模板视图
 
+	std::vector<ComPtr<ID3D12Resource>> SwapChainBuffer;
+	ComPtr<ID3D12Resource> DepthStencilBuffer;
+
 protected:
 	// 主窗口句柄
 	HWND MainWindowHandle;
@@ -46,7 +49,9 @@ protected:
 	bool bMSAA4XEnabled;
 
 	// 纹理buffer格式
-	DXGI_FORMAT BufferFormat;
+	DXGI_FORMAT BackBufferFormat;	// 后缓冲区
+
+	UINT RTVDescriptorSize;			// RTV描述符大小
 
 
 private:
