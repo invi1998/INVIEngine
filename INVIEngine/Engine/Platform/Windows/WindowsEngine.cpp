@@ -4,6 +4,12 @@
 #include "Config/EngineRenderConfig.h"
 #include "Debug/EngineDebug.h"
 
+FWindowsEngine::FWindowsEngine()
+	: M4XNumQualityLevels(0), bMSAA4XEnabled(false)
+{
+
+}
+
 int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
 {
 	// 处理命令
@@ -214,6 +220,24 @@ bool FWindowsEngine::InitDirect3D()
 	// 创建完命令列表，不要忘记将其关闭
 	GraphicsCommandList->Close();
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 设置多重采样
+
+	// 查询指定硬件和资源格式支持的多重采样质量水平
+	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS QualityLevels;
+	QualityLevels.SampleCount = 4;	// 查询采样率4
+	QualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS::D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;	// 采样质量级别，设置为默认，不支持任何选项
+	QualityLevels.NumQualityLevels = 0;
+	// 调用CheckFeatureSupport查询我们目前的设备驱动是否支持上面设置的这些采样参数
+	ANALYSIS_RESULT(D3dDevice->CheckFeatureSupport(
+		D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,	// 指定检测对象是，我们当前质量的级别
+		&QualityLevels,								// 传入质量对象
+		sizeof(QualityLevels)		// 传入质量大小
+	));
+
+	// 备份质量级别
+	M4XNumQualityLevels = QualityLevels.NumQualityLevels;
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 交换链
@@ -231,12 +255,14 @@ bool FWindowsEngine::InitDirect3D()
 	SwapChainDesc.BufferCount = FEngineRenderConfig::GetRenderConfig()->SwapChainCount;						// 指定交换连的buff数量（缓冲数量，一般都是双缓冲就够了）
 	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST;		// 指定扫描线的显示顺序（下场优先模式）
 	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;			// 将后台缓冲区(表面或资源)用作渲染目标，在其中绘制渲染结果。这是最常见的使用方式，也是默认值
-	// 采样描述
-	// 主窗口指定
+	// 窗口设置
 	SwapChainDesc.OutputWindow = MainWindowHandle;		// 指定窗口句柄
 	SwapChainDesc.Windowed = true;						// 以窗口模式运行(false是全屏）
 	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;	// 强制刷新模式，在每次呈现新帧时都清空前缓冲区，不保留其内容。这是最常见的交换方式，也是默认值。
 	SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 允许显示模式切换 (即允许我们自由的切换显示窗口，想全屏就全屏，想窗口就窗口）
+	// 采样描述(多重采样设置）
+	SwapChainDesc.SampleDesc.Count = bMSAA4XEnabled ? 4 : 0;	// 设置采样描述里的采样数量，先判断多重采样是否开启，如果开启，那么赋值为4（默认就是开启4重采样）否则就是0
+	SwapChainDesc.SampleDesc.Quality = bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;		// 设置采样描述的质量级别,投影需要判断是否开启多重采样，如果开启，赋值为我们之前设定的采样质量-1，否则为0
 	
 
 	// 创建交换链

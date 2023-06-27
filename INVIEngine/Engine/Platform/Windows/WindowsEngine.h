@@ -5,6 +5,8 @@
 class FWindowsEngine : public FEngine
 {
 public:
+	FWindowsEngine();
+
 	virtual int PreInit(FWinMainCommandParameters InParameters) override;
 	virtual int Init() override;
 	virtual int PostInit() override;
@@ -31,6 +33,12 @@ protected:
 
 	// 主窗口句柄
 	HWND MainWindowHandle;
+
+	// 当前采样的质量级别(4采样数的质量级别）
+	UINT M4XNumQualityLevels;
+
+	// 4重采样是否开启
+	bool bMSAA4XEnabled;
 
 private:
 	// 初始化窗口
