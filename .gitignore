@@ -37,6 +37,7 @@
 bin-int/
 bin/
 Intermediates/
+log/
 
 # Hazel files
 *.log

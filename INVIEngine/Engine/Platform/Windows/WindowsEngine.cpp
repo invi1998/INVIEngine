@@ -6,7 +6,7 @@
 
 FWindowsEngine::FWindowsEngine()
 	: M4XNumQualityLevels(0),
-	bMSAA4XEnabled(false),
+	bMSAA4XEnabled(true),
 	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
 	DepthStencilFormat(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT)
 {
@@ -77,7 +77,7 @@ int FWindowsEngine::PostInit()
 	RTVDescriptorSize = D3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	// 在我们创建了描述堆以后，我们是需要一个堆句柄来进行访问
-	D3D12_CPU_DESCRIPTOR_HANDLE HeapHandle = RTVHeap->GetCPUDescriptorHandleForHeapStart();
+	CD3DX12_CPU_DESCRIPTOR_HANDLE HeapHandle(RTVHeap->GetCPUDescriptorHandleForHeapStart());
 	HeapHandle.ptr = 0;
 	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
 	{
@@ -89,7 +89,9 @@ int FWindowsEngine::PostInit()
 		// 参数3：传入当前RTV渲染目标视图的句柄
 
 		// 创建好渲染视图后，需要做一个偏移的操作，从我们当前缓冲区偏移到下一个缓冲区（因为我们有两个缓冲区，一个前台缓冲区，一个后台缓冲区，偏移量为一个RTV的大小）
-		HeapHandle.ptr += RTVDescriptorSize;
+		// HeapHandle.ptr += RTVDescriptorSize;
+		// 如果使用了微软提供的d3dx12.h那个接口，那么这里就不用自己计算偏移了
+		HeapHandle.Offset(1, RTVDescriptorSize);
 
 	}
 
@@ -117,10 +119,11 @@ int FWindowsEngine::PostInit()
 	ClearValue.DepthStencil.Stencil = 0;			// 指定模板（模板清理到多少，清理到0）
 	ClearValue.Format = DepthStencilFormat;			// 指定格式
 
+	CD3DX12_HEAP_PROPERTIES Properties(D3D12_HEAP_TYPE_DEFAULT);	// 指定堆类型，设置为默认提交资源堆
 
 	// 创建提交资源
 	D3dDevice->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),	// 指定堆类型，设置为默认提交资源堆
+		&Properties,										// 指定堆类型，设置为默认提交资源堆
 		D3D12_HEAP_FLAG_NONE,								// 指定堆动作，不使用特殊标志，即默认提交资源堆
 		&ResourceDesc,										// 指定资源描述
 		D3D12_RESOURCE_STATE_COMMON,						// 指定标签，表示提交资源的初始状态，这里设置为常规状态，即可以被任何类型的操作所使用
@@ -140,6 +143,29 @@ int FWindowsEngine::PostInit()
 
 	// 实例化深度模板缓冲区
 	D3dDevice->CreateDepthStencilView(DepthStencilBuffer.Get(), &DepthStencilViewDesc, DSVHeap->GetCPUDescriptorHandleForHeapStart());
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///绑定到命令列表
+
+	// 同步当前资源状态
+	CD3DX12_RESOURCE_BARRIER Barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		DepthStencilBuffer.Get(),									// 指向当前深度模板缓冲数组的指针（指向资源的指针）
+		D3D12_RESOURCE_STATE_COMMON,								// 表明资源状态前，是一个通用的资源 （资源的当前状态）
+		D3D12_RESOURCE_STATE_DEPTH_WRITE);					// 表明资源状态后 是一个 深度写 的资源 （资源的目标状态）
+	GraphicsCommandList->ResourceBarrier(
+		1,							// 指定资源提交次数
+		&Barrier
+	);
+
+	// 同步完资源状态后对资源进行关闭
+	GraphicsCommandList->Close();
+
+	// 定义一个指针数组，用于存储命令指针列表，它这里可以存放很多条命令
+	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
+
+	// 使用队列提交命令
+	// _countof是d3d12x.h里用来计算静态分配数组元素的个数，sizeof是用来计算字节数的
+	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
 
 	ENGINE_LOG("引擎post初始化完毕");
 
@@ -313,13 +339,19 @@ bool FWindowsEngine::InitDirect3D()
 	));
 
 	// 创建命令列表
-	ANALYSIS_RESULT(D3dDevice->CreateCommandList(
-		0,		// 默认一个GPU
+	HRESULT CMLResult = D3dDevice->CreateCommandList(
+		0,															// 默认一个GPU
 		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,	// 直接GPU执行类型
-		CommandAllocator.Get(),		// 将当前命令列表关联到分配器上
-		nullptr,	// 需要传入当前管线状态
+		CommandAllocator.Get(),										// 将当前命令列表关联到分配器上
+		nullptr,													// 需要传入当前管线状态
 		IID_PPV_ARGS(GraphicsCommandList.GetAddressOf())
-	));
+	);
+
+	if (FAILED(CMLResult))
+	{
+		// Check(0);	// 激活断言
+		ENGINE_LOG_ERROR("ERROR [%d]", int(CMLResult));
+	}
 
 	// 创建完命令列表，不要忘记将其关闭
 	GraphicsCommandList->Close();
@@ -333,11 +365,12 @@ bool FWindowsEngine::InitDirect3D()
 	QualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS::D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;	// 采样质量级别，设置为默认，不支持任何选项
 	QualityLevels.NumQualityLevels = 0;
 	// 调用CheckFeatureSupport查询我们目前的设备驱动是否支持上面设置的这些采样参数
-	ANALYSIS_RESULT(D3dDevice->CheckFeatureSupport(
+	HRESULT resultH = D3dDevice->CheckFeatureSupport(
 		D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,	// 指定检测对象是，我们当前质量的级别
 		&QualityLevels,								// 传入质量对象
-		sizeof(QualityLevels)		// 传入质量大小
-	));
+		sizeof(QualityLevels)						// 传入质量大小
+	);
+ 	ANALYSIS_RESULT(resultH);
 
 	// 备份质量级别
 	M4XNumQualityLevels = QualityLevels.NumQualityLevels;
@@ -371,7 +404,8 @@ bool FWindowsEngine::InitDirect3D()
 	SwapChainDesc.SampleDesc.Quality = bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;		// 设置采样描述的质量级别,投影需要判断是否开启多重采样，如果开启，赋值为我们之前设定的采样质量-1，否则为0
 
 	// 创建交换链
-	ANALYSIS_RESULT(DXGiFactory->CreateSwapChain(CommandQueue.Get(), &SwapChainDesc, SwapChain.GetAddressOf()));
+	HRESULT ChainResult = DXGiFactory->CreateSwapChain(CommandQueue.Get(), &SwapChainDesc, SwapChain.GetAddressOf());
+	ANALYSIS_RESULT(ChainResult);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// 资源描述符
