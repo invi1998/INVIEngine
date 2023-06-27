@@ -5,7 +5,9 @@
 #include "Debug/EngineDebug.h"
 
 FWindowsEngine::FWindowsEngine()
-	: M4XNumQualityLevels(0), bMSAA4XEnabled(false)
+	: M4XNumQualityLevels(0),
+	bMSAA4XEnabled(false),
+	BufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM) // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
 {
 
 }
@@ -255,6 +257,8 @@ bool FWindowsEngine::InitDirect3D()
 	SwapChainDesc.BufferCount = FEngineRenderConfig::GetRenderConfig()->SwapChainCount;						// 指定交换连的buff数量（缓冲数量，一般都是双缓冲就够了）
 	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST;		// 指定扫描线的显示顺序（下场优先模式）
 	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;			// 将后台缓冲区(表面或资源)用作渲染目标，在其中绘制渲染结果。这是最常见的使用方式，也是默认值
+	// 设置纹理
+	SwapChainDesc.BufferDesc.Format = BufferFormat;		// 纹理格式
 	// 窗口设置
 	SwapChainDesc.OutputWindow = MainWindowHandle;		// 指定窗口句柄
 	SwapChainDesc.Windowed = true;						// 以窗口模式运行(false是全屏）

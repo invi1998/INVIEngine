@@ -40,6 +40,9 @@ protected:
 	// 4重采样是否开启
 	bool bMSAA4XEnabled;
 
+	// 纹理buffer格式
+	DXGI_FORMAT BufferFormat;
+
 private:
 	// 初始化窗口
 	bool InitWindows(FWinMainCommandParameters InParameters);
