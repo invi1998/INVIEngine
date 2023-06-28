@@ -11,13 +11,20 @@ public:
 	virtual int Init(FWinMainCommandParameters InParameters) override;
 	virtual int PostInit() override;
 
-	virtual void Tick() override;
+	virtual void Tick(float DeltaTime) override;
 
 	virtual int PreExit() override;
 	virtual int Exit() override;
 	virtual int PostExit() override;
 
+public:
+	ID3D12Resource* GetCurrentSwapBuffer() const;	// 获取当前交换链buff缓冲区
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentSwapBufferView() const;		// 获取当前交换链buffer的视口句柄
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentDepthStencilView() const;		// 获取当前深度模板View
+
 protected:
+	int CurrentSwapBufferIndex;		// 当前交换链buffer缓冲区的索引（我们在做缓冲区交换的时候，就会去修改这个值）
+
 	// 驱动对象
 	ComPtr<IDXGIFactory4> DXGiFactory;	// 创建DirectX图形基础结构（DXGi）对象
 	ComPtr<ID3D12Device> D3dDevice;		// 创建命令分配器，命令列表，命令队列，Fence，资源，管道状态对象，堆，根签名，采样器和许多资源视图

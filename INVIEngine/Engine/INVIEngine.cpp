@@ -44,7 +44,9 @@ int Init(FEngine* Engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdL
 
 void Tick(FEngine* Engine)
 {
-	
+	float DeltaTime = 0.03f;
+	Engine->Tick(DeltaTime);
+	Sleep(30);
 }
 
 int Exit(FEngine* Engine)
@@ -102,7 +104,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		
 		while(true)
 		{
-			Engine->Tick();
+			Tick(Engine);
 		}
 
 		Exit(Engine);

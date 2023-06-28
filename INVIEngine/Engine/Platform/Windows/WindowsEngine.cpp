@@ -5,7 +5,8 @@
 #include "Debug/EngineDebug.h"
 
 FWindowsEngine::FWindowsEngine()
-	: M4XNumQualityLevels(0),
+	: CurrentSwapBufferIndex(0),
+	M4XNumQualityLevels(0),
 	bMSAA4XEnabled(false),
 	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
 	DepthStencilFormat(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT)
@@ -171,9 +172,84 @@ int FWindowsEngine::PostInit()
 	return 0;
 }
 
-void FWindowsEngine::Tick()
+void FWindowsEngine::Tick(float DeltaTime)
 {
-	
+	// 重新录制相关内存，为下一帧绘制做准备
+	HRESULT ResultD3D = CommandAllocator->Reset();
+	ANALYSIS_RESULT(ResultD3D);
+
+	// 重置命令列表，因为我们每一帧都会有新的提交列表
+	GraphicsCommandList->Reset(CommandAllocator.Get(), nullptr);
+
+	// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
+	CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
+		GetCurrentSwapBuffer(),				// 当前buffer缓冲区
+		D3D12_RESOURCE_STATE_PRESENT,		// 当前状态 表示资源即将被用作呈现目标
+		D3D12_RESOURCE_STATE_RENDER_TARGET	// 目标状态 这将使资源可以用作渲染目标，并允许您对该资源执行呈现操作（写入状态）
+	);
+	GraphicsCommandList->ResourceBarrier(
+		1,
+		&ResourceBarrierPresent
+	);
+
+	// 清除画布
+	GraphicsCommandList->ClearRenderTargetView(
+		GetCurrentSwapBufferView(),		// 要清除的渲染目标视图
+		DirectX::Colors::Violet,		// 画布颜色
+		0,		// 后面这两个参数是和视口相关的，这里不在这里设置，后面会有专门的设置方法
+		nullptr
+	);
+
+	// 清除深度和模板缓冲区
+	GraphicsCommandList->ClearDepthStencilView(
+		GetCurrentDepthStencilView(),	// 传入CPU内存（要清除的深度模板缓冲区内存）
+		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,		// 清除深度和模板缓冲区
+		1.f,	// 用1来清除我们的深度缓冲区（将深度缓冲区设置为1
+		0,		// 用0来清除我们的模板缓冲区（模板缓冲区设置为0
+		0,
+		nullptr
+	);
+
+	// 指定渲染缓冲区（输出合并阶段）设置渲染目标视图
+	D3D12_CPU_DESCRIPTOR_HANDLE SwapBufferView = GetCurrentSwapBufferView();
+	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView = GetCurrentDepthStencilView();
+	GraphicsCommandList->OMSetRenderTargets(
+		1,									// 指定渲染目标数 1
+		&SwapBufferView,		// 指定渲染目标
+		true,								// true表明我们传入的句柄是一个内存连续的描述符指针
+		&DepthStencilView		// 传入深度
+	);
+
+	// 设置当前交换链buffer状态
+	CD3DX12_RESOURCE_BARRIER ResourceBarrierRenderTarget = CD3DX12_RESOURCE_BARRIER::Transition(
+		GetCurrentSwapBuffer(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		D3D12_RESOURCE_STATE_PRESENT
+	);
+	GraphicsCommandList->ResourceBarrier(
+		1,
+		&ResourceBarrierRenderTarget
+	);
+
+	// 自此，缓冲区录入完成（记得关闭命令列表），可以提交命令了
+	ResultD3D = GraphicsCommandList->Close();
+	ANALYSIS_RESULT(ResultD3D);
+
+	// 提交命令
+	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
+	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
+
+	// 渲染
+
+
+	// 交换Buffer缓冲区
+	ResultD3D = SwapChain->Present(0, 0);	// 垂直同步0， flags也是0
+	ANALYSIS_RESULT(ResultD3D);
+
+	CurrentSwapBufferIndex = !static_cast<bool>(CurrentSwapBufferIndex);	// 因为我们的交换链缓冲区就只有2个，所以索引可以简单的使用这种方法设置 （0,1）
+
+	// CPU等待GPU执行结果
+
 }
 
 int FWindowsEngine::PreExit()
@@ -191,6 +267,25 @@ int FWindowsEngine::PostExit()
 	FEngineRenderConfig::Destroy();
 
 	return 0;
+}
+
+ID3D12Resource* FWindowsEngine::GetCurrentSwapBuffer() const
+{
+	return SwapChainBuffer[CurrentSwapBufferIndex].Get();
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentSwapBufferView() const
+{
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		RTVHeap->GetCPUDescriptorHandleForHeapStart(),	// 通过RTV堆栈获取当前CPU描述，
+		CurrentSwapBufferIndex,	// 传入当前buffer索引（也就是堆栈内存里面，我们要获取的是哪一个，RTV不是有两个缓冲区内存嘛，前后）
+		RTVDescriptorSize		// 传入当前RTV描述的大小
+	);
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentDepthStencilView() const
+{
+	return DSVHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
 bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
