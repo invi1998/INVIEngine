@@ -6,7 +6,7 @@
 
 FWindowsEngine::FWindowsEngine()
 	: M4XNumQualityLevels(0),
-	bMSAA4XEnabled(true),
+	bMSAA4XEnabled(false),
 	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
 	DepthStencilFormat(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT)
 {
@@ -78,7 +78,6 @@ int FWindowsEngine::PostInit()
 
 	// 在我们创建了描述堆以后，我们是需要一个堆句柄来进行访问
 	CD3DX12_CPU_DESCRIPTOR_HANDLE HeapHandle(RTVHeap->GetCPUDescriptorHandleForHeapStart());
-	HeapHandle.ptr = 0;
 	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
 	{
 		SwapChain->GetBuffer(i, IID_PPV_ARGS(&SwapChainBuffer[i]));
@@ -227,7 +226,7 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 	int windowWidth = Rect.right - Rect.left;
 	int windowHeight = Rect.bottom - Rect.top;
 
-	HWND MainWindowHandle = CreateWindowEx(
+	MainWindowHandle = CreateWindowEx(
 		NULL,						// 窗口额外风格
 		L"INVIEngine",				// 窗口名称
 		L"INVI Engine",				// 显示到标题栏上的窗口名称
@@ -257,6 +256,14 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 
 bool FWindowsEngine::InitDirect3D()
 {
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 开启DX12调试层 debug
+	ComPtr<ID3D12Debug> D3d12Debug;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&D3d12Debug))))
+	{
+		D3d12Debug->EnableDebugLayer();		// 开启调试层
+	}
+
 	// HRESULT
 	// S_OK					0x00000000	执行成功
 	// E_UNEXPECTED			0x8000FFFF	意外的失败
@@ -273,7 +280,8 @@ bool FWindowsEngine::InitDirect3D()
 	// 创建DGI设备驱动
 
 	// 创建DGI实例
-	ANALYSIS_RESULT(CreateDXGIFactory1(IID_PPV_ARGS(&DXGiFactory)));
+	HRESULT ResultD3D = CreateDXGIFactory1(IID_PPV_ARGS(&DXGiFactory));
+	ANALYSIS_RESULT(ResultD3D);
 
 	// 创建驱动
 	//	IUnknown * pAdapter,          // 程序要使用的适配器(设备)实例指针，如果为nullptr则使用默认适配器
@@ -304,9 +312,11 @@ bool FWindowsEngine::InitDirect3D()
 		// 创建适配器
 		ComPtr<IDXGIAdapter> WARPAdapter;
 		// 枚举适配器
-		ANALYSIS_RESULT(DXGiFactory->EnumWarpAdapter(IID_PPV_ARGS(&WARPAdapter)));
+		ResultD3D = DXGiFactory->EnumWarpAdapter(IID_PPV_ARGS(&WARPAdapter));
+		ANALYSIS_RESULT(ResultD3D);
 		// 创建驱动（使用软件模拟的适配器来创建驱动）
-		ANALYSIS_RESULT(D3D12CreateDevice(WARPAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&D3dDevice)));
+		ResultD3D = D3D12CreateDevice(WARPAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&D3dDevice));
+		ANALYSIS_RESULT(ResultD3D);
 	}
 
 	// 创建fence(创建围栏）为CPU和GPU同步做准备
@@ -315,7 +325,8 @@ bool FWindowsEngine::InitDirect3D()
 	// Flags：标志位，固定为D3D12_FENCE_FLAG_NONE。
 	// riid：唯一标识围栏接口类型的GUID，固定为IID_ID3D12Fence。
 	// ppFence：返回的指向围栏接口的指针的指针。在函数成功执行后，该指针将指向一个ID3D12Fence接口的实例。
-	ANALYSIS_RESULT(D3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&Fence)));
+	ResultD3D = D3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&Fence));
+	ANALYSIS_RESULT(ResultD3D);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 有了设备驱动后，我们就可以创建我们的命令对象了
@@ -330,28 +341,25 @@ bool FWindowsEngine::InitDirect3D()
 	D3D12_COMMAND_QUEUE_DESC QueueDesc = {};		// 队列描述
 	QueueDesc.Type = D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT;				// 指定命令列表的类型(直接命令（直接可以在GPU上执行的命令)
 	QueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAGS::D3D12_COMMAND_QUEUE_FLAG_NONE;				// 指定命令队列的标志（不超时）
-	ANALYSIS_RESULT(D3dDevice->CreateCommandQueue(&QueueDesc, IID_PPV_ARGS(&CommandQueue)));
+	ResultD3D = D3dDevice->CreateCommandQueue(&QueueDesc, IID_PPV_ARGS(&CommandQueue));
+	ANALYSIS_RESULT(ResultD3D);
 
 	// 创建分配器
-	ANALYSIS_RESULT(D3dDevice->CreateCommandAllocator(
+	ResultD3D = D3dDevice->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
-		IID_PPV_ARGS(&CommandAllocator)
-	));
+		IID_PPV_ARGS(CommandAllocator.GetAddressOf())
+	);
+	ANALYSIS_RESULT(ResultD3D);
 
 	// 创建命令列表
-	HRESULT CMLResult = D3dDevice->CreateCommandList(
+	ResultD3D  = D3dDevice->CreateCommandList(
 		0,															// 默认一个GPU
 		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,	// 直接GPU执行类型
 		CommandAllocator.Get(),										// 将当前命令列表关联到分配器上
 		nullptr,													// 需要传入当前管线状态
 		IID_PPV_ARGS(GraphicsCommandList.GetAddressOf())
 	);
-
-	if (FAILED(CMLResult))
-	{
-		// Check(0);	// 激活断言
-		ENGINE_LOG_ERROR("ERROR [%d]", int(CMLResult));
-	}
+	ANALYSIS_RESULT(ResultD3D);
 
 	// 创建完命令列表，不要忘记将其关闭
 	GraphicsCommandList->Close();
@@ -364,13 +372,14 @@ bool FWindowsEngine::InitDirect3D()
 	QualityLevels.SampleCount = 4;	// 查询采样率4
 	QualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS::D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;	// 采样质量级别，设置为默认，不支持任何选项
 	QualityLevels.NumQualityLevels = 0;
+	QualityLevels.Format = BackBufferFormat;
 	// 调用CheckFeatureSupport查询我们目前的设备驱动是否支持上面设置的这些采样参数
-	HRESULT resultH = D3dDevice->CheckFeatureSupport(
+	ResultD3D = D3dDevice->CheckFeatureSupport(
 		D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,	// 指定检测对象是，我们当前质量的级别
 		&QualityLevels,								// 传入质量对象
 		sizeof(QualityLevels)						// 传入质量大小
 	);
- 	ANALYSIS_RESULT(resultH);
+	ANALYSIS_RESULT(ResultD3D);
 
 	// 备份质量级别
 	M4XNumQualityLevels = QualityLevels.NumQualityLevels;
@@ -390,7 +399,8 @@ bool FWindowsEngine::InitDirect3D()
 	SwapChainDesc.BufferDesc.RefreshRate.Numerator = FEngineRenderConfig::GetRenderConfig()->RefreshRate;	// 指定刷新率（分子）
 	SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;													// 指定刷新率（分母）
 	SwapChainDesc.BufferCount = FEngineRenderConfig::GetRenderConfig()->SwapChainCount;						// 指定交换连的buff数量（缓冲数量，一般都是双缓冲就够了）
-	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST;		// 指定扫描线的显示顺序（下场优先模式）
+	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;		// 指定扫描线的显示顺序（下场优先模式）
+	SwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;			// 将后台缓冲区(表面或资源)用作渲染目标，在其中绘制渲染结果。这是最常见的使用方式，也是默认值
 	// 设置纹理
 	SwapChainDesc.BufferDesc.Format = BackBufferFormat;		// 纹理格式
@@ -404,8 +414,8 @@ bool FWindowsEngine::InitDirect3D()
 	SwapChainDesc.SampleDesc.Quality = bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;		// 设置采样描述的质量级别,投影需要判断是否开启多重采样，如果开启，赋值为我们之前设定的采样质量-1，否则为0
 
 	// 创建交换链
-	HRESULT ChainResult = DXGiFactory->CreateSwapChain(CommandQueue.Get(), &SwapChainDesc, SwapChain.GetAddressOf());
-	ANALYSIS_RESULT(ChainResult);
+	ResultD3D = DXGiFactory->CreateSwapChain(CommandQueue.Get(), &SwapChainDesc, SwapChain.GetAddressOf());
+	ANALYSIS_RESULT(ResultD3D);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// 资源描述符
@@ -418,7 +428,8 @@ bool FWindowsEngine::InitDirect3D()
 	RTVDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;	// 指定描述符默认用法
 	RTVDescriptorHeapDesc.NodeMask = 0;								// 指定描述符堆的节点掩码，用于多个GPU节点之间的通信与同步 (0表示不设置，使用默认GPU节点）
 	// 配置好属性就可以创建了
-	ANALYSIS_RESULT(D3dDevice->CreateDescriptorHeap(&RTVDescriptorHeapDesc, IID_PPV_ARGS(RTVHeap.GetAddressOf())));		// 使用设备驱动创建RTV描述符堆
+	ResultD3D = D3dDevice->CreateDescriptorHeap(&RTVDescriptorHeapDesc, IID_PPV_ARGS(RTVHeap.GetAddressOf()));		// 使用设备驱动创建RTV描述符堆
+	ANALYSIS_RESULT(ResultD3D);
 
 
 	// DSV
@@ -429,10 +440,9 @@ bool FWindowsEngine::InitDirect3D()
 	DSVDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;	// 指定描述符默认用法
 	DSVDescriptorHeapDesc.NodeMask = 0;								// 指定描述符堆的节点掩码，用于多个GPU节点之间的通信与同步 (0表示不设置，使用默认GPU节点）
 	// 配置好属性就可以创建了
-	ANALYSIS_RESULT(D3dDevice->CreateDescriptorHeap(&DSVDescriptorHeapDesc, IID_PPV_ARGS(DSVHeap.GetAddressOf())));		// 使用设备驱动创建DSV描述符堆
+	ResultD3D = D3dDevice->CreateDescriptorHeap(&DSVDescriptorHeapDesc, IID_PPV_ARGS(DSVHeap.GetAddressOf()));		// 使用设备驱动创建DSV描述符堆
+	ANALYSIS_RESULT(ResultD3D);
 
-
-	
 
 	return false;
 }
