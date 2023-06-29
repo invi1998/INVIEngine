@@ -101,10 +101,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	if (FEngine* Engine = FEngineFactory::CreateEngine())
 	{
 		Init(Engine, hInstance, prevInstance, cmdLine, showCMD);
+
+		MSG EngineMSG = { nullptr };
 		
-		while(true)
+		while(EngineMSG.message != WM_CLOSE)
 		{
-			Tick(Engine);
+			// 检索和过滤Windows信息
+			// 该行代码的执行效果就是，移除所有的消息，不进行任何过滤
+			// PM_NOREMOVE		消息不从消息队列里移除
+			// PM_REMOVE		消息从消息队列里移除
+			// PM_NOYIELD		此标志使得系统不释放等待调用程序空闲的线程
+			//
+			// PM_QS_INPUT		处理鼠标和键盘消息
+			// PM_QS_PAINT		处理画图信息
+			// PM_QS_POSTMESSAGE	处理所有被寄送的消息，包括计时器和热键
+			// PM_QS_SENDMESSAGE	处理所有发送消息
+			if (PeekMessage(&EngineMSG, 0, 0, 0, PM_REMOVE))
+			{
+				// 提取完消息后，我们需要对消息进行翻译，翻译为字符串
+				TranslateMessage(&EngineMSG);
+				// 调配信息，将信息发送给我们的程序窗口，然后我们的程序就能进行使用了 (分发消息）
+				DispatchMessage(&EngineMSG);
+			}
+			else
+			{
+				Tick(Engine);
+			}
 		}
 
 		Exit(Engine);
