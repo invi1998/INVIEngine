@@ -23,6 +23,10 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentDepthStencilView() const;		// 获取当前深度模板View
 
 protected:
+	void WaitGPUCommandQueueComplete();		// 等待GPU执行命令队列 同步GPU和CPU
+
+protected:
+	UINT64 CurrentFenceIndex;		// 当前围栏索引
 	int CurrentSwapBufferIndex;		// 当前交换链buffer缓冲区的索引（我们在做缓冲区交换的时候，就会去修改这个值）
 
 	// 驱动对象

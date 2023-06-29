@@ -5,7 +5,8 @@
 #include "Debug/EngineDebug.h"
 
 FWindowsEngine::FWindowsEngine()
-	: CurrentSwapBufferIndex(0),
+	: CurrentFenceIndex(0),
+	CurrentSwapBufferIndex(0),
 	M4XNumQualityLevels(0),
 	bMSAA4XEnabled(false),
 	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
@@ -52,6 +53,10 @@ int FWindowsEngine::Init(FWinMainCommandParameters InParameters)
 
 int FWindowsEngine::PostInit()
 {
+	// 因为我们在前面有创建相关的内容，所以在这里执行等待（同步）
+	// CPU等待GPU执行结果
+	WaitGPUCommandQueueComplete();
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 将后台缓冲区绑定到渲染流水线
 
@@ -185,6 +190,9 @@ int FWindowsEngine::PostInit()
 	ViewPortRect.right = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
 	ViewPortRect.bottom = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
 
+	// CPU等待GPU执行结果
+	WaitGPUCommandQueueComplete();
+
 	ENGINE_LOG("引擎post初始化完毕");
 
 	return 0;
@@ -272,6 +280,7 @@ void FWindowsEngine::Tick(float DeltaTime)
 	CurrentSwapBufferIndex = !static_cast<bool>(CurrentSwapBufferIndex);	// 因为我们的交换链缓冲区就只有2个，所以索引可以简单的使用这种方法设置 （0,1）
 
 	// CPU等待GPU执行结果
+	WaitGPUCommandQueueComplete();
 
 }
 
@@ -309,6 +318,38 @@ D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentSwapBufferView() const
 D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentDepthStencilView() const
 {
 	return DSVHeap->GetCPUDescriptorHandleForHeapStart();
+}
+
+void FWindowsEngine::WaitGPUCommandQueueComplete()
+{
+	CurrentFenceIndex++;
+
+	// 向GPU设置新的隔离点 等待GPU处理完信号 （设置信号）
+	ANALYSIS_RESULT(CommandQueue->Signal(Fence.Get(), CurrentFenceIndex));
+
+	if (Fence->GetCompletedValue() < CurrentFenceIndex)
+	{
+		// 创建或者打开一个事件内核对象，并返回该内核对象的句柄
+		// 参数1 SECURITY_ATTRIBUTES
+		// 参数2 事件名，null表示匿名事件
+		// 参数3
+		// CREATE_EVENT_INITIAL_SET		0x00000002	表示我们的对象的初始化是否被触发了，FALSE表示未触发
+		// CREATE_EVENT_MANUAL_RESET	0x00000001	表示这个事件对象必须要用ResetEvents重置，你不设置这个标志的话，我们的系统内核就会进行默认重置
+		// 参数4 事件对象的访问权限
+		HANDLE EventEX = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
+
+		// 我们在上面已经设置好信号了，那么在这里信号触发就会通知这个事件，下面这行代码达到的效果就是
+		// 我们在上面设置的GPU信号，在GPU完成后，就会通知到事件EventX，从而让CPU知道GPU的命令执行情况
+		// GPU完成后悔通知我们当前的事件句柄EventEX
+		ANALYSIS_RESULT(Fence->SetEventOnCompletion(CurrentFenceIndex, EventEX));
+
+		// 等待信号事件触发，等待时间为无限等待 （等待GPU）
+		// 这里会阻塞主线程，防止CPU无限向GPU提交命令
+		WaitForSingleObject(EventEX, INFINITE);
+
+		// 如果事件完成了，会释放掉当前事件，那么我们就会在这里接收到这个事件，线程就会在这里被还原，被重新唤醒，然后我们就将当前事件关闭即可
+		CloseHandle(EventEX);
+	}
 }
 
 bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
