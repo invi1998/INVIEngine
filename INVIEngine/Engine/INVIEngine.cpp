@@ -98,13 +98,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	int ReturnValue = 0;
 
-	if (FEngine* Engine = FEngineFactory::CreateEngine())
+	FEngine* Engine = FEngineFactory::CreateEngine();
+
+	if (Engine)
 	{
 		Init(Engine, hInstance, prevInstance, cmdLine, showCMD);
 
 		MSG EngineMSG = { nullptr };
 		
-		while(EngineMSG.message != WM_CLOSE)
+		while(EngineMSG.message != WM_QUIT)
 		{
 			// 检索和过滤Windows信息
 			// 该行代码的执行效果就是，移除所有的消息，不进行任何过滤
@@ -131,7 +133,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 		Exit(Engine);
 
-		return 0;
+		return 1;
 	}
 	else
 	{
