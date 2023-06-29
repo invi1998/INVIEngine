@@ -167,6 +167,24 @@ int FWindowsEngine::PostInit()
 	// _countof是d3d12x.h里用来计算静态分配数组元素的个数，sizeof是用来计算字节数的
 	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 渲染视口设置(这些设置会覆盖原先的Windows画布)
+
+	// 描述视口尺寸
+	// DirectX的坐标系统和OpenGL是不一样的，DX的坐标系原点位于窗口的中心，OpenGL的坐标原点是在屏幕的左下角
+	ViewPortInfo.TopLeftX = 0;
+	ViewPortInfo.TopLeftY = 0;
+	ViewPortInfo.Width = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
+	ViewPortInfo.Height = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
+	ViewPortInfo.MinDepth = 0.f;	// 最小深度
+	ViewPortInfo.MaxDepth = 1.f;	// 最大深度
+
+	// 描述裁剪矩形
+	ViewPortRect.top = 0;
+	ViewPortRect.left = 0;
+	ViewPortRect.right = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
+	ViewPortRect.bottom = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
+
 	ENGINE_LOG("引擎post初始化完毕");
 
 	return 0;
@@ -191,6 +209,11 @@ void FWindowsEngine::Tick(float DeltaTime)
 		1,
 		&ResourceBarrierPresent
 	);
+
+	// 重置（更新）视口信息，裁剪矩阵信息
+	GraphicsCommandList->RSSetViewports(1, &ViewPortInfo);
+	GraphicsCommandList->RSSetScissorRects(1, &ViewPortRect);
+
 
 	// 清除画布
 	GraphicsCommandList->ClearRenderTargetView(
