@@ -83,3 +83,4 @@
 //DirectX::ComputeIntersection：计算包围盒之间的最小平移距离和碰撞点等信息的函数。
 
 using namespace Microsoft::WRL;
+using namespace DirectX;
