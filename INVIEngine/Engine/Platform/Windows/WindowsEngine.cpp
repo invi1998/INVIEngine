@@ -3,6 +3,7 @@
 #include "WindowsMessageProcessing.h"
 #include "Config/EngineRenderConfig.h"
 #include "Debug/EngineDebug.h"
+#include "Rendering/Core/Rendering.h"
 
 FWindowsEngine::FWindowsEngine()
 	: CurrentFenceIndex(0),
@@ -252,6 +253,12 @@ void FWindowsEngine::Tick(float DeltaTime)
 		&DepthStencilView		// 传入深度
 	);
 
+	// 渲染
+	for (auto& Render : FRenderingInterface::RenderingInterface)
+	{
+		Render->Draw(DeltaTime);
+	}
+
 	// 设置当前交换链buffer状态
 	CD3DX12_RESOURCE_BARRIER ResourceBarrierRenderTarget = CD3DX12_RESOURCE_BARRIER::Transition(
 		GetCurrentSwapBuffer(),
@@ -270,8 +277,6 @@ void FWindowsEngine::Tick(float DeltaTime)
 	// 提交命令
 	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
 	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
-
-	// 渲染
 
 
 	// 交换Buffer缓冲区
