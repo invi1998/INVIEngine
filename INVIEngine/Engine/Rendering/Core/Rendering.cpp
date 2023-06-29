@@ -1,17 +1,17 @@
 #include "Rendering.h"
 
-std::vector<FRenderingInterface*> FRenderingInterface::RenderingInterface;
+std::vector<IRenderingInterface*> IRenderingInterface::RenderingInterface;
 
-FRenderingInterface::FRenderingInterface()
+IRenderingInterface::IRenderingInterface()
 {
 	create_guid(&Guid);
 
 	RenderingInterface.push_back(this);
 }
 
-FRenderingInterface::~FRenderingInterface()
+IRenderingInterface::~IRenderingInterface()
 {
-	for (std::vector<FRenderingInterface*>::const_iterator iter = RenderingInterface.begin(); iter != RenderingInterface.end(); ++iter)
+	for (std::vector<IRenderingInterface*>::const_iterator iter = RenderingInterface.begin(); iter != RenderingInterface.end(); ++iter)
 	{
 		if (*iter == this)
 		{
@@ -21,6 +21,10 @@ FRenderingInterface::~FRenderingInterface()
 	}
 }
 
-void FRenderingInterface::Draw(float DeltaTime)
+void IRenderingInterface::Init()
+{
+}
+
+void IRenderingInterface::Draw(float DeltaTime)
 {
 }

@@ -3,6 +3,7 @@
 #include "WindowsMessageProcessing.h"
 #include "Config/EngineRenderConfig.h"
 #include "Debug/EngineDebug.h"
+#include "Mesh/BoxMesh.h"
 #include "Rendering/Core/Rendering.h"
 
 FWindowsEngine::FWindowsEngine()
@@ -196,6 +197,9 @@ int FWindowsEngine::PostInit()
 
 	ENGINE_LOG("引擎post初始化完毕");
 
+	// 构建Mesh
+	FBoxMesh* BoxMesh = FBoxMesh::CreateMesh();
+
 	return 0;
 }
 
@@ -254,7 +258,7 @@ void FWindowsEngine::Tick(float DeltaTime)
 	);
 
 	// 渲染
-	for (auto& Render : FRenderingInterface::RenderingInterface)
+	for (auto& Render : IRenderingInterface::RenderingInterface)
 	{
 		Render->Draw(DeltaTime);
 	}
