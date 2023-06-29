@@ -74,6 +74,8 @@ int Exit(FEngine* Engine)
 }
 
 
+FEngine* Engine = nullptr;
+
 
 /**
  * \brief 
@@ -98,7 +100,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	int ReturnValue = 0;
 
-	FEngine* Engine = FEngineFactory::CreateEngine();
+	Engine = FEngineFactory::CreateEngine();
 
 	if (Engine)
 	{

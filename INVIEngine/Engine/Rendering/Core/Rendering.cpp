@@ -28,3 +28,24 @@ void IRenderingInterface::Init()
 void IRenderingInterface::Draw(float DeltaTime)
 {
 }
+
+ComPtr<ID3D12Device> IRenderingInterface::GetD3dDevice()
+{
+	if (Engine)
+	{
+		return Engine->D3dDevice;
+	}
+
+	return nullptr;
+}
+
+ComPtr<ID3D12GraphicsCommandList> IRenderingInterface::GetD3dGraphicsCommandList()
+{
+	if (Engine)
+	{
+		return Engine->GraphicsCommandList;
+	}
+
+	return nullptr;
+}
+

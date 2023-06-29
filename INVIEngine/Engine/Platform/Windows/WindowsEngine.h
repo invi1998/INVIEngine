@@ -4,6 +4,8 @@
 
 class FWindowsEngine : public FEngine
 {
+	friend class IRenderingInterface;
+
 public:
 	FWindowsEngine();
 
