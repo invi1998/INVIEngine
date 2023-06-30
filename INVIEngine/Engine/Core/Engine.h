@@ -13,14 +13,14 @@ public:
 	// 引擎预初始化
 	virtual int PreInit(
 #if defined(_WIN32)
-		FWinMainCommandParameters InParameters
+		class FWinMainCommandParameters InParameters
 #endif
 	) = 0;
 
 	// 引擎初始化
 	virtual int Init(
 #if defined(_WIN32)
-		FWinMainCommandParameters InParameters
+		class FWinMainCommandParameters InParameters
 #endif
 	) = 0;
 

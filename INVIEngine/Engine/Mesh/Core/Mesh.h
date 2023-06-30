@@ -18,6 +18,11 @@ public:
 
 	static FMesh* CreateMesh(const FMeshRendingData* InRenderingData);
 
+	// 获取顶点buff视图
+	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView();
+	// 获取顶点index缓冲区视图
+	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView();
+
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
 	ComPtr<ID3DBlob> CPUIndexBufferPtr;				// CPU 索引缓冲区
@@ -28,6 +33,15 @@ protected:
 	// 临时缓冲区，方便我们将CPU的buffer数据复制到GPU
 	ComPtr<ID3D12Resource> TempVertexBufferPtr;		// 临时 顶点缓冲区
 	ComPtr<ID3D12Resource> TempIndexBufferPtr;		// 临时 索引缓冲区
+
+protected:
+	UINT IndexSize;				// 顶点数量
+
+	UINT VertexSizeInBytes;		// 顶点数据字节大小
+	UINT VertexStrideInBytes;	// 顶点数据字节跨度(单位顶点数据大小）
+
+	UINT IndexSizeInBytes;		// 顶点数据字节大小
+	DXGI_FORMAT IndexFormat;	// 顶点索引数据格式（无符号16）
 
 };
 

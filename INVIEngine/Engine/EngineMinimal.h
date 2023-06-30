@@ -89,4 +89,4 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-extern FEngine* Engine;
+extern class FEngine* Engine;

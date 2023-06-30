@@ -15,11 +15,14 @@ public:
 
 	inline simple_c_guid GetGuid() const { return Guid; }
 
-public:
 	bool operator==(const IRenderingInterface& InOther)
 	{
 		return guid_equal(&Guid, &InOther.Guid);
 	}
+
+protected:
+	// 构造默认缓冲区
+	ComPtr<ID3D12Resource> ConstructDefaultBuffer(ComPtr<ID3D12Resource>& OutTempBuffer, const void* InData, UINT64 InDataSize);
 
 protected:
 

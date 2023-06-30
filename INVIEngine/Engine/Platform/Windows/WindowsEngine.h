@@ -79,4 +79,6 @@ private:
 	// ≥ı ºªØDirect3D
 	bool InitDirect3D();
 
+	void PostInitDirect3D();
+
 };

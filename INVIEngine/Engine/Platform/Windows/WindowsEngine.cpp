@@ -50,155 +50,30 @@ int FWindowsEngine::Init(FWinMainCommandParameters InParameters)
 
 	}
 
+	PostInitDirect3D();
+
+	ENGINE_LOG("引擎初始化完成");
+
 	return 0;
 }
 
 int FWindowsEngine::PostInit()
 {
-	// 因为我们在前面有创建相关的内容，所以在这里执行等待（同步）
-	// CPU等待GPU执行结果
-	WaitGPUCommandQueueComplete();
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 将后台缓冲区绑定到渲染流水线
+	// 初始化命令列表
+	ANALYSIS_RESULT(GraphicsCommandList->Reset(CommandAllocator.Get(), nullptr));
 
-	// 对我们的渲染目标缓冲进行reset
-	for (auto &buffer : SwapChainBuffer)
-	{
-		buffer.Reset();
-	}
-	// 深度模板也要进行Reset
-	DepthStencilBuffer.Reset();
-
-	// 对我们的交换链设置大小
-	SwapChain->ResizeBuffers(
-		FEngineRenderConfig::GetRenderConfig()->SwapChainCount,		// 缓冲区数量
-		FEngineRenderConfig::GetRenderConfig()->ScreenWidth,		// 屏幕宽度
-		FEngineRenderConfig::GetRenderConfig()->ScreenHeight,		// 屏幕高度
-		BackBufferFormat,											// 纹理格式
-		DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH						// 交换链标记（设置这个标记，我们就能通过ResetTarget来在窗口模式和全屏模式之间切换，当我们切换的时候，我们显示模式的那个窗口的分辨率就会进行自适应匹配）
-	);
-
-	// 将我们当前的资源绑定到渲染流水线上
-
-	// 获取当前RTV描述符的大小
-	RTVDescriptorSize = D3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	// 在我们创建了描述堆以后，我们是需要一个堆句柄来进行访问
-	CD3DX12_CPU_DESCRIPTOR_HANDLE HeapHandle(RTVHeap->GetCPUDescriptorHandleForHeapStart());
-	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
-	{
-		SwapChain->GetBuffer(i, IID_PPV_ARGS(&SwapChainBuffer[i]));
-		D3dDevice->CreateRenderTargetView(SwapChainBuffer[i].Get(), nullptr, HeapHandle);
-		// CreateRenderTargetView 创建渲染视图
-		// 参数1：指定渲染缓冲区
-		// 参数2：指定后台缓冲区格式，因为我们在创建描述堆的时候就已经指定了格式了，所以这里传入nullptr，表示默认
-		// 参数3：传入当前RTV渲染目标视图的句柄
-
-		// 创建好渲染视图后，需要做一个偏移的操作，从我们当前缓冲区偏移到下一个缓冲区（因为我们有两个缓冲区，一个前台缓冲区，一个后台缓冲区，偏移量为一个RTV的大小）
-		// HeapHandle.ptr += RTVDescriptorSize;
-		// 如果使用了微软提供的d3dx12.h那个接口，那么这里就不用自己计算偏移了
-		HeapHandle.Offset(1, RTVDescriptorSize);
-
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 初始化提交资源
-
-	// 资源描述
-	D3D12_RESOURCE_DESC ResourceDesc;
-	ResourceDesc.Width = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;		// 指定资源宽度
-	ResourceDesc.Height = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;		// 指定资源高度
-	ResourceDesc.Alignment = 0;														// 对齐方式
-	ResourceDesc.MipLevels = 1;														// 指定mipmap的级别
-	ResourceDesc.DepthOrArraySize = 1;												// 指定深度（注意，这里如果使用的是3D那么这个指定的含义就是深度，如果是1D或者2D就是指数组的大小
-	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;					// 指定资源维度,给这个资源定性，这里定性为2D纹理
-
-	ResourceDesc.SampleDesc.Count = bMSAA4XEnabled ? 4 : 1;							// 指定采样数
-	ResourceDesc.SampleDesc.Quality = bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;	// 指定采样质量
-	ResourceDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;								// 指定纹理格式（每个像素的存储格式）
-	ResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;					// 指定标记，设置为该值表示允许我们深度模板（即告诉DX，我们当前这个资源是属于深度模板缓冲的）
-	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;								// 指定提交资源的排列方式，这里指定为默认，未知排列方式
-
-	// 清除模式
-	D3D12_CLEAR_VALUE ClearValue;
-	ClearValue.DepthStencil.Depth = 1.f;			// 指定模板深度清理到多少（这里清理到1）
-	ClearValue.DepthStencil.Stencil = 0;			// 指定模板（模板清理到多少，清理到0）
-	ClearValue.Format = DepthStencilFormat;			// 指定格式
-
-	CD3DX12_HEAP_PROPERTIES Properties(D3D12_HEAP_TYPE_DEFAULT);	// 指定堆类型，设置为默认提交资源堆
-
-	// 创建提交资源
-	D3dDevice->CreateCommittedResource(
-		&Properties,										// 指定堆类型，设置为默认提交资源堆
-		D3D12_HEAP_FLAG_NONE,								// 指定堆动作，不使用特殊标志，即默认提交资源堆
-		&ResourceDesc,										// 指定资源描述
-		D3D12_RESOURCE_STATE_COMMON,						// 指定标签，表示提交资源的初始状态，这里设置为常规状态，即可以被任何类型的操作所使用
-		&ClearValue,										// 指定优化值(指定要清除的提交资源值）
-		IID_PPV_ARGS(DepthStencilBuffer.GetAddressOf())
-		);
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 深度模板缓冲区
-
-	// 深度缓冲区视图描述
-	D3D12_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDesc;
-	DepthStencilViewDesc.Format = DepthStencilFormat;
-	DepthStencilViewDesc.Texture2D.MipSlice = 0;							// 指定纹理的索引（描述符索引，这里我们指定第一个Mipmap）
-	DepthStencilViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;		// 指定深度模板缓冲区的维度（2D纹理）,指定我们需要如何去访问我们深度模板缓冲中的资源
-	DepthStencilViewDesc.Flags = D3D12_DSV_FLAG_NONE;						// 指定视图设置，这里指定默认视图
-
-	// 实例化深度模板缓冲区
-	D3dDevice->CreateDepthStencilView(DepthStencilBuffer.Get(), &DepthStencilViewDesc, DSVHeap->GetCPUDescriptorHandleForHeapStart());
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///绑定到命令列表
-
-	// 同步当前资源状态
-	CD3DX12_RESOURCE_BARRIER Barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		DepthStencilBuffer.Get(),									// 指向当前深度模板缓冲数组的指针（指向资源的指针）
-		D3D12_RESOURCE_STATE_COMMON,								// 表明资源状态前，是一个通用的资源 （资源的当前状态）
-		D3D12_RESOURCE_STATE_DEPTH_WRITE);					// 表明资源状态后 是一个 深度写 的资源 （资源的目标状态）
-	GraphicsCommandList->ResourceBarrier(
-		1,							// 指定资源提交次数
-		&Barrier
-	);
-
-	// 同步完资源状态后对资源进行关闭
 	GraphicsCommandList->Close();
-
-	// 定义一个指针数组，用于存储命令指针列表，它这里可以存放很多条命令
-	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
-
-	// 使用队列提交命令
-	// _countof是d3d12x.h里用来计算静态分配数组元素的个数，sizeof是用来计算字节数的
-	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 渲染视口设置(这些设置会覆盖原先的Windows画布)
-
-	// 描述视口尺寸
-	// DirectX的坐标系统和OpenGL是不一样的，DX的坐标系原点位于窗口的中心，OpenGL的坐标原点是在屏幕的左下角
-	ViewPortInfo.TopLeftX = 0;
-	ViewPortInfo.TopLeftY = 0;
-	ViewPortInfo.Width = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
-	ViewPortInfo.Height = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
-	ViewPortInfo.MinDepth = 0.f;	// 最小深度
-	ViewPortInfo.MaxDepth = 1.f;	// 最大深度
-
-	// 描述裁剪矩形
-	ViewPortRect.top = 0;
-	ViewPortRect.left = 0;
-	ViewPortRect.right = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
-	ViewPortRect.bottom = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
-
-	// CPU等待GPU执行结果
-	WaitGPUCommandQueueComplete();
-
-	ENGINE_LOG("引擎post初始化完毕");
 
 	// 构建Mesh
 	FBoxMesh* BoxMesh = FBoxMesh::CreateMesh();
+
+	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
+	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
+
+	WaitGPUCommandQueueComplete();
+	
+	ENGINE_LOG("引擎post初始化完毕");
 
 	return 0;
 }
@@ -603,6 +478,149 @@ bool FWindowsEngine::InitDirect3D()
 
 
 	return false;
+}
+
+void FWindowsEngine::PostInitDirect3D()
+{
+	// 因为我们在前面有创建相关的内容，所以在这里执行等待（同步）
+	// CPU等待GPU执行结果
+	WaitGPUCommandQueueComplete();
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 将后台缓冲区绑定到渲染流水线
+
+	// 对我们的渲染目标缓冲进行reset
+	for (auto& buffer : SwapChainBuffer)
+	{
+		buffer.Reset();
+	}
+	// 深度模板也要进行Reset
+	DepthStencilBuffer.Reset();
+
+	// 对我们的交换链设置大小
+	SwapChain->ResizeBuffers(
+		FEngineRenderConfig::GetRenderConfig()->SwapChainCount,		// 缓冲区数量
+		FEngineRenderConfig::GetRenderConfig()->ScreenWidth,		// 屏幕宽度
+		FEngineRenderConfig::GetRenderConfig()->ScreenHeight,		// 屏幕高度
+		BackBufferFormat,											// 纹理格式
+		DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH						// 交换链标记（设置这个标记，我们就能通过ResetTarget来在窗口模式和全屏模式之间切换，当我们切换的时候，我们显示模式的那个窗口的分辨率就会进行自适应匹配）
+	);
+
+	// 将我们当前的资源绑定到渲染流水线上
+
+	// 获取当前RTV描述符的大小
+	RTVDescriptorSize = D3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	// 在我们创建了描述堆以后，我们是需要一个堆句柄来进行访问
+	CD3DX12_CPU_DESCRIPTOR_HANDLE HeapHandle(RTVHeap->GetCPUDescriptorHandleForHeapStart());
+	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
+	{
+		SwapChain->GetBuffer(i, IID_PPV_ARGS(&SwapChainBuffer[i]));
+		D3dDevice->CreateRenderTargetView(SwapChainBuffer[i].Get(), nullptr, HeapHandle);
+		// CreateRenderTargetView 创建渲染视图
+		// 参数1：指定渲染缓冲区
+		// 参数2：指定后台缓冲区格式，因为我们在创建描述堆的时候就已经指定了格式了，所以这里传入nullptr，表示默认
+		// 参数3：传入当前RTV渲染目标视图的句柄
+
+		// 创建好渲染视图后，需要做一个偏移的操作，从我们当前缓冲区偏移到下一个缓冲区（因为我们有两个缓冲区，一个前台缓冲区，一个后台缓冲区，偏移量为一个RTV的大小）
+		// HeapHandle.ptr += RTVDescriptorSize;
+		// 如果使用了微软提供的d3dx12.h那个接口，那么这里就不用自己计算偏移了
+		HeapHandle.Offset(1, RTVDescriptorSize);
+
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 初始化提交资源
+
+	// 资源描述
+	D3D12_RESOURCE_DESC ResourceDesc;
+	ResourceDesc.Width = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;		// 指定资源宽度
+	ResourceDesc.Height = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;		// 指定资源高度
+	ResourceDesc.Alignment = 0;														// 对齐方式
+	ResourceDesc.MipLevels = 1;														// 指定mipmap的级别
+	ResourceDesc.DepthOrArraySize = 1;												// 指定深度（注意，这里如果使用的是3D那么这个指定的含义就是深度，如果是1D或者2D就是指数组的大小
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;					// 指定资源维度,给这个资源定性，这里定性为2D纹理
+
+	ResourceDesc.SampleDesc.Count = bMSAA4XEnabled ? 4 : 1;							// 指定采样数
+	ResourceDesc.SampleDesc.Quality = bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;	// 指定采样质量
+	ResourceDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;								// 指定纹理格式（每个像素的存储格式）
+	ResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;					// 指定标记，设置为该值表示允许我们深度模板（即告诉DX，我们当前这个资源是属于深度模板缓冲的）
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;								// 指定提交资源的排列方式，这里指定为默认，未知排列方式
+
+	// 清除模式
+	D3D12_CLEAR_VALUE ClearValue;
+	ClearValue.DepthStencil.Depth = 1.f;			// 指定模板深度清理到多少（这里清理到1）
+	ClearValue.DepthStencil.Stencil = 0;			// 指定模板（模板清理到多少，清理到0）
+	ClearValue.Format = DepthStencilFormat;			// 指定格式
+
+	CD3DX12_HEAP_PROPERTIES Properties(D3D12_HEAP_TYPE_DEFAULT);	// 指定堆类型，设置为默认提交资源堆
+
+	// 创建提交资源
+	D3dDevice->CreateCommittedResource(
+		&Properties,										// 指定堆类型，设置为默认提交资源堆
+		D3D12_HEAP_FLAG_NONE,								// 指定堆动作，不使用特殊标志，即默认提交资源堆
+		&ResourceDesc,										// 指定资源描述
+		D3D12_RESOURCE_STATE_COMMON,						// 指定标签，表示提交资源的初始状态，这里设置为常规状态，即可以被任何类型的操作所使用
+		&ClearValue,										// 指定优化值(指定要清除的提交资源值）
+		IID_PPV_ARGS(DepthStencilBuffer.GetAddressOf())
+	);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 深度模板缓冲区
+
+	// 深度缓冲区视图描述
+	D3D12_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDesc;
+	DepthStencilViewDesc.Format = DepthStencilFormat;
+	DepthStencilViewDesc.Texture2D.MipSlice = 0;							// 指定纹理的索引（描述符索引，这里我们指定第一个Mipmap）
+	DepthStencilViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;		// 指定深度模板缓冲区的维度（2D纹理）,指定我们需要如何去访问我们深度模板缓冲中的资源
+	DepthStencilViewDesc.Flags = D3D12_DSV_FLAG_NONE;						// 指定视图设置，这里指定默认视图
+
+	// 实例化深度模板缓冲区
+	D3dDevice->CreateDepthStencilView(DepthStencilBuffer.Get(), &DepthStencilViewDesc, DSVHeap->GetCPUDescriptorHandleForHeapStart());
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///绑定到命令列表
+
+	// 同步当前资源状态
+	CD3DX12_RESOURCE_BARRIER Barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		DepthStencilBuffer.Get(),									// 指向当前深度模板缓冲数组的指针（指向资源的指针）
+		D3D12_RESOURCE_STATE_COMMON,								// 表明资源状态前，是一个通用的资源 （资源的当前状态）
+		D3D12_RESOURCE_STATE_DEPTH_WRITE);					// 表明资源状态后 是一个 深度写 的资源 （资源的目标状态）
+	GraphicsCommandList->ResourceBarrier(
+		1,							// 指定资源提交次数
+		&Barrier
+	);
+
+	// 同步完资源状态后对资源进行关闭
+	GraphicsCommandList->Close();
+
+	// 定义一个指针数组，用于存储命令指针列表，它这里可以存放很多条命令
+	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
+
+	// 使用队列提交命令
+	// _countof是d3d12x.h里用来计算静态分配数组元素的个数，sizeof是用来计算字节数的
+	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 渲染视口设置(这些设置会覆盖原先的Windows画布)
+
+	// 描述视口尺寸
+	// DirectX的坐标系统和OpenGL是不一样的，DX的坐标系原点位于窗口的中心，OpenGL的坐标原点是在屏幕的左下角
+	ViewPortInfo.TopLeftX = 0;
+	ViewPortInfo.TopLeftY = 0;
+	ViewPortInfo.Width = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
+	ViewPortInfo.Height = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
+	ViewPortInfo.MinDepth = 0.f;	// 最小深度
+	ViewPortInfo.MaxDepth = 1.f;	// 最大深度
+
+	// 描述裁剪矩形
+	ViewPortRect.top = 0;
+	ViewPortRect.left = 0;
+	ViewPortRect.right = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
+	ViewPortRect.bottom = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
+
+	// CPU等待GPU执行结果
+	WaitGPUCommandQueueComplete();
 }
 
 
