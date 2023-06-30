@@ -34,6 +34,10 @@ protected:
 	ComPtr<ID3D12Resource> TempVertexBufferPtr;		// 临时 顶点缓冲区
 	ComPtr<ID3D12Resource> TempIndexBufferPtr;		// 临时 索引缓冲区
 
+	ComPtr<ID3D12DescriptorHeap> CBVHeap;			// CPU 描述符句柄，用于指定要创建的常量缓冲区视图所在的描述符堆位置
+
+	std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;	// 对象常量（指向上传堆）
+
 protected:
 	UINT IndexSize;				// 顶点数量
 

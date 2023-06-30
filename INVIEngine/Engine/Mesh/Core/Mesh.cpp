@@ -52,6 +52,37 @@ void FMesh::Draw(float DeltaTime)
 
 void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 {
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 常量缓冲区构建
+
+	// 构建常量缓冲区描述符堆 CBVHeap
+
+	// 堆描述
+	D3D12_DESCRIPTOR_HEAP_DESC HeapDesc;
+	HeapDesc.NumDescriptors = 1;		// 描述数量 1
+	HeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;	// 指定堆类型，常量缓冲区，着色资源缓冲区，无序视图组合类型描述符
+	HeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;	// 指定标记，着色器可见
+	HeapDesc.NodeMask = 0;
+	// 创建描述符堆
+	GetD3dDevice()->CreateDescriptorHeap(
+		&HeapDesc,
+		IID_PPV_ARGS(&CBVHeap)
+	);
+
+	ObjectConstants = std::make_shared<FRenderingResourcesUpdate>();
+	D3D12_GPU_VIRTUAL_ADDRESS ObAddr = ObjectConstants.get()->GetBuffer()->GetGPUVirtualAddress();
+
+	// 常量缓冲区描述
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDes;
+	cbvDes.BufferLocation = ObAddr;		// 常量缓冲区地址
+	cbvDes.SizeInBytes = ObjectConstants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
+
+	GetD3dDevice()->CreateConstantBufferView(&cbvDes, CBVHeap->GetCPUDescriptorHandleForHeapStart());
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 构建模型
+
 	IndexSize = InRenderingData->IndexData.size();
 	VertexStrideInBytes = sizeof(FVertex);
 
