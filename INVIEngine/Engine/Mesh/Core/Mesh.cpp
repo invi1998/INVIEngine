@@ -1,6 +1,19 @@
 #include "Mesh.h"
 #include "EngineMinimal.h"
 
+FObjectTransformation::FObjectTransformation()
+	: World(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	)
+{
+}
+
+/**
+ * \brief /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ */
 FMesh::FMesh()
 	: IndexSize(0), VertexSizeInBytes(0), VertexStrideInBytes(0), IndexSizeInBytes(0), IndexFormat(DXGI_FORMAT_R16_UINT)
 {
@@ -61,7 +74,7 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 	// 堆描述
 	D3D12_DESCRIPTOR_HEAP_DESC HeapDesc;
 	HeapDesc.NumDescriptors = 1;		// 描述数量 1
-	HeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;	// 指定堆类型，常量缓冲区，着色资源缓冲区，无序视图组合类型描述符
+	HeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;	// 指定堆类型，常量缓冲区视图，着色器资源视图，无序访问视图组合类型描述符
 	HeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;	// 指定标记，着色器可见
 	HeapDesc.NodeMask = 0;
 	// 创建描述符堆
@@ -71,6 +84,7 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 	);
 
 	ObjectConstants = std::make_shared<FRenderingResourcesUpdate>();
+	ObjectConstants->Init(GetD3dDevice().Get(), sizeof(FObjectTransformation), 1);
 	D3D12_GPU_VIRTUAL_ADDRESS ObAddr = ObjectConstants.get()->GetBuffer()->GetGPUVirtualAddress();
 
 	// 常量缓冲区描述
@@ -79,6 +93,61 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 	cbvDes.SizeInBytes = ObjectConstants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
 
 	GetD3dDevice()->CreateConstantBufferView(&cbvDes, CBVHeap->GetCPUDescriptorHandleForHeapStart());
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///构建根签名
+
+	// CBV描述表
+	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
+	DescriptorRangeCBV.Init(
+		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
+		1,									// 描述数量 1
+		0);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
+
+	// 创建根参数，使用上面的描述符范围
+	CD3DX12_ROOT_PARAMETER RootParam[1];
+	RootParam[0].InitAsDescriptorTable(
+		1,							// 描述符数量
+		&DescriptorRangeCBV,		// 指向描述符范围数组的指针
+		D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
+	);
+
+	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)
+
+	// 根签名（Root Signature）描述结构体的创建
+	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
+		1,			// 参数数量
+		RootParam,	// 根签名参数
+		0,			// 静态采样数量
+		nullptr,	// 静态采样数据
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT // 指定根签名布局选项 表示根签名允许输入汇编程序访问根常量数据。
+	);
+
+	// 这个函数可以将根签名序列化为一个 ID3DBlob 对象，该对象包含了一个字节流，可以用于在后续的操作中传递、保存和加载根签名。
+	ComPtr<ID3DBlob> SerializeRootSignatureBlob;	// 存储序列化成功的二进制数据流
+	ComPtr<ID3DBlob> ErrorBlob;						// 存储序列化失败的信息
+	D3D12SerializeRootSignature(
+		&RootSignatureDesc,							// 传入要序列化的根签名描述结构体指针
+		D3D_ROOT_SIGNATURE_VERSION_1,				// 根签名的版本号
+		SerializeRootSignatureBlob.GetAddressOf(),	// 序列化后的根签名数据
+		ErrorBlob.GetAddressOf()					// 该对象包含了在序列化过程中出现错误时产生的错误信息
+	);
+
+	if (ErrorBlob)
+	{
+		ENGINE_LOG_ERROR("%s", static_cast<char*>(ErrorBlob->GetBufferPointer()));
+	}
+
+	// 成功，创建根签名
+	GetD3dDevice()->CreateRootSignature(
+		0,			// 表示要创建的根签名对象所属的节点掩码，通常设置为 0, 表示单个CPU。(设备的物理适配器）
+		SerializeRootSignatureBlob->GetBufferPointer(),			// 表示包含序列化根签名数据的内存地址。
+		SerializeRootSignatureBlob->GetBufferSize(),			// 表示序列化根签名数据的字节长度。
+		IID_PPV_ARGS(&RootSignature)							// 传入根签名接收地址
+	);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///构建shader HLSL
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 构建模型

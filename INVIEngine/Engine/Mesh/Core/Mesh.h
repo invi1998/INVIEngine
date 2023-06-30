@@ -4,6 +4,13 @@
 #include "Core/Engine.h"
 #include "Rendering/Core/Rendering.h"
 
+struct FObjectTransformation
+{
+	FObjectTransformation();
+
+	XMFLOAT4X4 World;
+};
+
 class FMesh : public IRenderingInterface
 {
 public:
@@ -33,6 +40,8 @@ protected:
 	// 临时缓冲区，方便我们将CPU的buffer数据复制到GPU
 	ComPtr<ID3D12Resource> TempVertexBufferPtr;		// 临时 顶点缓冲区
 	ComPtr<ID3D12Resource> TempIndexBufferPtr;		// 临时 索引缓冲区
+
+	ComPtr<ID3D12RootSignature> RootSignature;		// 根签名
 
 	ComPtr<ID3D12DescriptorHeap> CBVHeap;			// CPU 描述符句柄，用于指定要创建的常量缓冲区视图所在的描述符堆位置
 
