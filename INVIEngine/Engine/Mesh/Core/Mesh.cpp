@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "EngineMinimal.h"
+#include "Config/EngineRenderConfig.h"
 #include "Platform/Windows/WindowsEngine.h"
 
 FObjectTransformation::FObjectTransformation()
@@ -21,7 +22,10 @@ XMFLOAT4X4 FObjectTransformation::IdentityMatrix4X4()
  * \brief /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 FMesh::FMesh()
-	: IndexSize(0), VertexSizeInBytes(0), VertexStrideInBytes(0), IndexSizeInBytes(0), IndexFormat(DXGI_FORMAT_R16_UINT)
+	: IndexSize(0), VertexSizeInBytes(0), VertexStrideInBytes(0), IndexSizeInBytes(0), IndexFormat(DXGI_FORMAT_R16_UINT),
+	WorldMatrix(FObjectTransformation::IdentityMatrix4X4()),
+	ViewMatrix(FObjectTransformation::IdentityMatrix4X4()),
+	ProjectionMatrix(FObjectTransformation::IdentityMatrix4X4())
 {
 }
 
@@ -31,18 +35,24 @@ FMesh::~FMesh()
 
 void FMesh::Init()
 {
-	IRenderingInterface::Init();
+	float AspectRatio = static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenWidth) / static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenHeight);
+
+	// 投影矩阵（基于视野构建的的左手透视投影矩阵）
+	XMMATRIX Project = XMMatrixPerspectiveFovLH(
+		0.25f * XM_PI,			// -`FovAngleY`：视野的垂直角度，单位是弧度。以弧度为单位的自上而下的视场角
+		AspectRatio,			// - `AspectRatio`：宽高比，即视口宽度除以视口高度。
+		0.1f,					// - `NearZ`：近裁剪面距离。
+		1000.f					// - `FarZ`：远裁剪面距离。
+	);
+
+	XMStoreFloat4x4(&ProjectionMatrix, Project);
+
 }
 
 void FMesh::PreDraw(float DeltaTime)
 {
 	// 重置命令列表，因为我们每一帧都会有新的提交列表
 	ANALYSIS_RESULT(GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), PSO.Get()));
-}
-
-void FMesh::PostDraw(float DeltaTime)
-{
-	IRenderingInterface::PostDraw(DeltaTime);
 }
 
 void FMesh::Draw(float DeltaTime)
@@ -87,13 +97,36 @@ void FMesh::Draw(float DeltaTime)
 	);
 }
 
+void FMesh::PostDraw(float DeltaTime)
+{
+	IRenderingInterface::PostDraw(DeltaTime);
+
+	XMFLOAT3 MeshPosition(5.f, 5.f, 5.f);
+
+	XMVECTOR Pos = XMVectorSet(MeshPosition.x, MeshPosition.y, MeshPosition.z, 1.f);
+	XMVECTOR ViewTarget = XMVectorZero();
+	XMVECTOR ViewUp = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
+
+	XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
+
+	XMStoreFloat4x4(&ViewMatrix, ViewLookAt);
+
+	XMMATRIX MatrixWorld = XMLoadFloat4x4(&WorldMatrix);
+	XMMATRIX MatrixProjection = XMLoadFloat4x4(&ProjectionMatrix);
+
+	XMMATRIX wvp = MatrixWorld * ViewLookAt * MatrixProjection;
+
+	FObjectTransformation OBJTransformation;
+	XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(wvp));
+
+	ObjectConstants->Update(0, &OBJTransformation);
+}
+
 void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 常量缓冲区构建
-
-	// 构建常量缓冲区描述符堆 CBVHeap
 
 	// 堆描述
 	D3D12_DESCRIPTOR_HEAP_DESC HeapDesc;
@@ -106,6 +139,8 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 		&HeapDesc,
 		IID_PPV_ARGS(&CBVHeap)
 	);
+
+	// 构建常量缓冲区描述符堆 CBVHeap
 
 	ObjectConstants = std::make_shared<FRenderingResourcesUpdate>();
 	ObjectConstants->Init(GetD3dDevice().Get(), sizeof(FObjectTransformation), 1);

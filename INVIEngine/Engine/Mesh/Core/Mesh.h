@@ -67,5 +67,9 @@ protected:
 	UINT IndexSizeInBytes;		// 顶点数据字节大小
 	DXGI_FORMAT IndexFormat;	// 顶点索引数据格式（无符号16）
 
+	XMFLOAT4X4 WorldMatrix;			// 世界矩阵
+	XMFLOAT4X4 ViewMatrix;			// 视口矩阵
+	XMFLOAT4X4 ProjectionMatrix;	// 投影矩阵
+
 };
 
