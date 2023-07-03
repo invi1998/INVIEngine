@@ -148,8 +148,8 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///¹¹½¨shader HLSL
-	VertexShader.BuildShader(L"../../../Shader/HLSL/VertexShader.hlsl", "main", "vs_5_0");
-	PixelShader.BuildShader(L"../../../Shader/HLSL/PixelShader.hlsl", "main", "vs_5_0");
+	VertexShader.BuildShader(L"../../../Shader/HLSL/V_P_Shader.hlsl", "VS_Main", "vs_5_0");
+	PixelShader.BuildShader(L"../../../Shader/HLSL/V_P_Shader.hlsl", "PS_Main", "vs_5_0");
 
 	InputElementDesc = 
 	{
