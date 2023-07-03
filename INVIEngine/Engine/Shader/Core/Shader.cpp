@@ -15,7 +15,7 @@ void FShader::BuildShader(const std::wstring& InFileName, const std::string& InE
 {
     ComPtr<ID3DBlob> ErrorShaderMsg;
 	// 编译 HLSL（High-Level Shader Language）代码并生成字节码数据。
-	D3DCompileFromFile(
+	HRESULT Res =D3DCompileFromFile(
 		InFileName.c_str(),                             // 文件名
         nullptr,                                        // 宏定义数组
         D3D_COMPILE_STANDARD_FILE_INCLUDE,              // 自定义 include 文件接口 （如果在shader里面需要包含include另外的shader文件，那么这个值不能设置为null)
@@ -33,6 +33,8 @@ void FShader::BuildShader(const std::wstring& InFileName, const std::string& InE
 
     if (ErrorShaderMsg)
     {
-	    ENGINE_LOG_ERROR("%s编译错误，报错如下\n%s", InFileName.c_str(), static_cast<char*>(ErrorShaderMsg->GetBufferPointer()))
+        ENGINE_LOG_ERROR("shader编译错误，%s", static_cast<char*>(ErrorShaderMsg->GetBufferPointer()));
     }
+
+    ANALYSIS_RESULT(Res);
 }

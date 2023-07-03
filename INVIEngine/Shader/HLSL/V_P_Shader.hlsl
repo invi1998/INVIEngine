@@ -13,11 +13,11 @@ struct MeshVertexIn
 
 struct MeshVertexOut
 {
-	float3 Position : VS_POSITION;
+	float4 Position : SV_POSITION;
 	float4 Color : COLOR;
 };
 
-MeshVertexOut VS_Main(MeshVertexIn mv)
+MeshVertexOut VSMain(MeshVertexIn mv)
 {
 	MeshVertexOut outV;
 
@@ -28,7 +28,7 @@ MeshVertexOut VS_Main(MeshVertexIn mv)
 	return outV;
 }
 
-float4 PS_Main(MeshVertexOut vsOut) : SV_TARGET
+float4 PSMain(MeshVertexOut vsOut) : SV_TARGET
 {
 	return vsOut.Color;
 }
