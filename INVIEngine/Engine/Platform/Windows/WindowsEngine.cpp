@@ -81,11 +81,12 @@ int FWindowsEngine::PostInit()
 void FWindowsEngine::Tick(float DeltaTime)
 {
 	// 重新录制相关内存，为下一帧绘制做准备
-	HRESULT ResultD3D = CommandAllocator->Reset();
-	ANALYSIS_RESULT(ResultD3D);
-
-	// 重置命令列表，因为我们每一帧都会有新的提交列表
-	GraphicsCommandList->Reset(CommandAllocator.Get(), nullptr);
+	ANALYSIS_RESULT(CommandAllocator->Reset());
+	// 预渲染
+	for (auto& Render : IRenderingInterface::RenderingInterface)
+	{
+		Render->PreDraw(DeltaTime);
+	}
 
 	// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
 	CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -136,6 +137,7 @@ void FWindowsEngine::Tick(float DeltaTime)
 	for (auto& Render : IRenderingInterface::RenderingInterface)
 	{
 		Render->Draw(DeltaTime);
+		Render->PostDraw(DeltaTime);
 	}
 
 	// 设置当前交换链buffer状态
@@ -150,8 +152,7 @@ void FWindowsEngine::Tick(float DeltaTime)
 	);
 
 	// 自此，缓冲区录入完成（记得关闭命令列表），可以提交命令了
-	ResultD3D = GraphicsCommandList->Close();
-	ANALYSIS_RESULT(ResultD3D);
+	ANALYSIS_RESULT(GraphicsCommandList->Close());
 
 	// 提交命令
 	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
@@ -159,8 +160,7 @@ void FWindowsEngine::Tick(float DeltaTime)
 
 
 	// 交换Buffer缓冲区
-	ResultD3D = SwapChain->Present(0, 0);	// 垂直同步0， flags也是0
-	ANALYSIS_RESULT(ResultD3D);
+	ANALYSIS_RESULT(SwapChain->Present(0, 0));	// 垂直同步0， flags也是0
 
 	CurrentSwapBufferIndex = !static_cast<bool>(CurrentSwapBufferIndex);	// 因为我们的交换链缓冲区就只有2个，所以索引可以简单的使用这种方法设置 （0,1）
 

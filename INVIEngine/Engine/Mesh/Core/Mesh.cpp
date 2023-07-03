@@ -3,13 +3,18 @@
 #include "Platform/Windows/WindowsEngine.h"
 
 FObjectTransformation::FObjectTransformation()
-	: World(
+	: World(FObjectTransformation::IdentityMatrix4X4())
+{
+}
+
+XMFLOAT4X4 FObjectTransformation::IdentityMatrix4X4()
+{
+	return XMFLOAT4X4(
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f
-	)
-{
+		);
 }
 
 /**
@@ -27,6 +32,17 @@ FMesh::~FMesh()
 void FMesh::Init()
 {
 	IRenderingInterface::Init();
+}
+
+void FMesh::PreDraw(float DeltaTime)
+{
+	// 重置命令列表，因为我们每一帧都会有新的提交列表
+	ANALYSIS_RESULT(GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), PSO.Get()));
+}
+
+void FMesh::PostDraw(float DeltaTime)
+{
+	IRenderingInterface::PostDraw(DeltaTime);
 }
 
 void FMesh::Draw(float DeltaTime)

@@ -27,6 +27,16 @@ void IRenderingInterface::Init()
 {
 }
 
+void IRenderingInterface::PreDraw(float DeltaTime)
+{
+	// 重置命令列表，因为我们每一帧都会有新的提交列表
+	ANALYSIS_RESULT(GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), nullptr));
+}
+
+void IRenderingInterface::PostDraw(float DeltaTime)
+{
+}
+
 void IRenderingInterface::Draw(float DeltaTime)
 {
 }
@@ -117,6 +127,16 @@ ComPtr<ID3D12GraphicsCommandList> IRenderingInterface::GetD3dGraphicsCommandList
 	if (FWindowsEngine* InEngine = GetEngine())
 	{
 		return InEngine->GraphicsCommandList;
+	}
+
+	return nullptr;
+}
+
+ComPtr<ID3D12CommandAllocator> IRenderingInterface::GetCommandAllocator()
+{
+	if (FWindowsEngine* InEngine = GetEngine())
+	{
+		return InEngine->CommandAllocator;
 	}
 
 	return nullptr;

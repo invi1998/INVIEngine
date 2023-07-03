@@ -12,7 +12,10 @@ public:
 	virtual ~IRenderingInterface();
 
 	virtual void Init();
+
+	virtual void PreDraw(float DeltaTime);
 	virtual void Draw(float DeltaTime);
+	virtual void PostDraw(float DeltaTime);
 
 	inline simple_c_guid GetGuid() const { return Guid; }
 
@@ -29,6 +32,7 @@ protected:
 
 	ComPtr<ID3D12Device> GetD3dDevice();
 	ComPtr<ID3D12GraphicsCommandList> GetD3dGraphicsCommandList();
+	ComPtr<ID3D12CommandAllocator> GetCommandAllocator();
 
 	FWindowsEngine* GetEngine() const;
 
