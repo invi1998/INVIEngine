@@ -51,6 +51,8 @@ void FMesh::Init()
 
 void FMesh::PreDraw(float DeltaTime)
 {
+	Init();
+
 	// 重置命令列表，因为我们每一帧都会有新的提交列表
 	ANALYSIS_RESULT(GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), PSO.Get()));
 }
@@ -101,7 +103,7 @@ void FMesh::PostDraw(float DeltaTime)
 {
 	IRenderingInterface::PostDraw(DeltaTime);
 
-	XMFLOAT3 MeshPosition(5.f, 5.f, 5.f);
+	XMUINT3 MeshPosition = XMUINT3(5.f, 5.f, 5.f);
 
 	XMVECTOR Pos = XMVectorSet(MeshPosition.x, MeshPosition.y, MeshPosition.z, 1.f);
 	XMVECTOR ViewTarget = XMVectorZero();
