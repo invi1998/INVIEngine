@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Engine.h"
+#include "Platform/Windows/WindowsEngine.h"
 
 class IRenderingInterface
 {
@@ -28,6 +29,8 @@ protected:
 
 	ComPtr<ID3D12Device> GetD3dDevice();
 	ComPtr<ID3D12GraphicsCommandList> GetD3dGraphicsCommandList();
+
+	FWindowsEngine* GetEngine() const;
 
 private:
 	static std::vector<IRenderingInterface*> RenderingInterface;

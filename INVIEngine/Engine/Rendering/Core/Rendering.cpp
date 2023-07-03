@@ -114,12 +114,17 @@ ComPtr<ID3D12Device> IRenderingInterface::GetD3dDevice()
 
 ComPtr<ID3D12GraphicsCommandList> IRenderingInterface::GetD3dGraphicsCommandList()
 {
-	if (FWindowsEngine* InEngine = dynamic_cast<FWindowsEngine*>(Engine))
+	if (FWindowsEngine* InEngine = GetEngine())
 	{
 		return InEngine->GraphicsCommandList;
 	}
 
 	return nullptr;
+}
+
+FWindowsEngine* IRenderingInterface::GetEngine() const
+{
+	return dynamic_cast<FWindowsEngine*>(Engine);
 }
 
 /**

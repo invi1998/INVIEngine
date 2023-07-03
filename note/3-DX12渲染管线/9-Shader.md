@@ -213,3 +213,304 @@ Position = mul(WorldMatrix, Position);
 除了与向量的乘法运算外，HLSL-mul 函数还支持矩阵与矩阵之间的乘法运算，以及向量与矩阵之间的乘法运算。例如，可以使用 mul 函数将两个矩阵相乘，以实现复杂的变换操作；也可以使用 mul 函数将一个 3D 向量与一个 4x4 矩阵相乘，以实现三维空间中的投影变换。
 
 总之，HLSL-mul 函数是一个用于实现矩阵和向量乘法运算的数学函数，在 HLSL 编程中广泛应用于顶点着色器、像素着色器和几何着色器等多个方面。掌握好 mul 函数的使用方法，可以帮助我们更加高效地进行着色器编程，并实现各种有趣的渲染效果。
+
+
+
+# PSO绑定到渲染流水线
+
+## PSO（流水线状态对象）
+
+PSO（Pipeline State Object）是指在 DirectX 12 和 Vulkan 等新一代图形 API 中，用于描述图形渲染流水线状态的一种对象。它包含了多个状态参数，如顶点着色器、像素着色器、深度测试等，用于描述渲染管线中各种阶段的状态信息。
+
+在传统的 Direct3D 11 中，渲染流水线状态是通过设置多个独立的对象来控制的，而在 DirectX 12 和 Vulkan 中，这些状态都被组织到单个 PSO 对象中，以提高渲染效率和可扩展性。通过使用 PSO，开发者可以预先定义多个渲染状态，然后在运行时选择其中一个状态进行渲染，从而实现更高效的图形渲染。
+
+PSO 能够描述的渲染状态参数包括但不限于以下几类：
+
+- 顶点着色器；
+- 像素着色器；
+- 几何着色器；
+- 输入布局；
+- 渲染目标格式；
+- 深度/模板缓存状态；
+- 光栅化状态；
+- 多重采样状态。
+
+我们可以通过创建 ID3D12PipelineState 或 VkPipeline 对象来创建 PSO。在创建 PSO 时，需要指定与某一特定渲染管线所关联的所有状态参数，并在必要时设置对应的值。创建完成后，就可以将 PSO 作为参数传递给绘制命令或者 Compute 命令来启动相应的渲染操作或计算操作。
+
+例如，在 DirectX 12 中，我们可以使用以下代码来创建一个 PSO：
+
+```c++
+D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};    // 创建 PSO 描述符
+psoDesc.InputLayout = { inputElementDescs.data(), (UINT)inputElementDescs.size() };
+psoDesc.pRootSignature = m_RootSignature.Get();
+psoDesc.VS.BytecodeLength = vertexShader->GetBufferSize();
+psoDesc.VS.pShaderBytecode = vertexShader->GetBufferPointer();
+psoDesc.PS.BytecodeLength = pixelShader->GetBufferSize();
+psoDesc.PS.pShaderBytecode = pixelShader->GetBufferPointer();
+psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+psoDesc.SampleMask = UINT_MAX;
+psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+psoDesc.NumRenderTargets = 1;
+psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+psoDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+psoDesc.SampleDesc.Count = 1;
+
+HRESULT hr = device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PipelineState));
+```
+
+在上面的代码中，我们首先创建了一个 D3D12_GRAPHICS_PIPELINE_STATE_DESC 结构体，用于描述 PSO 的各个状态参数。然后，我们按需设置各个状态参数，例如输入布局、根签名、顶点着色器和像素着色器等，并调用 CreateGraphicsPipelineState 函数来创建一个 Graphics Pipeline State Object 对象，并将其保存到 m_PipelineState 变量中。
+
+总之，PSO 是一种用于描述渲染管线状态的对象，在 DirectX 12 和 Vulkan 等新一代图形 API 中得到广泛应用。通过 PSO，我们可以预定义多个渲染状态，并在运行时选择其中一个状态进行渲染，从而提高图形渲染效率和可扩展性。
+
+
+
+## PSO绑定到渲染流水线
+
+将 PSO 绑定到渲染流水线是一种启动图形渲染的方法。在 DirectX 12 和 Vulkan 中，我们可以通过将 PSO 绑定到渲染管线中来启动相应的渲染操作。
+
+在 DirectX 12 中，我们可以使用 ID3D12GraphicsCommandList::SetPipelineState 方法来将 PSO 绑定到渲染流水线中。例如，在以下代码片段中，我们创建了一个 Graphics Command List 对象，并将其用于绘制一个三角形：
+
+```c++
+// 创建 Graphics Command List
+ComPtr<ID3D12GraphicsCommandList> commandList;
+device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_CommandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList));
+
+// 将 PSO 绑定到渲染管线
+commandList->SetPipelineState(m_PipelineState.Get());
+
+// 设置渲染目标和深度缓存视图
+commandList->OMSetRenderTargets(1, &m_RTVHandle, FALSE, &m_DSVHandle);
+commandList->ClearRenderTargetView(m_RTVHandle, Colors::CornflowerBlue, 0, nullptr);
+commandList->ClearDepthStencilView(m_DSVHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+// 设置顶点缓存和索引缓存等数据
+commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+commandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
+commandList->IASetIndexBuffer(&m_IndexBufferView);
+
+// 执行绘制命令
+commandList->DrawIndexedInstanced(3, 1, 0, 0, 0);
+
+// 完成渲染并关闭命令列表
+commandList->Close();
+```
+
+在上面的代码中，我们首先创建了一个 Graphics Command List 对象，并将其用于绘制一个三角形。然后，我们将 m_PipelineState 对象作为参数传递给 SetPipelineState 方法，以将 PSO 绑定到渲染管线中。接下来，我们设置了渲染目标和深度缓存视图，并设置了顶点缓存和索引缓存等数据。最后，我们调用 DrawIndexedInstanced 方法执行绘制命令，并通过 Close 方法完成渲染并关闭命令列表。
+
+在 Vulkan 中，我们可以使用 vkCmdBindPipeline 命令来将 PSO 绑定到渲染流水线中。例如，在以下代码片段中，我们创建了一个 Command Buffer 对象，并将其用于在屏幕上绘制一个矩形：
+
+```c++
+// 开始录制命令缓冲区
+VkCommandBufferBeginInfo beginInfo = {};
+beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+// 将 PSO 绑定到渲染管线
+vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+
+// 开始渲染通道
+VkRenderPassBeginInfo renderPassInfo = {};
+renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+renderPassInfo.renderPass = renderPass;
+renderPassInfo.framebuffer = framebuffer;
+renderPassInfo.renderArea.offset = { 0, 0 };
+renderPassInfo.renderArea.extent = swapChainExtent;
+
+// 清除颜色和深度缓存
+VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+VkClearValue clearDepthStencil = { 1.0f, 0 };
+std::array<VkClearValue, 2> clearValues = { clearColor, clearDepthStencil };
+renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+renderPassInfo.pClearValues = clearValues.data();
+
+vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+// 绘制三角形
+vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+
+// 结束渲染通道
+vkCmdEndRenderPass(commandBuffer);
+
+// 完
+```
+
+
+
+### D3D12_GRAPHICS_PIPELINE_STATE_DESC 渲染管线状态描述
+
+D3D12_GRAPHICS_PIPELINE_STATE_DESC 是用于描述 DirectX 12 中图形管线状态的结构体类型，它包含了一系列成员变量，用于描述顶点着色器、像素着色器、光栅化器状态、深度/模板测试等渲染流水线中的各个阶段的状态信息。
+
+下面是 D3D12_GRAPHICS_PIPELINE_STATE_DESC 结构体的定义：
+
+```c++
+typedef struct D3D12_GRAPHICS_PIPELINE_STATE_DESC {
+    ID3D12RootSignature *pRootSignature;        // 根签名
+    D3D12_SHADER_BYTECODE VS;                   // 顶点着色器
+    D3D12_SHADER_BYTECODE PS;                   // 像素着色器
+    D3D12_SHADER_BYTECODE DS;                   // 域着色器
+    D3D12_SHADER_BYTECODE HS;                   // 曲面着色器
+    D3D12_SHADER_BYTECODE GS;                   // 几何着色器
+    D3D12_STREAM_OUTPUT_DESC StreamOutput;      // 流输出描述符
+    D3D12_BLEND_DESC BlendState;                // 混合状态
+    UINT SampleMask;                            // 多重采样遮罩
+    D3D12_RASTERIZER_DESC RasterizerState;      // 光栅化状态
+    D3D12_DEPTH_STENCIL_DESC DepthStencilState; // 深度/模板测试状态
+    D3D12_INPUT_LAYOUT_DESC InputLayout;        // 输入布局描述符
+    D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBStripCutValue; // 索引缓存条带裁剪值
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE PrimitiveTopologyType; // 图元拓扑类型
+    UINT NumRenderTargets;                      // 渲染目标数量
+    DXGI_FORMAT RTVFormats[8];                  // 渲染目标格式数组
+    DXGI_FORMAT DSVFormat;                      // 深度/模板视图格式
+    DXGI_SAMPLE_DESC SampleDesc;                // 多重采样描述符
+    UINT NodeMask;                              // 节点掩码
+    D3D12_CACHED_PIPELINE_STATE CachedPSO;      // 缓存的 PSO 对象
+    D3D12_PIPELINE_STATE_FLAGS Flags;           // PSO 标志
+} D3D12_GRAPHICS_PIPELINE_STATE_DESC;
+```
+
+在上面的定义中，D3D12_GRAPHICS_PIPELINE_STATE_DESC 结构体的成员变量非常丰富。其中，pRootSignature 表示该 PSO 所使用的根签名；VS、PS、DS、HS 和 GS 分别表示顶点着色器、像素着色器、域着色器、曲面着色器和几何着色器等着色器代码；StreamOutput 表示流输出描述符；BlendState、RasterizerState 和 DepthStencilState 分别表示混合状态、光栅化器状态和深度/模板测试状态；InputLayout 表示输入布局描述符；IBStripCutValue 表示索引缓存条带裁剪值；PrimitiveTopologyType 表示图元拓扑类型；NumRenderTargets 表示渲染目标数量；RTVFormats 表示渲染目标格式数组；DSVFormat 表示深度/模板视图格式；SampleDesc 表示多重采样描述符；NodeMask 表示节点掩码；CachedPSO 表示缓存的 PSO 对象；Flags 表示 PSO 的标志位。
+
+总之，D3D12_GRAPHICS_PIPELINE_STATE_DESC 结构体是用于描述 DirectX 12 中图形管线状态的结构体类型。通过设置该结构体的成员变量，我们可以实现对 DirectX 12 渲染流水线各个阶段状态的自定义控制，并创建出符合需求的 Graphics Pipeline State Object（PSO）。
+
+
+
+### CD3DX12_RASTERIZER_DESC 设置渲染的光栅化器状态
+
+`CD3DX12_RASTERIZER_DESC`是DirectX 12中的一个辅助类，用于设置渲染的光栅化器状态。这个类封装了`D3D12_RASTERIZER_DESC`结构体并提供了一种方便的初始化方法。
+
+光栅化器负责将场景的几何形状转换为屏幕上的像素，并确定如何着色这些像素。`CD3DX12_RASTERIZER_DESC`类允许您指定各种参数，这些参数影响光栅化器执行此任务的方式，例如填充模式（例如实心或线框）、剔除模式（例如正面或背面）和深度裁剪。
+
+以下是使用`CD3DX12_RASTERIZER_DESC`创建具有默认设置的光栅化器的示例：
+
+```cpp
+CD3DX12_RASTERIZER_DESC rasterizerDesc(D3D12_DEFAULT);
+```
+
+这将创建具有默认设置的光栅化器对象。然后，您可以使用该类提供的各种setter方法修改各个属性。例如，要启用线框渲染，您需要调用：
+
+```cpp
+rasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
+```
+
+一旦您创建并配置了光栅化器，就可以使用命令列表的`SetPipelineState()`方法将其传递给图形管道。
+
+当使用`CD3DX12_RASTERIZER_DESC`类创建光栅化器对象时，可以通过传递一个指向`D3D12_RASTERIZER_DESC`结构体的指针来设置默认值。在这种情况下，如果您没有显式地设置任何属性，则将使用以下默认值：
+
+- FillMode：`D3D12_FILL_MODE_SOLID`（实心填充模式）
+- CullMode：`D3D12_CULL_MODE_BACK`（背面剔除模式）
+- FrontCounterClockwise：`FALSE`（卷曲顺序为顺时针）
+- DepthBias：`D3D12_DEFAULT_DEPTH_BIAS`（深度偏差）
+- DepthBiasClamp：`D3D12_DEFAULT_DEPTH_BIAS_CLAMP`（深度偏差夹紧）
+- SlopeScaledDepthBias：`D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS`（斜率缩放深度偏差）
+- DepthClipEnable：`TRUE`（启用深度裁剪）
+- MultisampleEnable：`FALSE`（禁用多重采样）
+- AntialiasedLineEnable：`FALSE`（禁用抗锯齿线段）
+
+因此，在不修改它的任何属性的情况下，使用默认设置创建的`CD3DX12_RASTERIZER_DESC`对象将使用上述默认值。
+
+
+
+### CD3DX12_BLEND_DESC 设置混合器状态
+
+`CD3DX12_BLEND_DESC`是DirectX 12中的一个辅助类，用于设置混合器状态。混合器是一个可选的渲染管线组件，它控制如何将新的像素颜色与先前的像素颜色相结合。`CD3DX12_BLEND_DESC`类封装了D3D12_BLEND_DESC结构体并提供了一种方便的初始化方法。
+
+在其默认设置下，混合器会禁用混合操作。以下是使用`CD3DX12_BLEND_DESC`类创建具有默认设置的混合器对象的示例：
+
+```cpp
+CD3DX12_BLEND_DESC blendDesc(D3D12_DEFAULT);
+```
+
+这将创建具有默认设置的混合器对象。您可以使用该类提供的各种setter方法修改各个属性，例如混合因子和混合操作类型。
+
+以下是修改`CD3DX12_BLEND_DESC`对象的示例代码：
+
+```cpp
+CD3DX12_BLEND_DESC blendDesc(D3D12_DEFAULT);
+blendDesc.RenderTarget[0].BlendEnable = true;
+blendDesc.RenderTarget[0].LogicOpEnable = false;
+blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+```
+
+以上代码创建了一个启用alpha混合的混合器对象。在这个示例中，使用颜色源和反向颜色源逐通道地混合，并且alpha通道使用1作为源因子和0作为目标因子进行混合，这意味着源像素颜色完全替换目标像素颜色。另外注意到在这个示例中仅针对第一个渲染目标设置了混合器状态，如果有多个渲染目标，需要对每个渲染目标设置混合器状态。
+
+当使用`CD3DX12_BLEND_DESC`类创建混合器对象时，可以通过传递一个指向`D3D12_BLEND_DESC`结构体的指针来设置默认值。在这种情况下，如果您没有显式地设置任何属性，则将使用以下默认值：
+
+```c++
+RenderTarget[0].BlendEnable = FALSE;
+RenderTarget[0].LogicOpEnable = FALSE;
+RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
+RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+```
+
+在上述默认设置中，混合操作已经被禁用，这意味着新的像素颜色将不会与先前的像素颜色相结合，而是直接覆盖它们。这是因为所有的混合因子和混合操作类型都被设置成了对应于1和0的常量因子和加法操作。
+
+以上默认设置只适用于渲染目标数组中的第一个渲染目标，并且只允许写入全部颜色通道。如果有多个渲染目标或需要更细粒度控制颜色通道，您需要显式地为每个渲染目标设置混合状态。
+
+在`CD3DX12_BLEND_DESC`中，`D3D12_BLEND_DESC`结构体的各个属性含义如下：
+
+- `BlendEnable`：一个布尔值，指示是否启用混合操作。如果设置为TRUE，则启用混合操作；否则将禁用混合操作。
+- `LogicOpEnable`：一个布尔值，指示是否启用逻辑运算。如果设置为TRUE，则启用逻辑运算；否则将禁用逻辑运算。
+- `SrcBlend`：源混合因子。该属性指定了新像素颜色和先前像素颜色之间的混合因子。
+- `DestBlend`：目标混合因子。该属性指定了新像素颜色和先前像素颜色之间的混合因子。
+- `BlendOp`：混合操作类型。该属性指定了新像素颜色和先前像素颜色之间的混合操作类型，例如加法、减法等等。
+- `SrcBlendAlpha`：源alpha混合因子。与SrcBlend类似，但是应用于像素的alpha通道。
+- `DestBlendAlpha`：目标alpha混合因子。与DestBlend类似，但是应用于像素的alpha通道。
+- `BlendOpAlpha`：alpha混合操作类型。与BlendOp类似，但是应用于像素的alpha通道。
+- `LogicOp`：逻辑运算类型。该属性指定逻辑运算的类型，例如AND、OR等等。
+- `RenderTargetWriteMask`：用于向渲染目标写入像素颜色的掩码。该属性允许您选择要写入哪些颜色通道，例如红色、绿色、蓝色或alpha通道。
+
+需要注意的是，以上属性只适用于渲染目标数组中的第一个渲染目标，如果有多个渲染目标，需要为每个渲染目标显式地设置混合状态。
+
+
+
+### CD3DX12_DEPTH_STENCIL_DESC 设置深度和模板测试状态
+
+`CD3DX12_DEPTH_STENCIL_DESC`是DirectX 12中的一个辅助类，用于设置深度和模板测试状态。深度和模板测试是可选的渲染管线组件，它们允许您控制哪些像素将被写入到帧缓冲区中。
+
+`CD3DX12_DEPTH_STENCIL_DESC`类封装了D3D12_DEPTH_STENCIL_DESC结构体并提供了一种方便的初始化方法。以下是使用CD3DX12_DEPTH_STENCIL_DESC类创建具有默认设置的深度模板状态对象的示例：
+
+```cpp
+CD3DX12_DEPTH_STENCIL_DESC depthStencilDesc(D3D12_DEFAULT);
+```
+
+这将创建具有默认设置的深度模板状态对象。您可以使用该类提供的各种setter方法修改各个属性，例如启用或禁用深度测试、深度比较函数等等。
+
+以下是修改`CD3DX12_DEPTH_STENCIL_DESC`对象的示例代码：
+
+```cpp
+CD3DX12_DEPTH_STENCIL_DESC depthStencilDesc(D3D12_DEFAULT);
+depthStencilDesc.DepthEnable = TRUE;
+depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+depthStencilDesc.StencilEnable = FALSE;
+depthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+depthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+depthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+depthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+depthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+depthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+depthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+depthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+depthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+depthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+```
+
+以上代码创建了一个启用了深度测试的深度模板状态对象。在这个示例中，深度测试启用，深度写入掩码设置为全部，深度比较函数设置为小于，模板测试禁用。
+
+需要注意的是，在此示例中，模板测试被禁用了，因为`StencilEnable`属性被设置为FALSE。如果要启用模板测试，需要将`StencilEnable`设置为TRUE，并显式地指定各个模板测试函数和操作。

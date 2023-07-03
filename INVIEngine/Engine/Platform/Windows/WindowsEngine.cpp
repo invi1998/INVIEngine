@@ -205,6 +205,16 @@ D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentDepthStencilView() const
 	return DSVHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
+UINT FWindowsEngine::GetDXGISampleCount() const
+{
+	return bMSAA4XEnabled ? 4 : 1;
+}
+
+UINT FWindowsEngine::GetDXGISampleQuality() const
+{
+	return bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;
+}
+
 void FWindowsEngine::WaitGPUCommandQueueComplete()
 {
 	CurrentFenceIndex++;
@@ -446,8 +456,8 @@ bool FWindowsEngine::InitDirect3D()
 	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;	// 强制刷新模式，在每次呈现新帧时都清空前缓冲区，不保留其内容。这是最常见的交换方式，也是默认值。
 	SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 允许显示模式切换 (即允许我们自由的切换显示窗口，想全屏就全屏，想窗口就窗口）
 	// 采样描述(多重采样设置）
-	SwapChainDesc.SampleDesc.Count = bMSAA4XEnabled ? 4 : 1;	// 设置采样描述里的采样数量，先判断多重采样是否开启，如果开启，那么赋值为4（默认就是开启4重采样）否则就是0
-	SwapChainDesc.SampleDesc.Quality = bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;		// 设置采样描述的质量级别,投影需要判断是否开启多重采样，如果开启，赋值为我们之前设定的采样质量-1，否则为0
+	SwapChainDesc.SampleDesc.Count = GetDXGISampleCount();	// 设置采样描述里的采样数量，先判断多重采样是否开启，如果开启，那么赋值为4（默认就是开启4重采样）否则就是0
+	SwapChainDesc.SampleDesc.Quality = GetDXGISampleQuality();		// 设置采样描述的质量级别,投影需要判断是否开启多重采样，如果开启，赋值为我们之前设定的采样质量-1，否则为0
 
 	// 创建交换链
 	ANALYSIS_RESULT(DXGiFactory->CreateSwapChain(CommandQueue.Get(), &SwapChainDesc, SwapChain.GetAddressOf()));

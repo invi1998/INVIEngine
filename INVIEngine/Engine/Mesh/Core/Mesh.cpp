@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "EngineMinimal.h"
+#include "Platform/Windows/WindowsEngine.h"
 
 FObjectTransformation::FObjectTransformation()
 	: World(
@@ -179,6 +180,55 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 	GPUIndexBufferPtr = ConstructDefaultBuffer(TempIndexBufferPtr, InRenderingData->IndexData.data(), IndexSizeInBytes);
 
 	ANALYSIS_RESULT(D3DCreateBlob(IndexSizeInBytes, &CPUIndexBufferPtr));	// 创建一个二进制的缓冲区
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///PSO渲染流水线绑定
+	
+	// 描述当前渲染管线状态
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC GPSDesc{};
+
+	// 绑定输入布局
+	GPSDesc.InputLayout.NumElements = static_cast<UINT>(InputElementDesc.size());
+	GPSDesc.InputLayout.pInputElementDescs = InputElementDesc.data();
+
+	// 绑定输入布局
+	GPSDesc.pRootSignature = RootSignature.Get();        // 根签名
+
+	// 绑定着色器
+	GPSDesc.VS.pShaderBytecode = static_cast<BYTE*>(VertexShader.GetBufferPointer());                   // 顶点着色器
+	GPSDesc.VS.BytecodeLength = VertexShader.GetBufferSize();
+	GPSDesc.PS.pShaderBytecode = static_cast<BYTE*>(PixelShader.GetBufferPointer());                   // 像素着色器
+	GPSDesc.PS.BytecodeLength = PixelShader.GetBufferSize();
+
+	// 配置光栅化状态
+	GPSDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);		// 光栅化状态
+
+	GPSDesc.SampleMask = UINT_MAX;		// 多重采样遮罩（混合状态下的实例蒙版）多重采样下，最多是可以采32个的样板（000...000),每个0表示一个样板位，有32个，你想采哪个就设置哪位为1，UINT_MAX表示0xffffffff采样全部的样板
+
+	// 指定图元拓扑类型
+	GPSDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;		// 三角形
+
+	// 指定渲染目标
+	GPSDesc.NumRenderTargets = 1;
+
+	// 指定混合状态
+	GPSDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);		// 默认混合
+
+	// 启用深度模板
+	GPSDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);	// 默认深度模板
+
+	// 设置采样
+	GPSDesc.SampleDesc.Count = GetEngine()->GetDXGISampleCount();		// 采样数量
+	GPSDesc.SampleDesc.Quality = GetEngine()->GetDXGISampleQuality();	// 采样质量
+	GPSDesc.RTVFormats[0] = GetEngine()->GetBackBufferFormat();			// 渲染目标视图格式（后台缓冲区格式）
+	GPSDesc.DSVFormat = GetEngine()->GetDepthStencilFormat();			// 深度模板缓冲区格式
+
+	// 通过D3D创建渲染管线状态对象
+	ANALYSIS_RESULT(GetD3dDevice()->CreateGraphicsPipelineState(
+		&GPSDesc,
+		IID_PPV_ARGS(&PSO)
+	));
+
 }
 
 FMesh* FMesh::CreateMesh(const FMeshRendingData* InRenderingData)

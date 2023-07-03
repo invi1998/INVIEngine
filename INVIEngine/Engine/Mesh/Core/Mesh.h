@@ -43,6 +43,7 @@ protected:
 	ComPtr<ID3D12Resource> TempIndexBufferPtr;		// 临时 索引缓冲区
 
 	ComPtr<ID3D12RootSignature> RootSignature;		// 根签名
+	ComPtr<ID3D12PipelineState> PSO;				// 渲染管线状态对象
 
 	ComPtr<ID3D12DescriptorHeap> CBVHeap;			// CPU 描述符句柄，用于指定要创建的常量缓冲区视图所在的描述符堆位置
 

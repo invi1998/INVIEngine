@@ -24,6 +24,11 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentSwapBufferView() const;		// 获取当前交换链buffer的视口句柄
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentDepthStencilView() const;		// 获取当前深度模板View
 
+	DXGI_FORMAT GetBackBufferFormat() const { return BackBufferFormat; }			// 获取后台缓冲区格式
+	DXGI_FORMAT GetDepthStencilFormat() const { return DepthStencilFormat; }		// 获取深度模板缓冲区格式
+	UINT GetDXGISampleCount() const;												// 获取采样数量
+	UINT GetDXGISampleQuality() const;												// 获取采样质量
+
 protected:
 	void WaitGPUCommandQueueComplete();		// 等待GPU执行命令队列 同步GPU和CPU
 
