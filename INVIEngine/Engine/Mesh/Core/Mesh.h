@@ -3,6 +3,7 @@
 #include "MeshType.h"
 #include "Core/Engine.h"
 #include "Rendering/Core/Rendering.h"
+#include "Shader/Core/Shader.h"
 
 struct FObjectTransformation
 {
@@ -46,6 +47,11 @@ protected:
 	ComPtr<ID3D12DescriptorHeap> CBVHeap;			// CPU 描述符句柄，用于指定要创建的常量缓冲区视图所在的描述符堆位置
 
 	std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;	// 对象常量（指向上传堆）
+
+	FShader VertexShader;	// 顶点着色器
+	FShader PixelShader;	// 像素着色器
+
+	std::vector<D3D12_INPUT_ELEMENT_DESC> InputElementDesc;		// 描述输入布局（Input Layout）中的单个元素。在 Direct3D 12 中，输入布局是一个包含多个输入元素的数据结构，表示顶点缓冲区中存储的顶点数据的格式和排列方式。
 
 protected:
 	UINT IndexSize;				// 顶点数量
