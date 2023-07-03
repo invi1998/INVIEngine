@@ -33,6 +33,11 @@ void FMesh::Draw(float DeltaTime)
 {
 	IRenderingInterface::Draw(DeltaTime);
 
+	ID3D12DescriptorHeap* DescriptorHeap[] = { CBVHeap.Get() };
+	GetD3dGraphicsCommandList()->SetDescriptorHeaps(_countof(DescriptorHeap), DescriptorHeap);
+
+	GetD3dGraphicsCommandList()->SetGraphicsRootSignature(RootSignature.Get());
+
 	// 将我们的顶点缓冲区和渲染流水线绑定
 
 	// 获取顶点缓冲区视图
@@ -53,6 +58,8 @@ void FMesh::Draw(float DeltaTime)
 
 	// 指定图元类型（点，线，面） 下面设置为 绘制由三角形构成的列表
 	GetD3dGraphicsCommandList()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, CBVHeap->GetGPUDescriptorHandleForHeapStart());
 
 	// 绘制图元（真实渲染模型）
 	GetD3dGraphicsCommandList()->DrawIndexedInstanced(
