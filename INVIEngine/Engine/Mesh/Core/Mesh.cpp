@@ -51,15 +51,12 @@ void FMesh::Init()
 
 void FMesh::PreDraw(float DeltaTime)
 {
-	Init();
-
 	// 重置命令列表，因为我们每一帧都会有新的提交列表
-	ANALYSIS_RESULT(GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), PSO.Get()));
+	GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), PSO.Get());
 }
 
 void FMesh::Draw(float DeltaTime)
 {
-	IRenderingInterface::Draw(DeltaTime);
 
 	ID3D12DescriptorHeap* DescriptorHeap[] = { CBVHeap.Get() };
 	GetD3dGraphicsCommandList()->SetDescriptorHeaps(_countof(DescriptorHeap), DescriptorHeap);
@@ -101,7 +98,6 @@ void FMesh::Draw(float DeltaTime)
 
 void FMesh::PostDraw(float DeltaTime)
 {
-	IRenderingInterface::PostDraw(DeltaTime);
 
 	XMUINT3 MeshPosition = XMUINT3(5.f, 5.f, 5.f);
 
@@ -169,8 +165,8 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 	CD3DX12_ROOT_PARAMETER RootParam[1];
 	RootParam[0].InitAsDescriptorTable(
 		1,							// 描述符数量
-		&DescriptorRangeCBV,		// 指向描述符范围数组的指针
-		D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
+		&DescriptorRangeCBV		// 指向描述符范围数组的指针
+		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
 	);
 
 	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)
@@ -251,13 +247,13 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 	GPSDesc.InputLayout.NumElements = static_cast<UINT>(InputElementDesc.size());
 	GPSDesc.InputLayout.pInputElementDescs = InputElementDesc.data();
 
-	// 绑定输入布局
+	// 绑定根签名
 	GPSDesc.pRootSignature = RootSignature.Get();        // 根签名
 
 	// 绑定着色器
 	GPSDesc.VS.pShaderBytecode = static_cast<BYTE*>(VertexShader.GetBufferPointer());                   // 顶点着色器
 	GPSDesc.VS.BytecodeLength = VertexShader.GetBufferSize();
-	GPSDesc.PS.pShaderBytecode = static_cast<BYTE*>(PixelShader.GetBufferPointer());                   // 像素着色器
+	GPSDesc.PS.pShaderBytecode = PixelShader.GetBufferPointer();                   // 像素着色器
 	GPSDesc.PS.BytecodeLength = PixelShader.GetBufferSize();
 
 	// 配置光栅化状态

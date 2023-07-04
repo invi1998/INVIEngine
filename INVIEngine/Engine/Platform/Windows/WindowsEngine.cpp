@@ -39,16 +39,10 @@ int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
 int FWindowsEngine::Init(FWinMainCommandParameters InParameters)
 {
 	// 处理视口
-	if (InitWindows(InParameters))
-	{
-
-	}
+	InitWindows(InParameters);
 
 
-	if (InitDirect3D())
-	{
-
-	}
+	InitDirect3D();
 
 	PostInitDirect3D();
 
@@ -63,10 +57,12 @@ int FWindowsEngine::PostInit()
 	// 初始化命令列表
 	ANALYSIS_RESULT(GraphicsCommandList->Reset(CommandAllocator.Get(), nullptr));
 
-	GraphicsCommandList->Close();
+	{
+		// 构建Mesh
+		FBoxMesh* BoxMesh = FBoxMesh::CreateMesh();
+	}
 
-	// 构建Mesh
-	FBoxMesh* BoxMesh = FBoxMesh::CreateMesh();
+	ANALYSIS_RESULT(GraphicsCommandList->Close());
 
 	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };
 	CommandQueue->ExecuteCommandLists(_countof(CommandList), CommandList);
