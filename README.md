@@ -259,6 +259,34 @@ DirectX 12中，GPU执行的命令需要使用命令列表（Command List）进�
 
 
 
+## 深入理解CPU和GPU信号同步策略
+
+在现代图形编程中，CPU 和 GPU 通常是独立的处理器，并且在并行处理时需要进行同步。信号同步是实现 CPU 和 GPU 之间数据交互的重要机制，它能确保各个线程之间的执行顺序和数据一致性。
+
+1. 等待信号
+
+等待信号是 GPU 在执行完某个任务后，等待 CPU 向其发送信号的一种方式。在 DirectX 12 中，可以使用 ID3D12CommandQueue::Signal 函数向 GPU 发送信号，并通过 ID3D12Fence::SetEventOnCompletion 函数在信号完成时通知 CPU。在 CPU 端，可以调用 WaitForSingleObject 或 WaitForMultipleObjects 函数来等待信号完成。
+
+2. CPU 信号
+
+CPU 信号是指在 CPU 执行完某个任务后向 GPU 发送的信号。在 DirectX 12 中，可以使用 ID3D12Fence::Signal 函数将信号值写入信号对象（Fence Object）。GPU 在执行过程中会读取这些信号对象，以确定何时开始或结束执行某个任务。
+
+3. 并发栅栏
+
+并发栅栏（Concurrency Barrier）是一种在 GPU 中等待当前所有工作项完成后再执行下一个阶段的机制。它允许 CPU 和 GPU 在处理大量任务时进行协调，以便 GPU 不会访问尚未由 CPU 更新的数据。在 DirectX 12 中，可以使用 ID3D12CommandList::ResourceBarrier 函数添加并发栅栏。这个函数可以设置资源状态转换，例如从读取状态到写入状态，以确保 GPU 访问资源时不会出现竞态条件。
+
+4. 分离式采样器（Disjoint Sampler）
+
+分离式采样器也是一种 CPU 和 GPU 之间同步的机制。该技术可确保查询计算涉及的对象具有一致的状态。在 DirectX 12 中，可以创建 ID3D12QueryHeap 对象，并使用 ID3D12GraphicsCommandList::BeginQuery 和 ID3D12GraphicsCommandList::EndQuery 函数将时间戳插入查询堆。CPU 可以读取时间戳来检查 GPU 执行和渲染的时间，并确保任务按预期顺序执行。
+
+5. 内存屏障
+
+内存屏障是确保 CPU 和 GPU 访问相同内存区域时数据一致性的一种机制。在 DirectX 12 中，可以使用 ID3D12GraphicsCommandList::ResourceBarrier 来设置内存屏障。内存屏障可以定义读取、写入和同步操作，以确保 CPU 和 GPU 之间进行正确的内存访问。
+
+总之，信号同步是确保 CPU 和 GPU 数据交互的关键机制。通过以上几种方法，CPU 和 GPU 可以有效地协调和同步，以实现高效而稳定的图形渲染和计算。
+
+
+
 ## SNC和RPC
 
 SNC和RPC是两种不同的通信协议，它们之间的主要区别如下：
