@@ -2,6 +2,7 @@
 
 #include <simple_library.h>
 #include "Log/SimpleLog.h"
+#include "ColdeReflection/CodeReflectionMacro.h"
 
 #include <vector>
 
