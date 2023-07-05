@@ -4,7 +4,7 @@
 #include "Log/SimpleLog.h"
 
 
-int Init(FEngine* Engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCMD)
+int Init(CEngine* Engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCMD)
 {
 #if defined(_WIN32)
 	FWinMainCommandParameters WinMainParameters(hInstance, prevInstance, cmdLine, showCMD);
@@ -42,14 +42,14 @@ int Init(FEngine* Engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdL
 	return ReturnValue;
 }
 
-void Tick(FEngine* Engine)
+void Tick(CEngine* Engine)
 {
 	float DeltaTime = 0.03f;
 	Engine->Tick(DeltaTime);
 	Sleep(30);
 }
 
-int Exit(FEngine* Engine)
+int Exit(CEngine* Engine)
 {
 	int ReturnValue = Engine->PreExit();
 	if (ReturnValue != 0)
@@ -74,7 +74,7 @@ int Exit(FEngine* Engine)
 }
 
 
-FEngine* Engine = nullptr;
+CEngine* Engine = nullptr;
 
 
 /**

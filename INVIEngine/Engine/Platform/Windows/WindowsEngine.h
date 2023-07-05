@@ -2,12 +2,12 @@
 
 #include "Core/Engine.h"
 
-class FWindowsEngine : public FEngine
+class CWindowsEngine : public CEngine
 {
 	friend class IRenderingInterface;
 
 public:
-	FWindowsEngine();
+	CWindowsEngine();
 
 	virtual int PreInit(FWinMainCommandParameters InParameters) override;
 	virtual int Init(FWinMainCommandParameters InParameters) override;

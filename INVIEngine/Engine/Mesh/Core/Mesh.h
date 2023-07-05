@@ -14,11 +14,11 @@ struct FObjectTransformation
 	static XMFLOAT4X4 IdentityMatrix4X4();	// 单位化4x4矩阵
 };
 
-class FMesh : public IRenderingInterface
+class CMesh : public CCoreMinimalObject, public IRenderingInterface
 {
 public:
-	FMesh();
-	~FMesh() override;
+	CMesh();
+	~CMesh() override;
 
 	virtual void Init() override;
 
@@ -28,7 +28,7 @@ public:
 
 	virtual void BuildMesh(const FMeshRendingData* InRenderingData);
 
-	static FMesh* CreateMesh(const FMeshRendingData* InRenderingData);
+	static CMesh* CreateMesh(const FMeshRendingData* InRenderingData);
 
 	// 获取顶点buff视图
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView();

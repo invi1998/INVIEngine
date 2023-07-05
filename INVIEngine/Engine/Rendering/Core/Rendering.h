@@ -5,7 +5,7 @@
 
 class IRenderingInterface
 {
-	friend class FWindowsEngine;
+	friend class CWindowsEngine;
 
 public:
 	IRenderingInterface();
@@ -34,7 +34,7 @@ protected:
 	ComPtr<ID3D12GraphicsCommandList> GetD3dGraphicsCommandList();
 	ComPtr<ID3D12CommandAllocator> GetCommandAllocator();
 
-	FWindowsEngine* GetEngine() const;
+	CWindowsEngine* GetEngine() const;
 
 private:
 	static std::vector<IRenderingInterface*> RenderingInterface;

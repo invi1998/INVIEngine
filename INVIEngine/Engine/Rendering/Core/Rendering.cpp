@@ -114,7 +114,7 @@ ComPtr<ID3D12Resource> IRenderingInterface::ConstructDefaultBuffer(ComPtr<ID3D12
 
 ComPtr<ID3D12Device> IRenderingInterface::GetD3dDevice()
 {
-	if (FWindowsEngine* InEngine = dynamic_cast<FWindowsEngine*>(Engine))
+	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
 	{
 		return InEngine->D3dDevice;
 	}
@@ -124,7 +124,7 @@ ComPtr<ID3D12Device> IRenderingInterface::GetD3dDevice()
 
 ComPtr<ID3D12GraphicsCommandList> IRenderingInterface::GetD3dGraphicsCommandList()
 {
-	if (FWindowsEngine* InEngine = GetEngine())
+	if (CWindowsEngine* InEngine = GetEngine())
 	{
 		return InEngine->GraphicsCommandList;
 	}
@@ -134,7 +134,7 @@ ComPtr<ID3D12GraphicsCommandList> IRenderingInterface::GetD3dGraphicsCommandList
 
 ComPtr<ID3D12CommandAllocator> IRenderingInterface::GetCommandAllocator()
 {
-	if (FWindowsEngine* InEngine = GetEngine())
+	if (CWindowsEngine* InEngine = GetEngine())
 	{
 		return InEngine->CommandAllocator;
 	}
@@ -142,9 +142,9 @@ ComPtr<ID3D12CommandAllocator> IRenderingInterface::GetCommandAllocator()
 	return nullptr;
 }
 
-FWindowsEngine* IRenderingInterface::GetEngine() const
+CWindowsEngine* IRenderingInterface::GetEngine() const
 {
-	return dynamic_cast<FWindowsEngine*>(Engine);
+	return dynamic_cast<CWindowsEngine*>(Engine);
 }
 
 /**

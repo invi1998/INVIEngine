@@ -1,29 +1,29 @@
 #include "BoxMesh.h"
 
-FBoxMesh::FBoxMesh()
+CBoxMesh::CBoxMesh()
 {
 }
 
-FBoxMesh::~FBoxMesh()
+CBoxMesh::~CBoxMesh()
 {
 }
 
-void FBoxMesh::Init()
+void CBoxMesh::Init()
 {
 	Super::Init();
 }
 
-void FBoxMesh::BuildMesh(const FMeshRendingData* InRenderingData)
+void CBoxMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 {
 	Super::BuildMesh(InRenderingData);
 }
 
-void FBoxMesh::Draw(float DeltaTime)
+void CBoxMesh::Draw(float DeltaTime)
 {
 	Super::Draw(DeltaTime);
 }
 
-FBoxMesh* FBoxMesh::CreateMesh()
+CBoxMesh* CBoxMesh::CreateMesh()
 {
 	// 构建顶点，索引
 	FMeshRendingData MeshRenderingData(
@@ -58,7 +58,7 @@ FBoxMesh* FBoxMesh::CreateMesh()
 			FVertex(XMFLOAT3(1.f, 0.f, 1.f), XMFLOAT4(0.56f, 0.11f, 0.12f, 1.f)),
 		});
 
-	FBoxMesh* Box = new FBoxMesh();
+	CBoxMesh* Box = new CBoxMesh();
 
 	Box->BuildMesh(&MeshRenderingData);
 

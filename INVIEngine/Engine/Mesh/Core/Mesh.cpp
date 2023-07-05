@@ -21,7 +21,7 @@ XMFLOAT4X4 FObjectTransformation::IdentityMatrix4X4()
 /**
  * \brief /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
-FMesh::FMesh()
+CMesh::CMesh()
 	: IndexSize(0), VertexSizeInBytes(0), VertexStrideInBytes(0), IndexSizeInBytes(0), IndexFormat(DXGI_FORMAT_R16_UINT),
 	WorldMatrix(FObjectTransformation::IdentityMatrix4X4()),
 	ViewMatrix(FObjectTransformation::IdentityMatrix4X4()),
@@ -29,11 +29,11 @@ FMesh::FMesh()
 {
 }
 
-FMesh::~FMesh()
+CMesh::~CMesh()
 {
 }
 
-void FMesh::Init()
+void CMesh::Init()
 {
 	float AspectRatio = static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenWidth) / static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenHeight);
 
@@ -49,13 +49,13 @@ void FMesh::Init()
 
 }
 
-void FMesh::PreDraw(float DeltaTime)
+void CMesh::PreDraw(float DeltaTime)
 {
 	// 重置命令列表，因为我们每一帧都会有新的提交列表
 	GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), PSO.Get());
 }
 
-void FMesh::Draw(float DeltaTime)
+void CMesh::Draw(float DeltaTime)
 {
 
 	ID3D12DescriptorHeap* DescriptorHeap[] = { CBVHeap.Get() };
@@ -96,7 +96,7 @@ void FMesh::Draw(float DeltaTime)
 	);
 }
 
-void FMesh::PostDraw(float DeltaTime)
+void CMesh::PostDraw(float DeltaTime)
 {
 
 	XMUINT3 MeshPosition = XMUINT3(5.f, 5.f, 5.f);
@@ -120,7 +120,7 @@ void FMesh::PostDraw(float DeltaTime)
 	ObjectConstants->Update(0, &OBJTransformation);
 }
 
-void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
+void CMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,16 +287,16 @@ void FMesh::BuildMesh(const FMeshRendingData* InRenderingData)
 
 }
 
-FMesh* FMesh::CreateMesh(const FMeshRendingData* InRenderingData)
+CMesh* CMesh::CreateMesh(const FMeshRendingData* InRenderingData)
 {
-	FMesh* InMesh = new FMesh();
+	CMesh* InMesh = new CMesh();
 
 	InMesh->BuildMesh(InRenderingData);
 
 	return InMesh;
 }
 
-D3D12_VERTEX_BUFFER_VIEW FMesh::GetVertexBufferView()
+D3D12_VERTEX_BUFFER_VIEW CMesh::GetVertexBufferView()
 {
 	D3D12_VERTEX_BUFFER_VIEW vbv;
 
@@ -308,7 +308,7 @@ D3D12_VERTEX_BUFFER_VIEW FMesh::GetVertexBufferView()
 
 }
 
-D3D12_INDEX_BUFFER_VIEW FMesh::GetIndexBufferView()
+D3D12_INDEX_BUFFER_VIEW CMesh::GetIndexBufferView()
 {
 	D3D12_INDEX_BUFFER_VIEW ibv;
 

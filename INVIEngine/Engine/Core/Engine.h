@@ -3,13 +3,17 @@
 #if defined(_WIN32)
 
 #include "WinMainCommandParameters.h"
+#include "Core/CoreObject/CoreMinimalObject.h"
 
 #endif
 
 
-class FEngine
+class CEngine : public CCoreMinimalObject
 {
 public:
+	CEngine() = default;
+	virtual ~CEngine() override = default;
+
 	// “˝«Ê‘§≥ı ºªØ
 	virtual int PreInit(
 #if defined(_WIN32)

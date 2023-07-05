@@ -6,7 +6,7 @@
 #include "Mesh/BoxMesh.h"
 #include "Rendering/Core/Rendering.h"
 
-FWindowsEngine::FWindowsEngine()
+CWindowsEngine::CWindowsEngine()
 	: CurrentFenceIndex(0),
 	CurrentSwapBufferIndex(0),
 	M4XNumQualityLevels(0),
@@ -21,7 +21,7 @@ FWindowsEngine::FWindowsEngine()
 	
 }
 
-int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
+int CWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
 {
 	// 处理日志
 	constexpr char LogPath[] = "../log";
@@ -36,7 +36,7 @@ int FWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
 	return 0;
 }
 
-int FWindowsEngine::Init(FWinMainCommandParameters InParameters)
+int CWindowsEngine::Init(FWinMainCommandParameters InParameters)
 {
 	// 处理视口
 	InitWindows(InParameters);
@@ -51,7 +51,7 @@ int FWindowsEngine::Init(FWinMainCommandParameters InParameters)
 	return 0;
 }
 
-int FWindowsEngine::PostInit()
+int CWindowsEngine::PostInit()
 {
 
 	// 初始化命令列表
@@ -59,7 +59,7 @@ int FWindowsEngine::PostInit()
 
 	{
 		// 构建Mesh
-		FBoxMesh* BoxMesh = FBoxMesh::CreateMesh();
+		CBoxMesh* BoxMesh = CBoxMesh::CreateMesh();
 	}
 
 	ANALYSIS_RESULT(GraphicsCommandList->Close());
@@ -74,7 +74,7 @@ int FWindowsEngine::PostInit()
 	return 0;
 }
 
-void FWindowsEngine::Tick(float DeltaTime)
+void CWindowsEngine::Tick(float DeltaTime)
 {
 	// 重新录制相关内存，为下一帧绘制做准备
 	ANALYSIS_RESULT(CommandAllocator->Reset());
@@ -165,29 +165,29 @@ void FWindowsEngine::Tick(float DeltaTime)
 
 }
 
-int FWindowsEngine::PreExit()
+int CWindowsEngine::PreExit()
 {
 	return 0;
 }
 
-int FWindowsEngine::Exit()
+int CWindowsEngine::Exit()
 {
 	return 0;
 }
 
-int FWindowsEngine::PostExit()
+int CWindowsEngine::PostExit()
 {
 	FEngineRenderConfig::Destroy();
 
 	return 0;
 }
 
-ID3D12Resource* FWindowsEngine::GetCurrentSwapBuffer() const
+ID3D12Resource* CWindowsEngine::GetCurrentSwapBuffer() const
 {
 	return SwapChainBuffer[CurrentSwapBufferIndex].Get();
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentSwapBufferView() const
+D3D12_CPU_DESCRIPTOR_HANDLE CWindowsEngine::GetCurrentSwapBufferView() const
 {
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		RTVHeap->GetCPUDescriptorHandleForHeapStart(),	// 通过RTV堆栈获取当前CPU描述，
@@ -196,22 +196,22 @@ D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentSwapBufferView() const
 	);
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE FWindowsEngine::GetCurrentDepthStencilView() const
+D3D12_CPU_DESCRIPTOR_HANDLE CWindowsEngine::GetCurrentDepthStencilView() const
 {
 	return DSVHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
-UINT FWindowsEngine::GetDXGISampleCount() const
+UINT CWindowsEngine::GetDXGISampleCount() const
 {
 	return bMSAA4XEnabled ? 4 : 1;
 }
 
-UINT FWindowsEngine::GetDXGISampleQuality() const
+UINT CWindowsEngine::GetDXGISampleQuality() const
 {
 	return bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;
 }
 
-void FWindowsEngine::WaitGPUCommandQueueComplete()
+void CWindowsEngine::WaitGPUCommandQueueComplete()
 {
 	CurrentFenceIndex++;
 
@@ -243,7 +243,7 @@ void FWindowsEngine::WaitGPUCommandQueueComplete()
 	}
 }
 
-bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
+bool CWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 {
 	// 绑定窗口参数
 	WNDCLASSEX WindowsClass;
@@ -304,7 +304,7 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 	UpdateWindow(MainWindowHandle);
 }
 
-bool FWindowsEngine::InitDirect3D()
+bool CWindowsEngine::InitDirect3D()
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 开启DX12调试层 debug
@@ -486,7 +486,7 @@ bool FWindowsEngine::InitDirect3D()
 	return false;
 }
 
-void FWindowsEngine::PostInitDirect3D()
+void CWindowsEngine::PostInitDirect3D()
 {
 	// 因为我们在前面有创建相关的内容，所以在这里执行等待（同步）
 	// CPU等待GPU执行结果
