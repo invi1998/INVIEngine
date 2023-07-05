@@ -3,26 +3,19 @@
 #include "Core/Engine.h"
 #include "Platform/Windows/WindowsEngine.h"
 
-class IRenderingInterface
+class IRenderingInterface : public IGuidInterface
 {
 	friend class CWindowsEngine;
 
 public:
 	IRenderingInterface();
-	virtual ~IRenderingInterface();
+	virtual ~IRenderingInterface() override;
 
 	virtual void Init();
 
 	virtual void PreDraw(float DeltaTime);
 	virtual void Draw(float DeltaTime);
 	virtual void PostDraw(float DeltaTime);
-
-	inline simple_c_guid GetGuid() const { return Guid; }
-
-	bool operator==(const IRenderingInterface& InOther)
-	{
-		return guid_equal(&Guid, &InOther.Guid);
-	}
 
 protected:
 	// 构造默认缓冲区
@@ -38,9 +31,6 @@ protected:
 
 private:
 	static std::vector<IRenderingInterface*> RenderingInterface;
-
-	simple_c_guid Guid;
-
 };
 
 

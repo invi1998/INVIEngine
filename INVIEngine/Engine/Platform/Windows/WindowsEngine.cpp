@@ -2,6 +2,7 @@
 
 #include "WindowsMessageProcessing.h"
 #include "Config/EngineRenderConfig.h"
+#include "Core/World.h"
 #include "Debug/EngineDebug.h"
 #include "Mesh/BoxMesh.h"
 #include "Rendering/Core/Rendering.h"
@@ -14,6 +15,8 @@ CWindowsEngine::CWindowsEngine()
 	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
 	DepthStencilFormat(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT)
 {
+	bTick = false;
+
 	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
 	{
 		SwapChainBuffer.push_back(ComPtr<ID3D12Resource>());
@@ -41,10 +44,11 @@ int CWindowsEngine::Init(FWinMainCommandParameters InParameters)
 	// 处理视口
 	InitWindows(InParameters);
 
-
 	InitDirect3D();
 
 	PostInitDirect3D();
+
+	CWorld* world = CreateObject<CWorld>(new CWorld());
 
 	ENGINE_LOG("引擎初始化完成");
 
@@ -60,6 +64,11 @@ int CWindowsEngine::PostInit()
 	{
 		// 构建Mesh
 		CBoxMesh* BoxMesh = CBoxMesh::CreateMesh();
+
+		for (auto &temp : GObjects)
+		{
+			temp->BeginInit();
+		}
 	}
 
 	ANALYSIS_RESULT(GraphicsCommandList->Close());
@@ -76,6 +85,14 @@ int CWindowsEngine::PostInit()
 
 void CWindowsEngine::Tick(float DeltaTime)
 {
+	for (auto& temp : GObjects)
+	{
+		if (temp->IsTick())
+		{
+			temp->Tick(DeltaTime);
+		}
+	}
+
 	// 重新录制相关内存，为下一帧绘制做准备
 	ANALYSIS_RESULT(CommandAllocator->Reset());
 	// 预渲染

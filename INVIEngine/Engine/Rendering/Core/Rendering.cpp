@@ -6,8 +6,6 @@ std::vector<IRenderingInterface*> IRenderingInterface::RenderingInterface;
 
 IRenderingInterface::IRenderingInterface()
 {
-	create_guid(&Guid);
-
 	RenderingInterface.push_back(this);
 }
 

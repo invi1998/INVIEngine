@@ -13,6 +13,7 @@ struct FVertex
 
 struct FMeshRendingData
 {
+	FMeshRendingData() = default;
 	FMeshRendingData(const std::vector<uint16_t>& Index, const std::initializer_list<FVertex>& Vertex);
 
 	std::vector<uint16_t> IndexData;	// Ыїв§Ъ§Он

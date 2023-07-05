@@ -1,17 +1,12 @@
 #pragma once
 
-#if defined(_WIN32)
-
 #include "WinMainCommandParameters.h"
-#include "Core/CoreObject/CoreMinimalObject.h"
-
-#endif
-
+#include "CoreObject/CoreMinimalObject.h"
 
 class CEngine : public CCoreMinimalObject
 {
 public:
-	CEngine() = default;
+	CEngine();
 	virtual ~CEngine() override = default;
 
 	// 引擎预初始化
@@ -32,7 +27,7 @@ public:
 	virtual int PostInit() = 0;
 
 	// 引擎刷新
-	virtual void Tick(float DeltaTime) = 0;
+	virtual void Tick(float DeltaTime) override {};
 
 	// 引擎预退出
 	virtual int PreExit() = 0;
