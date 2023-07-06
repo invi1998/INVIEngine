@@ -66,13 +66,13 @@ int CWindowsEngine::PostInit()
 
 	{
 		// ¹¹½¨Mesh
-		// CBoxMesh* BoxMesh = CBoxMesh::CreateMesh();
+		CBoxMesh* BoxMesh = CBoxMesh::CreateMesh(1.3f, 2.4f, 3.1f);
 
 		// CSphereMesh* SphereMesh = new CSphereMesh();
 
 		// CCylinderMesh* BoxMesh = CCylinderMesh::CreateMesh(1.0f, 1.0f, 3.0f, 40, 20);
 
-		CConeMesh* ConeMesh = CConeMesh::CreateMesh(2.5f, 4.0f, 20, 10);
+		// CConeMesh* ConeMesh = CConeMesh::CreateMesh(2.5f, 4.0f, 20, 10);
 
 		for (auto &temp : GObjects)
 		{

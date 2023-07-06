@@ -23,44 +23,52 @@ void CBoxMesh::Draw(float DeltaTime)
 	Super::Draw(DeltaTime);
 }
 
-CBoxMesh* CBoxMesh::CreateMesh()
+CBoxMesh* CBoxMesh::CreateMesh(float InHeight, float InWidth, float InDepth)
 {
-	// 构建顶点，索引
-	FMeshRendingData MeshRenderingData(
-		std::vector<uint16_t>{
-			// 前
-			0, 1, 2,
-			0, 2, 3,
-			// 后
-			4, 6, 5,
-			4, 7, 6,
-			// 左
-			4, 5, 1,
-			4, 1, 0,
-			// 右
-			3, 2, 6,
-			3, 6, 7,
-			// 上
-			1, 5, 6,
-			1, 6, 2,
-			// 下
-			4, 0, 3,
-			4, 3, 7
-		},
-		{
-			FVertex(XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT4(0.76f, 0.1f, 0.12f, 1.f)),
-			FVertex(XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT4(0.16f, 0.61f, 0.12f, 1.f)),
-			FVertex(XMFLOAT3(1.f, 1.f, 0.f), XMFLOAT4(0.26f, 0.51f, 0.212f, 1.f)),
-			FVertex(XMFLOAT3(1.f, 0.f, 0.f), XMFLOAT4(0.36f, 0.41f, 0.42f, 1.f)),
-			FVertex(XMFLOAT3(0.f, 0.f, 1.f), XMFLOAT4(0.46f, 0.31f, 0.12f, 1.f)),
-			FVertex(XMFLOAT3(0.f, 1.f, 1.f), XMFLOAT4(0.56f, 0.21f, 0.22f, 1.f)),
-			FVertex(XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.76f, 0.11f, 0.12f, 1.f)),
-			FVertex(XMFLOAT3(1.f, 0.f, 1.f), XMFLOAT4(0.56f, 0.11f, 0.12f, 1.f)),
-		});
+	FMeshRendingData MeshData;
+
+	float CHeight = 0.5f * InHeight;
+	float CWidth = 0.5f * InWidth;
+	float CDepth = 0.5f * InDepth;
+
+	//构建我们的顶点
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(-CWidth, -CHeight, -CDepth), XMFLOAT4(Colors::Pink)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(-CWidth, CHeight, -CDepth), XMFLOAT4(Colors::Bisque)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(CWidth, CHeight, -CDepth), XMFLOAT4(Colors::Khaki)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(CWidth, -CHeight, -CDepth), XMFLOAT4(Colors::Silver)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(-CWidth, -CHeight, CDepth), XMFLOAT4(Colors::Yellow)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(-CWidth, CHeight, CDepth), XMFLOAT4(Colors::RoyalBlue)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(CWidth, CHeight, CDepth), XMFLOAT4(Colors::DarkRed)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(CWidth, -CHeight, CDepth), XMFLOAT4(Colors::Teal)));
+
+	//构建我们的索引
+	//前
+	MeshData.IndexData.push_back(0); MeshData.IndexData.push_back(1); MeshData.IndexData.push_back(2);
+	MeshData.IndexData.push_back(0); MeshData.IndexData.push_back(2); MeshData.IndexData.push_back(3);
+
+	//后
+	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(6); MeshData.IndexData.push_back(5);
+	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(7); MeshData.IndexData.push_back(6);
+
+	//左
+	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(5); MeshData.IndexData.push_back(1);
+	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(1); MeshData.IndexData.push_back(0);
+
+	//右
+	MeshData.IndexData.push_back(3); MeshData.IndexData.push_back(2); MeshData.IndexData.push_back(6);
+	MeshData.IndexData.push_back(3); MeshData.IndexData.push_back(6); MeshData.IndexData.push_back(7);
+
+	//上
+	MeshData.IndexData.push_back(1); MeshData.IndexData.push_back(5); MeshData.IndexData.push_back(6);
+	MeshData.IndexData.push_back(1); MeshData.IndexData.push_back(6); MeshData.IndexData.push_back(2);
+
+	//下
+	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(0); MeshData.IndexData.push_back(3);
+	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(3); MeshData.IndexData.push_back(7);
 
 	CBoxMesh* Box = new CBoxMesh();
 
-	Box->BuildMesh(&MeshRenderingData);
+	Box->BuildMesh(&MeshData);
 
 	Box->Init();
 
