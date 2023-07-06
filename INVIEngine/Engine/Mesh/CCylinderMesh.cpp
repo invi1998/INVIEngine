@@ -53,6 +53,7 @@ CCylinderMesh* CCylinderMesh::CreateMesh(float InTopRadius, float InBottomRadius
 	// 弧度
 	float BetaValue = XM_2PI / static_cast<float>(InAxialSubdivision);
 
+	// 腰部顶点
 	for (uint32_t i = 0; i <= InHeightSubdivision; ++i)
 	{
 		float Y = (0.5f * InHeight) - HeightInterval * i;
@@ -61,9 +62,9 @@ CCylinderMesh* CCylinderMesh::CreateMesh(float InTopRadius, float InBottomRadius
 		{
 			MeshData.VertexData.push_back(FVertex(
 				XMFLOAT3(
-					Radius * cosf(BetaValue),	// x
+					Radius * cosf(j * BetaValue),	// x
 					Y,							// Y
-					Radius * sinf(BetaValue)	// z
+					Radius * sinf(j * BetaValue)	// z
 				),
 				XMFLOAT4(
 					j * 0.02f, i * 0.1f, (i + j) * 0.4f, 1.0f
@@ -71,6 +72,107 @@ CCylinderMesh* CCylinderMesh::CreateMesh(float InTopRadius, float InBottomRadius
 			));
 		}
 	}
+
+	// 绘制圆柱腰围 index
+	uint32_t VertexCircleNum = InAxialSubdivision + 1;
+	for (uint32_t i = 0; i < InHeightSubdivision; ++i)
+	{
+		for (uint32_t j = 0; j < InAxialSubdivision; ++j)
+		{
+			// 南北极中间绘制的面是四边形(而一个四边形又是由两个三角形组成的
+			// 三角形1
+			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
+			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j);
+			MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			// 三角形2
+			MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);
+			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
+			MeshData.IndexData.push_back(i * VertexCircleNum + j);
+		}
+	}
+
+	// 构建顶部
+	{
+		uint32_t Index = MeshData.VertexData.size();
+		float Y = 0.5f * InHeight;
+		for (uint32_t i = 0; i <= InAxialSubdivision; ++i)
+		{
+			MeshData.VertexData.push_back(FVertex(
+				XMFLOAT3(
+					InTopRadius * cosf(i * BetaValue),	// x
+					Y,							// Y
+					InTopRadius * sinf(i * BetaValue)	// z
+				),
+				XMFLOAT4(
+					0.12f, 0.21f, 0.84f, 1.0f
+				)
+			));
+		}
+
+		MeshData.VertexData.push_back(FVertex(
+			XMFLOAT3(
+				0.f,	// x
+				Y,	// Y
+				0.f	// z
+			),
+			XMFLOAT4(
+				0.92f, 0.1f, 0.21f, 1.0f
+			)
+		));
+
+		// index
+		float CenterPoint = MeshData.VertexData.size() - 1;
+		for (uint32_t i = 0; i < InAxialSubdivision; ++i)
+		{
+			// 因为DX是左手螺旋定则，所以需要逆时针绘制顶点，法线才能朝外
+			MeshData.IndexData.push_back(CenterPoint);
+			MeshData.IndexData.push_back(Index + i + 1);
+			MeshData.IndexData.push_back(Index + i);
+		}
+
+	}
+
+	// 构建底部
+	{
+		uint32_t Index = MeshData.VertexData.size();
+		float Y = -0.5f * InHeight;
+
+		for (uint32_t i = 0; i <= InAxialSubdivision; ++i)
+		{
+			MeshData.VertexData.push_back(FVertex(
+				XMFLOAT3(
+					InTopRadius * cosf(i * BetaValue),	// x
+					Y,							// Y
+					InTopRadius * sinf(i * BetaValue)	// z
+				),
+				XMFLOAT4(
+					0.12f, 0.81f, 0.4f, 1.0f
+				)
+			));
+		}
+
+		MeshData.VertexData.push_back(FVertex(
+			XMFLOAT3(
+				0.f,	// x
+				Y,	// Y
+				0.f	// z
+			),
+			XMFLOAT4(
+				0.92f, 0.1f, 0.21f, 1.0f
+			)
+		));
+
+		// index
+		float CenterPoint = MeshData.VertexData.size() - 1;
+		for (uint32_t i = 0; i < InAxialSubdivision; ++i)
+		{
+			// 因为DX是左手螺旋定则，所以需要逆时针绘制顶点，法线才能朝外
+			MeshData.IndexData.push_back(CenterPoint);
+			MeshData.IndexData.push_back(Index + i);
+			MeshData.IndexData.push_back(Index + i + 1);
+		}
+	}
+
 
 	CCylinderMesh* cylinderMesh = new CCylinderMesh();
 	cylinderMesh->BuildMesh(&MeshData);

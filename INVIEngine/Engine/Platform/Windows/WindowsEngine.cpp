@@ -5,6 +5,7 @@
 #include "Core/World.h"
 #include "Debug/EngineDebug.h"
 #include "Mesh/BoxMesh.h"
+#include "Mesh/CCylinderMesh.h"
 #include "Mesh/SphereMesh.h"
 #include "Rendering/Core/Rendering.h"
 
@@ -67,6 +68,8 @@ int CWindowsEngine::PostInit()
 		// CBoxMesh* BoxMesh = CBoxMesh::CreateMesh();
 
 		CSphereMesh* SphereMesh = new CSphereMesh();
+
+		// CCylinderMesh* BoxMesh = CCylinderMesh::CreateMesh(1.0f, 1.0f, 3.0f, 20, 20);
 
 		for (auto &temp : GObjects)
 		{
