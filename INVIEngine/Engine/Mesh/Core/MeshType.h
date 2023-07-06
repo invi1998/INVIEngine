@@ -9,6 +9,7 @@ struct FVertex
 
 	DirectX::XMFLOAT3 Position;		// 顶点位置
 	DirectX::XMFLOAT4 Color;		// 顶点颜色
+	DirectX::XMFLOAT3 Normal;		// 顶点法线
 };
 
 struct FMeshRendingData
