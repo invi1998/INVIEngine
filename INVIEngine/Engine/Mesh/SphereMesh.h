@@ -5,6 +5,7 @@ class CSphereMesh : public CMesh
 {
 public:
 	CSphereMesh();
+	CSphereMesh(float radius, uint32_t axial, uint32_t height);
 	~CSphereMesh() override;
 
 
@@ -16,6 +17,8 @@ public:
 	void PostDraw(float DeltaTime) override;
 	void BuildMesh(const FMeshRendingData* InRenderingData) override;
 
+	void BuildSphere();
+
 private:
 	float Radius;					// 半径
 	uint32_t AxialSubdivision;			// 轴向细分（垂直 纬线）
@@ -23,6 +26,8 @@ private:
 
 	float Theta;
 	float Beta;
+
+	FMeshRendingData MeshData;
 
 };
 
