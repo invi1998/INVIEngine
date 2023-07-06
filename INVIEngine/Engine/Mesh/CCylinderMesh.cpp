@@ -80,14 +80,26 @@ CCylinderMesh* CCylinderMesh::CreateMesh(float InTopRadius, float InBottomRadius
 		for (uint32_t j = 0; j < InAxialSubdivision; ++j)
 		{
 			// 南北极中间绘制的面是四边形(而一个四边形又是由两个三角形组成的
+
+			// 法线远离摄像机
 			// 三角形1
-			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j);
-			MeshData.IndexData.push_back(i * VertexCircleNum + j);
-			// 三角形2
-			MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			// MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			// MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j);
+			// MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
+			// // 三角形2
+			// MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			// MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
+			// MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);
+
+			 // 法线朝向自己
+			 // 三角形1
+			 MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
+			 MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j);
+			 MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			 // 三角形2
+			 MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);
+			 MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
+			 MeshData.IndexData.push_back(i * VertexCircleNum + j);
 		}
 	}
 
