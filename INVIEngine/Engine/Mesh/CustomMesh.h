@@ -16,5 +16,9 @@ public:
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
 	void BuildMesh(const FMeshRendingData* InRenderingData) override;
+
+	static CCustomMesh* CreateMesh(const std::string& InPath);
+
+	static bool LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRendingData &MeshData);
 };
 

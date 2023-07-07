@@ -8,6 +8,7 @@
 #include "Mesh/CCylinderMesh.h"
 #include "Mesh/ConeMesh.h"
 #include "Mesh/CPlaneMesh.h"
+#include "Mesh/CustomMesh.h"
 #include "Mesh/SphereMesh.h"
 #include "Rendering/Core/Rendering.h"
 
@@ -75,7 +76,9 @@ int CWindowsEngine::PostInit()
 
 		// CConeMesh* ConeMesh = CConeMesh::CreateMesh(2.5f, 4.0f, 20, 10);
 
-		CPlaneMesh* PlaneMesh = CPlaneMesh::CreateMesh(4.0f, 4.0f, 20, 20);
+		// CPlaneMesh* PlaneMesh = CPlaneMesh::CreateMesh(4.0f, 4.0f, 20, 20);
+
+		CCustomMesh* Pokemon = CCustomMesh::CreateMesh("Asserts/Mesh/ball.obj");
 
 		for (auto &temp : GObjects)
 		{
