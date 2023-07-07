@@ -7,6 +7,7 @@
 #include "Mesh/BoxMesh.h"
 #include "Mesh/CCylinderMesh.h"
 #include "Mesh/ConeMesh.h"
+#include "Mesh/CPlaneMesh.h"
 #include "Mesh/SphereMesh.h"
 #include "Rendering/Core/Rendering.h"
 
@@ -66,13 +67,15 @@ int CWindowsEngine::PostInit()
 
 	{
 		// ¹¹½¨Mesh
-		CBoxMesh* BoxMesh = CBoxMesh::CreateMesh(1.3f, 2.4f, 3.1f);
+		// CBoxMesh* BoxMesh = CBoxMesh::CreateMesh(1.3f, 2.4f, 3.1f);
 
 		// CSphereMesh* SphereMesh = new CSphereMesh();
 
 		// CCylinderMesh* BoxMesh = CCylinderMesh::CreateMesh(1.0f, 1.0f, 3.0f, 40, 20);
 
 		// CConeMesh* ConeMesh = CConeMesh::CreateMesh(2.5f, 4.0f, 20, 10);
+
+		CPlaneMesh* PlaneMesh = CPlaneMesh::CreateMesh(4.0f, 4.0f, 20, 20);
 
 		for (auto &temp : GObjects)
 		{
