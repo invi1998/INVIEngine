@@ -56,7 +56,7 @@ public:
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	CMesh* CreateMesh(string& InPath);
+	CMesh* CreateMesh(const string& InPath);
 
 protected:
 	template<class T, typename ...ParamTypes>

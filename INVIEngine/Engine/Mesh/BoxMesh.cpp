@@ -23,7 +23,7 @@ void CBoxMesh::Draw(float DeltaTime)
 	Super::Draw(DeltaTime);
 }
 
-CBoxMesh* CBoxMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth)
+void CBoxMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth)
 {
 	float CHeight = 0.5f * InHeight;
 	float CWidth = 0.5f * InWidth;

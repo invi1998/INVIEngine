@@ -39,7 +39,7 @@ void CCylinderMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CCylinderMesh* CCylinderMesh::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, float InBottomRadius, float InHeight,
+void CCylinderMesh::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, float InBottomRadius, float InHeight,
 	uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
 {
 

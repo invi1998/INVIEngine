@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineMinimal.h"
+#include "Mesh/Core/MeshManager.h"
 #include "Rendering/Engine/Core/RenderingEngine.h"
 
 class CDirectXRenderingEngine : public CRenderingEngine
@@ -67,8 +68,6 @@ protected:
 	D3D12_RECT ViewPortRect;			// 视口裁剪矩形
 
 protected:
-	// 主窗口句柄
-	HWND MainWindowHandle;
 
 	// 当前采样的质量级别(4采样数的质量级别）
 	UINT M4XNumQualityLevels;
@@ -82,7 +81,7 @@ protected:
 
 	UINT RTVDescriptorSize;			// RTV描述符大小
 
-	CMeshManage* MeshManage;
+	CMeshManager* MeshManage;
 
 };
 

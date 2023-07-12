@@ -39,7 +39,7 @@ void CCustomMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CCustomMesh* CCustomMesh::CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath)
+void CCustomMesh::CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath)
 {
 	{
 		// 获取文件大小

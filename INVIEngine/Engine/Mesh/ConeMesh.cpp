@@ -39,7 +39,7 @@ void CConeMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CConeMesh* CConeMesh::CreateMesh(FMeshRenderingData& MeshData, float InBottomRadius, float InHeight, uint32_t InAxialSubdivision,
+void CConeMesh::CreateMesh(FMeshRenderingData& MeshData, float InBottomRadius, float InHeight, uint32_t InAxialSubdivision,
 	uint32_t InHeightSubdivision)
 {
 

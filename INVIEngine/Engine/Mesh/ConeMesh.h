@@ -15,7 +15,7 @@ public:
 	void PostDraw(float DeltaTime) override;
 	void BuildMesh(const FMeshRenderingData* InRenderingData) override;
 
-	static CConeMesh* CreateMesh(
+	void CreateMesh(
 		FMeshRenderingData& MeshData,
 		float InBottomRadius,			// Ô²Öùµ×²¿°ë¾¶
 		float InHeight,					// ¸ß¶È

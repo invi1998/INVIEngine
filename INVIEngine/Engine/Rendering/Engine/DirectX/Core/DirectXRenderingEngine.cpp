@@ -11,12 +11,15 @@ CDirectXRenderingEngine::CDirectXRenderingEngine()
 	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
 	DepthStencilFormat(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT)
 {
-	bTick = false;
 
 	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
 	{
 		SwapChainBuffer.push_back(ComPtr<ID3D12Resource>());
 	}
+
+	bTick = false;
+
+	MeshManage = new CMeshManager();
 
 }
 
@@ -40,6 +43,8 @@ int CDirectXRenderingEngine::Init(FWinMainCommandParameters InParameters)
 	PostInitDirect3D();
 
 	MeshManage->Init();
+
+	return 0;
 }
 
 int CDirectXRenderingEngine::PostInit()
@@ -49,22 +54,19 @@ int CDirectXRenderingEngine::PostInit()
 
 	{
 		// 构建Mesh
-		// CBoxMesh* BoxMesh = CBoxMesh::CreateMesh(1.3f, 2.4f, 3.1f);
+		// MeshManage->CreateBoxMesh(1.3f, 2.4f, 3.1f);
+		// 
+		// MeshManage->CreateSphereMesh(2.0f, 40, 40);
+		// 
+		// MeshManage->CreateCylinderMesh(1.0f, 1.0f, 3.0f, 40, 20);
+		// 
+		// MeshManage->CreateConeMesh(2.5f, 4.0f, 20, 10);
+		// 
+		// MeshManage->CreatePlaneMesh(4.0f, 4.0f, 20, 20);
+		// 
+		// MeshManage->CreateMesh("Asserts/Mesh/ball.obj");
 
-		// CSphereMesh* SphereMesh = new CSphereMesh();
-
-		// CCylinderMesh* BoxMesh = CCylinderMesh::CreateMesh(1.0f, 1.0f, 3.0f, 40, 20);
-
-		// CConeMesh* ConeMesh = CConeMesh::CreateMesh(2.5f, 4.0f, 20, 10);
-
-		// CPlaneMesh* PlaneMesh = CPlaneMesh::CreateMesh(4.0f, 4.0f, 20, 20);
-
-		CCustomMesh* Pokemon = CCustomMesh::CreateMesh("Asserts/Mesh/ball.obj");
-
-		for (auto& temp : GObjects)
-		{
-			temp->BeginInit();
-		}
+		MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f);
 	}
 
 	ANALYSIS_RESULT(GraphicsCommandList->Close());
@@ -75,6 +77,8 @@ int CDirectXRenderingEngine::PostInit()
 	WaitGPUCommandQueueComplete();
 
 	ENGINE_LOG("引擎post初始化完毕");
+
+	return 0;
 }
 
 void CDirectXRenderingEngine::Tick(float DeltaTime)
@@ -163,14 +167,17 @@ void CDirectXRenderingEngine::Tick(float DeltaTime)
 
 int CDirectXRenderingEngine::PreExit()
 {
+	return 0;
 }
 
 int CDirectXRenderingEngine::Exit()
 {
+	return 0;
 }
 
 int CDirectXRenderingEngine::PostExit()
 {
+	return 0;
 }
 
 ID3D12Resource* CDirectXRenderingEngine::GetCurrentSwapBuffer() const
@@ -377,7 +384,7 @@ bool CDirectXRenderingEngine::InitDirect3D()
 	// 设置纹理
 	SwapChainDesc.BufferDesc.Format = BackBufferFormat;		// 纹理格式
 	// 窗口设置
-	SwapChainDesc.OutputWindow = MainWindowHandle;		// 指定窗口句柄
+	SwapChainDesc.OutputWindow = MainWindowsHandle;		// 指定窗口句柄
 	SwapChainDesc.Windowed = true;						// 以窗口模式运行(false是全屏）
 	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;	// 强制刷新模式，在每次呈现新帧时都清空前缓冲区，不保留其内容。这是最常见的交换方式，也是默认值。
 	SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // 允许显示模式切换 (即允许我们自由的切换显示窗口，想全屏就全屏，想窗口就窗口）

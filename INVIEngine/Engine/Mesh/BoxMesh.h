@@ -16,6 +16,6 @@ public:
 
 	virtual void Draw(float DeltaTime) override;
 
-	static CBoxMesh* CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth);
+	void CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth);
 };
 

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Core/Engine.h"
-#include "Rendering/Engine/DirectX/Core/DirectXRenderingEngine.h"
+
+class CDirectXRenderingEngine;
 
 class CWindowsEngine : public CEngine
 {

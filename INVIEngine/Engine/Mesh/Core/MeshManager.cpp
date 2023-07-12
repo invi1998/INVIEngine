@@ -1,5 +1,6 @@
 #include "MeshManager.h"
 
+#include "ObjectTransformation.h"
 #include "Config/EngineRenderConfig.h"
 #include "Mesh/BoxMesh.h"
 #include "Mesh/CCylinderMesh.h"
@@ -7,6 +8,7 @@
 #include "Mesh/CPlaneMesh.h"
 #include "Mesh/CustomMesh.h"
 #include "Mesh/SphereMesh.h"
+#include "Rendering/Engine/DirectX/Core/DirectXRenderingEngine.h"
 
 CMeshManager::CMeshManager()
 	: IndexSize(0), VertexSizeInBytes(0), VertexStrideInBytes(0), IndexSizeInBytes(0), IndexFormat(DXGI_FORMAT_R16_UINT),
@@ -338,7 +340,7 @@ CMesh* CMeshManager::CreateSphereMesh(float InRadius, uint32_t InAxialSubdivisio
 	return CreateMesh<CSphereMesh>(InRadius, InAxialSubdivision, InHeightSubdivision);
 }
 
-CMesh* CMeshManager::CreateMesh(string& InPath)
+CMesh* CMeshManager::CreateMesh(const string& InPath)
 {
 	return CreateMesh<CCustomMesh>(InPath);
 }

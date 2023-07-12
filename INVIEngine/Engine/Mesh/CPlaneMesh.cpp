@@ -39,7 +39,7 @@ void CPlaneMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CPlaneMesh* CPlaneMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide)
+void CPlaneMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide)
 {
 
 	auto SubdivideValue = [&](float InValue, uint32_t InSubdivideValue)-> float
