@@ -5,15 +5,6 @@
 #include "Rendering/Core/Rendering.h"
 #include "Shader/Core/Shader.h"
 
-struct FObjectTransformation
-{
-	FObjectTransformation();
-
-	XMFLOAT4X4 World;
-
-	static XMFLOAT4X4 IdentityMatrix4X4();	// µ•ŒªªØ4x4æÿ’Û
-};
-
 class CMesh : public CCoreMinimalObject, public IRenderingInterface
 {
 public:
@@ -26,7 +17,7 @@ public:
 	virtual void Draw(float DeltaTime) override;
 	virtual void PostDraw(float DeltaTime) override;
 
-	virtual void BuildMesh(const FMeshRendingData* InRenderingData);
+	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
 	
 
 };

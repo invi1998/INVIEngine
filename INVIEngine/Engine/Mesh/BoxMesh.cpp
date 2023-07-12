@@ -13,7 +13,7 @@ void CBoxMesh::Init()
 	Super::Init();
 }
 
-void CBoxMesh::BuildMesh(const FMeshRendingData* InRenderingData)
+void CBoxMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
 	Super::BuildMesh(InRenderingData);
 }
@@ -23,10 +23,8 @@ void CBoxMesh::Draw(float DeltaTime)
 	Super::Draw(DeltaTime);
 }
 
-CBoxMesh* CBoxMesh::CreateMesh(float InHeight, float InWidth, float InDepth)
+CBoxMesh* CBoxMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth)
 {
-	FMeshRendingData MeshData;
-
 	float CHeight = 0.5f * InHeight;
 	float CWidth = 0.5f * InWidth;
 	float CDepth = 0.5f * InDepth;
@@ -66,12 +64,5 @@ CBoxMesh* CBoxMesh::CreateMesh(float InHeight, float InWidth, float InDepth)
 	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(0); MeshData.IndexData.push_back(3);
 	MeshData.IndexData.push_back(4); MeshData.IndexData.push_back(3); MeshData.IndexData.push_back(7);
 
-	CBoxMesh* Box = new CBoxMesh();
-
-	Box->BuildMesh(&MeshData);
-
-	Box->Init();
-
-	return Box;
-
 }
+

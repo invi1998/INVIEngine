@@ -34,14 +34,13 @@ void CPlaneMesh::PostDraw(float DeltaTime)
 	CMesh::PostDraw(DeltaTime);
 }
 
-void CPlaneMesh::BuildMesh(const FMeshRendingData* InRenderingData)
+void CPlaneMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CPlaneMesh* CPlaneMesh::CreateMesh(float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide)
+CPlaneMesh* CPlaneMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide)
 {
-	FMeshRendingData MeshData;
 
 	auto SubdivideValue = [&](float InValue, uint32_t InSubdivideValue)-> float
 	{
@@ -96,11 +95,5 @@ CPlaneMesh* CPlaneMesh::CreateMesh(float InHeight, float InWidth, uint32_t InHei
 			MeshData.IndexData.push_back((i + 1) * InWidthSubdivide + j);
 		}
 	}
-
-	CPlaneMesh* PlaneMesh = new CPlaneMesh();
-	PlaneMesh->BuildMesh(&MeshData);
-
-	PlaneMesh->Init();
-
-	return PlaneMesh;
+	
 }

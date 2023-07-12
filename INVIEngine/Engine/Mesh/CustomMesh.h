@@ -15,10 +15,10 @@ public:
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
-	void BuildMesh(const FMeshRendingData* InRenderingData) override;
+	void BuildMesh(const FMeshRenderingData* InRenderingData) override;
 
-	static CCustomMesh* CreateMesh(const std::string& InPath);
+	static CCustomMesh* CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath);
 
-	static bool LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRendingData &MeshData);
+	static bool LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData &MeshData);
 };
 

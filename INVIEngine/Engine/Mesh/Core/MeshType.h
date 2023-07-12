@@ -12,10 +12,10 @@ struct FVertex
 	DirectX::XMFLOAT3 Normal;		// 顶点法线
 };
 
-struct FMeshRendingData
+struct FMeshRenderingData
 {
-	FMeshRendingData() = default;
-	FMeshRendingData(const std::vector<uint16_t>& Index, const std::initializer_list<FVertex>& Vertex);
+	FMeshRenderingData() = default;
+	FMeshRenderingData(const std::vector<uint16_t>& Index, const std::initializer_list<FVertex>& Vertex);
 
 	std::vector<uint16_t> IndexData;	// 索引数据
 	std::vector<FVertex> VertexData;	// 顶点数据

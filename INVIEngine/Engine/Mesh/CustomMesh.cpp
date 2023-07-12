@@ -34,15 +34,13 @@ void CCustomMesh::PostDraw(float DeltaTime)
 	CMesh::PostDraw(DeltaTime);
 }
 
-void CCustomMesh::BuildMesh(const FMeshRendingData* InRenderingData)
+void CCustomMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CCustomMesh* CCustomMesh::CreateMesh(const std::string& InPath)
+CCustomMesh* CCustomMesh::CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath)
 {
-	FMeshRendingData MeshData;
-
 	{
 		// 获取文件大小
 		unsigned int FileSize = get_file_size_by_filename(InPath.c_str());
@@ -59,16 +57,9 @@ CCustomMesh* CCustomMesh::CreateMesh(const std::string& InPath)
 
 		delete Buffer;
 	}
-
-	CCustomMesh* CustomMesh = new CCustomMesh();
-	CustomMesh->BuildMesh(&MeshData);
-
-	CustomMesh->Init();
-
-	return CustomMesh;
 }
 
-bool CCustomMesh::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRendingData& MeshData)
+bool CCustomMesh::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData)
 {
 	if (InBufferSize > 0)
 	{

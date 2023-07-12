@@ -12,8 +12,8 @@ public:
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
-	void BuildMesh(const FMeshRendingData* InRenderingData) override;
+	void BuildMesh(const FMeshRenderingData* InRenderingData) override;
 
-	static CPlaneMesh* CreateMesh(float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide);
+	static CPlaneMesh* CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide);
 };
 

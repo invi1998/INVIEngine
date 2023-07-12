@@ -5,7 +5,7 @@ FVertex::FVertex(const DirectX::XMFLOAT3& InPos, const DirectX::XMFLOAT4& InColo
 {
 }
 
-FMeshRendingData::FMeshRendingData(const std::vector<uint16_t>& Index, const std::initializer_list<FVertex>& Vertex)
+FMeshRenderingData::FMeshRenderingData(const std::vector<uint16_t>& Index, const std::initializer_list<FVertex>& Vertex)
 		: IndexData(Index), VertexData(Vertex)
 {
 }

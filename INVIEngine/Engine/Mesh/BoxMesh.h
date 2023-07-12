@@ -12,10 +12,10 @@ public:
 
 	virtual void Init() override;
 
-	virtual void BuildMesh(const FMeshRendingData* InRenderingData) override;
+	virtual void BuildMesh(const FMeshRenderingData* InRenderingData) override;
 
 	virtual void Draw(float DeltaTime) override;
 
-	static CBoxMesh* CreateMesh(float InHeight, float InWidth, float InDepth);
+	static CBoxMesh* CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth);
 };
 

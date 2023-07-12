@@ -24,6 +24,7 @@ public:
 	// ³õÊ¼»¯´°¿Ú
 	bool InitWindows(FWinMainCommandParameters InParameters);
 
+	CDirectXRenderingEngine* GetRenderingEngine() { return RenderingEngine; }
 
 protected:
 	HWND MainWindowsHandle;

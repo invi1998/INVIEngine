@@ -13,9 +13,10 @@ public:
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
-	void BuildMesh(const FMeshRendingData* InRenderingData) override;
+	void BuildMesh(const FMeshRenderingData* InRenderingData) override;
 
 	static CConeMesh* CreateMesh(
+		FMeshRenderingData& MeshData,
 		float InBottomRadius,			// 圆柱底部半径
 		float InHeight,					// 高度
 		uint32_t InAxialSubdivision,	// 轴向细分

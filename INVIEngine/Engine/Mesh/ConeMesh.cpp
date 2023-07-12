@@ -34,15 +34,14 @@ void CConeMesh::PostDraw(float DeltaTime)
 	CMesh::PostDraw(DeltaTime);
 }
 
-void CConeMesh::BuildMesh(const FMeshRendingData* InRenderingData)
+void CConeMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CConeMesh* CConeMesh::CreateMesh(float InBottomRadius, float InHeight, uint32_t InAxialSubdivision,
+CConeMesh* CConeMesh::CreateMesh(FMeshRenderingData& MeshData, float InBottomRadius, float InHeight, uint32_t InAxialSubdivision,
 	uint32_t InHeightSubdivision)
 {
-	FMeshRendingData MeshData;
 
 	// °ë¾¶¼ä¸ô
 	float RadiusInterval =  -InBottomRadius / static_cast<float>(InHeightSubdivision);
@@ -111,12 +110,4 @@ CConeMesh* CConeMesh::CreateMesh(float InBottomRadius, float InHeight, uint32_t 
 		MeshData.IndexData.push_back(BaseIndex + Index);
 		MeshData.IndexData.push_back(BaseIndex + Index + 1);
 	}
-
-
-	CConeMesh* ConeMesh = new CConeMesh();
-	ConeMesh->BuildMesh(&MeshData);
-
-	ConeMesh->Init();
-
-	return ConeMesh;
 }

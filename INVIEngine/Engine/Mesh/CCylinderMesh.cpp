@@ -34,15 +34,14 @@ void CCylinderMesh::PostDraw(float DeltaTime)
 	CMesh::PostDraw(DeltaTime);
 }
 
-void CCylinderMesh::BuildMesh(const FMeshRendingData* InRenderingData)
+void CCylinderMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
 	CMesh::BuildMesh(InRenderingData);
 }
 
-CCylinderMesh* CCylinderMesh::CreateMesh(float InTopRadius, float InBottomRadius, float InHeight,
+CCylinderMesh* CCylinderMesh::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, float InBottomRadius, float InHeight,
 	uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
 {
-	FMeshRendingData MeshData;
 
 	// °ë¾¶¼ä¸ô
 	float RadiusInterval = (InTopRadius - InBottomRadius) / static_cast<float>(InHeightSubdivision);
@@ -184,12 +183,4 @@ CCylinderMesh* CCylinderMesh::CreateMesh(float InTopRadius, float InBottomRadius
 			MeshData.IndexData.push_back(Index + i + 1);
 		}
 	}
-
-
-	CCylinderMesh* cylinderMesh = new CCylinderMesh();
-	cylinderMesh->BuildMesh(&MeshData);
-
-	cylinderMesh->Init();
-
-	return cylinderMesh;
 }

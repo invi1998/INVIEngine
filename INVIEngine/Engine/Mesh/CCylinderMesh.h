@@ -14,9 +14,10 @@ public:
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
-	void BuildMesh(const FMeshRendingData* InRenderingData) override;
+	void BuildMesh(const FMeshRenderingData* InRenderingData) override;
 
 	static CCylinderMesh* CreateMesh(
+		FMeshRenderingData& MeshData,
 		float InTopRadius,				// Ô²Öù¶¥²¿°ë¾¶
 		float InBottomRadius,			// Ô²Öùµ×²¿°ë¾¶
 		float InHeight,					// ¸ß¶È

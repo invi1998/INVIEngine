@@ -18,6 +18,8 @@ public:
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
 
+	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
+
 
 	// 获取顶点buff视图
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView();
