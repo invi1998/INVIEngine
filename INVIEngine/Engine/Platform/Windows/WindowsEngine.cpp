@@ -88,17 +88,23 @@ void CWindowsEngine::Tick(float DeltaTime)
 
 int CWindowsEngine::PreExit()
 {
+	RenderingEngine->PreExit();
+
 	return 0;
 }
 
 int CWindowsEngine::Exit()
 {
+	RenderingEngine->Exit();
+
 	return 0;
 }
 
 int CWindowsEngine::PostExit()
 {
 	FEngineRenderConfig::Destroy();
+
+	RenderingEngine->PostExit();
 
 	return 0;
 }

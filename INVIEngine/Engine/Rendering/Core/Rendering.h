@@ -5,7 +5,7 @@
 
 class IRenderingInterface // : public IGuidInterface
 {
-	friend class CWindowsEngine;
+	friend class CDirectXRenderingEngine;
 
 public:
 	IRenderingInterface();

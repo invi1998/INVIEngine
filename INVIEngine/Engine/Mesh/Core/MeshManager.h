@@ -5,6 +5,7 @@
 
 #include "Rendering/Core/Rendering.h"
 #include "Rendering/Core/RenderingResourcesUpdate.h"
+#include "Shader/Core/Shader.h"
 
 class CMeshManager : public CCoreMinimalObject, public IRenderingInterface
 {

@@ -1,9 +1,7 @@
 #pragma once
 
 #include "MeshType.h"
-#include "Core/Engine.h"
 #include "Rendering/Core/Rendering.h"
-#include "Shader/Core/Shader.h"
 
 class CMesh : public CCoreMinimalObject, public IRenderingInterface
 {

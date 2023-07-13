@@ -19,8 +19,7 @@ CMeshManager::CMeshManager()
 }
 
 CMeshManager::~CMeshManager()
-{
-}
+= default;
 
 void CMeshManager::BeginInit()
 {
@@ -345,7 +344,7 @@ CMesh* CMeshManager::CreateMesh(const string& InPath)
 	return CreateMesh<CCustomMesh>(InPath);
 }
 
-template <class T, typename ... ParamTypes>
+template <typename T, typename ... ParamTypes>
 T* CMeshManager::CreateMesh(ParamTypes&&... Params)
 {
 	T* MyMesh = new T();
