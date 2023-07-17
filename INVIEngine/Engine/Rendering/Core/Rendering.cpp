@@ -109,6 +109,19 @@ ComPtr<ID3D12Resource> IRenderingInterface::ConstructDefaultBuffer(ComPtr<ID3D12
 	return Buffer;
 }
 
+ComPtr<ID3D12Fence> IRenderingInterface::GetFence()
+{
+	if (CWindowsEngine* InEngine = GetEngine())
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->Fence;
+		}
+	}
+
+	return nullptr;
+}
+
 ComPtr<ID3D12Device> IRenderingInterface::GetD3dDevice()
 {
 	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
@@ -148,7 +161,46 @@ ComPtr<ID3D12CommandAllocator> IRenderingInterface::GetCommandAllocator()
 	return nullptr;
 }
 
-CWindowsEngine* IRenderingInterface::GetEngine() const
+ComPtr<ID3D12CommandQueue> IRenderingInterface::GetCommandQueue()
+{
+	if (CWindowsEngine* InEngine = GetEngine())
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->CommandQueue;
+		}
+	}
+
+	return nullptr;
+}
+
+UINT64 IRenderingInterface::GetCurrentFenceIndex()
+{
+	if (CWindowsEngine* InEngine = GetEngine())
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->CurrentFenceIndex;
+		}
+	}
+
+	return 0;
+}
+
+HWND IRenderingInterface::GetMainWindowsHandle()
+{
+	if (CWindowsEngine* InEngine = GetEngine())
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->MainWindowsHandle;
+		}
+	}
+
+	return nullptr;
+}
+
+CWindowsEngine* IRenderingInterface::GetEngine()
 {
 	return dynamic_cast<CWindowsEngine*>(Engine);
 }

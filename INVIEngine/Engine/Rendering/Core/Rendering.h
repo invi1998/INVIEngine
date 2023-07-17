@@ -5,7 +5,8 @@
 
 class IRenderingInterface // : public IGuidInterface
 {
-	friend class CDirectXRenderingEngine;
+	// friend class CDirectXRenderingEngine;
+	friend class IDirectXDeviceInterface;
 
 public:
 	IRenderingInterface();
@@ -21,13 +22,18 @@ protected:
 	// 构造默认缓冲区
 	ComPtr<ID3D12Resource> ConstructDefaultBuffer(ComPtr<ID3D12Resource>& OutTempBuffer, const void* InData, UINT64 InDataSize);
 
-protected:
-
+	ComPtr<ID3D12Fence> GetFence();
 	ComPtr<ID3D12Device> GetD3dDevice();
+
 	ComPtr<ID3D12GraphicsCommandList> GetD3dGraphicsCommandList();
 	ComPtr<ID3D12CommandAllocator> GetCommandAllocator();
+	ComPtr<ID3D12CommandQueue> GetCommandQueue();
 
-	[[nodiscard]] CWindowsEngine* GetEngine() const;
+	UINT64 GetCurrentFenceIndex();
+
+	HWND GetMainWindowsHandle();
+
+	[[nodiscard]] CWindowsEngine* GetEngine();
 
 //private:
 //	static std::vector<IRenderingInterface*> RenderingInterface;

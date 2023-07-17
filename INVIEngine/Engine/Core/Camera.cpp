@@ -34,8 +34,8 @@ void CCamera::ExecuteInput(const FInput& Input)
 
 void CCamera::OnMouseButtonDown(int x, int y)
 {
-	LastMousePosition.x = x;
-	LastMousePosition.y = y;
+	// LastMousePosition.x = x;
+	// LastMousePosition.y = y;
 }
 
 void CCamera::OnMouseButtonUp(int x, int y)
