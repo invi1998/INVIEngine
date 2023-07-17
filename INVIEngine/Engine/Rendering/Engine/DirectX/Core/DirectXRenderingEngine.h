@@ -8,6 +8,8 @@ class CDirectXRenderingEngine : public CRenderingEngine
 {
 	friend class IRenderingInterface;
 
+	friend class IDirectXDeviceInterface;
+
 public:
 	CDirectXRenderingEngine();
 	~CDirectXRenderingEngine();

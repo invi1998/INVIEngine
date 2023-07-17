@@ -8,6 +8,7 @@
 #include "Mesh/CPlaneMesh.h"
 #include "Mesh/CustomMesh.h"
 #include "Mesh/SphereMesh.h"
+#include "Rendering/Core/Buffer/ConstructBuffer.h"
 #include "Rendering/Engine/DirectX/Core/DirectXRenderingEngine.h"
 
 CMeshManager::CMeshManager()
@@ -234,8 +235,10 @@ void CMeshManager::BuildMesh(const FMeshRenderingData* InRenderingData)
 	ANALYSIS_RESULT(D3DCreateBlob(IndexSizeInBytes, &CPUIndexBufferPtr));
 	memcpy(CPUIndexBufferPtr->GetBufferPointer(), InRenderingData->IndexData.data(), IndexSizeInBytes);
 
-	GPUVertexBufferPtr = ConstructDefaultBuffer(TempVertexBufferPtr, InRenderingData->VertexData.data(), VertexSizeInBytes);
-	GPUIndexBufferPtr = ConstructDefaultBuffer(TempIndexBufferPtr, InRenderingData->IndexData.data(), IndexSizeInBytes);
+	ConstructBuffer::FConstructDefaultBuffer ConstructDefaultBuffer;
+
+	GPUVertexBufferPtr = ConstructDefaultBuffer.ConstructDefaultBuffer(TempVertexBufferPtr, InRenderingData->VertexData.data(), VertexSizeInBytes);
+	GPUIndexBufferPtr = ConstructDefaultBuffer.ConstructDefaultBuffer(TempIndexBufferPtr, InRenderingData->IndexData.data(), IndexSizeInBytes);
 
 	ANALYSIS_RESULT(D3DCreateBlob(IndexSizeInBytes, &CPUIndexBufferPtr));	// 创建一个二进制的缓冲区
 

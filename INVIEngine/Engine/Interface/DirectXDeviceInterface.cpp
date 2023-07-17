@@ -18,30 +18,85 @@ ComPtr<ID3D12Fence> IDirectXDeviceInterface::GetFence()
 
 ComPtr<ID3D12Device> IDirectXDeviceInterface::GetD3dDevice()
 {
+	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->D3dDevice;
+		}
+	}
+
+	return nullptr;
 }
 
 ComPtr<ID3D12GraphicsCommandList> IDirectXDeviceInterface::GetD3dGraphicsCommandList()
 {
+	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->GraphicsCommandList;
+		}
+	}
+
+	return nullptr;
 }
 
 ComPtr<ID3D12CommandAllocator> IDirectXDeviceInterface::GetCommandAllocator()
 {
+	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->CommandAllocator;
+		}
+	}
+
+	return nullptr;
 }
 
 ComPtr<ID3D12CommandQueue> IDirectXDeviceInterface::GetCommandQueue()
 {
+	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->CommandQueue;
+		}
+	}
+
+	return nullptr;
 }
 
 UINT64 IDirectXDeviceInterface::GetCurrentFenceIndex()
 {
+	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->GetRenderingEngine()->CurrentFenceIndex;
+		}
+	}
+
+	return 0;
 }
 
 HWND IDirectXDeviceInterface::GetMainWindowsHandle()
 {
+	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (InEngine->GetRenderingEngine())
+		{
+			return InEngine->MainWindowsHandle;
+		}
+	}
+
+	return HWND();
 }
 
 CWindowsEngine* IDirectXDeviceInterface::GetEngine()
 {
+	return dynamic_cast<CWindowsEngine*>(Engine);
 }
 
 
