@@ -19,6 +19,11 @@ public:
 	virtual void ExecuteInput(const FInput& Input);
 
 public:
+	virtual void OnMouseButtonDown(int x, int y);
+	virtual void OnMouseButtonUp(int x, int y);
+	virtual void OnMouseMove(int x, int y);
+
+public:
 
 	FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
 	FORCEINLINE CTransformationComponent* GetTransformationComponent() const { return TransformationComponent; }
