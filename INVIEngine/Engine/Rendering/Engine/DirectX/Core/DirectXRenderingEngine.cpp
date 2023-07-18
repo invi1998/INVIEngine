@@ -58,7 +58,7 @@ int CDirectXRenderingEngine::PostInit()
 		// 
 		// MeshManage->CreateSphereMesh(2.0f, 40, 40);
 		// 
-		// MeshManage->CreateCylinderMesh(1.0f, 1.0f, 3.0f, 40, 20);
+		MeshManage->CreateCylinderMesh(1.0f, 1.0f, 3.0f, 40, 20);
 		// 
 		// MeshManage->CreateConeMesh(2.5f, 4.0f, 20, 10);
 		// 
@@ -66,7 +66,7 @@ int CDirectXRenderingEngine::PostInit()
 		// 
 		// MeshManage->CreateMesh("Asserts/Mesh/ball.obj");
 
-		MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f);
+		// MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f);
 	}
 
 	ANALYSIS_RESULT(GraphicsCommandList->Close());
