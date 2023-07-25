@@ -16,12 +16,15 @@ public:
 	virtual void BeginInit() override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void ExecuteInput(const FInput& Input);
+	virtual void ExecuteInput(FInput& Input);
 
 public:
 	virtual void OnMouseButtonDown(int x, int y);
 	virtual void OnMouseButtonUp(int x, int y);
 	virtual void OnMouseMove(int x, int y);
+
+	virtual void MoveForward(float InValue);
+	virtual void MoveRight(float InValue);
 
 public:
 

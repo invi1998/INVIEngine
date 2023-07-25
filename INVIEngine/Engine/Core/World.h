@@ -11,6 +11,8 @@ public:
 	CWorld();
 	virtual ~CWorld() override;
 
+	CCamera* GetCamera() const { return Camera; }
+
 private:
 	CVARIABLE()
 		CCamera* Camera;

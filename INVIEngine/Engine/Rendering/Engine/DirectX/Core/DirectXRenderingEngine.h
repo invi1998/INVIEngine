@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineMinimal.h"
+#include "Core/ViewportInfo.h"
 #include "Mesh/Core/MeshManager.h"
 #include "Rendering/Engine/Core/RenderingEngine.h"
 
@@ -17,6 +18,8 @@ public:
 	virtual int PreInit(FWinMainCommandParameters InParameters) override;
 	virtual int Init(FWinMainCommandParameters InParameters) override;
 	virtual int PostInit() override;
+
+	virtual void UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info);
 
 	virtual void Tick(float DeltaTime) override;
 

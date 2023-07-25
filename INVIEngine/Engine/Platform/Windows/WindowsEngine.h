@@ -2,6 +2,7 @@
 
 #include "Core/Engine.h"
 
+class CWorld;
 class CDirectXRenderingEngine;
 
 class CWindowsEngine : public CEngine
@@ -33,4 +34,6 @@ protected:
 	HWND MainWindowsHandle;
 
 	CDirectXRenderingEngine* RenderingEngine;
+
+	CWorld* World;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineMinimal.h"
+#include "Core/ViewportInfo.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Mesh/Core/Mesh.h"
 
@@ -22,6 +23,7 @@ public:
 
 	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
 
+	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 	// 获取顶点buff视图
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView();
@@ -97,8 +99,6 @@ protected:
 	DXGI_FORMAT IndexFormat;	// 顶点索引数据格式（无符号16）
 
 	XMFLOAT4X4 WorldMatrix;			// 世界矩阵
-	XMFLOAT4X4 ViewMatrix;			// 视口矩阵
-	XMFLOAT4X4 ProjectionMatrix;	// 投影矩阵
 
 
 };

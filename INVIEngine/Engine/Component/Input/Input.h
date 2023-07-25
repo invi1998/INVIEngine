@@ -14,12 +14,15 @@ extern FCaptureOnMouseDelegate MouseMoveDelegate;		//  Û±Í“∆∂Ø
 class FInput
 {
 public:
-	static bool IsKeyPressed(KeyCode keycode);
-	static bool IsMouseButtonPressed(int button);
+	FInput() = default;
 
-	static float GetMouseX();
-	static float GetMouseY();
+public:
+	bool IsKeyPressed(KeyCode keycode);
+	bool IsMouseButtonPressed(int button);
 
-	static std::pair<float, float> GetMousePosition();
+	float GetMouseX();
+	float GetMouseY();
+
+	std::pair<float, float> GetMousePosition();
 };
 

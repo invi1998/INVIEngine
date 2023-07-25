@@ -2,6 +2,7 @@
 
 #include "WindowsMessageProcessing.h"
 #include "Config/EngineRenderConfig.h"
+#include "Core/Camera.h"
 #include "Core/World.h"
 #include "Debug/EngineDebug.h"
 #include "Mesh/BoxMesh.h"
@@ -48,7 +49,7 @@ int CWindowsEngine::Init(FWinMainCommandParameters InParameters)
 
 	RenderingEngine->Init(InParameters);
 
-	CWorld* world = CreateObject<CWorld>(new CWorld());
+	World = CreateObject<CWorld>(new CWorld());
 
 	ENGINE_LOG("引擎初始化完成");
 
@@ -80,10 +81,22 @@ void CWindowsEngine::Tick(float DeltaTime)
 		}
 	}
 
-	RenderingEngine->Tick(DeltaTime);
+	if (World)
+	{
+		if (World->GetCamera())
+		{
+			FViewportInfo viewPortInfo;
 
+			viewPortInfo.ViewMatrix = World->GetCamera()->ViewMatrix;
+			viewPortInfo.ProjectionMatrix = World->GetCamera()->ProjectionMatrix;
+
+			RenderingEngine->UpdateCalculations(DeltaTime, viewPortInfo);
+
+			RenderingEngine->Tick(DeltaTime);
+		}
+		
+	}
 	
-
 }
 
 int CWindowsEngine::PreExit()
