@@ -4,8 +4,8 @@
 #include "Mesh/Core/ObjectTransformation.h"
 
 FViewPort::FViewPort()
-	: ViewMatrix(FObjectTransformation::IdentityMatrix4X4()),
-	ProjectionMatrix(FObjectTransformation::IdentityMatrix4X4())
+	: ViewMatrix(EngineMath::IdentityMatrix4x4()),
+	ProjectionMatrix(EngineMath::IdentityMatrix4x4())
 {
 }
 

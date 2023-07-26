@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineMinimal.h"
-#include "Core/ViewportInfo.h"
+#include "Core/Viewport/ViewportInfo.h"
 #include "Mesh/Core/MeshManager.h"
 #include "Rendering/Engine/Core/RenderingEngine.h"
 

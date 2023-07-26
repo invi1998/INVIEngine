@@ -13,7 +13,7 @@
 
 CMeshManager::CMeshManager()
 	: IndexSize(0), VertexSizeInBytes(0), VertexStrideInBytes(0), IndexSizeInBytes(0), IndexFormat(DXGI_FORMAT_R16_UINT),
-	WorldMatrix(FObjectTransformation::IdentityMatrix4X4())
+	WorldMatrix(EngineMath::IdentityMatrix4x4())
 {
 }
 
