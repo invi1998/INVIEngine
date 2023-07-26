@@ -18,6 +18,8 @@ public:
 
 	virtual void ExecuteInput(FInput& Input);
 
+	void BuildViewMatrix(float DeltaTime);
+
 public:
 	virtual void OnMouseButtonDown(int x, int y);
 	virtual void OnMouseButtonUp(int x, int y);

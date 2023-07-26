@@ -29,6 +29,7 @@ void CCamera::BeginInit()
 
 void CCamera::Tick(float DeltaTime)
 {
+	BuildViewMatrix(DeltaTime);
 }
 
 void CCamera::ExecuteInput(FInput& Input)
@@ -56,6 +57,12 @@ void CCamera::ExecuteInput(FInput& Input)
 	
 }
 
+void CCamera::BuildViewMatrix(float DeltaTime)
+{
+	// ¹¹½¨viewMatrix
+	TransformationComponent->CalculateViewMatrix();
+}
+
 void CCamera::OnMouseButtonDown(int x, int y)
 {
 	// LastMousePosition.x = x;
@@ -72,7 +79,17 @@ void CCamera::OnMouseMove(int x, int y)
 
 void CCamera::MoveForward(float InValue)
 {
+	XMFLOAT3 AT3Pos = TransformationComponent->GetPosition();
+	XMFLOAT3 AT3Forward = TransformationComponent->GetPosition();
 
+	XMVECTOR AmountMovement = XMVectorReplicate(InValue * 10.f);
+
+	XMVECTOR Forward = XMLoadFloat3(&AT3Forward);
+	XMVECTOR Position = XMLoadFloat3(&AT3Pos);
+
+	XMStoreFloat3(&AT3Pos, XMVectorMultiplyAdd(AmountMovement, Forward, Position));
+
+	TransformationComponent->SetPosition(AT3Pos);
 }
 
 void CCamera::MoveRight(float InValue)
