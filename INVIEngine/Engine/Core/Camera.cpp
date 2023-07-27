@@ -60,7 +60,7 @@ void CCamera::ExecuteInput(FInput& Input)
 void CCamera::BuildViewMatrix(float DeltaTime)
 {
 	// ¹¹½¨viewMatrix
-	TransformationComponent->CalculateViewMatrix();
+	ViewMatrix = TransformationComponent->CalculateViewMatrix();
 }
 
 void CCamera::OnMouseButtonDown(int x, int y)

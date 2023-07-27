@@ -2,6 +2,7 @@
 
 #include "ObjectTransformation.h"
 #include "Config/EngineRenderConfig.h"
+#include "Core/Viewport/ViewportTransformation.h"
 #include "Mesh/BoxMesh.h"
 #include "Mesh/CCylinderMesh.h"
 #include "Mesh/ConeMesh.h"
@@ -73,7 +74,16 @@ void CMeshManager::Draw(float DeltaTime)
 	// 指定图元类型（点，线，面） 下面设置为 绘制由三角形构成的列表
 	GetD3dGraphicsCommandList()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, CBVHeap->GetGPUDescriptorHandleForHeapStart());
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, CBVHeap->GetGPUDescriptorHandleForHeapStart());		// 更新b0寄存器
+
+	// 计算第二个描述符在描述符堆中应该存放位置的偏移
+	int HeapOffset = 1;
+	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
+	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(CBVHeap->GetGPUDescriptorHandleForHeapStart());
+	DesHandle.Offset(HeapOffset, DescriptorOffset);
+
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(1, DesHandle);		// 更新b1寄存器
 
 	// 绘制图元（真实渲染模型）
 	GetD3dGraphicsCommandList()->DrawIndexedInstanced(
@@ -97,7 +107,7 @@ void CMeshManager::BuildMesh(const FMeshRenderingData* InRenderingData)
 
 	// 堆描述
 	D3D12_DESCRIPTOR_HEAP_DESC HeapDesc;
-	HeapDesc.NumDescriptors = 1;		// 描述数量 1
+	HeapDesc.NumDescriptors = 2;		// 描述数量 2
 	HeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;	// 指定堆类型，常量缓冲区视图，着色器资源视图，无序访问视图组合类型描述符
 	HeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;	// 指定标记，着色器可见
 	HeapDesc.NodeMask = 0;
@@ -107,34 +117,73 @@ void CMeshManager::BuildMesh(const FMeshRenderingData* InRenderingData)
 		IID_PPV_ARGS(&CBVHeap)
 	);
 
-	// 构建常量缓冲区描述符堆 CBVHeap
+	// 常量缓冲区1 object
+	{
+		// 构建常量缓冲区描述符堆 CBVHeap
 
-	ObjectConstants = std::make_shared<FRenderingResourcesUpdate>();
-	ObjectConstants->Init(GetD3dDevice().Get(), sizeof(FObjectTransformation), 1);
-	D3D12_GPU_VIRTUAL_ADDRESS ObAddr = ObjectConstants.get()->GetBuffer()->GetGPUVirtualAddress();
+		ObjectConstants = std::make_shared<FRenderingResourcesUpdate>();
+		ObjectConstants->Init(GetD3dDevice().Get(), sizeof(FObjectTransformation), 1);
+		D3D12_GPU_VIRTUAL_ADDRESS ObAddr = ObjectConstants.get()->GetBuffer()->GetGPUVirtualAddress();
 
-	// 常量缓冲区描述
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDes;
-	cbvDes.BufferLocation = ObAddr;		// 常量缓冲区地址
-	cbvDes.SizeInBytes = ObjectConstants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
+		// 常量缓冲区描述
+		D3D12_CONSTANT_BUFFER_VIEW_DESC CBVDes;
+		CBVDes.BufferLocation = ObAddr;		// 常量缓冲区地址
+		CBVDes.SizeInBytes = ObjectConstants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
 
-	GetD3dDevice()->CreateConstantBufferView(&cbvDes, CBVHeap->GetCPUDescriptorHandleForHeapStart());
+		GetD3dDevice()->CreateConstantBufferView(&CBVDes, CBVHeap->GetCPUDescriptorHandleForHeapStart());
+	}
+
+	// 常量缓冲区2 viewport
+	{
+		// 视口常量缓冲区
+		ViewportConstants = std::make_shared<FRenderingResourcesUpdate>();
+		ViewportConstants->Init(GetD3dDevice().Get(), sizeof(FViewportTransformation), 1);
+		D3D12_GPU_VIRTUAL_ADDRESS ViewportAddr = ViewportConstants.get()->GetBuffer()->GetGPUVirtualAddress();
+
+		// 计算第二个描述符在描述符堆中应该存放位置的偏移
+		int HeapOffset = 1;
+		// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
+		UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(CBVHeap->GetCPUDescriptorHandleForHeapStart());
+		DesHandle.Offset(HeapOffset, DescriptorOffset);
+
+		// 常量缓冲区描述
+		D3D12_CONSTANT_BUFFER_VIEW_DESC viewportCBVDes;
+		viewportCBVDes.BufferLocation = ViewportAddr;		// 常量缓冲区地址
+		viewportCBVDes.SizeInBytes = ViewportConstants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
+		// 传入我们计算好偏移值的handle
+		GetD3dDevice()->CreateConstantBufferView(&viewportCBVDes, DesHandle);
+	}
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建根签名
 
-	// CBV描述表
-	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
-	DescriptorRangeCBV.Init(
+	// 渲染对象（物体） CBV描述表
+	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeObjectCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
+	DescriptorRangeObjectCBV.Init(
 		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
 		1,									// 描述数量 1
 		0);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
+	// 视口 CBV描述表
+	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeViewportCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
+	DescriptorRangeViewportCBV.Init(
+		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
+		1,									// 描述数量 1
+		1);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
+
 	// 创建根参数，使用上面的描述符范围
-	CD3DX12_ROOT_PARAMETER RootParam[1];
+	CD3DX12_ROOT_PARAMETER RootParam[2];
 	RootParam[0].InitAsDescriptorTable(
 		1,							// 描述符数量
-		&DescriptorRangeCBV		// 指向描述符范围数组的指针
+		&DescriptorRangeObjectCBV		// 指向描述符范围数组的指针
+		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
+	);
+
+	RootParam[1].InitAsDescriptorTable(
+		1,							// 描述符数量
+		&DescriptorRangeViewportCBV		// 指向描述符范围数组的指针
 		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
 	);
 
@@ -142,7 +191,7 @@ void CMeshManager::BuildMesh(const FMeshRenderingData* InRenderingData)
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
-		1,			// 参数数量
+		2,			// 参数数量
 		RootParam,	// 根签名参数
 		0,			// 静态采样数量
 		nullptr,	// 静态采样数据
@@ -260,7 +309,7 @@ void CMeshManager::BuildMesh(const FMeshRenderingData* InRenderingData)
 
 void CMeshManager::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
-	XMUINT3 MeshPosition = XMUINT3(5.f, 5.f, 5.f);
+	/*XMUINT3 MeshPosition = XMUINT3(5.f, 5.f, 5.f);
 
 	XMVECTOR Pos = XMVectorSet(MeshPosition.x, MeshPosition.y, MeshPosition.z, 1.f);
 	XMVECTOR ViewTarget = XMVectorZero();
@@ -268,17 +317,27 @@ void CMeshManager::UpdateCalculations(float delta_time, const FViewportInfo& vie
 
 	XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
 
-	XMStoreFloat4x4(const_cast<XMFLOAT4X4*>(&viewport_info.ViewMatrix), ViewLookAt);
+	XMStoreFloat4x4(const_cast<XMFLOAT4X4*>(&viewport_info.ViewMatrix), ViewLookAt);*/
+
+	// 更新视口
+	XMMATRIX ProjectionMatrix = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);	// 投影矩阵
+	XMMATRIX ViewMatrix = XMLoadFloat4x4(&viewport_info.ViewMatrix);				// 视口矩阵
 
 	XMMATRIX MatrixWorld = XMLoadFloat4x4(&WorldMatrix);
-	XMMATRIX MatrixProjection = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);
-
-	XMMATRIX wvp = MatrixWorld * ViewLookAt * MatrixProjection;
 
 	FObjectTransformation OBJTransformation;
-	XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(wvp));
+	XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(MatrixWorld));
 
 	ObjectConstants->Update(0, &OBJTransformation);
+
+
+	XMMATRIX ViewProjectionMatrix = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
+
+	FViewportTransformation ViewportTransformation;
+	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjectionMatrix));	// 存储之前记得对矩阵进行转置
+
+	ViewportConstants->Update(1, &ViewportTransformation);
+
 }
 
 D3D12_VERTEX_BUFFER_VIEW CMeshManager::GetVertexBufferView()

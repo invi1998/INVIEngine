@@ -82,7 +82,8 @@ protected:
 
 	ComPtr<ID3D12DescriptorHeap> CBVHeap;			// CPU 描述符句柄，用于指定要创建的常量缓冲区视图所在的描述符堆位置
 
-	std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;	// 对象常量（指向上传堆）
+	std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;		// 对象常量（指向上传堆）
+	std::shared_ptr<FRenderingResourcesUpdate> ViewportConstants;	// 视口对象常量（指向上传堆）
 
 	FShader VertexShader;	// 顶点着色器
 	FShader PixelShader;	// 像素着色器
