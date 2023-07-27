@@ -331,12 +331,12 @@ void CMeshManager::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	ObjectConstants->Update(0, &OBJTransformation);
 
 
-	XMMATRIX ViewProjectionMatrix = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
+	XMMATRIX ViewProjection= XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
 
 	FViewportTransformation ViewportTransformation;
-	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjectionMatrix));	// 存储之前记得对矩阵进行转置
+	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
 
-	ViewportConstants->Update(1, &ViewportTransformation);
+	ViewportConstants->Update(0, &ViewportTransformation);
 
 }
 

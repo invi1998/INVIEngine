@@ -29,7 +29,7 @@ void CCamera::BeginInit()
 
 void CCamera::Tick(float DeltaTime)
 {
-	BuildViewMatrix(DeltaTime);
+	// BuildViewMatrix();
 }
 
 void CCamera::ExecuteInput(FInput& Input)
@@ -57,7 +57,7 @@ void CCamera::ExecuteInput(FInput& Input)
 	
 }
 
-void CCamera::BuildViewMatrix(float DeltaTime)
+void CCamera::BuildViewMatrix()
 {
 	// ¹¹½¨viewMatrix
 	ViewMatrix = TransformationComponent->CalculateViewMatrix();
@@ -90,6 +90,8 @@ void CCamera::MoveForward(float InValue)
 	XMStoreFloat3(&AT3Pos, XMVectorMultiplyAdd(AmountMovement, Forward, Position));
 
 	TransformationComponent->SetPosition(AT3Pos);
+
+	BuildViewMatrix();
 }
 
 void CCamera::MoveRight(float InValue)
