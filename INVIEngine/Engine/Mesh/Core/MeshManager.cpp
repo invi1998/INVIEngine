@@ -74,15 +74,16 @@ void CMeshManager::Draw(float DeltaTime)
 	// 指定图元类型（点，线，面） 下面设置为 绘制由三角形构成的列表
 	GetD3dGraphicsCommandList()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, CBVHeap->GetGPUDescriptorHandleForHeapStart());		// 更新b0寄存器
-
 	// 计算第二个描述符在描述符堆中应该存放位置的偏移
 	int HeapOffset = 1;
 	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(CBVHeap->GetGPUDescriptorHandleForHeapStart());
-	DesHandle.Offset(HeapOffset, DescriptorOffset);
 
+	DesHandle.Offset(0, DescriptorOffset);
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, DesHandle);		// 更新b0寄存器
+
+	DesHandle.Offset(1, DescriptorOffset);
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(1, DesHandle);		// 更新b1寄存器
 
 	// 绘制图元（真实渲染模型）
