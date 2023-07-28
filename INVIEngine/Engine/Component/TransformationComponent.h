@@ -13,10 +13,10 @@ public:
 	void SetRightVector(const XMFLOAT3& InRight);
 	void SetUpVector(const XMFLOAT3& InUp);
 
-	XMFLOAT3 GetPosition() const { return Position; }
-	XMFLOAT3 GetForwardVector() const { return ForwardVector; }
-	XMFLOAT3 GetRightVector() const { return RightVector; }
-	XMFLOAT3 GetUpVector() const { return UpVector; }
+	XMFLOAT3 &GetPosition() { return Position; }
+	XMFLOAT3 &GetForwardVector() { return ForwardVector; }
+	XMFLOAT3 &GetRightVector() { return RightVector; }
+	XMFLOAT3 &GetUpVector() { return UpVector; }
 
 public:
 	// Ð£Õý Up, Right, Look(Forward)

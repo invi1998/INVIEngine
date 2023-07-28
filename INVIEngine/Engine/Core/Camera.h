@@ -2,12 +2,13 @@
 #include "ColdeReflection/CodeReflectionMacro.h"
 #include "CoreObject/CoreMinimalObject.h"
 #include "Component/Input/Input.h"
+#include "Interface/DirectXDeviceInterface.h"
 #include "Viewport/ViewPort.h"
 
 class CInputComponent;
 class CTransformationComponent;
 
-class CCamera : public CCoreMinimalObject, public FViewPort
+class CCamera : public CCoreMinimalObject, public FViewPort, public IDirectXDeviceInterface
 {
 public:
 	CCamera();
@@ -33,6 +34,10 @@ public:
 	FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
 	FORCEINLINE CTransformationComponent* GetTransformationComponent() const { return TransformationComponent; }
 
+protected:
+	void RotateAroundYAxis(float InRotateDegrees);		// ÈÆYÖáÐý×ª
+	void RotateAroundZAxis(float InRotateDegrees);		// ÈÆZÖáÐý×ª
+
 
 private:
 	CVARIABLE();
@@ -40,5 +45,9 @@ private:
 
 	CVARIABLE();
 	CTransformationComponent* TransformationComponent;
+
+protected:
+	POINT LastMousePosition;
+	bool bIsLeftMouseDown = false;
 };
 

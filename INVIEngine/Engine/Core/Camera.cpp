@@ -65,16 +65,34 @@ void CCamera::BuildViewMatrix()
 
 void CCamera::OnMouseButtonDown(int x, int y)
 {
-	// LastMousePosition.x = x;
-	// LastMousePosition.y = y;
+	LastMousePosition.x = x;
+	LastMousePosition.y = y;
+
+	bIsLeftMouseDown = true;
+
+	// 设置捕获
+	SetCapture(GetMainWindowsHandle());
 }
 
 void CCamera::OnMouseButtonUp(int x, int y)
 {
+	bIsLeftMouseDown = false;
+	// 释放捕获
+	ReleaseCapture();
 }
 
 void CCamera::OnMouseMove(int x, int y)
 {
+	if (bIsLeftMouseDown)
+	{
+		float XRadians = XMConvertToRadians(static_cast<float>(x - LastMousePosition.x));
+		float YRadians = XMConvertToRadians(static_cast<float>(y - LastMousePosition.y));
+		RotateAroundYAxis(YRadians);
+		RotateAroundZAxis(XRadians);
+	}
+
+	LastMousePosition.x = x;
+	LastMousePosition.y = y;
 }
 
 void CCamera::MoveForward(float InValue)
@@ -109,4 +127,33 @@ void CCamera::MoveRight(float InValue)
 	TransformationComponent->SetPosition(AT3Pos);
 
 	BuildViewMatrix();
+}
+
+void CCamera::RotateAroundYAxis(float InRotateDegrees)
+{
+}
+
+void CCamera::RotateAroundZAxis(float InRotateDegrees)
+{
+	XMFLOAT3 RightVector = TransformationComponent->GetRightVector();
+	XMFLOAT3 UpVector = TransformationComponent->GetUpVector();
+	XMFLOAT3 ForwardVector = TransformationComponent->GetForwardVector();
+
+	// 传入弧度或得绕Z轴的旋转矩阵
+	XMMATRIX RotationZ = XMMatrixRotationZ(InRotateDegrees);
+
+	// 将摄像机的3个方向向量乘以旋转矩阵，或得计算机绕z轴旋转的向量结果
+	XMFLOAT3 Right, Up, Forward;
+
+	XMStoreFloat3(&Right, XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationZ));
+	TransformationComponent->SetRightVector(Right);
+
+	XMStoreFloat3(&Up, XMVector3TransformNormal(XMLoadFloat3(&UpVector), RotationZ));
+	TransformationComponent->SetRightVector(Up);
+
+	XMStoreFloat3(&Forward, XMVector3TransformNormal(XMLoadFloat3(&ForwardVector), RotationZ));
+	TransformationComponent->SetRightVector(Forward);
+
+	BuildViewMatrix();
+
 }
