@@ -80,9 +80,9 @@ void CCamera::OnMouseMove(int x, int y)
 void CCamera::MoveForward(float InValue)
 {
 	XMFLOAT3 AT3Pos = TransformationComponent->GetPosition();
-	XMFLOAT3 AT3Forward = TransformationComponent->GetPosition();
+	XMFLOAT3 AT3Forward = TransformationComponent->GetForwardVector();
 
-	XMVECTOR AmountMovement = XMVectorReplicate(InValue * 10.f);
+	XMVECTOR AmountMovement = XMVectorReplicate(InValue * 1.f);
 
 	XMVECTOR Forward = XMLoadFloat3(&AT3Forward);
 	XMVECTOR Position = XMLoadFloat3(&AT3Pos);
@@ -96,4 +96,17 @@ void CCamera::MoveForward(float InValue)
 
 void CCamera::MoveRight(float InValue)
 {
+	XMFLOAT3 AT3Pos = TransformationComponent->GetPosition();
+	XMFLOAT3 AT3Right = TransformationComponent->GetRightVector();
+
+	XMVECTOR AmountMovement = XMVectorReplicate(InValue * 1.f);
+
+	XMVECTOR Right = XMLoadFloat3(&AT3Right);
+	XMVECTOR Position = XMLoadFloat3(&AT3Pos);
+
+	XMStoreFloat3(&AT3Pos, XMVectorMultiplyAdd(AmountMovement, Right, Position));
+
+	TransformationComponent->SetPosition(AT3Pos);
+
+	BuildViewMatrix();
 }
