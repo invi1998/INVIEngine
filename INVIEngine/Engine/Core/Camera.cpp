@@ -49,8 +49,25 @@ void CCamera::ExecuteInput()
 		// A按下
 		MoveRight(-1.f);
 	}
-	if (FInput::IsKeyPressed(Key::LeftControl))
+	else if (FInput::IsKeyPressed(VK_LMENU))
 	{
+		// 左alt按下，进入鼠标移动摄像机视角事件
+		const XMFLOAT2 &mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
+
+		XMVECTOR VMouse = XMLoadFloat2(&mouse);
+		XMVECTOR VLastMousePosition = XMLoadFloat2(&LastMousePosition);
+
+		XMVECTOR VDelta = XMVectorSubtract(VMouse, VLastMousePosition) * 0.003f;
+
+		XMFLOAT2 delta;
+		XMStoreFloat2(&delta, VDelta);
+
+		LastMousePosition = mouse;
+
+		if (FInput::IsMouseButtonPressed(VK_LBUTTON))
+		{
+			OnMouseMove(delta);
+		}
 		
 	}
 }
@@ -61,36 +78,12 @@ void CCamera::BuildViewMatrix()
 	ViewMatrix = TransformationComponent->CalculateViewMatrix();
 }
 
-void CCamera::OnMouseButtonDown(int x, int y)
+void CCamera::OnMouseMove(const XMFLOAT2& delta)
 {
-	LastMousePosition.x = x;
-	LastMousePosition.y = y;
-
-	bIsLeftMouseDown = true;
-
-	// 设置捕获
-	SetCapture(GetMainWindowsHandle());
-}
-
-void CCamera::OnMouseButtonUp(int x, int y)
-{
-	bIsLeftMouseDown = false;
-	// 释放捕获
-	ReleaseCapture();
-}
-
-void CCamera::OnMouseMove(int x, int y)
-{
-	if (bIsLeftMouseDown)
-	{
-		float XRadians = XMConvertToRadians(static_cast<float>(x - LastMousePosition.x));
-		float YRadians = XMConvertToRadians(static_cast<float>(y - LastMousePosition.y));
-		RotateAroundYAxis(YRadians);
-		RotateAroundZAxis(XRadians);
-	}
-
-	LastMousePosition.x = x;
-	LastMousePosition.y = y;
+	float XRadians = XMConvertToRadians(static_cast<float>(delta.x - LastMousePosition.x));
+	float YRadians = XMConvertToRadians(static_cast<float>(delta.y - LastMousePosition.y));
+	RotateAroundYAxis(YRadians);
+	RotateAroundZAxis(XRadians);
 }
 
 void CCamera::MoveForward(float InValue)

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "KeyCode.h"
+#include "MouseCode.h"
 
 class FInput
 {
 public:
-	static bool IsKeyPressed(KeyCode keycode);
+	static bool IsKeyPressed(uint16_t keycode);
 	static bool IsMouseButtonPressed(int button);
 
 	static float GetMouseX();

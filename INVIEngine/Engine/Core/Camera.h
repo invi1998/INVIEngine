@@ -25,9 +25,7 @@ public:
 	void BuildViewMatrix();
 
 public:
-	virtual void OnMouseButtonDown(int x, int y);
-	virtual void OnMouseButtonUp(int x, int y);
-	virtual void OnMouseMove(int x, int y);
+	virtual void OnMouseMove(const XMFLOAT2& delta);
 
 	virtual void MoveForward(float InValue);
 	virtual void MoveRight(float InValue);
@@ -50,7 +48,7 @@ private:
 	CTransformationComponent* TransformationComponent;
 
 protected:
-	POINT LastMousePosition;
+	XMFLOAT2 LastMousePosition = {0.f, 0.f};
 	bool bIsLeftMouseDown = false;
 };
 
