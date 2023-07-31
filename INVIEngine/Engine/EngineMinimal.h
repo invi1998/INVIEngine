@@ -15,6 +15,7 @@
 #include "Rendering/DirectX12/d3dx12.h"
 #include "Debug/EngineDebug.h"
 #include "Math/EngineMath.h"
+#include "Component/Input/Input.h"
 
 #include <wrl.h>
 //< wrl.h > 头文件提供了一些关键类和模板，使得C++开发人员能够更轻松地创建和使用Windows Runtime组件和应用程序。其中一些类和模板包括：

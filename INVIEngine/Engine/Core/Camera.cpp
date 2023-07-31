@@ -18,13 +18,8 @@ void CCamera::BeginInit()
 	// 初始化投影矩阵
 	ViewPortInit();
 
-	// 绑定键盘事件
+	// 绑定键盘鼠标事件
 	InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &CCamera::ExecuteInput);
-
-	// 绑定鼠标事件
-	InputComponent->CaptureOnMouseButtonDownDelegate.Bind(this, &CCamera::OnMouseButtonDown);
-	InputComponent->CaptureOnMouseButtonUpDelegate.Bind(this, &CCamera::OnMouseButtonUp);
-	InputComponent->CaptureOnMouseMoveDelegate.Bind(this, &CCamera::OnMouseMove);
 }
 
 void CCamera::Tick(float DeltaTime)
@@ -32,29 +27,32 @@ void CCamera::Tick(float DeltaTime)
 	// BuildViewMatrix();
 }
 
-void CCamera::ExecuteInput(FInput& Input)
+void CCamera::ExecuteInput()
 {
-	if (Input.IsKeyPressed(Key::W))
+	if (FInput::IsKeyPressed(Key::W))
 	{
 		// W按下
 		MoveForward(1.f);
 	}
-	else if (Input.IsKeyPressed(Key::S))
+	else if (FInput::IsKeyPressed(Key::S))
 	{
 		// S按下
 		MoveForward(-1.f);
 	}
-	else if (Input.IsKeyPressed(Key::D))
+	else if (FInput::IsKeyPressed(Key::D))
 	{
 		// D按下
 		MoveRight(1.f);
 	}
-	else if (Input.IsKeyPressed(Key::A))
+	else if (FInput::IsKeyPressed(Key::A))
 	{
 		// A按下
 		MoveRight(-1.f);
 	}
-	
+	if (FInput::IsKeyPressed(Key::LeftControl))
+	{
+		
+	}
 }
 
 void CCamera::BuildViewMatrix()

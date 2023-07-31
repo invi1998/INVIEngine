@@ -1,4 +1,7 @@
 #pragma once
+
+#include "EngineMinimal.h"
+
 #include "ColdeReflection/CodeReflectionMacro.h"
 #include "CoreObject/CoreMinimalObject.h"
 #include "Component/Input/Input.h"
@@ -17,7 +20,7 @@ public:
 	virtual void BeginInit() override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void ExecuteInput(FInput& Input);
+	virtual void ExecuteInput();
 
 	void BuildViewMatrix();
 
