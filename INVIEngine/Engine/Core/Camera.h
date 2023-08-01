@@ -39,6 +39,7 @@ protected:
 	void RotateAroundYAxis(float InRotateDegrees);		// 绕Y轴旋转
 	void RotateAroundZAxis(float InRotateDegrees);		// 绕Z轴旋转
 
+	float MouseSensitivity = 0.003f;		// 鼠标灵敏度
 
 private:
 	CVARIABLE();
