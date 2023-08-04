@@ -110,7 +110,7 @@ XMFLOAT3 CEditCamera::GetUpDirection() const
 
 	XMFLOAT3 UpDirection;
 
-	XMFLOAT3 UpVector = { 1.0f, 1.0f, 0.0f };
+	XMFLOAT3 UpVector = { 0.0f, 1.0f, 0.0f };
 
 	XMStoreFloat3(&UpDirection, XMVector3TransformNormal(XMLoadFloat3(&UpVector), rotationMatrix));
 
@@ -163,7 +163,8 @@ void CEditCamera::UpdateProjection()
 {
 	m_AspectRatio = FEngineRenderConfig::GetRenderConfig()->ScreenWidth / FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
 
-	XMStoreFloat4x4(&m_Projection, XMMatrixPerspectiveFovRH(XMConvertToRadians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip));
+	
+	XMStoreFloat4x4(&m_Projection, XMMatrixPerspectiveFovLH(XMConvertToRadians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip));
 }
 
 void CEditCamera::UpdateView()
