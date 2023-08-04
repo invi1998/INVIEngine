@@ -9,10 +9,6 @@ CCamera::CCamera()
 	TransformationComponent = CreateObject<CTransformationComponent>(new CTransformationComponent());
 }
 
-CCamera::~CCamera()
-{
-}
-
 void CCamera::BeginInit()
 {
 	// 初始化投影矩阵

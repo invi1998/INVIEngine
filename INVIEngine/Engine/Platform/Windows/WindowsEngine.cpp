@@ -3,6 +3,7 @@
 #include "WindowsMessageProcessing.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/Camera.h"
+#include "Core/EditCamera.h"
 #include "Core/World.h"
 #include "Debug/EngineDebug.h"
 #include "Mesh/BoxMesh.h"
@@ -87,8 +88,8 @@ void CWindowsEngine::Tick(float DeltaTime)
 		{
 			FViewportInfo viewPortInfo;
 
-			viewPortInfo.ViewMatrix = World->GetCamera()->ViewMatrix;
-			viewPortInfo.ProjectionMatrix = World->GetCamera()->ProjectionMatrix;
+			viewPortInfo.ViewMatrix = World->GetEditCamera()->GetViewMatrix();
+			viewPortInfo.ProjectionMatrix = World->GetEditCamera()->GetProjection();
 
 			RenderingEngine->UpdateCalculations(DeltaTime, viewPortInfo);
 

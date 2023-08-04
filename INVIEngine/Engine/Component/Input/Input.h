@@ -3,6 +3,10 @@
 #include "KeyCode.h"
 #include "MouseCode.h"
 
+DEFINITION_MULTICAST_SINGLE_DELEGATE(FCaptureOnMousesWheelsDelegate, void, int, int, float);
+
+extern FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
+
 class FInput
 {
 public:
@@ -12,6 +16,9 @@ public:
 	static float GetMouseX();
 	static float GetMouseY();
 
+	static float getYOffset();
+
 	static std::pair<float, float> GetMousePosition();
 };
+
 

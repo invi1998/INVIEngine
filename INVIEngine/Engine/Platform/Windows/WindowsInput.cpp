@@ -25,6 +25,11 @@ float FInput::GetMouseY()
 	return y;
 }
 
+float FInput::getYOffset()
+{
+	return 1.0f;
+}
+
 std::pair<float, float> FInput::GetMousePosition()
 {
 	POINT pt;

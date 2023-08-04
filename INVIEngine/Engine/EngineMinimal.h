@@ -7,6 +7,7 @@
 #include <vector>
 #include <random>
 #include <sstream>
+#include <iostream>
 
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
