@@ -1,13 +1,13 @@
 #include "World.h"
 
 #include "Camera.h"
-#include "EditCamera.h"
+#include "QuaternionCamera.h"
 
 CWorld::CWorld()
 {
 	Camera = CreateObject<CCamera>(new CCamera());
 
-	EditCamera = CreateObject<CEditCamera>(new CEditCamera());
+	QuaternionCamera = CreateObject<CQuaternionCamera>(new CQuaternionCamera());
 }
 
 CWorld::~CWorld()

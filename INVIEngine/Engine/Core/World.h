@@ -3,7 +3,7 @@
 #include "EngineMinimal.h"
 #include "CoreObject/CoreMinimalObject.h"
 
-class CEditCamera;
+class CQuaternionCamera;
 class CCamera;
 
 class CWorld : public CCoreMinimalObject
@@ -14,12 +14,12 @@ public:
 
 	CCamera* GetCamera() const { return Camera; }
 
-	CEditCamera* GetEditCamera() const { return EditCamera; }
+	CQuaternionCamera* GetQuaternionCamera() const { return QuaternionCamera; }
 
 private:
 	CVARIABLE()
 		CCamera* Camera;
 
-	CEditCamera* EditCamera;
+	CQuaternionCamera* QuaternionCamera;
 };
 
