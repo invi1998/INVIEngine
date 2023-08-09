@@ -12,7 +12,7 @@ const XMVECTOR CQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0
 
 CQuaternionCamera::CQuaternionCamera()
     : Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
-    RotationQuaternion(XMQuaternionIdentity()),
+    FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
     ViewportWidth(FEngineRenderConfig::GetRenderConfig()->ScreenWidth),
     ViewportHeight(FEngineRenderConfig::GetRenderConfig()->ScreenHeight)
 {
@@ -46,70 +46,82 @@ void CQuaternionCamera::OnUpdate(float ts)
 	
     if (FInput::IsKeyPressed(VK_LMENU))
     {
-
-        float dx = XMConvertToRadians(static_cast<float>(FInput::GetMouseX() - m_InitialMousePosition.x));
-        float dy = XMConvertToRadians(static_cast<float>(FInput::GetMouseY() - m_InitialMousePosition.y));
-
-        m_InitialMousePosition = { FInput::GetMouseX(), FInput::GetMouseY() };
+        const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
+        XMFLOAT2 delta = { (mouse.x - m_InitialMousePosition.x) * 0.003f, (mouse.y - m_InitialMousePosition.y) * 0.003f };
+        m_InitialMousePosition = mouse;
 
         if (FInput::IsMouseButtonPressed(VK_LBUTTON))
         {
             // 鼠标左键
-            Pitch += dy * 0.8f;;
-            Yaw += dx * 0.8f;;
-
-            if (Pitch > XM_PIDIV2 - 0.01f)
-                Pitch = XM_PIDIV2 - 0.01f;
-            else if (Pitch < -XM_PIDIV2 + 0.01f)
-                Pitch = -XM_PIDIV2 + 0.01f;
-
-            UpdateRotationQuaternion();
-
-            UpdateViewMatrix();
-            UpdateProjectionMatrix(static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight));
+            MouseRotate(delta);
         }
-        
+        else if(FInput::IsMouseButtonPressed(VK_MBUTTON))
+        {
+	        // 鼠标中键
+            MousePan(delta);
+        }
+        else if(FInput::IsMouseButtonPressed(VK_RBUTTON))
+        {
+	        // 鼠标右键
+            MouseZoom(delta.y);
+        }
+
+        UpdateViewMatrix();
     }
 }
 
-void CQuaternionCamera::OnEvent()
+XMVECTOR CQuaternionCamera::GetUpDirection() const
 {
-
+    XMVECTOR up = XMVector3Rotate(DefaultUp, GetRotationQuaternion());
+    // 对上向量进行归一化。
+    up = XMVector3Normalize(up);
+    return up;
 }
 
-void CQuaternionCamera::BuildViewMatrix()
+XMVECTOR CQuaternionCamera::GetRightDirection() const
 {
+    XMVECTOR right = XMVector3Rotate(DefaultRight, GetRotationQuaternion());
+    // 对右向量进行归一化。
+	right = XMVector3Normalize(right);
+    return right;
+}
+
+XMVECTOR CQuaternionCamera::GetForwardDirection() const
+{
+    XMVECTOR forward = XMVector3Rotate(DefaultForward, GetRotationQuaternion());
+    // 对前向量进行归一化。
+    forward = XMVector3Normalize(forward);
+    return forward;
+}
+
+XMVECTOR CQuaternionCamera::CalculatePosition() const
+{
+    return FocalPoint + GetForwardDirection() * Distance;
 }
 
 void CQuaternionCamera::UpdateViewMatrix()
 {
-    using namespace DirectX;
-    XMVECTOR forward = XMVector3Rotate(DefaultForward, RotationQuaternion);
-    forward = XMVector3Normalize(forward);
-    XMVECTOR up = XMVector3Rotate(DefaultUp, RotationQuaternion);
-    XMVECTOR right = XMVector3Cross(up, forward);
+    // m_Yaw = m_Pitch = 0.0f;	// 锁定相机旋转
+    Position = CalculatePosition();
 
-    XMMATRIX viewMatrix = XMMatrixIdentity();
-    viewMatrix.r[0] = XMVectorSetW(right, -XMVectorGetX(XMVector3Dot(Position, right)));
-    viewMatrix.r[1] = XMVectorSetW(up, -XMVectorGetX(XMVector3Dot(Position, up)));
-    viewMatrix.r[2] = XMVectorSetW(forward, -XMVectorGetX(XMVector3Dot(Position, forward)));
-    viewMatrix.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+    XMVECTOR orientation = GetRotationQuaternion();
+    XMMATRIX rotation = XMMatrixRotationQuaternion(orientation);
+    XMMATRIX transform = XMMatrixTranslationFromVector(Position) * rotation;
 
-    ViewMatrix = viewMatrix;
+    ViewMatrix = transform;
 }
 
 void CQuaternionCamera::UpdateProjectionMatrix(float aspectRatio)
 {
-    using namespace DirectX;
-    ProjectionMatrix = XMMatrixPerspectiveFovLH(FOV, static_cast<float>(ViewportWidth) / ViewportHeight, NearPlane, FarPlane);
+    // 使用透视投影创建投影矩阵，使用当前宽高比、近裁剪面和远裁剪面。
+    ProjectionMatrix = XMMatrixPerspectiveFovLH(FOV, static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight), NearPlane, FarPlane);
 }
 
-void CQuaternionCamera::UpdateRotationQuaternion()
+XMVECTOR CQuaternionCamera::GetRotationQuaternion() const
 {
-    using namespace DirectX;
     // 将欧拉角转换为四元数并设置Roll为0。
     XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(Pitch, Yaw, 0.0f);
-    RotationQuaternion = quaternion;
+    return quaternion;
 }
 
 XMFLOAT4X4 CQuaternionCamera::GetViewMatrixFx4() const
@@ -132,20 +144,65 @@ void CQuaternionCamera::SetViewportSize(int width, int height)
 {
     ViewportWidth = width;
     ViewportHeight = height;
-    UpdateProjectionMatrix(static_cast<float>(width) / height);
+    UpdateProjectionMatrix(static_cast<float>(width) / static_cast<float>(height));
 }
 
 void CQuaternionCamera::OnMouseScroll(int X, int Y, float InDelta)
 {
-    float zoom = static_cast<float>(InDelta) / WHEEL_DELTA;
+    float zoom = InDelta / WHEEL_DELTA;
 
-    ENGINE_LOG("鼠标滚轮：%f", zoom);
-
-    XMVECTOR forward = XMVector3Rotate(DefaultForward, RotationQuaternion);
-    forward = XMVector3Normalize(forward);
-    Position += forward * zoom;
-
-    UpdateRotationQuaternion();
+    MouseZoom(zoom);
     UpdateViewMatrix();
-    UpdateProjectionMatrix(static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight));
+    
+}
+
+void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
+{
+    XMFLOAT3 up;
+    XMStoreFloat3(&up, GetUpDirection());
+    float yawSign = up.y < 0 ? -1 : 1.0f;
+    Yaw += yawSign * delta.x * RotationSpeed();
+    Pitch += delta.y * RotationSpeed();
+}
+
+void CQuaternionCamera::MousePan(const XMFLOAT2& delta)
+{
+    auto [xSpeed, ySpeed] = PanSpeed();
+    FocalPoint += -GetRightDirection() * delta.x * xSpeed * Distance;
+    FocalPoint += GetUpDirection() * delta.y * ySpeed * Distance;
+}
+
+void CQuaternionCamera::MouseZoom(float delta)
+{
+    Distance -= delta * ZoomSpeed();
+    if (Distance < 1.0f)
+    {
+        FocalPoint += GetForwardDirection();
+        Distance = 1.0f;
+    }
+}
+
+std::pair<float, float> CQuaternionCamera::PanSpeed() const
+{
+    float x = min(ViewportWidth / 1000.0f, 2.4f);	// max = 2.4f
+    float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
+
+    float y = min(ViewportHeight / 1000.0f, 2.4f);	// max = 2.4f
+    float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+
+    return { xFactor, yFactor };
+}
+
+float CQuaternionCamera::RotationSpeed() const
+{
+    return 0.8f;
+}
+
+float CQuaternionCamera::ZoomSpeed() const
+{
+    float distance = Distance * 0.2f;
+    distance = max(distance, 0.0f);
+    float speed = distance * distance;
+    speed = min(speed, 100.0f); // max speed = 100
+    return speed;
 }

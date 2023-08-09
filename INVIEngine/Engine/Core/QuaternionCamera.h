@@ -17,14 +17,17 @@ public:
 
     virtual void ExecuteInput();
     void OnUpdate(float ts);
-    void OnEvent();
-
-    void BuildViewMatrix();
 
     FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
     FORCEINLINE CTransformationComponent* GetTransformationComponent() const { return TransformationComponent; }
 
     XMVECTOR GetPosition() const { return Position; }
+
+    // 将默认的前向、上方和右方向量旋转为当前朝向。
+    XMVECTOR GetUpDirection() const;
+    XMVECTOR GetRightDirection() const;
+    XMVECTOR GetForwardDirection() const;
+
     void SetPosition(const XMVECTOR& position) { Position = position; }
     void SetPosition(float x, float y, float z) { Position = XMVectorSet(x, y, z, 1.0f); }
 
@@ -34,13 +37,23 @@ public:
     XMFLOAT4X4 GetViewMatrixFx4() const;
     XMFLOAT4X4 GetProjectionMatrixFx4() const;
 
-private:
+protected:
     void UpdateViewMatrix();
     void UpdateProjectionMatrix(float aspectRatio);
-    void UpdateRotationQuaternion();
+    XMVECTOR GetRotationQuaternion() const;
     
     void SetViewportSize(int width, int height);
     void OnMouseScroll(int X, int Y, float InDelta);
+
+    void MouseRotate(const XMFLOAT2& delta);
+    void MousePan(const XMFLOAT2& delta);
+    void MouseZoom(float delta);
+
+    std::pair<float, float> PanSpeed() const;
+    float RotationSpeed() const;
+    float ZoomSpeed() const;
+
+    XMVECTOR CalculatePosition() const;
 
 private:
     static const XMVECTOR DefaultForward;
@@ -48,18 +61,20 @@ private:
     static const XMVECTOR DefaultRight;
 
     XMVECTOR Position;
+    XMVECTOR FocalPoint;
     float Pitch = 0.0f;
     float Yaw = 0.0f;
     float Roll = 0.0f;
-    XMVECTOR RotationQuaternion;
     XMMATRIX ViewMatrix;
     XMMATRIX ProjectionMatrix;
 
     int ViewportWidth = 800;
     int ViewportHeight = 600;
-    const float FOV = XM_PIDIV4;
-    const float NearPlane = 0.1f;
-    const float FarPlane = 1000.0f;
+
+	float Distance = 10.0f;
+	float FOV = XM_PIDIV4;
+	float NearPlane = 0.1f;
+	float FarPlane = 1000.0f;
 
 	XMFLOAT2 m_InitialMousePosition = { 0.0f, 0.0f };
 
