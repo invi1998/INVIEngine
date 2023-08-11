@@ -1,6 +1,13 @@
 #include "WindowsMessageProcessing.h"
+
+#include <unordered_set>
+
 #include "Component/Input/Input.h"
 #include <WindowsX.h>
+
+// 全局变量：记录正在按下的键
+unordered_set<int> g_pressedKeys;
+unordered_set<int> g_releasedKeys;
 
 LRESULT EngineWidowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -8,6 +15,16 @@ LRESULT EngineWidowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CLOSE:
 		PostQuitMessage(0);
+		return 0;
+	case WM_KEYDOWN:
+		// 记录按下的键
+		g_pressedKeys.insert(wParam);
+		g_releasedKeys.erase(wParam);
+		return 0;
+	case WM_KEYUP:
+		// 删除抬起的按键
+		g_pressedKeys.erase(wParam);
+		g_releasedKeys.insert(wParam);
 		return 0;
 	//case WM_RBUTTONDOWN:	// 右键按下
 	//	MouseDownDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
@@ -26,3 +43,11 @@ LRESULT EngineWidowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	// 交给windows自己处理
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
+
+bool FInput::IsKeyReleased(uint16_t keycode)
+{
+	bool state = g_releasedKeys.count(keycode) > 0;
+	g_releasedKeys.erase(keycode);
+	return state;
+}
+

@@ -68,7 +68,7 @@ void CQuaternionCamera::OnUpdate(float ts)
 
         UpdateViewMatrix();
     }
-    if (FInput::IsKeyPressed(VK_TAB))
+    if (FInput::IsKeyReleased(VK_TAB))
     {
         CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
 
@@ -202,15 +202,14 @@ void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 			};
 		case ObservationObject:
 			{
-	            XMFLOAT3 up;
-	            XMStoreFloat3(&up, GetUpDirection());
-	            float yawSign = up.y < 0 ? -1 : 1.0f;
-
-				float XRadians = XMScalarModAngle(XMConvertToRadians(yawSign * delta.x * RotationSpeed()));
-				float YRadians = XMScalarModAngle(XMConvertToRadians(delta.y * RotationSpeed()));
+				float XRadians = XMConvertToRadians(delta.x * 10.f);
+				float YRadians = XMConvertToRadians(delta.y * 10.f);
 
                 Theta += -XRadians;
                 Phi += YRadians;
+
+                Theta = XMScalarModAngle(Theta);
+                Phi = XMScalarModAngle(Phi);
 
                 break;
 			};

@@ -12,6 +12,7 @@ class FInput
 public:
 	static bool IsKeyPressed(uint16_t keycode);
 	static bool IsMouseButtonPressed(int button);
+	static bool IsKeyReleased(uint16_t keycode);
 
 	static float GetMouseX();
 	static float GetMouseY();
