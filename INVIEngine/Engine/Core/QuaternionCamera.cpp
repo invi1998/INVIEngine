@@ -55,16 +55,22 @@ void CQuaternionCamera::OnUpdate(float ts)
             // 鼠标左键
             MouseRotate(delta);
         }
-        else if(FInput::IsMouseButtonPressed(VK_MBUTTON))
+        else if (FInput::IsMouseButtonPressed(VK_MBUTTON))
         {
-	        // 鼠标中键
+            // 鼠标中键
             MousePan(delta);
         }
-        else if(FInput::IsMouseButtonPressed(VK_RBUTTON))
+        else if (FInput::IsMouseButtonPressed(VK_RBUTTON))
         {
-	        // 鼠标右键
+            // 鼠标右键
             MouseZoom(delta.y);
         }
+
+        UpdateViewMatrix();
+    }
+    if (FInput::IsKeyPressed(VK_TAB))
+    {
+        CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
 
         UpdateViewMatrix();
     }
@@ -101,14 +107,39 @@ XMVECTOR CQuaternionCamera::CalculatePosition() const
 
 void CQuaternionCamera::UpdateViewMatrix()
 {
-    // m_Yaw = m_Pitch = 0.0f;	// 锁定相机旋转
     Position = CalculatePosition();
 
-    XMVECTOR orientation = GetRotationQuaternion();
-    XMMATRIX rotation = XMMatrixRotationQuaternion(orientation);
-    XMMATRIX transform = XMMatrixTranslationFromVector(Position) * rotation;
+	switch (CameraType)
+	{
+	case CameraRoaming:
+		{
+	        // m_Yaw = m_Pitch = 0.0f;	// 锁定相机旋转
+			XMVECTOR orientation = GetRotationQuaternion();
+	        XMMATRIX rotation = XMMatrixRotationQuaternion(orientation);
+	        XMMATRIX transform = XMMatrixTranslationFromVector(Position) * rotation;
 
-    ViewMatrix = transform;
+	        ViewMatrix = transform;
+
+            break;
+		};
+	case ObservationObject:
+		{
+	        XMFLOAT3 CameraPosition;
+	        XMStoreFloat3(&CameraPosition, Position);
+	        CameraPosition.x = Radius * sinf(Phi) * cosf(Theta);
+	        CameraPosition.z = Radius * sinf(Phi) * sinf(Theta);
+	        CameraPosition.y = Radius * cosf(Phi);
+
+            XMVECTOR Pos = XMVectorSet(CameraPosition.x, CameraPosition.y, CameraPosition.z, 1.0f);
+            XMVECTOR ViewTarget = XMVectorZero();
+            XMVECTOR ViewUp = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
+
+            XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
+            ViewMatrix = ViewLookAt;
+
+            break;
+		};
+	}
 }
 
 void CQuaternionCamera::UpdateProjectionMatrix(float aspectRatio)
@@ -158,11 +189,33 @@ void CQuaternionCamera::OnMouseScroll(int X, int Y, float InDelta)
 
 void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 {
-    XMFLOAT3 up;
-    XMStoreFloat3(&up, GetUpDirection());
-    float yawSign = up.y < 0 ? -1 : 1.0f;
-    Yaw += yawSign * delta.x * RotationSpeed();
-    Pitch += delta.y * RotationSpeed();
+	switch (CameraType) {
+		case CameraRoaming:
+			{
+	            XMFLOAT3 up;
+	            XMStoreFloat3(&up, GetUpDirection());
+	            float yawSign = up.y < 0 ? -1 : 1.0f;
+	            Yaw += yawSign * delta.x * RotationSpeed();
+	            Pitch += delta.y * RotationSpeed();
+
+                break;
+			};
+		case ObservationObject:
+			{
+	            XMFLOAT3 up;
+	            XMStoreFloat3(&up, GetUpDirection());
+	            float yawSign = up.y < 0 ? -1 : 1.0f;
+
+				float XRadians = XMScalarModAngle(XMConvertToRadians(yawSign * delta.x * RotationSpeed()));
+				float YRadians = XMScalarModAngle(XMConvertToRadians(delta.y * RotationSpeed()));
+
+                Theta += -XRadians;
+                Phi += YRadians;
+
+                break;
+			};
+	}
+    
 }
 
 void CQuaternionCamera::MousePan(const XMFLOAT2& delta)
@@ -174,12 +227,20 @@ void CQuaternionCamera::MousePan(const XMFLOAT2& delta)
 
 void CQuaternionCamera::MouseZoom(float delta)
 {
-    Distance -= delta * ZoomSpeed();
-    if (Distance < 1.0f)
+    if (CameraType == ObservationObject)
     {
-        FocalPoint += GetForwardDirection();
-        Distance = 1.0f;
+        Radius += (delta * ZoomSpeed());
     }
+	else
+    {
+    	Distance -= delta * ZoomSpeed();
+	    if (Distance < 1.0f)
+	    {
+	        FocalPoint += GetForwardDirection();
+	        Distance = 1.0f;
+	    }
+    }
+   
 }
 
 std::pair<float, float> CQuaternionCamera::PanSpeed() const

@@ -1,4 +1,5 @@
 #pragma once
+#include "CameraType.h"
 #include "EngineMinimal.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Viewport/ViewPort.h"
@@ -77,6 +78,13 @@ private:
 	float FarPlane = 1000.0f;
 
 	XMFLOAT2 m_InitialMousePosition = { 0.0f, 0.0f };
+
+    ECameraType CameraType = ECameraType::CameraRoaming;        // 默认漫游模式
+
+private:
+    float Radius = 10.f;
+    float Theta = XM_PI;
+    float Phi = XM_PI;
 
 private:
     CVARIABLE();
