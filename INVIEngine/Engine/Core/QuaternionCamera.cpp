@@ -121,7 +121,7 @@ void CQuaternionCamera::UpdateViewMatrix()
 	        ViewMatrix = transform;
 
             break;
-		};
+		}
 	case ObservationObject:
 		{
 	        XMFLOAT3 CameraPosition;
@@ -138,7 +138,7 @@ void CQuaternionCamera::UpdateViewMatrix()
             ViewMatrix = ViewLookAt;
 
             break;
-		};
+		}
 	}
 }
 
@@ -199,8 +199,8 @@ void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 	            Pitch += delta.y * RotationSpeed();
 
                 break;
-			};
-		case ObservationObject:
+			}
+	case ObservationObject:
 			{
 				float XRadians = XMConvertToRadians(delta.x * 10.f);
 				float YRadians = XMConvertToRadians(delta.y * 10.f);
@@ -208,11 +208,12 @@ void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
                 Theta += -XRadians;
                 Phi += YRadians;
 
+                // 使用XMScalarModAngle()函数计算每个角度的模余数,函数会自动将其限制在-π到+π之间
                 Theta = XMScalarModAngle(Theta);
                 Phi = XMScalarModAngle(Phi);
 
                 break;
-			};
+			}
 	}
     
 }
