@@ -74,9 +74,9 @@ void CCylinderMesh::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, 
 
 	// 绘制圆柱腰围 index
 	uint32_t VertexCircleNum = InAxialSubdivision + 1;
-	for (uint32_t i = 0; i < InHeightSubdivision; ++i)
+	for (uint32_t i = 0; i <= InHeightSubdivision; ++i)
 	{
-		for (uint32_t j = 0; j < InAxialSubdivision; ++j)
+		for (uint32_t j = 0; j <= InAxialSubdivision; ++j)
 		{
 			// 南北极中间绘制的面是四边形(而一个四边形又是由两个三角形组成的
 
