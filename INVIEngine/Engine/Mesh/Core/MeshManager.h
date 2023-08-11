@@ -7,6 +7,7 @@
 
 #include "Rendering/Core/Rendering.h"
 #include "Rendering/Core/RenderingResourcesUpdate.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderingPipeline.h"
 #include "Shader/Core/Shader.h"
 
 class CMeshManager : public CCoreMinimalObject, public IRenderingInterface, public IDirectXDeviceInterface_Struct
@@ -101,6 +102,6 @@ protected:
 
 	XMFLOAT4X4 WorldMatrix;			// 世界矩阵
 
-
+	FRenderingPipeline RenderingPipeline;		// 渲染管线对象
 };
 
