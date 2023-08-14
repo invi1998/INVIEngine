@@ -208,9 +208,24 @@ void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
                 Theta += -XRadians;
                 Phi += YRadians;
 
-                // 使用XMScalarModAngle()函数计算每个角度的模余数,函数会自动将其限制在-π到+π之间
-                Theta = XMScalarModAngle(Theta);
-                Phi = XMScalarModAngle(Phi);
+                while (Theta >= XM_2PI)
+                {
+                    Theta -= XM_2PI;
+                }
+                while (Theta < 0)
+                {
+                    Theta += XM_2PI;
+                }
+
+				while (Phi >= XM_2PI)
+                {
+                    Phi -= XM_2PI;
+                }
+                while (Phi < 0)
+                {
+                    Phi += XM_2PI;
+                }
+                
 
                 break;
 			}
