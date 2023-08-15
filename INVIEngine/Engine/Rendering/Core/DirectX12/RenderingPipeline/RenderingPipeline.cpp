@@ -12,7 +12,10 @@ void FRenderingPipeline::BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshDa
 
 void FRenderingPipeline::BuildPipeline()
 {
-	DirectXPipelineState.ResetGPSDesc();
+	DirectXPipelineState.ResetGPSDesc();	// 重置图形管线资源描述符
 
-	DirectXPipelineState.BuildPipeline();
+	DirectXRootSignature.BuildRootSignature();	// 构建根签名
+	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
+
+	DirectXPipelineState.BuildPipeline();	// 构建渲染管线
 }
