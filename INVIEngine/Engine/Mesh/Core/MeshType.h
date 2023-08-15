@@ -17,6 +17,9 @@ struct FMeshRenderingData
 	FMeshRenderingData() = default;
 	FMeshRenderingData(const std::vector<uint16_t>& Index, const std::initializer_list<FVertex>& Vertex);
 
+	UINT GetVertexSizeInBytes() const { return VertexData.size() * sizeof(FVertex); }
+	UINT GetIndexSizeInBytes() const { return IndexData.size() * sizeof(uint16_t); }
+
 	std::vector<uint16_t> IndexData;	// 索引数据
 	std::vector<FVertex> VertexData;	// 顶点数据
 };

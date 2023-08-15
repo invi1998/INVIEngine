@@ -1,5 +1,7 @@
 #include "GeometryMap.h"
 
+#include "Rendering/Core/Buffer/ConstructBuffer.h"
+
 bool FGeometry::bRenderingDataExistence(CMesh* InKey)
 {
 	for(auto& temp : DescribeMeshRenderingData)
@@ -34,6 +36,29 @@ void FGeometry::BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData)
 	}
 }
 
+void FGeometry::Build()
+{
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 构建模型
+
+	UINT VertexSizeInBytes = MeshRenderingData.GetVertexSizeInBytes();
+	UINT IndexSizeInBytes = MeshRenderingData.GetIndexSizeInBytes();
+
+	// 创建缓冲区
+	ANALYSIS_RESULT(D3DCreateBlob(VertexSizeInBytes, &CPUVertexBufferPtr));	// 创建一个二进制的缓冲区
+	memcpy(CPUVertexBufferPtr->GetBufferPointer(), MeshRenderingData.VertexData.data(), VertexSizeInBytes);
+
+	ANALYSIS_RESULT(D3DCreateBlob(IndexSizeInBytes, &CPUIndexBufferPtr));
+	memcpy(CPUIndexBufferPtr->GetBufferPointer(), MeshRenderingData.IndexData.data(), IndexSizeInBytes);
+
+	ConstructBuffer::FConstructDefaultBuffer ConstructDefaultBuffer;
+
+	GPUVertexBufferPtr = ConstructDefaultBuffer.ConstructDefaultBuffer(TempVertexBufferPtr, MeshRenderingData.VertexData.data(), VertexSizeInBytes);
+	GPUIndexBufferPtr = ConstructDefaultBuffer.ConstructDefaultBuffer(TempIndexBufferPtr, MeshRenderingData.IndexData.data(), IndexSizeInBytes);
+
+	ANALYSIS_RESULT(D3DCreateBlob(IndexSizeInBytes, &CPUIndexBufferPtr));	// 创建一个二进制的缓冲区
+}
+
 FGeometryMap::FGeometryMap()
 {
 	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
@@ -44,4 +69,12 @@ void FGeometryMap::BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData)
 	FGeometry &Geometry = Geometries[0];
 
 	Geometry.BuildMesh(Mesh, MeshData);
+}
+
+void FGeometryMap::Build()
+{
+	for (auto & [index, Geometry] : Geometries)
+	{
+		Geometry.Build();
+	}
 }

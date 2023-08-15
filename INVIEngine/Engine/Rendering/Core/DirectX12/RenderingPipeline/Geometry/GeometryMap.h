@@ -11,6 +11,9 @@ public:
 	bool bRenderingDataExistence(CMesh* InKey);
 	void BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData);
 
+	// 构建模型
+	void Build();
+
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
 	ComPtr<ID3DBlob> CPUIndexBufferPtr;				// CPU 索引缓冲区
@@ -33,6 +36,8 @@ struct FGeometryMap : IDirectXDeviceInterface_Struct
 public:
 	FGeometryMap();
 	void BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData);
+
+	void Build();
 
 protected:
 	map<int, FGeometry> Geometries;
