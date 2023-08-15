@@ -9,12 +9,22 @@ class FRenderingResourcesUpdate;
 struct FRenderingData : public IDirectXDeviceInterface_Struct
 {
 public:
-	UINT IndexSize;				// 顶点数量
+	FRenderingData();
 
-	UINT VertexSizeInBytes;		// 顶点数据字节大小
-	UINT VertexStrideInBytes;	// 顶点数据字节跨度(单位顶点数据大小）
+public:
+	UINT GetVertexSizeInBytes() const { return VertexSize * VertexTypeSize; };		// 获取顶点数据字节大小
+	UINT GetIndexSizeInBytes() const { return IndexSize * IndexTypeSize; };			// 获取顶点数据字节大小
 
-	UINT IndexSizeInBytes;		// 顶点数据字节大小
+public:
+	UINT IndexSize;				// 顶点索引数量
+	UINT VertexSize;			// 顶点的数量
+
+	UINT IndexOffsetPosition;	// 索引偏移位置
+	UINT VertexOffsetPosition;	// 顶点偏移位置
+
+	UINT VertexTypeSize;		// 顶点数据类型的字节大小
+	UINT IndexTypeSize;			// 索引数据类型的字节大小
+	
 	DXGI_FORMAT IndexFormat;	// 顶点索引数据格式（无符号16）
 
 	XMFLOAT4X4 WorldMatrix;			// 世界矩阵

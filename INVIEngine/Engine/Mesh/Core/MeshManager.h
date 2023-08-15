@@ -64,6 +64,9 @@ public:
 	CMesh* CreateMesh(const string& InPath);
 
 protected:
+	FRenderingPipeline RenderingPipeline;		// 渲染管线对象
+
+protected:
 	template<class T, typename ...ParamTypes>
 	T* CreateMesh(ParamTypes &&...Params);
 
@@ -96,12 +99,10 @@ protected:
 
 	UINT VertexSizeInBytes;		// 顶点数据字节大小
 	UINT VertexStrideInBytes;	// 顶点数据字节跨度(单位顶点数据大小）
-
 	UINT IndexSizeInBytes;		// 顶点数据字节大小
 	DXGI_FORMAT IndexFormat;	// 顶点索引数据格式（无符号16）
 
 	XMFLOAT4X4 WorldMatrix;			// 世界矩阵
-
-	FRenderingPipeline RenderingPipeline;		// 渲染管线对象
+	
 };
 

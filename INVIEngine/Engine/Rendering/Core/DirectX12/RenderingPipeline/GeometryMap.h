@@ -3,9 +3,14 @@
 #include "EngineMinimal.h"
 #include "RenderingData.h"
 #include "Interface/DirectXDeviceInterface.h"
+#include "Mesh/Core/MeshType.h"
 
 struct FGeometry : IDirectXDeviceInterface_Struct
 {
+public:
+	bool bRenderingDataExistence(CMesh* InKey);
+	void BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData);
+
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
 	ComPtr<ID3DBlob> CPUIndexBufferPtr;				// CPU 索引缓冲区
@@ -17,12 +22,19 @@ protected:
 	ComPtr<ID3D12Resource> TempVertexBufferPtr;		// 临时 顶点缓冲区
 	ComPtr<ID3D12Resource> TempIndexBufferPtr;		// 临时 索引缓冲区
 
+	FMeshRenderingData MeshRenderingData;
+
 	std::vector<FRenderingData> DescribeMeshRenderingData;					// 渲染数据
 };
 
 // 几何模型映射阶段
 struct FGeometryMap : IDirectXDeviceInterface_Struct
 {
+public:
+	FGeometryMap();
+	void BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData);
+
+protected:
 	map<int, FGeometry> Geometries;
 };
 
