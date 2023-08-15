@@ -22,7 +22,7 @@ public:
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
 
-	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
+	virtual void BuildMesh();
 
 	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 

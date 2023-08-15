@@ -101,8 +101,11 @@ void CMeshManager::PostDraw(float DeltaTime)
 	IRenderingInterface::PostDraw(DeltaTime);
 }
 
-void CMeshManager::BuildMesh(const FMeshRenderingData* InRenderingData)
+void CMeshManager::BuildMesh()
 {
+
+	RenderingPipeline.BuildPipeline();
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 常量缓冲区构建
 
