@@ -1,7 +1,9 @@
 #include "GeometryMap.h"
 
+#include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Mesh/Core/ObjectTransformation.h"
+#include "Rendering/Core/RenderingResourcesUpdate.h"
 #include "Rendering/Core/Buffer/ConstructBuffer.h"
 
 bool FGeometry::bRenderingDataExistence(CMesh* InKey)
@@ -123,4 +125,33 @@ void FGeometryMap::BuildViewportConstantBuffer()
 
 	// 构建常量缓冲区
 	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawObjectCount(), GetDrawObjectCount());
+}
+
+void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
+{
+	XMMATRIX ProjectionMatrix = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);	// 投影矩阵
+	XMMATRIX ViewMatrix = XMLoadFloat4x4(&viewport_info.ViewMatrix);				// 视口矩阵
+	for (auto& geometry : Geometries)
+	{
+		for (int i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
+		{
+			// 更新模型位置
+
+			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
+
+			XMMATRIX MatrixWorld = XMLoadFloat4x4(&renderingData.WorldMatrix);
+
+			FObjectTransformation OBJTransformation;
+			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(MatrixWorld));
+			ObjectConstantBufferViews.GetConstant()->Update(i, &OBJTransformation);
+
+		}
+	}
+
+	XMMATRIX ViewProjection = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
+	FViewportTransformation ViewportTransformation;
+	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
+
+	ViewportConstantBufferViews.GetConstant()->Update(0, &ViewportTransformation);
+	
 }

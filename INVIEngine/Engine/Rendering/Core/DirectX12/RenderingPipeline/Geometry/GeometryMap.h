@@ -7,8 +7,11 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
+struct FViewportInfo;
+
 struct FGeometry : IDirectXDeviceInterface_Struct
 {
+	friend struct FGeometryMap;
 public:
 	bool bRenderingDataExistence(CMesh* InKey);
 	void BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData);
@@ -50,6 +53,8 @@ public:
 	void BuildConstantBuffer();
 
 	void BuildViewportConstantBuffer();
+
+	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 	ID3D12DescriptorHeap* GetHeap() const { return DescriptorHeap.GetHeap(); }
 

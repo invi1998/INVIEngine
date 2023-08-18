@@ -1,5 +1,9 @@
 #include "RenderingPipeline.h"
 
+#include "Core/Viewport/ViewportInfo.h"
+#include "Core/Viewport/ViewportTransformation.h"
+#include "Mesh/Core/ObjectTransformation.h"
+
 FRenderingPipeline::FRenderingPipeline()
 {
 
@@ -48,4 +52,9 @@ void FRenderingPipeline::BuildPipeline()
 
 	// 构建渲染管线
 	DirectXPipelineState.BuildPipeline();
+}
+
+void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
+{
+	
 }
