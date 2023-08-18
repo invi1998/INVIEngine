@@ -107,8 +107,20 @@ void FGeometryMap::BuildConstantBuffer()
 	ObjectConstantBufferViews.CreateConstant(sizeof(FObjectTransformation), 1);
 
 	// 描述堆句柄
-	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(DescriptorHeap.GetHeap()->GetCPUDescriptorHandleForHeapStart());
+	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
 	// 构建常量缓冲区
 	ObjectConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawObjectCount());
+}
+
+void FGeometryMap::BuildViewportConstantBuffer()
+{
+	// 创建常量缓冲区
+	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1);
+
+	// 描述堆句柄
+	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
+
+	// 构建常量缓冲区
+	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawObjectCount(), GetDrawObjectCount());
 }

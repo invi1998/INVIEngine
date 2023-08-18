@@ -9,7 +9,7 @@ void FConstantBufferViews::CreateConstant(UINT ObjectSize, UINT ObjectCount)
 	Constants->Init(GetD3dDevice().Get(), ObjectSize, ObjectCount);
 }
 
-void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE handle, UINT constantBufferNum)
+void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE handle, UINT constantBufferNum, UINT handleOffset)
 {
 	// 常量缓冲区
 
@@ -21,7 +21,7 @@ void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE han
 
 	for (int i = 0; i < constantBufferNum; i++)
 	{
-		handle.Offset(i, DescriptorOffset);
+		handle.Offset(i + handleOffset, DescriptorOffset);
 
 		// 常量缓冲区描述
 		D3D12_CONSTANT_BUFFER_VIEW_DESC viewportCBVDes;

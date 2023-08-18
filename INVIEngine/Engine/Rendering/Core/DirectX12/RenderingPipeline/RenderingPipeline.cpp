@@ -43,6 +43,9 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建常量缓冲区
 	GeometryMap.BuildConstantBuffer();
 
+	// 构建视口常量缓冲区
+	GeometryMap.BuildViewportConstantBuffer();
+
 	// 构建渲染管线
 	DirectXPipelineState.BuildPipeline();
 }
