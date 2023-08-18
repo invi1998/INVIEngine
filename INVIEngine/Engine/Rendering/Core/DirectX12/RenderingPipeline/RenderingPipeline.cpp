@@ -40,6 +40,9 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建描述堆
 	GeometryMap.BuildDescriptorHeap();
 
+	// 构建常量缓冲区
+	GeometryMap.BuildConstantBuffer();
+
 	// 构建渲染管线
 	DirectXPipelineState.BuildPipeline();
 }

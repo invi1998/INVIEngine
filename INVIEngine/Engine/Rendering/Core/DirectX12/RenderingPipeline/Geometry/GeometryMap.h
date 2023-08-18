@@ -4,6 +4,7 @@
 #include "RenderingData.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Mesh/Core/MeshType.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
 struct FGeometry : IDirectXDeviceInterface_Struct
@@ -46,8 +47,11 @@ public:
 
 	UINT GetDrawObjectCount();
 
+	void BuildConstantBuffer();
+
 protected:
 	map<int, FGeometry> Geometries;				// 几何体
 	FDirectXDescriptorHeap DescriptorHeap;		// 描述堆
+	FConstantBufferViews ObjectConstantBufferViews;	// 对象常量缓冲区
 };
 

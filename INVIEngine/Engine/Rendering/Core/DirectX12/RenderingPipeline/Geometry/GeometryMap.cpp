@@ -1,5 +1,7 @@
 #include "GeometryMap.h"
 
+#include "Core/Viewport/ViewportTransformation.h"
+#include "Mesh/Core/ObjectTransformation.h"
 #include "Rendering/Core/Buffer/ConstructBuffer.h"
 
 bool FGeometry::bRenderingDataExistence(CMesh* InKey)
@@ -97,4 +99,16 @@ UINT FGeometryMap::GetDrawObjectCount()
 {
 	// 目前先写死成第一个
 	return Geometries[0].GetDrawObjectCount();
+}
+
+void FGeometryMap::BuildConstantBuffer()
+{
+	// 创建常量缓冲区
+	ObjectConstantBufferViews.CreateConstant(sizeof(FObjectTransformation), 1);
+
+	// 描述堆句柄
+	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(DescriptorHeap.GetHeap()->GetCPUDescriptorHandleForHeapStart());
+
+	// 构建常量缓冲区
+	ObjectConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawObjectCount());
 }
