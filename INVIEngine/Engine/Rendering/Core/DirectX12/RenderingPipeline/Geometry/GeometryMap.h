@@ -4,6 +4,7 @@
 #include "RenderingData.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Mesh/Core/MeshType.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
 struct FGeometry : IDirectXDeviceInterface_Struct
 {
@@ -13,6 +14,8 @@ public:
 
 	// 构建模型
 	void Build();
+
+	UINT GetDrawObjectCount() const;
 
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
@@ -39,7 +42,12 @@ public:
 
 	void Build();
 
+	void BuildDescriptorHeap();
+
+	UINT GetDrawObjectCount();
+
 protected:
-	map<int, FGeometry> Geometries;
+	map<int, FGeometry> Geometries;				// 几何体
+	FDirectXDescriptorHeap DescriptorHeap;		// 描述堆
 };
 

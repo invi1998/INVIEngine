@@ -59,6 +59,14 @@ void FGeometry::Build()
 	ANALYSIS_RESULT(D3DCreateBlob(IndexSizeInBytes, &CPUIndexBufferPtr));	// 创建一个二进制的缓冲区
 }
 
+UINT FGeometry::GetDrawObjectCount() const
+{
+	return DescribeMeshRenderingData.size();
+}
+
+/**
+ * \brief //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ */
 FGeometryMap::FGeometryMap()
 {
 	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
@@ -77,4 +85,16 @@ void FGeometryMap::Build()
 	{
 		Geometry.Build();
 	}
+}
+
+void FGeometryMap::BuildDescriptorHeap()
+{
+	// +1 表示摄像机的常量缓冲区
+	DescriptorHeap.Build(GetDrawObjectCount() + 1);
+}
+
+UINT FGeometryMap::GetDrawObjectCount()
+{
+	// 目前先写死成第一个
+	return Geometries[0].GetDrawObjectCount();
 }

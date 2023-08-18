@@ -37,5 +37,9 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建模型
 	GeometryMap.Build();
 
-	DirectXPipelineState.BuildPipeline();	// 构建渲染管线
+	// 构建描述堆
+	GeometryMap.BuildDescriptorHeap();
+
+	// 构建渲染管线
+	DirectXPipelineState.BuildPipeline();
 }
