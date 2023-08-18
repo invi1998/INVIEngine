@@ -56,6 +56,10 @@ public:
 
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
+	void PreDraw(float DeltaTime);
+	void Draw(float DeltaTime);
+	void PostDraw(float DeltaTime);
+
 	ID3D12DescriptorHeap* GetHeap() const { return DescriptorHeap.GetHeap(); }
 
 protected:

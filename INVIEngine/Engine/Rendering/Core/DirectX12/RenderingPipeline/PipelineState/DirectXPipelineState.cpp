@@ -68,3 +68,17 @@ void FDirectXPipelineState::BindShader(const FShader& InVertexShader, const FSha
 	GPSDesc.PS.pShaderBytecode = InPixelShader.GetBufferPointer();
 	GPSDesc.PS.BytecodeLength = InPixelShader.GetBufferSize();
 }
+
+void FDirectXPipelineState::PreDraw(float DeltaTime)
+{
+	// 重置命令列表，因为我们每一帧都会有新的提交列表
+	GetD3dGraphicsCommandList()->Reset(GetCommandAllocator().Get(), PSO.Get());
+}
+
+void FDirectXPipelineState::Draw(float DeltaTime)
+{
+}
+
+void FDirectXPipelineState::PostDraw(float DeltaTime)
+{
+}

@@ -19,6 +19,10 @@ public:
 	void BuildPipeline();
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
+	void PreDraw(float DeltaTime);
+	void Draw(float DeltaTime);
+	void PostDraw(float DeltaTime);
+
 protected:
 	FGeometryMap GeometryMap;
 	

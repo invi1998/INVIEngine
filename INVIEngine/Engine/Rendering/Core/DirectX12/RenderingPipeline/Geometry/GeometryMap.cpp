@@ -155,3 +155,17 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	ViewportConstantBufferViews.GetConstant()->Update(0, &ViewportTransformation);
 	
 }
+
+void FGeometryMap::PreDraw(float DeltaTime)
+{
+	ID3D12DescriptorHeap* DescriptorHeap[] = { GetHeap() };
+	GetD3dGraphicsCommandList()->SetDescriptorHeaps(_countof(DescriptorHeap), DescriptorHeap);
+}
+
+void FGeometryMap::Draw(float DeltaTime)
+{
+}
+
+void FGeometryMap::PostDraw(float DeltaTime)
+{
+}

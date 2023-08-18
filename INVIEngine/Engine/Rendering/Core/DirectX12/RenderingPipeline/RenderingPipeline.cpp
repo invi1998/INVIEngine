@@ -56,5 +56,21 @@ void FRenderingPipeline::BuildPipeline()
 
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
-	
+	GeometryMap.UpdateCalculations(delta_time, viewport_info);
+}
+
+void FRenderingPipeline::PreDraw(float DeltaTime)
+{
+	DirectXPipelineState.PreDraw(DeltaTime);
+	GeometryMap.PreDraw(DeltaTime);
+}
+
+void FRenderingPipeline::Draw(float DeltaTime)
+{
+	GeometryMap.Draw(DeltaTime);
+}
+
+void FRenderingPipeline::PostDraw(float DeltaTime)
+{
+	GeometryMap.PostDraw(DeltaTime);
 }

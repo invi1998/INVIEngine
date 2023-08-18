@@ -23,6 +23,10 @@ public:
 	// 绑定顶点着色器和像素着色器
 	void BindShader(const FShader& InVertexShader, const FShader& InPixelShader);
 
+	void PreDraw(float DeltaTime);
+	void Draw(float DeltaTime);
+	void PostDraw(float DeltaTime);
+
 
 private:
 	ComPtr<ID3D12PipelineState> PSO;				// 渲染管线状态对象
