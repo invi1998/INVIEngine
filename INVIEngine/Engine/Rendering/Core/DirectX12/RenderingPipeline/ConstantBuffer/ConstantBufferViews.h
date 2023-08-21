@@ -14,6 +14,8 @@ public:
 	// 创建常量
 	void CreateConstant(UINT ObjectSize, UINT ObjectCount);
 
+	void Update(int Index, const void* InData);
+
 	// 构建缓冲区
 	void BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE handle, UINT constantBufferNum, UINT handleOffset = 0);
 

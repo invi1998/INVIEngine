@@ -24,7 +24,7 @@ void FRenderingPipeline::BuildPipeline()
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///¹¹½¨shader HLSL
 	VertexShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "VSMain", "vs_5_0");
-	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_0")
+	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_0");
 	// °ó¶¨shader
 	DirectXPipelineState.BindShader(VertexShader, PixelShader);
 
@@ -62,6 +62,9 @@ void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInf
 void FRenderingPipeline::PreDraw(float DeltaTime)
 {
 	DirectXPipelineState.PreDraw(DeltaTime);
+
+	DirectXRootSignature.PreDraw(DeltaTime);
+
 	GeometryMap.PreDraw(DeltaTime);
 }
 

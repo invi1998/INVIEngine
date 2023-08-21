@@ -12,6 +12,10 @@ public:
 
 	void BuildRootSignature();
 
+	void PreDraw(float DeltaTime);
+	void Draw(float DeltaTime);
+	void PostDraw(float DeltaTime);
+
 private:
 	ComPtr<ID3D12RootSignature> RootSignature;		// ¸ùÇ©Ãû
 };

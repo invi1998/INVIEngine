@@ -68,6 +68,28 @@ UINT FGeometry::GetDrawObjectCount() const
 	return DescribeMeshRenderingData.size();
 }
 
+D3D12_VERTEX_BUFFER_VIEW FGeometry::GetVertexBufferView()
+{
+	D3D12_VERTEX_BUFFER_VIEW vbv;
+
+	vbv.BufferLocation = GPUVertexBufferPtr->GetGPUVirtualAddress();
+	vbv.SizeInBytes = MeshRenderingData.GetVertexSizeInBytes();
+	vbv.StrideInBytes = sizeof(FVertex);
+
+	return vbv;
+}
+
+D3D12_INDEX_BUFFER_VIEW FGeometry::GetIndexBufferView()
+{
+	D3D12_INDEX_BUFFER_VIEW ibv;
+
+	ibv.BufferLocation = GPUIndexBufferPtr->GetGPUVirtualAddress();
+	ibv.SizeInBytes = MeshRenderingData.GetIndexSizeInBytes();
+	ibv.Format = DXGI_FORMAT_R16_UINT;
+
+	return ibv;
+}
+
 /**
  * \brief //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
@@ -143,7 +165,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 
 			FObjectTransformation OBJTransformation;
 			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(MatrixWorld));
-			ObjectConstantBufferViews.GetConstant()->Update(i, &OBJTransformation);
+			ObjectConstantBufferViews.Update(i, &OBJTransformation);
 
 		}
 	}
@@ -152,7 +174,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	FViewportTransformation ViewportTransformation;
 	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
 
-	ViewportConstantBufferViews.GetConstant()->Update(0, &ViewportTransformation);
+	ViewportConstantBufferViews.Update(0, &ViewportTransformation);
 	
 }
 
@@ -164,8 +186,66 @@ void FGeometryMap::PreDraw(float DeltaTime)
 
 void FGeometryMap::Draw(float DeltaTime)
 {
+	DrawMesh(DeltaTime);
+	DrawViewport(DeltaTime);
 }
 
 void FGeometryMap::PostDraw(float DeltaTime)
 {
+}
+
+void FGeometryMap::DrawViewport(float DeltaTime)
+{
+	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
+	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+
+	DesHandle.Offset(static_cast<INT>(GetDrawObjectCount()), DescriptorOffset);
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(1, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
+}
+
+void FGeometryMap::DrawMesh(float DeltaTime)
+{
+	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	for (auto& geometry : Geometries)
+	{
+		// 获取顶点/索引缓冲区视图
+		D3D12_VERTEX_BUFFER_VIEW vbv = geometry.second.GetVertexBufferView();
+		D3D12_INDEX_BUFFER_VIEW ibv = geometry.second.GetIndexBufferView();
+
+		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+
+		for (size_t i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
+		{
+			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
+
+			// 设置索引视图
+			GetD3dGraphicsCommandList()->IASetIndexBuffer(&ibv);
+
+			// 绑定渲染流水线上的输入槽，可以在输入装配器阶段传入顶点数据
+			GetD3dGraphicsCommandList()->IASetVertexBuffers(
+				0,		// 指定起始的顶点缓冲区槽号 `StartSlot`，这个值通常为 0 值范围 0-15
+				1,		// 指定要绑定的顶点缓冲区数量 NumViews，这个值必须小于或等于硬件支持的最大顶点缓冲区数量
+				&vbv	// 使用顶点缓冲区视图数组 pViews 来描述每个顶点缓冲区的位置、大小和布局等信息。
+			);
+
+			// 指定图元类型（点，线，面） 下面设置为 绘制由三角形构成的列表
+			GetD3dGraphicsCommandList()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			DesHandle.Offset(i, DescriptorOffset);
+			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, DesHandle);
+
+			// 上述步骤只是在提交数据到GPU，并不是在渲染模型
+
+			// 绘制图元（真实渲染模型）
+			GetD3dGraphicsCommandList()->DrawIndexedInstanced(
+				renderingData.IndexSize,						// 顶点数量
+				1,												// 表示要绘制的实例数。如果只需要绘制单个实例，则可以将此参数设置为 1。
+				renderingData.IndexOffsetPosition,				// 表示从索引缓冲区中哪个位置开始读取索引数据。通常情况下，这个值为 0。
+				renderingData.VertexOffsetPosition,				// 表示每个顶点在顶点缓冲区中相对于起始位置的偏移量。如果顶点数据是连续排列的，则可以将此参数设置为 0。
+				0												// 表示从第几个实例开始绘制。如果只需要绘制单个实例，则可以将此参数设置为 0。
+			);
+
+		}
+	}
 }

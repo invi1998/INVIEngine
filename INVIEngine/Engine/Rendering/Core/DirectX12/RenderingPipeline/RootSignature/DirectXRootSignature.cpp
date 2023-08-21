@@ -71,3 +71,17 @@ void FDirectXRootSignature::BuildRootSignature()
 		IID_PPV_ARGS(&RootSignature)							// 传入根签名接收地址
 	);
 }
+
+void FDirectXRootSignature::PreDraw(float DeltaTime)
+{
+	// 设置根签名
+	GetD3dGraphicsCommandList()->SetGraphicsRootSignature(GetRootSignature());
+}
+
+void FDirectXRootSignature::Draw(float DeltaTime)
+{
+}
+
+void FDirectXRootSignature::PostDraw(float DeltaTime)
+{
+}

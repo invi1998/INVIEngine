@@ -21,6 +21,11 @@ public:
 
 	UINT GetDrawObjectCount() const;
 
+	// 获取顶点buff视图
+	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView();
+	// 获取顶点index缓冲区视图
+	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView();
+
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
 	ComPtr<ID3DBlob> CPUIndexBufferPtr;				// CPU 索引缓冲区
@@ -62,10 +67,19 @@ public:
 
 	ID3D12DescriptorHeap* GetHeap() const { return DescriptorHeap.GetHeap(); }
 
+private:
+	// 渲染视口
+	void DrawViewport(float DeltaTime);
+
+	// 渲染模型
+	void DrawMesh(float DeltaTime);
+
 protected:
 	map<int, FGeometry> Geometries;				// 几何体
 	FDirectXDescriptorHeap DescriptorHeap;		// 描述堆
 	FConstantBufferViews ObjectConstantBufferViews;		// 对象常量缓冲区
 	FConstantBufferViews ViewportConstantBufferViews;	// 摄像机常量缓冲区
 };
+
+
 
