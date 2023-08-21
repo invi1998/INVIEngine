@@ -62,14 +62,14 @@ void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInf
 void FRenderingPipeline::PreDraw(float DeltaTime)
 {
 	DirectXPipelineState.PreDraw(DeltaTime);
-
-	DirectXRootSignature.PreDraw(DeltaTime);
-
-	GeometryMap.PreDraw(DeltaTime);
 }
 
 void FRenderingPipeline::Draw(float DeltaTime)
 {
+	GeometryMap.PreDraw(DeltaTime);
+
+	DirectXRootSignature.PreDraw(DeltaTime);
+
 	GeometryMap.Draw(DeltaTime);
 }
 

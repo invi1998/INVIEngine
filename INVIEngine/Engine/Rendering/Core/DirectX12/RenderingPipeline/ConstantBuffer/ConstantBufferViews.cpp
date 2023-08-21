@@ -14,7 +14,7 @@ void FConstantBufferViews::Update(int Index, const void* InData)
 	Constants->Update(Index, InData);
 }
 
-void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE handle, UINT constantBufferNum, UINT handleOffset)
+void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE InHandle, UINT constantBufferNum, UINT handleOffset)
 {
 	// 常量缓冲区
 
@@ -26,12 +26,13 @@ void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE han
 
 	for (int i = 0; i < constantBufferNum; i++)
 	{
-		handle.Offset(handleOffset + i, DescriptorOffset);
+		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = InHandle;
 
 		// 常量缓冲区描述
 		D3D12_CONSTANT_BUFFER_VIEW_DESC viewportCBVDes;
 		viewportCBVDes.BufferLocation = Addr + i * Constants->GetConstantsBufferByteSize();		// 常量缓冲区地址
 		viewportCBVDes.SizeInBytes = Constants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
+		handle.Offset(i + handleOffset, DescriptorOffset);
 		// 传入我们计算好偏移值的handle
 		GetD3dDevice()->CreateConstantBufferView(&viewportCBVDes, handle);
 	}

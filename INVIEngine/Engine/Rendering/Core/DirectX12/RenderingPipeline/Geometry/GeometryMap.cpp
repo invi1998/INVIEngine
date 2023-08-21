@@ -8,7 +8,7 @@
 
 bool FGeometry::bRenderingDataExistence(CMesh* InKey)
 {
-	for(auto& temp : DescribeMeshRenderingData)
+	for(const auto& temp : DescribeMeshRenderingData)
 	{
 		return temp.Mesh == InKey;
 	}
@@ -45,8 +45,8 @@ void FGeometry::Build()
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 构建模型
 
-	UINT VertexSizeInBytes = MeshRenderingData.GetVertexSizeInBytes();
-	UINT IndexSizeInBytes = MeshRenderingData.GetIndexSizeInBytes();
+	const UINT VertexSizeInBytes = MeshRenderingData.GetVertexSizeInBytes();
+	const UINT IndexSizeInBytes = MeshRenderingData.GetIndexSizeInBytes();
 
 	// 创建缓冲区
 	ANALYSIS_RESULT(D3DCreateBlob(VertexSizeInBytes, &CPUVertexBufferPtr));	// 创建一个二进制的缓冲区
@@ -128,7 +128,7 @@ UINT FGeometryMap::GetDrawObjectCount()
 void FGeometryMap::BuildConstantBuffer()
 {
 	// 创建常量缓冲区
-	ObjectConstantBufferViews.CreateConstant(sizeof(FObjectTransformation), 1);
+	ObjectConstantBufferViews.CreateConstant(sizeof(FObjectTransformation), GetDrawObjectCount());
 
 	// 描述堆句柄
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
@@ -146,7 +146,7 @@ void FGeometryMap::BuildViewportConstantBuffer()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
 	// 构建常量缓冲区
-	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawObjectCount(), GetDrawObjectCount());
+	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, 1, GetDrawObjectCount());
 }
 
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
@@ -180,14 +180,16 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 
 void FGeometryMap::PreDraw(float DeltaTime)
 {
-	ID3D12DescriptorHeap* DescriptorHeap[] = { GetHeap() };
-	GetD3dGraphicsCommandList()->SetDescriptorHeaps(_countof(DescriptorHeap), DescriptorHeap);
+	DescriptorHeap.PreDraw(DeltaTime);
 }
 
 void FGeometryMap::Draw(float DeltaTime)
 {
-	DrawMesh(DeltaTime);
+	// 渲染视口
 	DrawViewport(DeltaTime);
+
+	// 渲染模型
+	DrawMesh(DeltaTime);
 }
 
 void FGeometryMap::PostDraw(float DeltaTime)
@@ -213,10 +215,10 @@ void FGeometryMap::DrawMesh(float DeltaTime)
 		D3D12_VERTEX_BUFFER_VIEW vbv = geometry.second.GetVertexBufferView();
 		D3D12_INDEX_BUFFER_VIEW ibv = geometry.second.GetIndexBufferView();
 
-		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
-
 		for (size_t i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
 		{
+			CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+
 			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
 
 			// 设置索引视图

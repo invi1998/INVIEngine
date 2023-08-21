@@ -75,7 +75,7 @@ void FDirectXRootSignature::BuildRootSignature()
 void FDirectXRootSignature::PreDraw(float DeltaTime)
 {
 	// ÉèÖÃ¸ùÇ©Ãû
-	GetD3dGraphicsCommandList()->SetGraphicsRootSignature(GetRootSignature());
+	GetD3dGraphicsCommandList()->SetGraphicsRootSignature(RootSignature.Get());
 }
 
 void FDirectXRootSignature::Draw(float DeltaTime)
