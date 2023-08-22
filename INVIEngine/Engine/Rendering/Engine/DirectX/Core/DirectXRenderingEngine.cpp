@@ -69,6 +69,8 @@ int CDirectXRenderingEngine::PostInit()
 		// MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f);
 	}
 
+	MeshManage->BuildMesh();
+
 	ANALYSIS_RESULT(GraphicsCommandList->Close());
 
 	ID3D12CommandList* CommandList[] = { GraphicsCommandList.Get() };

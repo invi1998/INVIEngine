@@ -10,6 +10,8 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderingPipeline.h"
 #include "Shader/Core/Shader.h"
 
+class FRenderingResourcesUpdate;
+
 class CMeshManager : public CCoreMinimalObject, public IRenderingInterface, public IDirectXDeviceInterface_Struct
 {
 public:

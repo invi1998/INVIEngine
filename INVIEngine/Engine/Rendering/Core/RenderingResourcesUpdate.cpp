@@ -2,7 +2,6 @@
 
 FRenderingResourcesUpdate::FRenderingResourcesUpdate()
 {
-
 }
 
 FRenderingResourcesUpdate::~FRenderingResourcesUpdate()

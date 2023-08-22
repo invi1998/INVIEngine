@@ -19,7 +19,7 @@ void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE InH
 	// 常量缓冲区
 
 	// 计算描述符在描述符堆中应该存放位置的偏移
-	D3D12_GPU_VIRTUAL_ADDRESS Addr = Constants.get()->GetBuffer()->GetGPUVirtualAddress();
+	D3D12_GPU_VIRTUAL_ADDRESS Addr = Constants->GetBuffer()->GetGPUVirtualAddress();
 	
 	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
