@@ -15,7 +15,7 @@ class FRenderingPipeline : public IDirectXDeviceInterface
 public:
 	FRenderingPipeline();
 
-	void BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData);
+	void BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData);
 	void BuildPipeline();
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 

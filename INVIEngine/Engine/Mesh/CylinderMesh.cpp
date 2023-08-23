@@ -1,45 +1,45 @@
-#include "CCylinderMesh.h"
+#include "CylinderMesh.h"
 
-void CCylinderMesh::BeginInit()
+void GCylinderMesh::BeginInit()
 {
-	CMesh::BeginInit();
+	GMesh::BeginInit();
 }
 
-void CCylinderMesh::Tick(float DeltaTime)
+void GCylinderMesh::Tick(float DeltaTime)
 {
-	CMesh::Tick(DeltaTime);
+	GMesh::Tick(DeltaTime);
 }
 
-CCylinderMesh::~CCylinderMesh()
+GCylinderMesh::~GCylinderMesh()
 {
 }
 
-void CCylinderMesh::Init()
+void GCylinderMesh::Init()
 {
-	CMesh::Init();
+	GMesh::Init();
 }
 
-void CCylinderMesh::PreDraw(float DeltaTime)
+void GCylinderMesh::PreDraw(float DeltaTime)
 {
-	CMesh::PreDraw(DeltaTime);
+	GMesh::PreDraw(DeltaTime);
 }
 
-void CCylinderMesh::Draw(float DeltaTime)
+void GCylinderMesh::Draw(float DeltaTime)
 {
-	CMesh::Draw(DeltaTime);
+	GMesh::Draw(DeltaTime);
 }
 
-void CCylinderMesh::PostDraw(float DeltaTime)
+void GCylinderMesh::PostDraw(float DeltaTime)
 {
-	CMesh::PostDraw(DeltaTime);
+	GMesh::PostDraw(DeltaTime);
 }
 
-void CCylinderMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
+void GCylinderMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
-	CMesh::BuildMesh(InRenderingData);
+	GMesh::BuildMesh(InRenderingData);
 }
 
-void CCylinderMesh::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, float InBottomRadius, float InHeight,
+void GCylinderMesh::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, float InBottomRadius, float InHeight,
 	uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
 {
 

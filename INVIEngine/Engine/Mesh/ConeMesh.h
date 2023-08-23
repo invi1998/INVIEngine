@@ -3,12 +3,12 @@
 #include "Core/Mesh.h"
 
 // Բ׶
-class CConeMesh : public CMesh
+class GConeMesh : public GMesh
 {
 public:
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
-	~CConeMesh() override;
+	~GConeMesh() override;
 	void Init() override;
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;

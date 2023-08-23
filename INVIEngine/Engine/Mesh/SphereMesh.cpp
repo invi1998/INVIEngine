@@ -1,48 +1,48 @@
 #include "SphereMesh.h"
 
 
-CSphereMesh::~CSphereMesh()
+GSphereMesh::~GSphereMesh()
 {
 }
 
-void CSphereMesh::BeginInit()
+void GSphereMesh::BeginInit()
 {
-	CMesh::BeginInit();
+	GMesh::BeginInit();
 }
 
-void CSphereMesh::Tick(float DeltaTime)
+void GSphereMesh::Tick(float DeltaTime)
 {
-	CMesh::Tick(DeltaTime);
+	GMesh::Tick(DeltaTime);
 }
 
-void CSphereMesh::Init()
+void GSphereMesh::Init()
 {
-	CMesh::Init();
+	GMesh::Init();
 }
 
-void CSphereMesh::PreDraw(float DeltaTime)
+void GSphereMesh::PreDraw(float DeltaTime)
 {
-	CMesh::PreDraw(DeltaTime);
+	GMesh::PreDraw(DeltaTime);
 }
 
-void CSphereMesh::Draw(float DeltaTime)
+void GSphereMesh::Draw(float DeltaTime)
 {
-	CMesh::Draw(DeltaTime);
+	GMesh::Draw(DeltaTime);
 }
 
-void CSphereMesh::PostDraw(float DeltaTime)
+void GSphereMesh::PostDraw(float DeltaTime)
 {
-	CMesh::PostDraw(DeltaTime);
+	GMesh::PostDraw(DeltaTime);
 }
 
-void CSphereMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
+void GSphereMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
-	CMesh::BuildMesh(InRenderingData);
+	GMesh::BuildMesh(InRenderingData);
 
 	Init();
 }
 
-void CSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint32_t InAxialSubdivision,
+void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint32_t InAxialSubdivision,
 	uint32_t InHeightSubdivision)
 {
 

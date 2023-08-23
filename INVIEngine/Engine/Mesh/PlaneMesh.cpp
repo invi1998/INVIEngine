@@ -1,45 +1,45 @@
-#include "CPlaneMesh.h"
+#include "PlaneMesh.h"
 
-void CPlaneMesh::BeginInit()
+void GPlaneMesh::BeginInit()
 {
-	CMesh::BeginInit();
+	GMesh::BeginInit();
 }
 
-void CPlaneMesh::Tick(float DeltaTime)
+void GPlaneMesh::Tick(float DeltaTime)
 {
-	CMesh::Tick(DeltaTime);
+	GMesh::Tick(DeltaTime);
 }
 
-CPlaneMesh::~CPlaneMesh()
+GPlaneMesh::~GPlaneMesh()
 {
 }
 
-void CPlaneMesh::Init()
+void GPlaneMesh::Init()
 {
-	CMesh::Init();
+	GMesh::Init();
 }
 
-void CPlaneMesh::PreDraw(float DeltaTime)
+void GPlaneMesh::PreDraw(float DeltaTime)
 {
-	CMesh::PreDraw(DeltaTime);
+	GMesh::PreDraw(DeltaTime);
 }
 
-void CPlaneMesh::Draw(float DeltaTime)
+void GPlaneMesh::Draw(float DeltaTime)
 {
-	CMesh::Draw(DeltaTime);
+	GMesh::Draw(DeltaTime);
 }
 
-void CPlaneMesh::PostDraw(float DeltaTime)
+void GPlaneMesh::PostDraw(float DeltaTime)
 {
-	CMesh::PostDraw(DeltaTime);
+	GMesh::PostDraw(DeltaTime);
 }
 
-void CPlaneMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
+void GPlaneMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
-	CMesh::BuildMesh(InRenderingData);
+	GMesh::BuildMesh(InRenderingData);
 }
 
-void CPlaneMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide)
+void GPlaneMesh::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, uint32_t InHeightSubdivide, uint32_t InWidthSubdivide)
 {
 
 	auto SubdivideValue = [&](float InValue, uint32_t InSubdivideValue)-> float

@@ -2,13 +2,13 @@
 
 #include "Mesh/Core/Mesh.h"
 
-class CBoxMesh : public CMesh
+class GBoxMesh : public GMesh
 {
-	typedef CMesh Super;
+	typedef GMesh Super;
 
 public:
-	CBoxMesh();
-	~CBoxMesh() override;
+	GBoxMesh();
+	~GBoxMesh() override;
 
 	virtual void Init() override;
 

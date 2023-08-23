@@ -2,12 +2,12 @@
 #include "EngineMinimal.h"
 #include "Core/Mesh.h"
 
-class CPlaneMesh : public CMesh
+class GPlaneMesh : public GMesh
 {
 public:
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
-	~CPlaneMesh() override;
+	~GPlaneMesh() override;
 	void Init() override;
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;

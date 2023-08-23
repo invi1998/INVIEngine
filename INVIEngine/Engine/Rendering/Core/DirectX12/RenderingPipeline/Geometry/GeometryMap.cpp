@@ -7,7 +7,7 @@
 #include "Rendering/Core/RenderingResourcesUpdate.h"
 #include "Rendering/Core/Buffer/ConstructBuffer.h"
 
-bool FGeometry::bRenderingDataExistence(CMesh* InKey)
+bool FGeometry::bRenderingDataExistence(GMesh* InKey)
 {
 	for(const auto& temp : DescribeMeshRenderingData)
 	{
@@ -17,7 +17,7 @@ bool FGeometry::bRenderingDataExistence(CMesh* InKey)
 	return false;
 }
 
-void FGeometry::BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData)
+void FGeometry::BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData)
 {
 	// 判断当前模型是否已经被添加过了
 	if (!bRenderingDataExistence(Mesh))
@@ -99,7 +99,7 @@ FGeometryMap::FGeometryMap()
 	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
 }
 
-void FGeometryMap::BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData)
+void FGeometryMap::BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData)
 {
 	FGeometry &Geometry = Geometries[0];
 

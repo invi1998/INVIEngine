@@ -1,45 +1,45 @@
 #include "ConeMesh.h"
 
-void CConeMesh::BeginInit()
+void GConeMesh::BeginInit()
 {
-	CMesh::BeginInit();
+	GMesh::BeginInit();
 }
 
-void CConeMesh::Tick(float DeltaTime)
+void GConeMesh::Tick(float DeltaTime)
 {
-	CMesh::Tick(DeltaTime);
+	GMesh::Tick(DeltaTime);
 }
 
-CConeMesh::~CConeMesh()
+GConeMesh::~GConeMesh()
 {
 }
 
-void CConeMesh::Init()
+void GConeMesh::Init()
 {
-	CMesh::Init();
+	GMesh::Init();
 }
 
-void CConeMesh::PreDraw(float DeltaTime)
+void GConeMesh::PreDraw(float DeltaTime)
 {
-	CMesh::PreDraw(DeltaTime);
+	GMesh::PreDraw(DeltaTime);
 }
 
-void CConeMesh::Draw(float DeltaTime)
+void GConeMesh::Draw(float DeltaTime)
 {
-	CMesh::Draw(DeltaTime);
+	GMesh::Draw(DeltaTime);
 }
 
-void CConeMesh::PostDraw(float DeltaTime)
+void GConeMesh::PostDraw(float DeltaTime)
 {
-	CMesh::PostDraw(DeltaTime);
+	GMesh::PostDraw(DeltaTime);
 }
 
-void CConeMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
+void GConeMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
-	CMesh::BuildMesh(InRenderingData);
+	GMesh::BuildMesh(InRenderingData);
 }
 
-void CConeMesh::CreateMesh(FMeshRenderingData& MeshData, float InBottomRadius, float InHeight, uint32_t InAxialSubdivision,
+void GConeMesh::CreateMesh(FMeshRenderingData& MeshData, float InBottomRadius, float InHeight, uint32_t InAxialSubdivision,
 	uint32_t InHeightSubdivision)
 {
 

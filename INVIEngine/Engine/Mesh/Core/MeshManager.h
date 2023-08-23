@@ -29,36 +29,36 @@ public:
 	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 public:
-	CMesh* CreateBoxMesh(
+	GMesh* CreateBoxMesh(
 		float InHeight,
 		float InWidth,
 		float InDepth);
 
-	CMesh* CreateConeMesh(
+	GMesh* CreateConeMesh(
 		float InRadius,
 		float InHeight,
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	CMesh* CreateCylinderMesh(
+	GMesh* CreateCylinderMesh(
 		float InTopRadius,
 		float InBottomRadius,
 		float InHeight,
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	CMesh* CreatePlaneMesh(
+	GMesh* CreatePlaneMesh(
 		float InHeight,
 		float InWidth,
 		uint32_t InHeightSubdivide,
 		uint32_t InWidthSubdivide);
 
-	CMesh* CreateSphereMesh(
+	GMesh* CreateSphereMesh(
 		float InRadius,
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	CMesh* CreateMesh(const string& InPath);
+	GMesh* CreateMesh(const string& InPath);
 
 protected:
 	FRenderingPipeline RenderingPipeline;		// 渲染管线对象

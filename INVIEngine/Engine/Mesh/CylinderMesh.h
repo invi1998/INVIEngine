@@ -4,12 +4,12 @@
 #include "Mesh/Core/Mesh.h"
 
 // Ô²Öù¡¢Ô²Ì¨
-class CCylinderMesh : public CMesh
+class GCylinderMesh : public GMesh
 {
 public:
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
-	~CCylinderMesh() override;
+	~GCylinderMesh() override;
 	void Init() override;
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;

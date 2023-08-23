@@ -1,45 +1,45 @@
 #include "CustomMesh.h"
 
-void CCustomMesh::BeginInit()
+void GCustomMesh::BeginInit()
 {
-	CMesh::BeginInit();
+	GMesh::BeginInit();
 }
 
-void CCustomMesh::Tick(float DeltaTime)
+void GCustomMesh::Tick(float DeltaTime)
 {
-	CMesh::Tick(DeltaTime);
+	GMesh::Tick(DeltaTime);
 }
 
-CCustomMesh::~CCustomMesh()
+GCustomMesh::~GCustomMesh()
 {
 }
 
-void CCustomMesh::Init()
+void GCustomMesh::Init()
 {
-	CMesh::Init();
+	GMesh::Init();
 }
 
-void CCustomMesh::PreDraw(float DeltaTime)
+void GCustomMesh::PreDraw(float DeltaTime)
 {
-	CMesh::PreDraw(DeltaTime);
+	GMesh::PreDraw(DeltaTime);
 }
 
-void CCustomMesh::Draw(float DeltaTime)
+void GCustomMesh::Draw(float DeltaTime)
 {
-	CMesh::Draw(DeltaTime);
+	GMesh::Draw(DeltaTime);
 }
 
-void CCustomMesh::PostDraw(float DeltaTime)
+void GCustomMesh::PostDraw(float DeltaTime)
 {
-	CMesh::PostDraw(DeltaTime);
+	GMesh::PostDraw(DeltaTime);
 }
 
-void CCustomMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
+void GCustomMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
-	CMesh::BuildMesh(InRenderingData);
+	GMesh::BuildMesh(InRenderingData);
 }
 
-void CCustomMesh::CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath)
+void GCustomMesh::CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath)
 {
 	{
 		// 获取文件大小
@@ -59,7 +59,7 @@ void CCustomMesh::CreateMesh(FMeshRenderingData& MeshData, const std::string& In
 	}
 }
 
-bool CCustomMesh::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData)
+bool GCustomMesh::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData)
 {
 	if (InBufferSize > 0)
 	{

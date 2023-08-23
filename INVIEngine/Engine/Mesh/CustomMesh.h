@@ -5,12 +5,12 @@
 
 
 // 自定义网格
-class CCustomMesh : public CMesh
+class GCustomMesh : public GMesh
 {
 public:
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
-	~CCustomMesh() override;
+	~GCustomMesh() override;
 	void Init() override;
 	void PreDraw(float DeltaTime) override;
 	void Draw(float DeltaTime) override;

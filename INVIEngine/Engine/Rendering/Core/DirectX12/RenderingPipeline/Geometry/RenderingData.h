@@ -3,7 +3,7 @@
 #include "Interface/DirectXDeviceInterface.h"
 
 
-class CMesh;
+class GMesh;
 class FRenderingResourcesUpdate;
 
 struct FRenderingData : public IDirectXDeviceInterface_Struct
@@ -31,6 +31,6 @@ public:
 
 	std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;		// 对象常量（指向上传堆）
 
-	CMesh* Mesh;
+	GMesh* Mesh;
 };
 

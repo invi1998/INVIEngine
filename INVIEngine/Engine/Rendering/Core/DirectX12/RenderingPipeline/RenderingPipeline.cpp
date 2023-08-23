@@ -9,7 +9,7 @@ FRenderingPipeline::FRenderingPipeline()
 
 }
 
-void FRenderingPipeline::BuildMesh(CMesh* Mesh, const FMeshRenderingData& MeshData)
+void FRenderingPipeline::BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData)
 {
 	GeometryMap.BuildMesh(Mesh, MeshData);
 }
