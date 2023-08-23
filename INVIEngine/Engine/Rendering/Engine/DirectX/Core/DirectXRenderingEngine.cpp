@@ -58,9 +58,9 @@ int CDirectXRenderingEngine::PostInit()
 		// 
 		MeshManage->CreateSphereMesh(2.0f, 40, 40);
 		// 
-		// MeshManage->CreateCylinderMesh(0.0f, 1.0f, 3.0f, 40, 20);
+		MeshManage->CreateCylinderMesh(0.0f, 1.0f, 3.0f, 40, 20);
 		// 
-		// MeshManage->CreateConeMesh(2.5f, 4.0f, 20, 10);
+		MeshManage->CreateConeMesh(2.5f, 4.0f, 20, 10);
 		// 
 		// MeshManage->CreatePlaneMesh(4.0f, 4.0f, 20, 20);
 		// 

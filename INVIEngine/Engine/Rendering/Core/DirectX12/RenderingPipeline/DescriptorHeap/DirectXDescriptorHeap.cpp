@@ -20,6 +20,6 @@ void FDirectXDescriptorHeap::Build(UINT InNumDescriptor)
 
 void FDirectXDescriptorHeap::PreDraw(float delta_time)
 {
-	ID3D12DescriptorHeap* DescriptorHeap[] = { GetHeap() };
+	ID3D12DescriptorHeap* DescriptorHeap[] = { CBVHeap.Get() };
 	GetD3dGraphicsCommandList()->SetDescriptorHeaps(_countof(DescriptorHeap), DescriptorHeap);
 }

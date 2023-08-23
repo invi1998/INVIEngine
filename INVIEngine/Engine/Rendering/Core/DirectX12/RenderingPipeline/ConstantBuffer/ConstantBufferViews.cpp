@@ -18,22 +18,22 @@ void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE InH
 {
 	// 常量缓冲区
 
-	// 计算描述符在描述符堆中应该存放位置的偏移
-	D3D12_GPU_VIRTUAL_ADDRESS Addr = Constants->GetBuffer()->GetGPUVirtualAddress();
-	
 	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	for (int i = 0; i < constantBufferNum; i++)
+	// 计算描述符在描述符堆中应该存放位置的偏移
+	D3D12_GPU_VIRTUAL_ADDRESS Addr = Constants->GetBuffer()->GetGPUVirtualAddress();
+
+	for (UINT i = 0; i < constantBufferNum; i++)
 	{
 		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = InHandle;
 
 		// 常量缓冲区描述
-		D3D12_CONSTANT_BUFFER_VIEW_DESC CBVDes;
-		CBVDes.BufferLocation = Addr + i * Constants->GetConstantsBufferByteSize();		// 常量缓冲区地址
-		CBVDes.SizeInBytes = Constants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
+		D3D12_CONSTANT_BUFFER_VIEW_DESC CBVDesc;
+		CBVDesc.BufferLocation = Addr + i * Constants->GetConstantsBufferByteSize();		// 常量缓冲区地址
+		CBVDesc.SizeInBytes = Constants->GetConstantsBufferByteSize();		// 获取常量缓冲区字节大小
 		handle.Offset(i + handleOffset, DescriptorOffset);
 		// 传入我们计算好偏移值的handle
-		GetD3dDevice()->CreateConstantBufferView(&CBVDes, handle);
+		GetD3dDevice()->CreateConstantBufferView(&CBVDesc, handle);
 	}
 }
