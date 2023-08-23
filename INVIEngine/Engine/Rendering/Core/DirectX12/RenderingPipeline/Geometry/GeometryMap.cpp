@@ -2,6 +2,7 @@
 
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
+#include "Mesh/Core/Mesh.h"
 #include "Mesh/Core/ObjectTransformation.h"
 #include "Rendering/Core/RenderingResourcesUpdate.h"
 #include "Rendering/Core/Buffer/ConstructBuffer.h"
@@ -158,8 +159,14 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 		for (int i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
 		{
 			// 更新模型位置
-
 			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
+
+			XMFLOAT3& Position = renderingData.Mesh->GetPosition();
+
+			// 位置信息
+			renderingData.WorldMatrix(3, 0) = Position.x;
+			renderingData.WorldMatrix(3, 1) = Position.y;
+			renderingData.WorldMatrix(3, 2) = Position.z;
 
 			XMMATRIX MatrixWorld = XMLoadFloat4x4(&renderingData.WorldMatrix);
 

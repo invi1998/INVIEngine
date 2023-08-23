@@ -2,6 +2,8 @@
 
 CTransformationComponent::CTransformationComponent()
 	: Position(0.f, 0.f, 0.f)
+	, Rotation(0.f, 0.f, 0.f)
+	, Scale(1.f, 1.f, 1.f)
 	, ForwardVector(1.f, 0.f, 0.f)
 	, RightVector(0.f, 1.f, 0.f)
 	, UpVector(0.f, 0.f, 1.f)
@@ -15,6 +17,13 @@ CTransformationComponent::~CTransformationComponent()
 void CTransformationComponent::SetPosition(const XMFLOAT3& InPosition)
 {
 	Position = InPosition;
+}
+
+void CTransformationComponent::SetScale(const fvector_3d& InScale)
+{
+	Scale.x = InScale.x;
+	Scale.y = InScale.y;
+	Scale.z = InScale.z;
 }
 
 void CTransformationComponent::SetForwardVector(const XMFLOAT3& InForward)

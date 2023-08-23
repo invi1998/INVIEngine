@@ -9,6 +9,7 @@ public:
 	~CTransformationComponent() override;
 
 	void SetPosition(const XMFLOAT3& InPosition);
+	void SetScale(const fvector_3d& InScale);
 	void SetForwardVector(const XMFLOAT3& InForward);
 	void SetRightVector(const XMFLOAT3& InRight);
 	void SetUpVector(const XMFLOAT3& InUp);
@@ -30,6 +31,8 @@ public:
 private:
 
 	XMFLOAT3 Position;			// 位置信息
+	XMFLOAT3 Rotation;			// 旋转信息
+	XMFLOAT3 Scale;				// 缩放信息
 
 	XMFLOAT3 ForwardVector;		// forward	正方向向量 等同于龙书里的look向量
 	XMFLOAT3 RightVector;		// right	右方向向量
