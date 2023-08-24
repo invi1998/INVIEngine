@@ -19,6 +19,27 @@ void CTransformationComponent::SetPosition(const XMFLOAT3& InPosition)
 	Position = InPosition;
 }
 
+void CTransformationComponent::SetRotation(const fvector_3d& InRotation)
+{
+	// 传进来的参数是旋转角度，需要转成弧度进行计算
+	float rollRadians = XMConvertToRadians(InRotation.x);
+	float pitchRadians = XMConvertToRadians(InRotation.y);
+	float yawRadians = XMConvertToRadians(InRotation.z);
+
+	// 求出旋转矩阵
+	XMMATRIX RotationRollPitchYawMatrix = XMMatrixRotationRollPitchYaw(pitchRadians, yawRadians, rollRadians);
+
+	// 拿到3个方向向量
+	XMVECTOR Right = XMLoadFloat3(&RightVector);
+	XMVECTOR Up = XMLoadFloat3(&UpVector);
+	XMVECTOR Forward = XMLoadFloat3(&ForwardVector);
+
+	// 用方向向量乘以旋转矩阵，得到旋转变换后的向量
+	XMStoreFloat3(&RightVector, XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationRollPitchYawMatrix));
+	XMStoreFloat3(&UpVector, XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationRollPitchYawMatrix));
+	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationRollPitchYawMatrix));
+}
+
 void CTransformationComponent::SetScale(const fvector_3d& InScale)
 {
 	Scale.x = InScale.x;

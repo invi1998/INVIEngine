@@ -9,12 +9,14 @@ public:
 	~CTransformationComponent() override;
 
 	void SetPosition(const XMFLOAT3& InPosition);
+	void SetRotation(const fvector_3d& InRotation);
 	void SetScale(const fvector_3d& InScale);
 	void SetForwardVector(const XMFLOAT3& InForward);
 	void SetRightVector(const XMFLOAT3& InRight);
 	void SetUpVector(const XMFLOAT3& InUp);
 
 	XMFLOAT3 &GetPosition() { return Position; }
+	const fvector_3d &GetRotation() { return fvector_3d(Rotation.x, Rotation.y, Rotation.z); }
 	XMFLOAT3 &GetForwardVector() { return ForwardVector; }
 	XMFLOAT3 &GetRightVector() { return RightVector; }
 	XMFLOAT3 &GetUpVector() { return UpVector; }

@@ -160,13 +160,20 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 		{
 			// 更新模型位置
 			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
-
 			XMFLOAT3& Position = renderingData.Mesh->GetPosition();
 
-			// 位置信息
-			renderingData.WorldMatrix(3, 0) = Position.x;
-			renderingData.WorldMatrix(3, 1) = Position.y;
-			renderingData.WorldMatrix(3, 2) = Position.z;
+			// 拿到3个方向向量
+			XMFLOAT3 RightVector = renderingData.Mesh->GetRightVector();
+			XMFLOAT3 UpVector = renderingData.Mesh->GetUpVector();
+			XMFLOAT3 ForwardVector = renderingData.Mesh->GetForwardVector();
+
+			// 构造模型world
+			renderingData.WorldMatrix = {
+				RightVector.x, UpVector.x, ForwardVector.x, 0.f,
+				RightVector.y, UpVector.y, ForwardVector.y, 0.f,
+				RightVector.z, UpVector.z, ForwardVector.z, 0.f,
+				Position.x, Position.y, Position.z, 1.f
+			};
 
 			XMMATRIX MatrixWorld = XMLoadFloat4x4(&renderingData.WorldMatrix);
 

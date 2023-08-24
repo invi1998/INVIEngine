@@ -15,6 +15,7 @@ void GActorObject::SetPosition(const XMFLOAT3& InNewPosition)
 
 void GActorObject::SetRotation(const fvector_3d& InRotation)
 {
+	TransformationComponent->SetRotation(InRotation);
 }
 
 void GActorObject::SetScale(const fvector_3d& InNewScale)
