@@ -4,9 +4,9 @@ CTransformationComponent::CTransformationComponent()
 	: Position(0.f, 0.f, 0.f)
 	, Rotation(0.f, 0.f, 0.f)
 	, Scale(1.f, 1.f, 1.f)
-	, ForwardVector(1.f, 0.f, 0.f)
-	, RightVector(0.f, 1.f, 0.f)
-	, UpVector(0.f, 0.f, 1.f)
+	, ForwardVector(0.f, 0.f, 1.f)
+	, RightVector(1.f, 0.f, 0.f)
+	, UpVector(0.f, 1.f, 0.f)
 {
 }
 
