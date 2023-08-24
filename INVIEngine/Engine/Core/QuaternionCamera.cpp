@@ -6,42 +6,42 @@
 
 FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 
-const XMVECTOR CQuaternionCamera::DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-const XMVECTOR CQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-const XMVECTOR CQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+const XMVECTOR GQuaternionCamera::DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
-CQuaternionCamera::CQuaternionCamera()
-    : Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
+GQuaternionCamera::GQuaternionCamera()
+    : GActorObject(),
+	Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
     FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
     ViewportWidth(FEngineRenderConfig::GetRenderConfig()->ScreenWidth),
     ViewportHeight(FEngineRenderConfig::GetRenderConfig()->ScreenHeight)
 {
     InputComponent = CreateObject<CInputComponent>(new CInputComponent());
-    TransformationComponent = CreateObject<CTransformationComponent>(new CTransformationComponent());
-    InputComponent->OnMouseWheelDelegate.Bind(this, &CQuaternionCamera::OnMouseScroll);
+    InputComponent->OnMouseWheelDelegate.Bind(this, &GQuaternionCamera::OnMouseScroll);
     // 绑定键盘鼠标事件
-    InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &CQuaternionCamera::ExecuteInput);
+    InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GQuaternionCamera::ExecuteInput);
 
     UpdateViewMatrix();
     UpdateProjectionMatrix(static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight));
 }
 
-void CQuaternionCamera::BeginInit()
+void GQuaternionCamera::BeginInit()
 {
 	CCoreMinimalObject::BeginInit();
 }
 
-void CQuaternionCamera::Tick(float DeltaTime)
+void GQuaternionCamera::Tick(float DeltaTime)
 {
 	CCoreMinimalObject::Tick(DeltaTime);
 }
 
-void CQuaternionCamera::ExecuteInput()
+void GQuaternionCamera::ExecuteInput()
 {
     OnUpdate(1.0f);
 }
 
-void CQuaternionCamera::OnUpdate(float ts)
+void GQuaternionCamera::OnUpdate(float ts)
 {
 	
     if (FInput::IsKeyPressed(VK_LMENU))
@@ -76,7 +76,7 @@ void CQuaternionCamera::OnUpdate(float ts)
     }
 }
 
-XMVECTOR CQuaternionCamera::GetUpDirection() const
+XMVECTOR GQuaternionCamera::GetUpDirection() const
 {
     XMVECTOR up = XMVector3Rotate(DefaultUp, GetRotationQuaternion());
     // 对上向量进行归一化。
@@ -84,7 +84,7 @@ XMVECTOR CQuaternionCamera::GetUpDirection() const
     return up;
 }
 
-XMVECTOR CQuaternionCamera::GetRightDirection() const
+XMVECTOR GQuaternionCamera::GetRightDirection() const
 {
     XMVECTOR right = XMVector3Rotate(DefaultRight, GetRotationQuaternion());
     // 对右向量进行归一化。
@@ -92,7 +92,7 @@ XMVECTOR CQuaternionCamera::GetRightDirection() const
     return right;
 }
 
-XMVECTOR CQuaternionCamera::GetForwardDirection() const
+XMVECTOR GQuaternionCamera::GetForwardDirection() const
 {
     XMVECTOR forward = XMVector3Rotate(DefaultForward, GetRotationQuaternion());
     // 对前向量进行归一化。
@@ -100,12 +100,12 @@ XMVECTOR CQuaternionCamera::GetForwardDirection() const
     return forward;
 }
 
-XMVECTOR CQuaternionCamera::CalculatePosition() const
+XMVECTOR GQuaternionCamera::CalculatePosition() const
 {
     return FocalPoint + GetForwardDirection() * Distance;
 }
 
-void CQuaternionCamera::UpdateViewMatrix()
+void GQuaternionCamera::UpdateViewMatrix()
 {
     Position = CalculatePosition();
 
@@ -142,20 +142,20 @@ void CQuaternionCamera::UpdateViewMatrix()
 	}
 }
 
-void CQuaternionCamera::UpdateProjectionMatrix(float aspectRatio)
+void GQuaternionCamera::UpdateProjectionMatrix(float aspectRatio)
 {
     // 使用透视投影创建投影矩阵，使用当前宽高比、近裁剪面和远裁剪面。
     ProjectionMatrix = XMMatrixPerspectiveFovLH(FOV, static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight), NearPlane, FarPlane);
 }
 
-XMVECTOR CQuaternionCamera::GetRotationQuaternion() const
+XMVECTOR GQuaternionCamera::GetRotationQuaternion() const
 {
     // 将欧拉角转换为四元数并设置Roll为0。
     XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(Pitch, Yaw, 0.0f);
     return quaternion;
 }
 
-XMFLOAT4X4 CQuaternionCamera::GetViewMatrixFx4() const
+XMFLOAT4X4 GQuaternionCamera::GetViewMatrixFx4() const
 {
     XMFLOAT4X4 View;
     XMStoreFloat4x4(&View, ViewMatrix);
@@ -163,7 +163,7 @@ XMFLOAT4X4 CQuaternionCamera::GetViewMatrixFx4() const
     return View;
 }
 
-XMFLOAT4X4 CQuaternionCamera::GetProjectionMatrixFx4() const
+XMFLOAT4X4 GQuaternionCamera::GetProjectionMatrixFx4() const
 {
     XMFLOAT4X4 Projection;
     XMStoreFloat4x4(&Projection, ProjectionMatrix);
@@ -171,14 +171,14 @@ XMFLOAT4X4 CQuaternionCamera::GetProjectionMatrixFx4() const
     return Projection;
 }
 
-void CQuaternionCamera::SetViewportSize(int width, int height)
+void GQuaternionCamera::SetViewportSize(int width, int height)
 {
     ViewportWidth = width;
     ViewportHeight = height;
     UpdateProjectionMatrix(static_cast<float>(width) / static_cast<float>(height));
 }
 
-void CQuaternionCamera::OnMouseScroll(int X, int Y, float InDelta)
+void GQuaternionCamera::OnMouseScroll(int X, int Y, float InDelta)
 {
     float zoom = InDelta / WHEEL_DELTA;
 
@@ -187,7 +187,7 @@ void CQuaternionCamera::OnMouseScroll(int X, int Y, float InDelta)
     
 }
 
-void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
+void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 {
 	switch (CameraType) {
 		case CameraRoaming:
@@ -233,14 +233,14 @@ void CQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
     
 }
 
-void CQuaternionCamera::MousePan(const XMFLOAT2& delta)
+void GQuaternionCamera::MousePan(const XMFLOAT2& delta)
 {
     auto [xSpeed, ySpeed] = PanSpeed();
     FocalPoint += -GetRightDirection() * delta.x * xSpeed * Distance;
     FocalPoint += GetUpDirection() * delta.y * ySpeed * Distance;
 }
 
-void CQuaternionCamera::MouseZoom(float delta)
+void GQuaternionCamera::MouseZoom(float delta)
 {
     if (CameraType == ObservationObject)
     {
@@ -258,7 +258,7 @@ void CQuaternionCamera::MouseZoom(float delta)
    
 }
 
-std::pair<float, float> CQuaternionCamera::PanSpeed() const
+std::pair<float, float> GQuaternionCamera::PanSpeed() const
 {
     float x = min(ViewportWidth / 1000.0f, 2.4f);	// max = 2.4f
     float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
@@ -269,12 +269,12 @@ std::pair<float, float> CQuaternionCamera::PanSpeed() const
     return { xFactor, yFactor };
 }
 
-float CQuaternionCamera::RotationSpeed() const
+float GQuaternionCamera::RotationSpeed() const
 {
     return 0.8f;
 }
 
-float CQuaternionCamera::ZoomSpeed() const
+float GQuaternionCamera::ZoomSpeed() const
 {
     float distance = Distance * 0.2f;
     distance = max(distance, 0.0f);

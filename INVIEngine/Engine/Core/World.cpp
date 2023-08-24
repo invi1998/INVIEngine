@@ -7,7 +7,7 @@ CWorld::CWorld()
 {
 	Camera = CreateObject<CCamera>(new CCamera());
 
-	QuaternionCamera = CreateObject<CQuaternionCamera>(new CQuaternionCamera());
+	QuaternionCamera = CreateObject<GQuaternionCamera>(new GQuaternionCamera());
 }
 
 CWorld::~CWorld()

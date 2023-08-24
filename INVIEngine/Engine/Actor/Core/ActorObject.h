@@ -15,6 +15,8 @@ class GActorObject : public CCoreMinimalObject
 public:
 	GActorObject();
 
+	FORCEINLINE CTransformationComponent* GetTransformationComponent() const { return TransformationComponent; }
+
 public:
 	void SetPosition(const XMFLOAT3& InNewPosition);
 	void SetRotation(const fvector_3d& InRotation);

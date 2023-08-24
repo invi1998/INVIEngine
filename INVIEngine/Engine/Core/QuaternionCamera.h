@@ -1,17 +1,18 @@
 #pragma once
 #include "CameraType.h"
 #include "EngineMinimal.h"
+#include "Actor/Core/ActorObject.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Viewport/ViewPort.h"
 
 class CInputComponent;
 class CTransformationComponent;
 
-class CQuaternionCamera : public CCoreMinimalObject, public FViewPort, public IDirectXDeviceInterface
+class GQuaternionCamera : public GActorObject, public FViewPort, public IDirectXDeviceInterface
 {
 public:
-    CQuaternionCamera();
-    ~CQuaternionCamera() override = default;
+    GQuaternionCamera();
+    ~GQuaternionCamera() override = default;
 
     virtual void BeginInit() override;
     virtual void Tick(float DeltaTime) override;
@@ -20,7 +21,6 @@ public:
     void OnUpdate(float ts);
 
     FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
-    FORCEINLINE CTransformationComponent* GetTransformationComponent() const { return TransformationComponent; }
 
     XMVECTOR GetPosition() const { return Position; }
 
@@ -89,8 +89,5 @@ private:
 private:
     CVARIABLE();
     CInputComponent* InputComponent;
-
-    CVARIABLE();
-    CTransformationComponent* TransformationComponent;
 };
 
