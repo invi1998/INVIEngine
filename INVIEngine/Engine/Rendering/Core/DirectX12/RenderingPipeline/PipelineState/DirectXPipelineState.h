@@ -1,6 +1,7 @@
 #pragma once
 #include "EngineMinimal.h"
 #include "Interface/DirectXDeviceInterface.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 
 
 class FShader;
@@ -28,8 +29,9 @@ public:
 	void PostDraw(float DeltaTime);
 
 
-private:
-	ComPtr<ID3D12PipelineState> PSO;				// 渲染管线状态对象
+private:			
+	std::unordered_map<UINT, ComPtr<ID3D12PipelineState>>	PSO;		// 渲染管线状态对象
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC	GPSDesc;	// 图形渲染管线状态描述 包括顶点着色器、像素着色器、光栅化状态、混合状态、输入布局等
+	EPipelineState PipelineState = EPipelineState::Wireframe;		// 渲染类型，默认线框模式
 };
 

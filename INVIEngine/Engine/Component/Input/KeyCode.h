@@ -138,6 +138,18 @@ namespace Key
 		RightControl = 345,
 		RightAlt = 346,
 		RightSuper = 347,
-		Menu = 348
+		Menu = 348,
+
+		// Êý×Ö¼ü
+		Num0 = 0x30,	//	0 ¼ü
+		Num1 = 0x31,	//	1 ¼ü
+		Num2 = 0x32,	//	2 ¼ü
+		Num3 = 0x33,	//	3 ¼ü
+		Num4 = 0x34,	//	4 ¼ü
+		Num5 = 0x35,	//	5 ¼ü
+		Num6 = 0x36,	//	6 ¼ü
+		Num7 = 0x37,	//	7 ¼ü
+		Num8 = 0x38,	//	8 ¼ü
+		Num9 = 0x39,	//	9 ¼ü
 	};
 }
