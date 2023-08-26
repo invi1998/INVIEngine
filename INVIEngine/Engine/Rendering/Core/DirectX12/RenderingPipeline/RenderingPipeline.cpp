@@ -33,6 +33,7 @@ void FRenderingPipeline::BuildPipeline()
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},	// 颜色，这里这个偏移是12字节，因为我们上面位置是3个元素，每个元素是4字节（32位），所以到了颜色这里就是 3*4 = 12字节的偏移了
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},	// 法线，这里这个偏移是24字节，因为我们上面位置是6个元素，每个元素是4字节（32位），所以到了法线这里就是 6*4 = 24字节的偏移了
 	};
 
 	// 绑定输入布局
@@ -45,7 +46,7 @@ void FRenderingPipeline::BuildPipeline()
 	GeometryMap.BuildDescriptorHeap();
 
 	// 构建常量缓冲区
-	GeometryMap.BuildConstantBuffer();
+	GeometryMap.BuildMeshConstantBuffer();
 
 	// 构建视口常量缓冲区
 	GeometryMap.BuildViewportConstantBuffer();

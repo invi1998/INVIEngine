@@ -4,10 +4,13 @@
 #include "Actor/Core/ActorObject.h"
 #include "Rendering/Core/Rendering.h"
 
-class CTransformationComponent;
+class CMaterial;
 
 class GMesh : public GActorObject, public IRenderingInterface
 {
+	CVARIABLE()
+		std::vector<CMaterial*> Materials;
+
 public:
 	GMesh();
 	~GMesh() override;
@@ -19,6 +22,9 @@ public:
 	virtual void PostDraw(float DeltaTime) override;
 
 	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
+
+public:
+	UINT GetMaterialNumber() const;
 	
 };
 

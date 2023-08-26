@@ -53,9 +53,17 @@ public:
 
 	void BuildDescriptorHeap();
 
-	UINT GetDrawObjectCount();
+	// 对象模型的绘制数量
+	UINT GetDrawMeshObjectCount();
 
-	void BuildConstantBuffer();
+	// 材质模型的绘制数量
+	UINT GetDrawMaterialObjectCount();
+
+	// 构建对象模型的buff缓冲区
+	void BuildMeshConstantBuffer();
+
+	// 构建模型材质的buff缓冲区
+	void BuildMaterialConstantBuffer();
 
 	void BuildViewportConstantBuffer();
 

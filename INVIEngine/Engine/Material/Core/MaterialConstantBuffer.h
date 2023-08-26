@@ -2,7 +2,7 @@
 
 #include "EngineMinimal.h"
 
-class MaterialConstantBuffer
+class FMaterialConstantBuffer
 {
 };
 
