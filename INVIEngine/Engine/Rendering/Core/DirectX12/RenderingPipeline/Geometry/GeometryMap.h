@@ -98,8 +98,8 @@ protected:
 	map<int, FGeometry> Geometries;				// 几何体
 	FDirectXDescriptorHeap DescriptorHeap;		// 描述堆
 	FConstantBufferViews MeshConstantBufferViews;			// 对象常量缓冲区
-	FMaterialConstantBuffer MaterialConstantBufferViews;	// 材质常量缓冲区
-	FLightConstantBuffer LightConstantBufferViews;			// 灯光常量缓冲区
+	FConstantBufferViews MaterialConstantBufferViews;		// 材质常量缓冲区
+	FConstantBufferViews LightConstantBufferViews;			// 灯光常量缓冲区
 	FConstantBufferViews ViewportConstantBufferViews;		// 摄像机常量缓冲区
 };
 

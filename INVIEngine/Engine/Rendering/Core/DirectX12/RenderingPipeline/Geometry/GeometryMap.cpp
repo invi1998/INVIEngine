@@ -234,7 +234,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	}
 
 	// 更新灯光
-	FLightTransformation ViewportTransformation;
+	FLightConstantBuffer LightConstantBuffer;
 	LightConstantBufferViews.Update(0, &LightConstantBuffer);
 
 	// 更新视口
@@ -255,6 +255,9 @@ void FGeometryMap::Draw(float DeltaTime)
 {
 	// 渲染视口
 	DrawViewport(DeltaTime);
+
+	// 渲染灯光
+	DrawLight(DeltaTime);
 
 	// 渲染模型
 	DrawMesh(DeltaTime);
