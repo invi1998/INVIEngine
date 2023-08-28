@@ -208,25 +208,6 @@ void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
                 Theta += -XRadians;
                 Phi += YRadians;
 
-                while (Theta >= XM_2PI)
-                {
-                    Theta -= XM_2PI;
-                }
-                while (Theta < 0)
-                {
-                    Theta += XM_2PI;
-                }
-
-				while (Phi >= XM_2PI)
-                {
-                    Phi -= XM_2PI;
-                }
-                while (Phi < 0)
-                {
-                    Phi += XM_2PI;
-                }
-                
-
                 break;
 			}
 	}

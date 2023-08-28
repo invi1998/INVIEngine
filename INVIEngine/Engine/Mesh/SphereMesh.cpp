@@ -67,9 +67,7 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 					InRadius * cosf(BetaValue),
 					InRadius * sinf(BetaValue) * sinf(ThetaValue)
 				),
-				XMFLOAT4(
-					i * 0.01f, j * 0.1f, (i + j) * 0.2f, 1.0f
-				)
+				XMFLOAT4(Colors::WhiteSmoke)
 			));
 
 			int TopIndex = MeshData.VertexData.size() - 1;
