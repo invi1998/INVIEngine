@@ -144,25 +144,25 @@ UINT FGeometryMap::GetDrawMaterialObjectCount()
 void FGeometryMap::BuildMeshConstantBuffer()
 {
 	// 创建常量缓冲区
-	ObjectConstantBufferViews.CreateConstant(sizeof(FObjectTransformation), GetDrawMeshObjectCount());
+	MeshConstantBufferViews.CreateConstant(sizeof(FObjectTransformation), GetDrawMeshObjectCount());
 
 	// 描述堆句柄
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
 	// 构建常量缓冲区
-	ObjectConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawMeshObjectCount());
+	MeshConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawMeshObjectCount());
 }
 
 void FGeometryMap::BuildMaterialConstantBuffer()
 {
 	// 创建常量缓冲区
-	ObjectConstantBufferViews.CreateConstant(sizeof(FMaterialConstantBuffer), GetDrawMaterialObjectCount());
+	MaterialConstantBufferViews.CreateConstant(sizeof(FMaterialConstantBuffer), GetDrawMaterialObjectCount());
 
 	// 描述堆句柄
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
 	// 构建常量缓冲区
-	ObjectConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawMeshObjectCount());
+	MaterialConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawMaterialObjectCount(), GetDrawMeshObjectCount());
 }
 
 void FGeometryMap::BuildViewportConstantBuffer()
@@ -174,7 +174,7 @@ void FGeometryMap::BuildViewportConstantBuffer()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
 	// 构建常量缓冲区
-	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, 1, GetDrawMeshObjectCount());
+	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, 1, GetDrawMeshObjectCount() + GetDrawMaterialObjectCount());
 }
 
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
@@ -185,30 +185,34 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	{
 		for (int i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
 		{
-			// 更新模型位置
+			// 更新模型
 			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
-			XMFLOAT3& Position = renderingData.Mesh->GetPosition();
-			XMFLOAT3& Scale = renderingData.Mesh->GetScale();
+			{
+				XMFLOAT3& Position = renderingData.Mesh->GetPosition();
+				XMFLOAT3& Scale = renderingData.Mesh->GetScale();
 
-			// 拿到3个方向向量
-			XMFLOAT3 RightVector = renderingData.Mesh->GetRightVector();
-			XMFLOAT3 UpVector = renderingData.Mesh->GetUpVector();
-			XMFLOAT3 ForwardVector = renderingData.Mesh->GetForwardVector();
+				// 拿到3个方向向量
+				XMFLOAT3 RightVector = renderingData.Mesh->GetRightVector();
+				XMFLOAT3 UpVector = renderingData.Mesh->GetUpVector();
+				XMFLOAT3 ForwardVector = renderingData.Mesh->GetForwardVector();
 
-			// 构造模型world
-			renderingData.WorldMatrix = {
-				RightVector.x * Scale.x,	UpVector.x,				ForwardVector.x,			0.f,
-				RightVector.y,				UpVector.y * Scale.y,	ForwardVector.y,			0.f,
-				RightVector.z,				UpVector.z,				ForwardVector.z	* Scale.z,	0.f,
-				Position.x,					Position.y,				Position.z,					1.f
-			};
-
+				// 构造模型world
+				renderingData.WorldMatrix = {
+					RightVector.x * Scale.x,	UpVector.x,				ForwardVector.x,			0.f,
+					RightVector.y,				UpVector.y * Scale.y,	ForwardVector.y,			0.f,
+					RightVector.z,				UpVector.z,				ForwardVector.z	* Scale.z,	0.f,
+					Position.x,					Position.y,				Position.z,					1.f
+				};
+			}
 			XMMATRIX MatrixWorld = XMLoadFloat4x4(&renderingData.WorldMatrix);
 
 			FObjectTransformation OBJTransformation;
 			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(MatrixWorld));
-			ObjectConstantBufferViews.Update(i, &OBJTransformation);
+			MeshConstantBufferViews.Update(i, &OBJTransformation);
 
+			// 更新材质
+			FMaterialConstantBuffer MaterialConstantBuffer;
+			MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
 		}
 	}
 
@@ -244,7 +248,7 @@ void FGeometryMap::DrawViewport(float DeltaTime)
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
-	DesHandle.Offset(static_cast<INT>(GetDrawMeshObjectCount()), DescriptorOffset);
+	DesHandle.Offset(static_cast<INT>(GetDrawMeshObjectCount() + GetDrawMaterialObjectCount()), DescriptorOffset);
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(1, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
 }
 
@@ -259,7 +263,8 @@ void FGeometryMap::DrawMesh(float DeltaTime)
 
 		for (size_t i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
 		{
-			CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+			CD3DX12_GPU_DESCRIPTOR_HANDLE DesMeshHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 模型描述handle
+			CD3DX12_GPU_DESCRIPTOR_HANDLE DesMaterialHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 材质描述handle
 
 			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
 
@@ -276,8 +281,13 @@ void FGeometryMap::DrawMesh(float DeltaTime)
 			// 指定图元类型（点，线，面） 下面设置为 绘制由三角形构成的列表
 			GetD3dGraphicsCommandList()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			DesHandle.Offset(i, DescriptorOffset);
-			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, DesHandle);
+			// 模型起始偏移
+			DesMeshHandle.Offset(i, DescriptorOffset);
+			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, DesMeshHandle);
+
+			// 材质起始偏移
+			DesMaterialHandle.Offset(i + GetDrawMeshObjectCount(), DescriptorOffset);
+			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(2, DesMaterialHandle);
 
 			// 上述步骤只是在提交数据到GPU，并不是在渲染模型
 
