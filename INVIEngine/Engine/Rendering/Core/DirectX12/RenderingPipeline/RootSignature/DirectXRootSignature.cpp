@@ -25,15 +25,22 @@ void FDirectXRootSignature::BuildRootSignature()
 
 	// 材质 CBV描述表
 	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeMaterialCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
-	DescriptorRangeViewportCBV.Init(
+	DescriptorRangeMaterialCBV.Init(
 		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
 		1,									// 描述数量 1
 		2);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
+	// 灯光 CBV描述表
+	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeLightCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
+	DescriptorRangeLightCBV.Init(
+		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
+		1,									// 描述数量 1
+		3);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
+
 
 
 	// 创建根参数，使用上面的描述符范围
-	CD3DX12_ROOT_PARAMETER RootParam[3];
+	CD3DX12_ROOT_PARAMETER RootParam[4];
 	RootParam[0].InitAsDescriptorTable(
 		1,							// 描述符数量
 		&DescriptorRangeObjectCBV		// 指向描述符范围数组的指针
@@ -52,11 +59,17 @@ void FDirectXRootSignature::BuildRootSignature()
 		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
 	);
 
+	RootParam[3].InitAsDescriptorTable(
+		1,							// 描述符数量
+		&DescriptorRangeLightCBV		// 指向描述符范围数组的指针
+		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
+	);
+
 	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
-		3,			// 参数数量
+		4,			// 参数数量
 		RootParam,	// 根签名参数
 		0,			// 静态采样数量
 		nullptr,	// 静态采样数据

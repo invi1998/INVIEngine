@@ -5,7 +5,7 @@
 
 // 灯光常量缓冲区
 
-class CLightConstantBuffer : public IDirectXDeviceInterface
+struct FLightConstantBuffer : public IDirectXDeviceInterface_Struct
 {
 	
 };
