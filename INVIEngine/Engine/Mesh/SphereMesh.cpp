@@ -83,7 +83,7 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 
 	// 构建顶点索引 (绘制北极）
 
-	for (uint32_t i = 0; i < InAxialSubdivision; ++i)
+	for (uint32_t i = 0; i <= InAxialSubdivision; ++i)
 	{
 		// 因为DX是左手螺旋定则，所以需要逆时针绘制顶点，法线才能朝外
 		MeshData.IndexData.push_back(0);
