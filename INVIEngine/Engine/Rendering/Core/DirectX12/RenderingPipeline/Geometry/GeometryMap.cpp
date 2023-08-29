@@ -2,6 +2,7 @@
 
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
+#include "Material/Core/Material.h"
 #include "Material/Core/MaterialConstantBuffer.h"
 #include "Mesh/Core/Mesh.h"
 #include "Mesh/Core/ObjectTransformation.h"
@@ -229,12 +230,17 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 
 			// 更新材质
 			FMaterialConstantBuffer MaterialConstantBuffer;
-			MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
+			if (CMaterial* material = (*renderingData.Mesh->GetMaterial())[0])
+			{
+				MaterialConstantBuffer.BaseColor = material->GetBaseColor();
+				MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
+			}
 		}
 	}
 
 	// 更新灯光
 	FLightConstantBuffer LightConstantBuffer;
+
 	LightConstantBufferViews.Update(0, &LightConstantBuffer);
 
 	// 更新视口

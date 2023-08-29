@@ -1,4 +1,7 @@
 
+#include "Light.hlsl"
+#include "Material.hlsl"
+
 cbuffer MeshConstBuffer : register(b0)
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
@@ -16,6 +19,7 @@ cbuffer ViewportConstBuffer : register(b1)
 cbuffer MaterialConstBuffer : register(b2)
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
+    float4 BaseColor;
 	float4x4 MaterialProjectionMatrix;
 }
 
@@ -70,10 +74,10 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	// 环境光
     float4 ambient = float4(0.19f, 0.18f, 0.17f, 1.0f);
 
-    outV.Color = mv.Color * diff + ambient;
+    outV.Color = mv.Color * (diff + ambient);
 
 	// 伽马校正
-    outV.Color = sqrt(outV.Color);
+    // outV.Color = sqrt(outV.Color);
 
 	return outV;
 }
@@ -94,11 +98,14 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
     float4 ambientLight = { 0.15f, 0.15f, 0.22f, 1.0f };
 
-    float ModelNormal = normalize(mvOut.Normal);
-    float NormalizeLightDirection = normalize(-LightDirection);
+    float3 ModelNormal = normalize(mvOut.Normal);
+    float3 NormalizeLightDirection = normalize(-LightDirection);
     float DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
 
-    mvOut.Color = mvOut.Color * DotDiffValue + ambientLight;
+    FMaterial material;
+    material.BaseColor = BaseColor;
+
+    mvOut.Color = material.BaseColor * (DotDiffValue + ambientLight);
 	// 伽马校正
     mvOut.Color = sqrt(mvOut.Color);
     return mvOut.Color;

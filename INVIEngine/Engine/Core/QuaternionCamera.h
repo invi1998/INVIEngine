@@ -84,7 +84,7 @@ private:
 private:
     float Radius = 10.f;
     float Theta = XM_PI;
-    float Phi = XM_PI;
+    float Phi = XM_PI * 0.25f;
 
 private:
     CVARIABLE();

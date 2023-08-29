@@ -6,8 +6,9 @@ struct FMaterialConstantBuffer
 {
 	FMaterialConstantBuffer();
 
-	XMFLOAT4X4 World;
+	XMFLOAT4 BaseColor;
 
+	XMFLOAT4X4 World;
 
 };
 
