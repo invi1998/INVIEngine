@@ -102,6 +102,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     float3 NormalizeLightDirection = normalize(-LightDirection);
     float DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
 
+    DotDiffValue = DotDiffValue * 0.5f + 0.5f;
     FMaterial material;
     material.BaseColor = BaseColor;
 

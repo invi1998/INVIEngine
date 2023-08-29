@@ -232,6 +232,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			FMaterialConstantBuffer MaterialConstantBuffer;
 			if (CMaterial* material = (*renderingData.Mesh->GetMaterial())[0])
 			{
+				MaterialConstantBuffer.MaterialType = material->GetMaterialType();
 				MaterialConstantBuffer.BaseColor = material->GetBaseColor();
 				MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
 			}
