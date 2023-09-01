@@ -12,8 +12,10 @@ cbuffer MeshConstBuffer : register(b0)
 cbuffer ViewportConstBuffer : register(b1)
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
+    float4 CameraPosition;
 	// 视口投影矩阵
 	float4x4 ViewportProjectionMatrix;
+    
 }
 
 cbuffer MaterialConstBuffer : register(b2)
@@ -107,6 +109,17 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     material.BaseColor = BaseColor;
 
     mvOut.Color = material.BaseColor * (DotDiffValue + ambientLight);
+    
+    // 获取摄像机到像素点的向量
+    float4 v = normalize(CameraPosition - mvOut.Position);
+    // 获取光线和摄像机视角的半程向量
+    float4 h = normalize(normalize(float4(-LightDirection, 0.0f)) + v);
+    
+    // 计算出Blinn-phong值
+    float BlinnPhong = max(0.0f, dot(float4(mvOut.Normal, 0.f), h));
+    
+    mvOut.Color += pow(BlinnPhong, 64);
+    
 	// 伽马校正
     mvOut.Color = sqrt(mvOut.Color);
     return mvOut.Color;

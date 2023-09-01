@@ -9,5 +9,7 @@ struct FViewportInfo
 
 	// 可视范围 可视角度 投影矩阵
 	XMFLOAT4X4 ProjectionMatrix;
+
+	XMFLOAT4 CameraPosition;
 };
 

@@ -247,6 +247,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	// 更新视口
 	XMMATRIX ViewProjection = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
 	FViewportTransformation ViewportTransformation;
+	ViewportTransformation.CameraPosition = viewport_info.CameraPosition;
 	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
 
 	ViewportConstantBufferViews.Update(0, &ViewportTransformation);
