@@ -1,6 +1,8 @@
 #include "DirectXRenderingEngine.h"
 
 #include "Config/EngineRenderConfig.h"
+#include "Material/Core/Material.h"
+#include "Material/Core/MaterialType.h"
 #include "Mesh/CustomMesh.h"
 
 CDirectXRenderingEngine::CDirectXRenderingEngine()
@@ -97,12 +99,55 @@ int CDirectXRenderingEngine::PostInit()
 		if (GMesh* PlaneMesh = MeshManage->CreatePlaneMesh(4.f, 3.f, 20, 20))
 		{
 			PlaneMesh->SetPosition(XMFLOAT3(0.f, -2.f, 0.f));
-			PlaneMesh->SetScale(fvector_3d(6.f, 6.f, 6.f));
+			PlaneMesh->SetScale(fvector_3d(10.f, 10.f, 10.f));
 		}
 
+		//À¼²®ÌØ
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.6f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::Lambert);
+			}
+		}
+
+		//°ëÀ¼²®ÌØ
 		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(0.f, 2, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+			}
+		}
+
+		//Phong
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(6.f, 2, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::Phong);
+
+				InMaterial->SetRoughness(0.8f);
+			}
+		}
+
+		//BlinnPhong
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(12.f, 2, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+
+				InMaterial->SetRoughness(0.8f);
+			}
 		}
 
 	}

@@ -2,9 +2,8 @@
 
 #include "EngineMinimal.h"
 
-class FViewportTransformation
+struct FViewportTransformation
 {
-public:
 	FViewportTransformation();
 
 	XMFLOAT4 CameraPosition;

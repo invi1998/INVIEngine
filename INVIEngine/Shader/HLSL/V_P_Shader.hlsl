@@ -21,7 +21,10 @@ cbuffer ViewportConstBuffer : register(b1)
 cbuffer MaterialConstBuffer : register(b2)
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-    float4 BaseColor;
+    int MaterialType;       // 材质类型
+    
+    float4 BaseColor;       // 材质基础颜色
+    float MaterialRoughness;    // 材质粗糙度
 	float4x4 MaterialProjectionMatrix;
 }
 
@@ -41,6 +44,7 @@ struct MeshVertexIn
 
 struct MeshVertexOut
 {
+    float4 WorldPosition : POSITION;
 	float4 Position : SV_POSITION;
 	float4 Color : COLOR;
 	float3 Normal : NORMAL;
@@ -65,21 +69,12 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	MeshVertexOut outV;
 
 	// 将模型转到其次裁剪空间
-    float4 Position = mul(float4(mv.Position, 1.0f), WorldMatrix);
-    outV.Position = mul(Position, ViewportProjectionMatrix);
+    outV.WorldPosition = mul(float4(mv.Position, 1.0f), WorldMatrix);
+    outV.Position = mul(outV.WorldPosition, ViewportProjectionMatrix);
 
     outV.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
 
-	// 光照方向得取反
-    float diff = max(dot(normalize(outV.Normal), normalize(-LightDirection)), 0.0f);
-
-	// 环境光
-    float4 ambient = float4(0.19f, 0.18f, 0.17f, 1.0f);
-
-    outV.Color = mv.Color * (diff + ambient);
-
-	// 伽马校正
-    // outV.Color = sqrt(outV.Color);
+    outV.Color = mv.Color;
 
 	return outV;
 }
@@ -98,30 +93,79 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
-    float4 ambientLight = { 0.15f, 0.15f, 0.22f, 1.0f };
+    // 环境光
+    float4 AmbientLight = { 0.15f, 0.15f, 0.22f, 1.0f };
 
     float3 ModelNormal = normalize(mvOut.Normal);
     float3 NormalizeLightDirection = normalize(-LightDirection);
-    float DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
-
-    DotDiffValue = DotDiffValue * 0.5f + 0.5f;
+    
     FMaterial material;
     material.BaseColor = BaseColor;
+    
+    float DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
 
-    mvOut.Color = material.BaseColor * (DotDiffValue + ambientLight);
+    // DotDiffValue = DotDiffValue * 0.5f + 0.5f;
     
-    // 获取摄像机到像素点的向量
-    float4 v = normalize(CameraPosition - mvOut.Position);
-    // 获取光线和摄像机视角的半程向量
-    float4 h = normalize(normalize(float4(-LightDirection, 0.0f)) + v);
+    float4 Specular = { 0.f, 0.f, 0.f, 1.f };
     
-    // 计算出Blinn-phong值
-    float BlinnPhong = max(0.0f, dot(float4(mvOut.Normal, 0.f), h));
+    if (MaterialType == 0)
+    {
+        // 兰伯特材质
+        DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
+    }
+    else if (MaterialType == 1)
+    {
+        // 半兰伯特材质
+        float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
+        DotDiffValue = max(0.0f, (DotDiffValue * 0.5f + 0.5f));     // [-1, 1]->[0.1]
+    }
+    else if (MaterialType == 2)
+    {
+        // Phong
+        float3 ReflectDirection = normalize(-reflect(ModelNormal, NormalizeLightDirection));
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+        DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
+        
+        if (DotDiffValue > 0.f)
+        {
+            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+            float M = MaterialShiniess * 100.f;
+            
+            Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.f), M);
+        }
+    }
+    else if (MaterialType == 3)
+    {
+        // Blinn-Phong
+        
+        // 获取摄像机到像素点的向量
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        // 获取光线和摄像机视角的半程向量
+        float3 HalfDirection = normalize(-LightDirection + ViewDirection);
     
-    mvOut.Color += pow(BlinnPhong, 64);
+        // 计算出Blinn-phong值
+        DotDiffValue = max(0.0f, dot(mvOut.Normal, HalfDirection));
+        
+        if (DotDiffValue > 0.f)
+        {
+            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+            float M = MaterialShiniess * 100.f;
+            
+            Specular = pow(max(dot(ViewDirection, ViewDirection), 0.f), M);
+        }
+
+    }
+    
+ 
+    // 最终颜色贡献
+    mvOut.Color = material.BaseColor * DotDiffValue // 漫反射
+    + AmbientLight * material.BaseColor  // 间接光（环境光）
+    + Specular * material.BaseColor;    // 高光
     
 	// 伽马校正
     mvOut.Color = sqrt(mvOut.Color);
+    
     return mvOut.Color;
 
 }
