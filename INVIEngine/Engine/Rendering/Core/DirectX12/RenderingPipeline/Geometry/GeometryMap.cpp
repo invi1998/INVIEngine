@@ -235,8 +235,8 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 				MaterialConstantBuffer.MaterialType = material->GetMaterialType();
 				MaterialConstantBuffer.BaseColor = material->GetBaseColor();
 				MaterialConstantBuffer.Roughness = material->GetRoughness();
-				MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
 			}
+			MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
 		}
 	}
 

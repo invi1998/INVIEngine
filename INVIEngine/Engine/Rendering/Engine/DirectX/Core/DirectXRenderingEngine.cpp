@@ -116,7 +116,7 @@ int CDirectXRenderingEngine::PostInit()
 		//°ëÀ¼²®ÌØ
 		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
 		{
-			SphereMesh->SetPosition(XMFLOAT3(0.f, 2, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
@@ -125,7 +125,7 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//Phong
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.5f, 20, 20))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(6.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
@@ -140,13 +140,13 @@ int CDirectXRenderingEngine::PostInit()
 		//BlinnPhong
 		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
 		{
-			SphereMesh->SetPosition(XMFLOAT3(12.f, 2, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(15.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetBaseColor({ 0.1f, 0.5f, 0.25f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 
-				InMaterial->SetRoughness(0.8f);
+				InMaterial->SetRoughness(0.01f);
 			}
 		}
 

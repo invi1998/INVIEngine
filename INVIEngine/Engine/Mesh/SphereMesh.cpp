@@ -67,7 +67,7 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 					InRadius * cosf(BetaValue),
 					InRadius * sinf(BetaValue) * sinf(ThetaValue)
 				),
-				XMFLOAT4(Colors::WhiteSmoke)
+				XMFLOAT4(Colors::White)
 			));
 
 			int TopIndex = MeshData.VertexData.size() - 1;
@@ -78,7 +78,7 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 	}
 
 	// 底部
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(0.18f, 0.12f, 0.93f, 1.0f)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(Colors::White)));
 
 
 	// 构建顶点索引 (绘制北极）

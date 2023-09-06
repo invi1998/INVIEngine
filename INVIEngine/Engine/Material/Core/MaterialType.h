@@ -4,7 +4,7 @@
 
 enum EMaterialType : UINT
 {
-	Lambert,		// 兰伯特材质
+	Lambert = 0,	// 兰伯特材质
 	HalfLambert,	// 半兰伯特材质
 	Phong,			// phong材质
 	BlinnPhong,		// BlinnPhong材质

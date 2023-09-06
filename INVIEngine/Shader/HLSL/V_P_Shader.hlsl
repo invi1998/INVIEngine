@@ -50,18 +50,18 @@ struct MeshVertexOut
 	float3 Normal : NORMAL;
 };
 
-float2 tri(in float2 x)
-{
-    float2 h = frac(x * 0.5f) - 0.5f;
-    return 1.f - 2.f * abs(h);
-}
+//float2 tri(in float2 x)
+//{
+//    float2 h = frac(x * 0.5f) - 0.5f;
+//    return 1.f - 2.f * abs(h);
+//}
 
-float checkersGrid(float2 uv, float2 ddx, float2 ddy)
-{
-    float2 w = max(abs(ddx), abs(ddy)) + 0.01f;
-    float2 i = (tri(uv + 0.5 * w) - tri(uv - 0.5 * w)) / w;
-    return 0.5 - 0.5 * i.x * i.y;
-}
+//float checkersGrid(float2 uv, float2 ddx, float2 ddy)
+//{
+//    float2 w = max(abs(ddx), abs(ddy)) + 0.01f;
+//    float2 i = (tri(uv + 0.5 * w) - tri(uv - 0.5 * w)) / w;
+//    return 0.5 - 0.5 * i.x * i.y;
+//}
 
 
 MeshVertexOut VSMain(MeshVertexIn mv)
@@ -103,8 +103,6 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     material.BaseColor = BaseColor;
     
     float DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
-
-    // DotDiffValue = DotDiffValue * 0.5f + 0.5f;
     
     float4 Specular = { 0.f, 0.f, 0.f, 1.f };
     
@@ -122,7 +120,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     else if (MaterialType == 2)
     {
         // Phong
-        float3 ReflectDirection = normalize(-reflect(ModelNormal, NormalizeLightDirection));
+        // reflect hlsl中用于求光线的反射光的函数，可以用来计算反射向量
+        float3 ReflectDirection = normalize(-reflect(NormalizeLightDirection, ModelNormal));
         float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
         DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
@@ -142,30 +141,32 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         // 获取摄像机到像素点的向量
         float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         // 获取光线和摄像机视角的半程向量
-        float3 HalfDirection = normalize(-LightDirection + ViewDirection);
+        float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
     
         // 计算出Blinn-phong值
-        DotDiffValue = max(0.0f, dot(mvOut.Normal, HalfDirection));
+        DotDiffValue = max(0.0f, dot(ModelNormal, HalfDirection));
         
         if (DotDiffValue > 0.f)
         {
             float MaterialShiniess = 1.f - saturate(MaterialRoughness);
             float M = MaterialShiniess * 100.f;
             
-            Specular = pow(max(dot(ViewDirection, ViewDirection), 0.f), M);
+            Specular = pow(max(dot(ViewDirection, HalfDirection), 0.f), M);
         }
 
     }
-    
  
     // 最终颜色贡献
+    // material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     mvOut.Color = material.BaseColor * DotDiffValue // 漫反射
-    + AmbientLight * material.BaseColor  // 间接光（环境光）
-    + Specular * material.BaseColor;    // 高光
+    + material.BaseColor * AmbientLight // 间接光（环境光）
+    + material.BaseColor * Specular; // 高光
     
 	// 伽马校正
-    mvOut.Color = sqrt(mvOut.Color);
+    // mvOut.Color = sqrt(mvOut.Color);
     
     return mvOut.Color;
+
+    // return BaseColor;
 
 }
