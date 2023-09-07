@@ -68,8 +68,10 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 {
 	MeshVertexOut outV;
 
-	// 将模型转到其次裁剪空间
+	// 获取顶点的世界坐标
     outV.WorldPosition = mul(float4(mv.Position, 1.0f), WorldMatrix);
+    
+    // 将模型转到其次裁剪空间
     outV.Position = mul(outV.WorldPosition, ViewportProjectionMatrix);
 
     outV.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
