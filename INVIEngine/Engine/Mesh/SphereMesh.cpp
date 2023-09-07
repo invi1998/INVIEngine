@@ -50,7 +50,7 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 	float Beta = XM_PI / static_cast<float>(InAxialSubdivision);
 
 	// ¶¥²¿
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(0.98f, 0.12f, 0.23f, 1.0f)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(Colors::White)));
 
 	for (size_t i = 1; i < InAxialSubdivision; ++i)
 	{
