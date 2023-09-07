@@ -9,5 +9,7 @@ enum EMaterialType : UINT
 	Phong,			// phong材质
 	BlinnPhong,		// BlinnPhong材质
 
+	Fresnel = 100,	// 菲涅尔
+
 	Max,			// 默认材质
 };

@@ -4,3 +4,10 @@ struct FMaterial
     // Í¨ÓÃ²ÄÖÊ
     float4 BaseColor;
 };
+
+
+// ·ÆÄá¶û
+float3 FresnelSchlick(float3 F0, float3 PointNormal, float3 Direction)
+{
+    return F0 + (1.f - saturate(dot(PointNormal, Direction)));
+}

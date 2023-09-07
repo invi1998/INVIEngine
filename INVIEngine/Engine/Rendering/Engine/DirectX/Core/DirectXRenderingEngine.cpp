@@ -162,6 +162,19 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		//BlinnPhong
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::Fresnel);
+
+				InMaterial->SetRoughness(1.0f);
+			}
+		}
+
 	}
 
 	MeshManage->BuildMesh();

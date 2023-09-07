@@ -157,6 +157,14 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         }
 
     }
+    else if (MaterialType == 100)
+    {
+        // ·ÆÄá¶û
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+        float3 f0 = { 0.f, 0.f, 0.f };
+        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection);
+    }
  
     // ×îÖÕÑÕÉ«¹±Ï×
     // material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
