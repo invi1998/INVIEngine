@@ -240,6 +240,18 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         float3 f0 = { 0.02f, 0.02f, 0.02f };
         Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
         
+        // 获取光线和摄像机视角的半程向量
+        float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+        
+        // 加入高光
+        if (DotDiffValue > 0.f)
+        {
+            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+            float M = MaterialShiniess * 70.f;
+            
+            Specular += pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f;
+        }
+        
     }
     else if (MaterialType == 100)
     {

@@ -248,6 +248,7 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetBaseColor({
 					255.f/255.f,87.f/255.f,34.f/255.f,1.f });
 				InMaterial->SetMaterialType(EMaterialType::CustomBanded);
+				InMaterial->SetRoughness(0.42f);
 			}
 		}
 
