@@ -253,6 +253,11 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         }
         
     }
+    else if (MaterialType == 9)
+    {
+        // Back ÓñÊ¯²ÄÖÊ 
+        
+    }
     else if (MaterialType == 100)
     {
         // ·ÆÄá¶û

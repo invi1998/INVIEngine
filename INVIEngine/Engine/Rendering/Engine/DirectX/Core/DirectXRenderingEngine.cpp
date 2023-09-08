@@ -239,7 +239,7 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		// GradualBanded
+		// CustomBanded
 		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 14, 0.f));
@@ -249,6 +249,18 @@ int CDirectXRenderingEngine::PostInit()
 					255.f/255.f,87.f/255.f,34.f/255.f,1.f });
 				InMaterial->SetMaterialType(EMaterialType::CustomBanded);
 				InMaterial->SetRoughness(0.42f);
+			}
+		}
+
+		// Back
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 14, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4{Colors::AntiqueWhite});
+				InMaterial->SetMaterialType(EMaterialType::Back);
+				InMaterial->SetRoughness(0.07f);
 			}
 		}
 

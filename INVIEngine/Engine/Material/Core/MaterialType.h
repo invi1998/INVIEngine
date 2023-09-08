@@ -13,6 +13,7 @@ enum EMaterialType : UINT
 	Banded,			// 基础卡通效果
 	GradualBanded,	// 带渐变的卡通效果
 	CustomBanded,	// 自定义卡通效果
+	Back,			// 玉石材质
 
 	Fresnel = 100,	// 菲涅尔
 
