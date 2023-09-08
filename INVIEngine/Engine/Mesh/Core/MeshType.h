@@ -21,8 +21,8 @@ struct FMeshRenderingData
 	UINT GetVertexSizeInBytes() const { return VertexData.size() * sizeof(FVertex); }
 	UINT GetIndexSizeInBytes() const { return IndexData.size() * sizeof(uint16_t); }
 
-	std::vector<uint16_t> IndexData;	// 索引数据
 	std::vector<FVertex> VertexData;	// 顶点数据
+	std::vector<uint16_t> IndexData;	// 索引数据
 };
 
 

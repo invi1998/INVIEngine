@@ -242,7 +242,7 @@ int CDirectXRenderingEngine::PostInit()
 
 	ENGINE_LOG("引擎post初始化完毕");
 
-	return 0;
+	return 1;
 }
 
 void CDirectXRenderingEngine::UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info)

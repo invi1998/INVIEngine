@@ -29,7 +29,7 @@ public:
 
 	XMFLOAT4X4 WorldMatrix;			// 世界矩阵
 
-	std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;		// 对象常量（指向上传堆）
+	// std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;		// 对象常量（指向上传堆）
 
 	GMesh* Mesh;
 };

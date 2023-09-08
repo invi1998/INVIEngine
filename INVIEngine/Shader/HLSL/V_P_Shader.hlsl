@@ -102,8 +102,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     float3 NormalizeLightDirection = normalize(-LightDirection);
     
     FMaterial material;
-    material.BaseColor = BaseColor;
-    // material.BaseColor = float4(0.82f, 0.82f, 0.82f, 1.0f);
+    // material.BaseColor = BaseColor;
+    material.BaseColor = float4(0.82f, 0.82f, 0.82f, 1.0f);
     
     float DotDiffValue = 0.f;
     
@@ -226,10 +226,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	// Ù¤ÂíÐ£Õý
     // mvOut.Color = sqrt(mvOut.Color);
     
-    return mvOut.Color;
+    // return mvOut.Color;
     
     // return CameraPosition;
 
-    // return BaseColor;
+    return BaseColor;
 
 }

@@ -10,9 +10,7 @@ struct FMaterialConstantBuffer
 
 	EMaterialType MaterialType;
 	XMFLOAT4 BaseColor;
-	float Roughness;	// 材质粗糙度
+	float Roughness; // 材质粗糙度
 
-	XMFLOAT4X4 World;
-
+	XMFLOAT4X4 MaterialProjectionMatrix;
 };
-
