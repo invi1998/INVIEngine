@@ -158,6 +158,16 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         }
 
     }
+    else if (MaterialType == 4)
+    {
+        // WrapLight模型 早期皮肤模拟
+        
+        // float WrapValue = 1.f;  // 该值为1的时候，是半兰伯特材质
+        float WrapValue = 2.5f;    // 该值越高，皮肤效果越通透
+        float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
+        DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
+        
+    }
     else if (MaterialType == 100)
     {
         // 菲尼尔

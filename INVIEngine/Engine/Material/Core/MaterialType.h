@@ -8,6 +8,7 @@ enum EMaterialType : UINT
 	HalfLambert,	// 半兰伯特材质
 	Phong,			// phong材质
 	BlinnPhong,		// BlinnPhong材质
+	WrapLight,		// WrapLight材质，早期模拟皮肤时使用的材质
 
 	Fresnel = 100,	// 菲涅尔
 
