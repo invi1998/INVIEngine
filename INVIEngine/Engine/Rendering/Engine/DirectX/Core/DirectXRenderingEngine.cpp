@@ -158,11 +158,11 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::Phong);
 
-				InMaterial->SetRoughness(0.8f);
+				InMaterial->SetRoughness(0.1f);
 			}
 		}
 
-		//BlinnPhong
+		//Fresnel
 		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
@@ -171,7 +171,7 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::Fresnel);
 
-				InMaterial->SetRoughness(1.0f);
+				// InMaterial->SetRoughness(1.0f);
 			}
 		}
 

@@ -102,9 +102,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     float3 NormalizeLightDirection = normalize(-LightDirection);
     
     FMaterial material;
-    material.BaseColor = BaseColor;
+    // material.BaseColor = BaseColor;
+    material.BaseColor = float4(0.82f, 0.82f, 0.82f, 1.0f);
     
-    float DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
+    float DotDiffValue = 0.f;
     
     float4 Specular = { 0.f, 0.f, 0.f, 1.f };
     
@@ -162,8 +163,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         // ·ÆÄá¶û
         float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
-        float3 f0 = { 0.f, 0.f, 0.f };
-        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection);
+        float3 f0 = { 0.02f, 0.02f, 0.02f };
+        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 5);
     }
  
     // ×îÖÕÑÕÉ«¹±Ï×
@@ -176,6 +177,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     // mvOut.Color = sqrt(mvOut.Color);
     
     return mvOut.Color;
+    
+    // return CameraPosition;
 
     // return BaseColor;
 

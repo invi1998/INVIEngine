@@ -137,6 +137,8 @@ void GQuaternionCamera::UpdateViewMatrix()
             XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
             ViewMatrix = ViewLookAt;
 
+            Position = XMLoadFloat3(&CameraPosition);
+
             break;
 		}
 	}
