@@ -102,8 +102,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     float3 NormalizeLightDirection = normalize(-LightDirection);
     
     FMaterial material;
-    // material.BaseColor = BaseColor;
-    material.BaseColor = float4(0.82f, 0.82f, 0.82f, 1.0f);
+    material.BaseColor = BaseColor;
+    // material.BaseColor = float4(0.82f, 0.82f, 0.82f, 1.0f);
     
     float DotDiffValue = 0.f;
     
@@ -188,6 +188,24 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
         DotDiffValue = saturate(DotLight * pow(DotLight * DotView, M));
         
+        
+    }
+    else if (MaterialType == 6)
+    {
+        // Banded 基础卡通
+        
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+        float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
+        
+        // 分层数量
+        float Layered = 4.f;
+        
+        DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+        
+        // 加入菲尼尔效果
+        float3 f0 = { 0.02f, 0.02f, 0.02f };
+        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
         
     }
     else if (MaterialType == 100)

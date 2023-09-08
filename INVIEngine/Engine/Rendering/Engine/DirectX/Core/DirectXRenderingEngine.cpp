@@ -129,7 +129,10 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetBaseColor({
+					221.f / 255.f,
+					154.f / 255.f,
+					255.f / 255.f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
 
 				InMaterial->SetRoughness(1.0f);
@@ -142,7 +145,10 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetBaseColor({
+					191.f / 255.f,
+					173.f / 255.f,
+					111.f / 255.f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::Phong);
 
 				InMaterial->SetRoughness(0.8f);
@@ -155,7 +161,10 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetBaseColor({
+					220.f / 255.f,
+					223.f / 255.f,
+					227.f / 255.f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::Phong);
 
 				InMaterial->SetRoughness(0.1f);
@@ -168,7 +177,6 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::Fresnel);
 
 				// InMaterial->SetRoughness(1.0f);
@@ -181,7 +189,10 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetBaseColor({
+					221.f / 255.f,
+					154.f / 255.f,
+					139.f / 255.f,1.f });
 				InMaterial->SetMaterialType(EMaterialType::WrapLight);
 
 				// InMaterial->SetRoughness(0.1f);
@@ -194,10 +205,27 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetBaseColor({
+					0.9f,
+					0.9f,
+					1.0f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::Minnaert);
 
 				InMaterial->SetRoughness(0.95f);
+			}
+		}
+
+		// Banded
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 8, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({
+					0.7f,
+					0.7f,
+					1.4f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::Banded);
 			}
 		}
 

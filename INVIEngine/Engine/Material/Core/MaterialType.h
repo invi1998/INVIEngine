@@ -10,6 +10,7 @@ enum EMaterialType : UINT
 	BlinnPhong,		// BlinnPhong材质 金属
 	WrapLight,		// WrapLight材质，早期模拟皮肤时使用的材质
 	Minnaert,		// 月球材质,天鹅绒等布料材质
+	Banded,			// 基础卡通效果
 
 	Fresnel = 100,	// 菲涅尔
 
