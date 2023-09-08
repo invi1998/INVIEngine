@@ -99,7 +99,7 @@ int CDirectXRenderingEngine::PostInit()
 		if (GMesh* PlaneMesh = MeshManage->CreatePlaneMesh(4.f, 3.f, 20, 20))
 		{
 			PlaneMesh->SetPosition(XMFLOAT3(0.f, -2.f, 0.f));
-			PlaneMesh->SetScale(fvector_3d(10.f, 10.f, 10.f));
+			PlaneMesh->SetScale(fvector_3d(40.f, 10.f, 40.f));
 
 			if (CMaterial* InMaterial = (*PlaneMesh->GetMaterial())[0])
 			{
@@ -111,7 +111,7 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//À¼²®ÌØ
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
@@ -124,7 +124,7 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//°ëÀ¼²®ÌØ
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
@@ -137,7 +137,7 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//Phong
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.0f, 20, 20))
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.0f, 50, 50))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(6.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
@@ -150,7 +150,7 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//BlinnPhong
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(12.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
@@ -163,7 +163,7 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//Fresnel
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])

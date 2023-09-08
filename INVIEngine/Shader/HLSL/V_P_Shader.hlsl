@@ -154,7 +154,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
             float MaterialShiniess = 1.f - saturate(MaterialRoughness);
             float M = MaterialShiniess * 100.f;
             
-            Specular = pow(max(dot(ViewDirection, HalfDirection), 0.f), M);
+            Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
         }
 
     }
