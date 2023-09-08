@@ -164,7 +164,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
         float3 f0 = { 0.02f, 0.02f, 0.02f };
-        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 5);
+        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
     }
  
     // ×îÖÕÑÕÉ«¹±Ï×
