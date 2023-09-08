@@ -50,7 +50,7 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 	float Beta = XM_PI / static_cast<float>(InAxialSubdivision);
 
 	// 顶部
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(Colors::White)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, 1.f, 0.f)));
 
 	for (size_t i = 1; i < InAxialSubdivision; ++i)
 	{
@@ -78,7 +78,7 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 	}
 
 	// 底部
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(Colors::White)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, -1.f, 0.f)));
 
 
 	// 构建顶点索引 (绘制北极）
