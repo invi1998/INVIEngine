@@ -74,6 +74,10 @@ void GQuaternionCamera::OnUpdate(float ts)
 
         UpdateViewMatrix();
     }
+    /*if (FInput::IsKeyReleased(Key::W))
+    {
+	    
+    }*/
 }
 
 XMVECTOR GQuaternionCamera::GetUpDirection() const
