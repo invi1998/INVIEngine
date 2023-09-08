@@ -175,7 +175,7 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		//BlinnPhong
+		// WrapLight
 		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
 		{
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 8, 0.f));
@@ -185,6 +185,19 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetMaterialType(EMaterialType::WrapLight);
 
 				// InMaterial->SetRoughness(0.1f);
+			}
+		}
+
+		// Minnaert
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.5f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::Minnaert);
+
+				InMaterial->SetRoughness(0.95f);
 			}
 		}
 

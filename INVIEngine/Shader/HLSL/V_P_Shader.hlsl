@@ -168,6 +168,28 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
         
     }
+    else if (MaterialType == 5)
+    {
+        // Minnaert模型（月光模型）
+        
+        // 第一种 dot(l, n) * dot(n, v)
+        
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+        float DotLight = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
+        float DotView = max(dot(ModelNormal, ViewDirection), 0.f);
+        
+        // DotDiffValue = DotLight * DotView;
+        
+        // 第二种 dot(l, n) * pow(dot(l, n) * dot(n, v), r)
+        
+        float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+        float M = MaterialShiniess * 10.f;
+        
+        DotDiffValue = saturate(DotLight * pow(DotLight * DotView, M));
+        
+        
+    }
     else if (MaterialType == 100)
     {
         // 菲尼尔
