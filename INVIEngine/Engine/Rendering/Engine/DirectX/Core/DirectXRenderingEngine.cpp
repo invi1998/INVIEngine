@@ -222,10 +222,32 @@ int CDirectXRenderingEngine::PostInit()
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor({
-					0.7f,
-					0.7f,
-					1.4f, 1.f });
+					76.f/255.f,175.f/255.f,80.f/255.f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::Banded);
+			}
+		}
+
+		// GradualBanded
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, 14, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({
+					3.f/255.f,169.f/255.f,244.f/255.f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::GradualBanded);
+			}
+		}
+
+		// GradualBanded
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 14, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({
+					255.f/255.f,87.f/255.f,34.f/255.f,1.f });
+				InMaterial->SetMaterialType(EMaterialType::CustomBanded);
 			}
 		}
 

@@ -12,6 +12,7 @@ enum EMaterialType : UINT
 	Minnaert,		// 月球材质,天鹅绒等布料材质
 	Banded,			// 基础卡通效果
 	GradualBanded,	// 带渐变的卡通效果
+	CustomBanded,	// 自定义卡通效果
 
 	Fresnel = 100,	// 菲涅尔
 

@@ -194,6 +194,39 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     {
         // Banded 基础卡通
         
+        float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
+        
+        // 分层数量
+        float Layered = 4.f;
+        
+        DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+        
+    }
+    else if (MaterialType == 7)
+    {
+        // GradualBanded  带渐变的卡通效果
+        
+        // 渐变颜色
+        float4 GradualColor = { 0.87f, 0.12f, 0.6f, 1.f };
+        
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+        float LightDotValue = dot(ModelNormal, NormalizeLightDirection);
+        
+        float DiffueseReflection = (LightDotValue + 1.f) * 0.5f;
+        
+        // 分层数量
+        float Layered = 8.f;
+        
+        DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+        
+        material.BaseColor = lerp(material.BaseColor, GradualColor, LightDotValue);
+        
+    }
+    else if (MaterialType == 8)
+    {
+        // CustomBanded  自定义卡通效果
+        
         float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
         float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
