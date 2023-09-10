@@ -258,7 +258,10 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 14, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor(XMFLOAT4{Colors::AntiqueWhite});
+				InMaterial->SetBaseColor({
+					2.f / 255.f,
+					214.f / 255.f,
+					17.f / 255.f, 1.f});
 				InMaterial->SetMaterialType(EMaterialType::Back);
 				InMaterial->SetRoughness(0.07f);
 			}

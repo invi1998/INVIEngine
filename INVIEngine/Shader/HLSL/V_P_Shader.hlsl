@@ -255,7 +255,40 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     }
     else if (MaterialType == 9)
     {
-        // Back 玉石材质 
+        // Back 玉石材质
+
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+
+        // 模拟透射光线
+
+        // 光线取反
+        // 法线取反 然后 乘以一个给定的透射值(sss)
+        // 获取反光和反法的半程向量
+        // 这个半程向量就是我们要模拟的透射效果
+        float SSSValue = 1.25f;
+        float3 BackLightNormalValue = -normalize(ModelNormal * SSSValue + NormalizeLightDirection);
+
+        // pow 收拢折射光强
+        float TransmissionScale = 1.5f;     // 透射范围
+        float TransmissionIntensity = 2.5f; // 透射强度
+        DotDiffValue = pow(saturate(dot(BackLightNormalValue, ViewDirection)), TransmissionScale) * TransmissionIntensity;
+
+        // 玉石的面光面算法（使用BlinnPhong来模拟）
+        // 获取光线和摄像机视角的半程向量
+        float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+
+        // 计算出Blinn-phong值
+        if (DotDiffValue > 0.f)
+        {
+            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+            float M = MaterialShiniess * 100.f;
+
+            Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
+        }
+
+        // 添加菲尼尔效果
+        float3 f0 = { 0.02f, 0.02f, 0.02f };
+        Specular.xyz += FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
         
     }
     else if (MaterialType == 100)
