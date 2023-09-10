@@ -11,6 +11,8 @@ struct FVertex
 	DirectX::XMFLOAT3 Position;		// 顶点位置
 	DirectX::XMFLOAT4 Color;		// 顶点颜色
 	DirectX::XMFLOAT3 Normal;		// 顶点法线
+	DirectX::XMFLOAT3 UTangent;		// 顶点切线（U切线，垂直向的切线）
+	// DirectX::XMFLOAT3 VTangent;		// 顶点切线（V切线，水平向的切线）
 };
 
 struct FMeshRenderingData

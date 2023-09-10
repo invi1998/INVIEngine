@@ -41,5 +41,36 @@ z = r \sin{\theta} \cdot \sin{\phi}
 $$
 
 
-因为在TBN中，一个顶点的y，
+在如上的一个顶点中，在切线空间中，y轴数值是为0的，而我们的x 就是我们顶点坐标的z坐标，然后我们的-z，就是等于我们顶点当前的x。
+$$
+切线空间的顶点切线计算,x,z是顶点坐标
+\\
+UTangent = (ut_x, ut_y, ut_z)
+\\
+ut_x = -z
+\\
+ut_y = 0
+\\
+ut_z = x
+$$
+
+
+```c++
+			int TopIndex = MeshData.VertexData.size() - 1;
+			FVertex& InVertex = MeshData.VertexData[TopIndex];
+			// 求球面上该点的法线
+			XMVECTOR Pos = XMLoadFloat3(&InVertex.Position);
+			XMStoreFloat3(&InVertex.Normal, XMVector3Normalize(Pos));
+
+			// U方向的切线
+			InVertex.UTangent.x = -InRadius * sinf(BetaValue) * sinf(ThetaValue);
+			InVertex.UTangent.y = 0.f;
+			InVertex.UTangent.z = InRadius * sinf(BetaValue) * cosf(ThetaValue);
+
+			// 计算出切线后，对切线值进行归一化存储
+			XMVECTOR Tangent = XMLoadFloat3(&InVertex.UTangent);
+			XMStoreFloat3(&InVertex.UTangent, XMVector3Normalize(Tangent));
+```
+
+
 

@@ -71,9 +71,19 @@ void GSphereMesh::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint3
 			));
 
 			int TopIndex = MeshData.VertexData.size() - 1;
+			FVertex& InVertex = MeshData.VertexData[TopIndex];
 			// 求球面上该点的法线
-			XMVECTOR Pos = XMLoadFloat3(&MeshData.VertexData[TopIndex].Position);
-			XMStoreFloat3(&MeshData.VertexData[TopIndex].Normal, XMVector3Normalize(Pos));
+			XMVECTOR Pos = XMLoadFloat3(&InVertex.Position);
+			XMStoreFloat3(&InVertex.Normal, XMVector3Normalize(Pos));
+
+			// U方向的切线
+			InVertex.UTangent.x = -InRadius * sinf(BetaValue) * sinf(ThetaValue);
+			InVertex.UTangent.y = 0.f;
+			InVertex.UTangent.z = InRadius * sinf(BetaValue) * cosf(ThetaValue);
+
+			// 计算出切线后，对切线值进行归一化存储
+			XMVECTOR Tangent = XMLoadFloat3(&InVertex.UTangent);
+			XMStoreFloat3(&InVertex.UTangent, XMVector3Normalize(Tangent));
 		}
 	}
 

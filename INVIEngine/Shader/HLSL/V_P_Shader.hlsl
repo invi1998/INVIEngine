@@ -40,6 +40,7 @@ struct MeshVertexIn
 	float3 Position : POSITION;		// 位置
 	float4 Color : COLOR;			// 颜色
 	float3 Normal : NORMAL;			// 法线
+    float3 UTangent : TANGENT;      // 切线（U方向）
 };
 
 struct MeshVertexOut
@@ -48,6 +49,7 @@ struct MeshVertexOut
 	float4 Position : SV_POSITION;
 	float4 Color : COLOR;
 	float3 Normal : NORMAL;
+    float3 UTangent : TANGENT;      // 切线（U方向）
 };
 
 //float2 tri(in float2 x)
@@ -75,6 +77,8 @@ MeshVertexOut VSMain(MeshVertexIn mv)
     outV.Position = mul(outV.WorldPosition, ViewportProjectionMatrix);
 
     outV.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
+
+    outV.UTangent = mv.UTangent;
 
     outV.Color = mv.Color;
 
