@@ -300,6 +300,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 
         
     }
+    else if (MaterialType == 10)
+    {
+	    
+    }
     else if (MaterialType == 100)
     {
         // ·ÆÄá¶û

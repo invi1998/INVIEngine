@@ -267,6 +267,21 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		// 各项异性（头发渲染）AnisotoropyKaijiyakay
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 14, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor({
+					2.f / 255.f,
+					214.f / 255.f,
+					17.f / 255.f, 1.f });
+				InMaterial->SetMaterialType(EMaterialType::AnisotoropyKaijiyakay);
+				InMaterial->SetRoughness(0.15f);
+			}
+		}
+
 	}
 
 	MeshManage->BuildMesh();
