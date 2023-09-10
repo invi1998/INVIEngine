@@ -263,7 +263,7 @@ int CDirectXRenderingEngine::PostInit()
 					214.f / 255.f,
 					17.f / 255.f, 1.f});
 				InMaterial->SetMaterialType(EMaterialType::Back);
-				InMaterial->SetRoughness(0.07f);
+				InMaterial->SetRoughness(0.15f);
 			}
 		}
 
