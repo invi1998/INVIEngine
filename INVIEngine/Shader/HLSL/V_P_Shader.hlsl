@@ -306,7 +306,14 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     }
     else if (MaterialType == 10)
     {
-	    
+	    // 各向异性，头发模拟
+    }
+    else if (MaterialType == 11)
+    {
+	    // OrenNayar GDC粗糙表面
+        
+        
+        
     }
     else if (MaterialType == 100)
     {

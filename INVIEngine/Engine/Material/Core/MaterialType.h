@@ -15,6 +15,7 @@ enum EMaterialType : UINT
 	CustomBanded,					// 自定义卡通效果
 	Back,							// 玉石材质
 	AnisotoropyKaijiyakay,			// GDC 2004年 KajiyaKay 头发渲染模型（各项异性渲染）
+	OrenNayar,						// GDC 粗糙表面
 
 	Fresnel = 100,					// 菲涅尔
 
