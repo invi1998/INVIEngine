@@ -30,3 +30,46 @@ Oren-Nayar模型的实现比较简单，只需要根据上述公式计算反射�
 
 - $\sigma$ 表示粗糙度
 - A 和 B 表示基于粗糙度的一个常量系数，当粗糙度为0的时候，其实最后得到的公式就是我们的兰伯特模型
+
+
+
+余弦函数的数学图像如下
+
+![image-20230911172045231](.\image-20230911172045231.png)
+
+反余弦函数的数学图像如下, 其定义域为[-1, 1]，值域为 [π, 0]
+
+![image-20230911172126252](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20230911172126252.png)
+
+
+
+shader
+
+```c++
+	    // OrenNayar GDC粗糙表面
+        
+        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        float3 NormalLight = saturate(dot(ModelNormal, NormalizeLightDirection));
+        float3 NormalView = saturate(dot(ModelNormal, ViewDirection));
+        
+        float PhiR = 
+            length(ViewDirection - ModelNormal * NormalView) *      // 视角到法线的距离
+            length(NormalizeLightDirection - ModelNormal * NormalLight);    // 灯光到法线的距离
+        
+        // 这里可以看到，我们的法线乘以了一个 NormalView 值，ModelNormal * NormalView 的结果就是实现了对法线的一个缩放
+        
+        float ACosNormalView = acos(NormalView); // [0, 1]
+        float ACosNormalLight = acos(NormalLight);
+        
+        float Alpha = max(ACosNormalView, ACosNormalLight);
+        float Beta = min(ACosNormalView, ACosNormalLight);
+        
+        float Roughness = pow(MaterialRoughness, 2);        // 粗糙度
+        
+        float A = 1 - 0.5f * (Roughness / (Roughness + 0.33f));
+        float B = 0.45f * (Roughness / (Roughness + 0.09f));
+        
+        
+        DotDiffValue = NormalLight * (A + B * max(0, PhiR) * sin(Alpha) * tan(Beta));
+```
+

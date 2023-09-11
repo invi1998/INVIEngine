@@ -291,7 +291,7 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetBaseColor({
 					121.f/255.f,85.f/255.f,72.f/255.f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::OrenNayar);
-				InMaterial->SetRoughness(1.15f);
+				InMaterial->SetRoughness(3.15f);
 			}
 		}
 
