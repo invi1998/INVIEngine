@@ -357,7 +357,14 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         // D Ïî D_GGX
         float4 D = GetDistributionGGX(N, H, Roughness);
         
-        return D;
+        float F0 = 0.04f;
+        F0 = lerp(F0, material.BaseColor, Matallic);
+        
+        // ·ÆÄá¶ûÏî FÏî
+        float4 F = float4(FresnelSchlick(F0, N, V, 5), 1.0f);
+        
+        
+        return F;
     }
     else if (MaterialType == 100)
     {
