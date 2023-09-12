@@ -135,7 +135,7 @@ UINT FGeometryMap::GetDrawMaterialCount()
 	{
 		for (auto& renderData : geometry.second.DescribeMeshRenderingData)
 		{
-			MaterialNumber += renderData.Mesh->GetMaterialNumber();
+			MaterialNumber += renderData.Mesh->GetMaterialNum();
 		}
 	}
 
@@ -315,7 +315,8 @@ void FGeometryMap::DrawMesh(float DeltaTime)
 			);
 
 			// 指定图元类型（点，线，面） 下面设置为 绘制由三角形构成的列表
-			GetD3dGraphicsCommandList()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			D3D_PRIMITIVE_TOPOLOGY DisplayType = static_cast<D3D_PRIMITIVE_TOPOLOGY>((*renderingData.Mesh->GetMaterial())[0]->GetMaterialDisplayType());
+			GetD3dGraphicsCommandList()->IASetPrimitiveTopology(DisplayType);
 
 			// 模型起始偏移
 			DesMeshHandle.Offset(i, DescriptorOffset);

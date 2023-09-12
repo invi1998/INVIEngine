@@ -1,15 +1,22 @@
 #pragma once
 
+#include "EngineMinimal.h"
+
 #include "MeshType.h"
 #include "Actor/Core/ActorObject.h"
+#include "Component/Mesh/ShellMeshComponent.h"
 #include "Rendering/Core/Rendering.h"
 
+class CShellMeshComponent;
 class CMaterial;
 
 class GMesh : public GActorObject, public IRenderingInterface
 {
 	CVARIABLE()
-		std::vector<CMaterial*> Materials;
+		CTransformationComponent* TransformationComponent;
+
+	CVARIABLE()
+		CShellMeshComponent* ShellMeshComponent;
 
 public:
 	GMesh();
@@ -24,7 +31,8 @@ public:
 	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
 
 public:
-	UINT GetMaterialNumber() const;
-	std::vector<CMaterial*>* GetMaterial() { return &Materials; }
+	UINT GetMaterialNum() const;
+
+	std::vector<CMaterial*>* GetMaterial();
 };
 

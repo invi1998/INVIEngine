@@ -1,16 +1,14 @@
 #include "Mesh.h"
-#include "EngineMinimal.h"
-#include "Component/TransformationComponent.h"
-#include "Config/EngineRenderConfig.h"
+
+#include "Component/Mesh/ShellMeshComponent.h"
 #include "Material/Core/Material.h"
-#include "Platform/Windows/WindowsEngine.h"
 
 /**
  * \brief /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 GMesh::GMesh() : GActorObject()
 {
-	Materials.push_back(CreateObject<CMaterial>(new CMaterial()));
+	ShellMeshComponent = CreateObject<CShellMeshComponent>(new CShellMeshComponent());
 }
 
 GMesh::~GMesh()
@@ -19,8 +17,10 @@ GMesh::~GMesh()
 
 void GMesh::Init()
 {
-	
-
+	if (ShellMeshComponent)
+	{
+		ShellMeshComponent->Init();
+	}
 }
 
 void GMesh::PreDraw(float DeltaTime)
@@ -40,10 +40,20 @@ void GMesh::PostDraw(float DeltaTime)
 
 void GMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
 {
+	if (ShellMeshComponent)
+	{
+		ShellMeshComponent->BuildMesh(InRenderingData);
+	}
 }
 
-UINT GMesh::GetMaterialNumber() const
+UINT GMesh::GetMaterialNum() const
 {
-	return Materials.size();
+	return ShellMeshComponent->GetMaterialNum();
 }
+
+std::vector<CMaterial*>* GMesh::GetMaterial()
+{
+	return ShellMeshComponent->GetMaterial();
+}
+
 

@@ -264,6 +264,7 @@ int CDirectXRenderingEngine::PostInit()
 					17.f / 255.f, 1.f});
 				InMaterial->SetMaterialType(EMaterialType::Back);
 				InMaterial->SetRoughness(0.15f);
+				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::PointDisplay);
 			}
 		}
 
@@ -279,6 +280,7 @@ int CDirectXRenderingEngine::PostInit()
 					17.f / 255.f, 1.f });
 				InMaterial->SetMaterialType(EMaterialType::AnisotoropyKaijiyakay);
 				InMaterial->SetRoughness(0.15f);
+				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
 			}
 		}
 

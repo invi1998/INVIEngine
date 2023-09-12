@@ -23,3 +23,15 @@ enum EMaterialType : UINT
 
 	Max,							// 默认材质
 };
+
+
+
+// 显示状态（点，线框， 面）
+enum EMaterialDisplayStatusType : UINT
+{
+	DefaultDisplay,			// 默认显示
+	PointDisplay,			// 显示点
+	WireframeDisplay,		// 线框显示
+	TriangleDisplay = 4,	// 三角形面显示
+};
+
