@@ -287,3 +287,25 @@ $$
 - $k_{IBL}$ 纹理映射提供的值
 - α 材质粗糙度
 
+shader
+
+```c++
+// G 项 几何函数
+float SchlickGGX(float NoV, float Roughness)
+{
+    float K_Dir = pow(Roughness, 2) / 0.8f;
+    
+    return NoV / max(K_Dir + ((1 - K_Dir) * NoV), 0.0001f);
+    
+}
+
+float GSmith(float3 N, float3 V, float3 L, float Roughness)
+{
+    float NoV = saturate(dot(N, V));
+    float NoL = saturate(dot(N, L));
+    
+    return SchlickGGX(NoV, Roughness) * SchlickGGX(NoL, Roughness);
+    
+}
+```
+

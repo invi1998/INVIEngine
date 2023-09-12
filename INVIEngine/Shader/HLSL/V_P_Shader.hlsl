@@ -363,8 +363,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         // 菲尼尔项 F项
         float4 F = float4(FresnelSchlick(F0, N, V, 5), 1.0f);
         
+        // G 项 几何函数项
+        float4 G = GSmith(N, V, L, Roughness);
         
-        return F;
+        return G;
     }
     else if (MaterialType == 100)
     {
