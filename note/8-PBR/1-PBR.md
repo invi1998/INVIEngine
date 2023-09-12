@@ -337,3 +337,57 @@ float3 GetDiffuseLambert(float3 DiffuseColor)
 
 ```
 
+
+
+## PBR 完整shader
+
+```c++
+else if (MaterialType == 20)
+    {
+        // PBR 基于真实物理的材质渲染
+        float3 L = NormalizeLightDirection;
+        float3 V = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+        float3 H = normalize(V + L);
+        
+        float3 N = ModelNormal;
+        
+        float PI = 3.1415926f;
+        
+        float Roughness = 0.09f;     // 粗糙度
+        float Matallic = 0.73f;      // 金属度
+        
+        // D 项 D_GGX
+        float4 D = GetDistributionGGX(N, H, Roughness);
+        
+        float F0 = 0.04f;
+        F0 = lerp(F0, material.BaseColor, Matallic);
+        
+        // 菲尼尔项 F项
+        float4 F = float4(FresnelSchlick(F0, N, V, 5), 1.0f);
+        
+        // G 项 几何函数项
+        float4 G = GSmith(N, V, L, Roughness);
+        
+        // 获取兰伯特项
+        float4 Kd = 1 - F;      // 就是菲尼尔取反
+        Kd *= 1 - Matallic;
+        
+        float4 Diffuse = float4(Kd * GetDiffuseLambert(material.BaseColor.xyz), 1.f);
+        
+        float NoV = saturate(dot(N, V));
+        float NoL = saturate(dot(N, L));
+        
+        float4 Value = (D * F * G) / (4 * (NoV * NoL));
+        
+        Specular = float4(Value.rgb, 1.f);
+        
+        float3 Radiance = LightIntensity.xyz;
+        // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）
+        float3 PBRColor = (Diffuse + Specular.xyz) * NoL * Radiance;
+        
+        return float4(PBRColor, 1.f);
+
+    }
+```
+

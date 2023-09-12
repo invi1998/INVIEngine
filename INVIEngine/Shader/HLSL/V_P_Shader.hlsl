@@ -351,8 +351,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
         float PI = 3.1415926f;
         
-        float Roughness = 0.9f;     // 粗糙度
-        float Matallic = 0.3f;      // 金属度
+        float Roughness = 0.02f;     // 粗糙度
+        float Matallic = 0.73f;      // 金属度
         
         // D 项 D_GGX
         float4 D = GetDistributionGGX(N, H, Roughness);
@@ -372,7 +372,19 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
         float4 Diffuse = float4(Kd * GetDiffuseLambert(material.BaseColor.xyz), 1.f);
         
-        return Diffuse;
+        float NoV = saturate(dot(N, V));
+        float NoL = saturate(dot(N, L));
+        
+        float4 Value = (D * F * G) / (4 * (NoV * NoL));
+        
+        Specular = float4(Value.rgb, 1.f);
+        
+        float3 Radiance = LightIntensity.xyz;
+        // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）
+        float3 PBRColor = (Diffuse + Specular.xyz) * NoL * Radiance;
+        
+        return float4(PBRColor, 1.f);
+
     }
     else if (MaterialType == 100)
     {
