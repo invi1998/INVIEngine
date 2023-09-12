@@ -239,6 +239,27 @@ $$
 - $h=\frac{\omega_o + \omega_i}{2}$ 表示微平面的法线方向
 - $\alpha$ 表示材质粗糙度，该值越粗糙，越大，那么计算出的法线分布也就越凌乱
 
+shader实现：
+
+```glsl
+// D 项
+float4 GetDistributionGGX(float3 N, float H, float Roughness)
+{
+    float PI = 3.1415926f;
+    
+    float a2 = pow(Roughness, 4);
+    
+    float NoH = saturate(dot(N, H));
+    
+    float d = (NoH * NoH * (a2 - 1) + 1);
+    
+    return a2 / max((d * d * PI), 0.0001f);
+    
+}
+```
+
+
+
 
 
 ## 菲尼尔项
@@ -265,3 +286,4 @@ $$
 - $G(n, \omega_o,k)$ 反射
 - $k_{IBL}$ 纹理映射提供的值
 - α 材质粗糙度
+

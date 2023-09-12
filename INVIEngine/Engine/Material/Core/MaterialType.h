@@ -17,6 +17,8 @@ enum EMaterialType : UINT
 	AnisotoropyKaijiyakay,			// GDC 2004年 KajiyaKay 头发渲染模型（各项异性渲染）
 	OrenNayar,						// GDC 粗糙表面
 
+	PBR = 20,						// PBR 基于真实物理的渲染
+
 	Fresnel = 100,					// 菲涅尔
 
 	Max,							// 默认材质

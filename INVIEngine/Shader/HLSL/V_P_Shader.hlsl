@@ -1,6 +1,7 @@
 
 #include "Light.hlsl"
 #include "Material.hlsl"
+#include "PBR.hlsl"
 
 cbuffer MeshConstBuffer : register(b0)
 {
@@ -337,6 +338,26 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         DotDiffValue = NormalLight * (A + B * max(0, PhiR) * sin(Alpha) * tan(Beta));
         
         
+    }
+    else if (MaterialType == 20)
+    {
+        // PBR 基于真实物理的材质渲染
+        float3 L = NormalizeLightDirection;
+        float3 V = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+        float3 H = normalize(V + L);
+        
+        float3 N = ModelNormal;
+        
+        float PI = 3.1415926f;
+        
+        float Roughness = 0.9f;     // 粗糙度
+        float Matallic = 0.3f;      // 金属度
+        
+        // D 项 D_GGX
+        float4 D = GetDistributionGGX(N, H, Roughness);
+        
+        return D;
     }
     else if (MaterialType == 100)
     {

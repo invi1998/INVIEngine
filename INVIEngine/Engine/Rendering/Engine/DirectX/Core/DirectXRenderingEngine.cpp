@@ -295,6 +295,18 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		// OrenNayar ´Ö²Ú±íÃæ
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 100, 100))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 20, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetMaterialType(EMaterialType::PBR);
+				InMaterial->SetRoughness(3.15f);
+			}
+		}
+
 	}
 
 	MeshManage->BuildMesh();
