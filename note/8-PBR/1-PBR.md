@@ -309,3 +309,31 @@ float GSmith(float3 N, float3 V, float3 L, float Roughness)
 }
 ```
 
+
+
+## 兰伯特项（漫反射项）
+
+shader实现
+
+```c++
+ // 获取兰伯特项
+        float4 Kd = 1 - F;      // 就是菲尼尔取反
+        Kd *= 1 - Matallic;
+        
+        float4 Diffuse = float4(Kd * GetDiffuseLambert(material.BaseColor.xyz), 1.f);
+        
+        return Diffuse;
+```
+
+
+
+```glsl
+// 兰伯特 项
+float3 GetDiffuseLambert(float3 DiffuseColor)
+{
+    float PI = 3.1415926f;
+    return DiffuseColor * (1 / PI);
+}
+
+```
+

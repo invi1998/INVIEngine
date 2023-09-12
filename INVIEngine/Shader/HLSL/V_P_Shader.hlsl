@@ -366,7 +366,13 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         // G 项 几何函数项
         float4 G = GSmith(N, V, L, Roughness);
         
-        return G;
+        // 获取兰伯特项
+        float4 Kd = 1 - F;      // 就是菲尼尔取反
+        Kd *= 1 - Matallic;
+        
+        float4 Diffuse = float4(Kd * GetDiffuseLambert(material.BaseColor.xyz), 1.f);
+        
+        return Diffuse;
     }
     else if (MaterialType == 100)
     {

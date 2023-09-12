@@ -32,3 +32,11 @@ float GSmith(float3 N, float3 V, float3 L, float Roughness)
     return SchlickGGX(NoV, Roughness) * SchlickGGX(NoL, Roughness);
     
 }
+
+// À¼²®ÌØ Ïî
+float3 GetDiffuseLambert(float3 DiffuseColor)
+{
+    float PI = 3.1415926f;
+    return DiffuseColor * (1 / PI);
+}
+
