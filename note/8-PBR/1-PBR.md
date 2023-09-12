@@ -247,3 +247,21 @@ $$
 F = F_{schlick}(h, v, F_0) = F_0 + (1-F_0)(1-(h \cdot v))^5
 $$
 
+
+
+## 几何函数
+
+$$
+G_{schlickGGX}(n,v,k) = \frac{n \cdot v}{(n \cdot v)(1-k) + k}
+\\ \\
+k_{direct}=\frac{(\alpha+1)^2}{8}
+\\ \\
+k_{IBL} = \frac{\alpha^2}{2}
+\\ \\
+G(n, \omega_i, \omega_o, k) = G(n, \omega_i, k)G(n, \omega_o,k)
+$$
+
+- $G(n, \omega_i, k)$ 入射
+- $G(n, \omega_o,k)$ 反射
+- $k_{IBL}$ 纹理映射提供的值
+- α 材质粗糙度
