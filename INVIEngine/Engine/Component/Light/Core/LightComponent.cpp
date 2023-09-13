@@ -1,11 +1,15 @@
 #include "LightComponent.h"
 
+#include "Light/LightManager.h"
+
 CLightComponent::CLightComponent()
 {
+	GetLightManger()->AddLight(this);
 }
 
 CLightComponent::~CLightComponent()
 {
+	
 }
 
 void CLightComponent::BeginInit()

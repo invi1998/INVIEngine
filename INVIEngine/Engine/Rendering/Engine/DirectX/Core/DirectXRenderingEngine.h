@@ -5,6 +5,8 @@
 #include "Mesh/Core/MeshManager.h"
 #include "Rendering/Engine/Core/RenderingEngine.h"
 
+class CLightManager;
+
 class CDirectXRenderingEngine : public CRenderingEngine
 {
 	friend class CWindowsEngine;
@@ -38,6 +40,7 @@ public:
 	UINT GetDXGISampleCount() const;												// 获取采样数量
 	UINT GetDXGISampleQuality() const;												// 获取采样质量
 	CMeshManager* GetMeshManage();
+	CLightManager* GetLightManager();
 
 protected:
 	void WaitGPUCommandQueueComplete();		// 等待GPU执行命令队列 同步GPU和CPU
@@ -88,6 +91,8 @@ protected:
 
 	UINT RTVDescriptorSize;			// RTV描述符大小
 
+protected:
+	CLightManager* LightManager;
 	CMeshManager* MeshManage;
 	CWorld* World;
 

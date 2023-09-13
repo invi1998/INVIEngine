@@ -196,4 +196,9 @@ CWorld* CWindowsEngine::GetWorld()
 	return World;
 }
 
+CLightManager* CWindowsEngine::GetLightManage()
+{
+	return RenderingEngine->GetLightManager();
+}
+
 

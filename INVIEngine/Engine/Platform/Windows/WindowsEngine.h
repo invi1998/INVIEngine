@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Engine.h"
+#include "Light/LightManager.h"
 
 class CMeshManager;
 class CWorld;
@@ -32,6 +33,7 @@ public:
 	CDirectXRenderingEngine* GetRenderingEngine() { return RenderingEngine; }
 	CMeshManager* GetMeshManage();
 	CWorld* GetWorld();
+	CLightManager* GetLightManage();
 
 protected:
 	HWND MainWindowsHandle;

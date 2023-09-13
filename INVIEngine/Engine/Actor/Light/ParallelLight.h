@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineMinimal.h"
-#include "Component/Light/CParallelLightComponent.h"
+#include "Component/Light/ParallelLightComponent.h"
 #include "Core/CoreObject/CoreMinimalObject.h"
 
 class CParallelLight : public CCoreMinimalObject

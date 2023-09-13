@@ -2,8 +2,9 @@
 
 #include "EngineMinimal.h"
 #include "Component/TransformationComponent.h"
+#include "Interface/DirectXDeviceInterface.h"
 
-class CLightComponent : public CTransformationComponent
+class CLightComponent : public CTransformationComponent, public IDirectXDeviceInterface
 {
 public:
 	CLightComponent();

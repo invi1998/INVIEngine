@@ -2,6 +2,7 @@
 
 #include "Config/EngineRenderConfig.h"
 #include "Core/World.h"
+#include "Light/LightManager.h"
 #include "Material/Core/Material.h"
 #include "Material/Core/MaterialType.h"
 #include "Mesh/CustomMesh.h"
@@ -24,13 +25,16 @@ CDirectXRenderingEngine::CDirectXRenderingEngine()
 
 	bTick = false;
 
-	MeshManage = new CMeshManager();
+	MeshManage = CreateObject<CMeshManager>(new CMeshManager);
+	LightManager = CreateObject<CLightManager>(new CLightManager());
 
 }
 
 CDirectXRenderingEngine::~CDirectXRenderingEngine()
 {
 	delete MeshManage;
+	delete LightManager;
+	delete World;
 }
 
 int CDirectXRenderingEngine::PreInit(FWinMainCommandParameters InParameters)
@@ -98,6 +102,23 @@ int CDirectXRenderingEngine::PostInit()
 			ConeMesh->SetPosition(XMFLOAT3(-1, 1, 9));
 			ConeMesh->SetRotation(fvector_3d(90.f, 1.f, 20.f));
 		}*/
+
+		// ตฦนโ
+		if (GCustomMesh* ParallelLight = World->CreateActorObject<GCustomMesh>())
+		{
+			ParallelLight->CreateMesh("Asserts/Mesh/SunMesh.obj");
+			ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, 20.f));
+			ParallelLight->SetScale(fvector_3d(1.f, 1.f, 1.f));
+
+			if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
+				InMaterial->SetMaterialType(EMaterialType::BaseColor);
+				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+
+				InMaterial->SetRoughness(1.0f);
+			}
+		}
 
 		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{
@@ -533,6 +554,11 @@ UINT CDirectXRenderingEngine::GetDXGISampleQuality() const
 CMeshManager* CDirectXRenderingEngine::GetMeshManage()
 {
 	return MeshManage;
+}
+
+CLightManager* CDirectXRenderingEngine::GetLightManager()
+{
+	return LightManager;
 }
 
 void CDirectXRenderingEngine::WaitGPUCommandQueueComplete()

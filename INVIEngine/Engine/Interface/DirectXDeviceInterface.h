@@ -4,6 +4,7 @@
 #include "Core/Engine.h"
 
 
+class CLightManager;
 class CWorld;
 class CMeshManager;
 class CWindowsEngine;
@@ -15,6 +16,7 @@ public:
 	ComPtr<ID3D12Fence> GetFence();
 	ComPtr<ID3D12Device> GetD3dDevice();
 	CMeshManager* GetMeshManage();
+	CLightManager* GetLightManger();
 	CWorld* GetWorld();
 
 	ComPtr<ID3D12GraphicsCommandList> GetD3dGraphicsCommandList();
@@ -34,6 +36,9 @@ struct IDirectXDeviceInterface_Struct
 public:
 	ComPtr<ID3D12Fence> GetFence();
 	ComPtr<ID3D12Device> GetD3dDevice();
+	CMeshManager* GetMeshManage();
+	CLightManager* GetLightManger();
+	CWorld* GetWorld();
 
 	ComPtr<ID3D12GraphicsCommandList> GetD3dGraphicsCommandList();
 	ComPtr<ID3D12CommandAllocator> GetCommandAllocator();

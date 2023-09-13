@@ -1,5 +1,6 @@
 #include "GeometryMap.h"
 
+#include "Component/Light/Core/LightComponent.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Material/Core/Material.h"
@@ -243,9 +244,18 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	}
 
 	// 更新灯光
-	FLightConstantBuffer LightConstantBuffer;
+	for (int i = 0; i < GetLightManger()->Lights.size(); i++)
+	{
+		FLightConstantBuffer LightConstantBuffer;
 
-	LightConstantBufferViews.Update(0, &LightConstantBuffer);
+		{
+			if (CLightComponent* light = GetLightManger()->Lights[i])
+			{
+				LightConstantBuffer.LightDirection = light->GetForwardVector();
+			}
+		}
+		LightConstantBufferViews.Update(i, &LightConstantBuffer);
+	}
 
 	// 更新视口
 	XMMATRIX ViewProjection = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
