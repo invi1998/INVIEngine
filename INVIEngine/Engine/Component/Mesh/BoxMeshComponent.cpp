@@ -1,5 +1,9 @@
 #include "BoxMeshComponent.h"
 
+CBoxMeshComponent::CBoxMeshComponent()
+{
+}
+
 void CBoxMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth)
 {
 	float CHeight = 0.5f * InHeight;
