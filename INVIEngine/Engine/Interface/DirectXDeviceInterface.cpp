@@ -29,6 +29,21 @@ ComPtr<ID3D12Device> IDirectXDeviceInterface::GetD3dDevice()
 	return nullptr;
 }
 
+CMeshManager* IDirectXDeviceInterface::GetMeshManage()
+{
+	return GetEngine()->GetMeshManage();
+}
+
+CWorld* IDirectXDeviceInterface::GetWorld()
+{
+	if (CWindowsEngine* InEngine = GetEngine())
+	{
+		return InEngine->GetWorld();
+	}
+
+	return nullptr;
+}
+
 ComPtr<ID3D12GraphicsCommandList> IDirectXDeviceInterface::GetD3dGraphicsCommandList()
 {
 	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))

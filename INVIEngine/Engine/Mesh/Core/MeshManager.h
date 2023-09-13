@@ -12,7 +12,7 @@
 
 class FRenderingResourcesUpdate;
 
-class CMeshManager : public CCoreMinimalObject, public IRenderingInterface, public IDirectXDeviceInterface_Struct
+class CMeshManager : public CCoreMinimalObject, public IRenderingInterface, public IDirectXDeviceInterface
 {
 public:
 	CMeshManager();
@@ -29,43 +29,43 @@ public:
 	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 public:
-	GMesh* CreateBoxMesh(
+	CMeshComponent* CreateBoxMeshComponent(
 		float InHeight,
 		float InWidth,
 		float InDepth);
 
-	GMesh* CreateConeMesh(
+	CMeshComponent* CreateConeMeshComponent(
 		float InRadius,
 		float InHeight,
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	GMesh* CreateCylinderMesh(
+	CMeshComponent* CreateCylinderMeshComponent(
 		float InTopRadius,
 		float InBottomRadius,
 		float InHeight,
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	GMesh* CreatePlaneMesh(
+	CMeshComponent* CreatePlaneMeshComponent(
 		float InHeight,
 		float InWidth,
 		uint32_t InHeightSubdivide,
 		uint32_t InWidthSubdivide);
 
-	GMesh* CreateSphereMesh(
+	CMeshComponent* CreateSphereMeshComponent(
 		float InRadius,
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	GMesh* CreateMesh(const string& InPath);
+	CMeshComponent* CreateMeshComponent(const string& InPath);
 
 protected:
 	FRenderingPipeline RenderingPipeline;		// 渲染管线对象
 
 protected:
 	template<class T, typename ...ParamTypes>
-	T* CreateMesh(ParamTypes &&...Params);
+	T* CreateMeshComponent(ParamTypes &&...Params);
 	
 };
 

@@ -2,6 +2,7 @@
 
 #include "Core/Engine.h"
 
+class CMeshManager;
 class CWorld;
 class CDirectXRenderingEngine;
 
@@ -29,6 +30,8 @@ public:
 	bool InitWindows(FWinMainCommandParameters InParameters);
 
 	CDirectXRenderingEngine* GetRenderingEngine() { return RenderingEngine; }
+	CMeshManager* GetMeshManage();
+	CWorld* GetWorld();
 
 protected:
 	HWND MainWindowsHandle;

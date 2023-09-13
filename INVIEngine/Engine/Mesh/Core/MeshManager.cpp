@@ -1,6 +1,12 @@
 #include "MeshManager.h"
 
 #include "ObjectTransformation.h"
+#include "Component/Mesh/BoxMeshComponent.h"
+#include "Component/Mesh/ConeMeshComponent.h"
+#include "Component/Mesh/CustomMeshComponent.h"
+#include "Component/Mesh/CylinderMeshComponent.h"
+#include "Component/Mesh/PlaneMeshComponent.h"
+#include "Component/Mesh/SphereMeshComponent.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Mesh/BoxMesh.h"
@@ -11,6 +17,7 @@
 #include "Mesh/SphereMesh.h"
 #include "Rendering/Core/Buffer/ConstructBuffer.h"
 #include "Rendering/Engine/DirectX/Core/DirectXRenderingEngine.h"
+#include "Component/Mesh/Core/MeshComponent.h"
 
 CMeshManager::CMeshManager()
 {
@@ -65,43 +72,43 @@ void CMeshManager::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	RenderingPipeline.UpdateCalculations(delta_time, viewport_info);
 }
 
-GMesh* CMeshManager::CreateBoxMesh(float InHeight, float InWidth, float InDepth)
+CMeshComponent* CMeshManager::CreateBoxMeshComponent(float InHeight, float InWidth, float InDepth)
 {
-	return CreateMesh<GBoxMesh>(InHeight, InWidth, InDepth);
+	return CreateMeshComponent<CBoxMeshComponent>(InHeight, InWidth, InDepth);
 }
 
-GMesh* CMeshManager::CreateConeMesh(float InRadius, float InHeight, uint32_t InAxialSubdivision,
+CMeshComponent* CMeshManager::CreateConeMeshComponent(float InRadius, float InHeight, uint32_t InAxialSubdivision,
 	uint32_t InHeightSubdivision)
 {
-	return CreateMesh<GConeMesh>(InRadius, InHeight, InAxialSubdivision, InHeightSubdivision);
+	return CreateMeshComponent<CConeMeshComponent>(InRadius, InHeight, InAxialSubdivision, InHeightSubdivision);
 }
 
-GMesh* CMeshManager::CreateCylinderMesh(float InTopRadius, float InBottomRadius, float InHeight,
+CMeshComponent* CMeshManager::CreateCylinderMeshComponent(float InTopRadius, float InBottomRadius, float InHeight,
 	uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
 {
-	return CreateMesh<GCylinderMesh>(InTopRadius, InBottomRadius, InHeight, InAxialSubdivision, InHeightSubdivision);
+	return CreateMeshComponent<CCylinderMeshComponent>(InTopRadius, InBottomRadius, InHeight, InAxialSubdivision, InHeightSubdivision);
 }
 
-GMesh* CMeshManager::CreatePlaneMesh(float InHeight, float InWidth, uint32_t InHeightSubdivide,
+CMeshComponent* CMeshManager::CreatePlaneMeshComponent(float InHeight, float InWidth, uint32_t InHeightSubdivide,
 	uint32_t InWidthSubdivide)
 {
-	return CreateMesh<GPlaneMesh>(InHeight, InWidth, InHeightSubdivide, InWidthSubdivide);
+	return CreateMeshComponent<CPlaneMeshComponent>(InHeight, InWidth, InHeightSubdivide, InWidthSubdivide);
 }
 
-GMesh* CMeshManager::CreateSphereMesh(float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
+CMeshComponent* CMeshManager::CreateSphereMeshComponent(float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
 {
-	return CreateMesh<GSphereMesh>(InRadius, InAxialSubdivision, InHeightSubdivision);
+	return CreateMeshComponent<CSphereMeshComponent>(InRadius, InAxialSubdivision, InHeightSubdivision);
 }
 
-GMesh* CMeshManager::CreateMesh(const string& InPath)
+CMeshComponent* CMeshManager::CreateMeshComponent(const string& InPath)
 {
-	return CreateMesh<GCustomMesh>(InPath);
+	return CreateMeshComponent<CCustomMeshComponent>(InPath);
 }
 
 template <typename T, typename ... ParamTypes>
-T* CMeshManager::CreateMesh(ParamTypes&&... Params)
+T* CMeshManager::CreateMeshComponent(ParamTypes&&... Params)
 {
-	T* MyMesh = new T();
+	T* MyMesh = CreateObject<T>(new T());
 
 	// 提取模型资源
 	FMeshRenderingData MeshData;

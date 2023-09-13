@@ -1,5 +1,6 @@
 #include "RenderingPipeline.h"
 
+#include "Component/Mesh/Core/MeshComponent.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Mesh/Core/ObjectTransformation.h"
@@ -9,7 +10,7 @@ FRenderingPipeline::FRenderingPipeline()
 
 }
 
-void FRenderingPipeline::BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData)
+void FRenderingPipeline::BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
 {
 	GeometryMap.BuildMesh(Mesh, MeshData);
 }

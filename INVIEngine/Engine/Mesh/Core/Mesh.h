@@ -5,18 +5,21 @@
 #include "MeshType.h"
 #include "Actor/Core/ActorObject.h"
 #include "Component/Mesh/ShellMeshComponent.h"
+#include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/Rendering.h"
 
 class CShellMeshComponent;
 class CMaterial;
 
-class GMesh : public GActorObject, public IRenderingInterface
+class GMesh : public GActorObject, public IRenderingInterface, public IDirectXDeviceInterface
 {
+	// using Super = GActorObject;
+
 	CVARIABLE()
 		CTransformationComponent* TransformationComponent;
 
 	CVARIABLE()
-		CShellMeshComponent* ShellMeshComponent;
+		CMeshComponent* MeshComponent;
 
 public:
 	GMesh();
@@ -34,5 +37,15 @@ public:
 	UINT GetMaterialNum() const;
 
 	std::vector<CMaterial*>* GetMaterial();
+
+	virtual CMeshComponent* GetMeshComponent() { return MeshComponent; }
+
+public:
+	virtual void SetPosition(const XMFLOAT3& InNewPosition) override;
+	virtual void SetRotation(const fvector_3d& InRotation) override;
+	virtual void SetScale(const fvector_3d& InNewScale) override;
+
+protected:
+	virtual void SetMeshComponent(CMeshComponent* InMeshComponent);
 };
 

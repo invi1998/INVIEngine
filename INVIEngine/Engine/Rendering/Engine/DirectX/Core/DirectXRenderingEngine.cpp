@@ -1,9 +1,12 @@
 #include "DirectXRenderingEngine.h"
 
 #include "Config/EngineRenderConfig.h"
+#include "Core/World.h"
 #include "Material/Core/Material.h"
 #include "Material/Core/MaterialType.h"
 #include "Mesh/CustomMesh.h"
+#include "Mesh/PlaneMesh.h"
+#include "Mesh/SphereMesh.h"
 
 CDirectXRenderingEngine::CDirectXRenderingEngine()
 	: CurrentFenceIndex(0),
@@ -96,8 +99,9 @@ int CDirectXRenderingEngine::PostInit()
 			ConeMesh->SetRotation(fvector_3d(90.f, 1.f, 20.f));
 		}*/
 
-		if (GMesh* PlaneMesh = MeshManage->CreatePlaneMesh(4.f, 3.f, 20, 20))
+		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{
+			PlaneMesh->CreateMesh(4.f, 3.f, 40, 40);
 			PlaneMesh->SetPosition(XMFLOAT3(0.f, -2.f, 0.f));
 			PlaneMesh->SetScale(fvector_3d(40.f, 10.f, 40.f));
 
@@ -111,8 +115,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//兰伯特
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 20, 20);
+
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -124,8 +130,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//半兰伯特
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -140,8 +148,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//Phong
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.0f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -156,8 +166,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//BlinnPhong
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -172,8 +184,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		//Fresnel
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -184,8 +198,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// WrapLight
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -200,8 +216,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// Minnaert
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -216,8 +234,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// Banded
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -228,8 +248,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// GradualBanded
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 14, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -240,8 +262,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// CustomBanded
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 14, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -253,8 +277,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// Back
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 14, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -269,8 +295,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// 各项异性（头发渲染）AnisotoropyKaijiyakay
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 14, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -285,8 +313,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// OrenNayar 粗糙表面
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 50, 50))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 20, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -298,8 +328,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// OrenNayar 粗糙表面
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 100, 100))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 20, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -310,8 +342,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// 单独显示顶点颜色
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 30, 30))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 9.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -322,8 +356,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// 单独显示顶点颜色
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 30, 30))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 9.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -333,8 +369,10 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// 单独显示顶点颜色
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 30, 30))
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 9.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
@@ -490,6 +528,11 @@ UINT CDirectXRenderingEngine::GetDXGISampleCount() const
 UINT CDirectXRenderingEngine::GetDXGISampleQuality() const
 {
 	return bMSAA4XEnabled ? (M4XNumQualityLevels - 1) : 0;
+}
+
+CMeshManager* CDirectXRenderingEngine::GetMeshManage()
+{
+	return MeshManage;
 }
 
 void CDirectXRenderingEngine::WaitGPUCommandQueueComplete()

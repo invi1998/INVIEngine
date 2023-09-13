@@ -7,6 +7,7 @@
 #include "RootSignature/DirectXRootSignature.h"
 #include "Shader/Core/Shader.h"
 
+class CMeshComponent;
 struct FViewportInfo;
 
 // äÖÈ¾Á÷Ë®Ïß
@@ -15,7 +16,7 @@ class FRenderingPipeline : public IDirectXDeviceInterface
 public:
 	FRenderingPipeline();
 
-	void BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData);
+	void BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
 	void BuildPipeline();
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 

@@ -7,7 +7,7 @@
 
 class CDirectXRenderingEngine : public CRenderingEngine
 {
-	friend class IRenderingInterface;
+	friend class CWindowsEngine;
 
 	friend class IDirectXDeviceInterface;
 
@@ -37,12 +37,14 @@ public:
 	DXGI_FORMAT GetDepthStencilFormat() const { return DepthStencilFormat; }		// 获取深度模板缓冲区格式
 	UINT GetDXGISampleCount() const;												// 获取采样数量
 	UINT GetDXGISampleQuality() const;												// 获取采样质量
+	CMeshManager* GetMeshManage();
 
 protected:
 	void WaitGPUCommandQueueComplete();		// 等待GPU执行命令队列 同步GPU和CPU
 	// 初始化Direct3D
 	bool InitDirect3D();
 	void PostInitDirect3D();
+
 
 protected:
 	UINT64 CurrentFenceIndex;		// 当前围栏索引
@@ -87,6 +89,7 @@ protected:
 	UINT RTVDescriptorSize;			// RTV描述符大小
 
 	CMeshManager* MeshManage;
+	CWorld* World;
 
 };
 

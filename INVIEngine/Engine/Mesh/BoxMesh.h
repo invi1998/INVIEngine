@@ -12,10 +12,8 @@ public:
 
 	virtual void Init() override;
 
-	virtual void BuildMesh(const FMeshRenderingData* InRenderingData) override;
-
 	virtual void Draw(float DeltaTime) override;
 
-	void CreateMesh(FMeshRenderingData& MeshData, float InHeight, float InWidth, float InDepth);
+	void CreateMesh(float InHeight, float InWidth, float InDepth);
 };
 

@@ -51,6 +51,7 @@ int CWindowsEngine::Init(FWinMainCommandParameters InParameters)
 	RenderingEngine->Init(InParameters);
 
 	World = CreateObject<CWorld>(new CWorld());
+	RenderingEngine->World = World;
 
 	ENGINE_LOG("引擎初始化完成");
 
@@ -183,6 +184,16 @@ bool CWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 
 	// 刷新窗口
 	UpdateWindow(MainWindowsHandle);
+}
+
+CMeshManager* CWindowsEngine::GetMeshManage()
+{
+	return RenderingEngine->GetMeshManage();
+}
+
+CWorld* CWindowsEngine::GetWorld()
+{
+	return World;
 }
 
 

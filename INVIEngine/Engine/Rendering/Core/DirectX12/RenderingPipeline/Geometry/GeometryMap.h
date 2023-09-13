@@ -9,14 +9,15 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
+class CMeshComponent;
 struct FViewportInfo;
 
 struct FGeometry : IDirectXDeviceInterface_Struct
 {
 	friend struct FGeometryMap;
 public:
-	bool bRenderingDataExistence(GMesh* InKey);
-	void BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData);
+	bool bRenderingDataExistence(CMeshComponent* InKey);
+	void BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
 
 	// 构建模型
 	void Build();
@@ -49,7 +50,7 @@ struct FGeometryMap : IDirectXDeviceInterface_Struct
 {
 public:
 	FGeometryMap();
-	void BuildMesh(GMesh* Mesh, const FMeshRenderingData& MeshData);
+	void BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
 
 	void Build();
 
