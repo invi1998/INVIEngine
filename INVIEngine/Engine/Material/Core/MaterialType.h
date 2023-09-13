@@ -20,6 +20,8 @@ enum EMaterialType : UINT
 
 	// 单独显示
 	BaseColor,						// 单独显示顶点颜色
+	Normal,							// 单独显示顶点法线（局部法线）
+	WorldNormal,					// 单独显示世界法线
 
 	PBR = 20,						// PBR 基于真实物理的渲染
 

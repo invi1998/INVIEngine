@@ -76,8 +76,16 @@ MeshVertexOut VSMain(MeshVertexIn mv)
     
     // 将模型转到其次裁剪空间
     outV.Position = mul(outV.WorldPosition, ViewportProjectionMatrix);
-
-    outV.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
+    
+    if (MaterialType == 13)
+    {
+        // 局部法线
+        outV.Normal = mv.Normal;
+    }
+    else
+    {
+        outV.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
+    }
 
     outV.UTangent = mv.UTangent;
 
@@ -100,19 +108,30 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
+    FMaterial material;
+    material.BaseColor = BaseColor;
+    
+    float3 ModelNormal = normalize(mvOut.Normal);
+    float3 NormalizeLightDirection = normalize(-LightDirection);
+    
     if (MaterialType == 12)
     {
-        return mvOut.Color;
+        return material.BaseColor;
+    }
+    if (MaterialType == 13)
+    {
+        // 显示顶点法线
+        return float4(ModelNormal, 1.0f);
+    }
+    if (MaterialType == 14)
+    {
+        // 显示世界法线
+        return float4(ModelNormal, 1.0f);
     }
     
     // 环境光
     float4 AmbientLight = { 0.15f, 0.15f, 0.22f, 1.0f };
 
-    float3 ModelNormal = normalize(mvOut.Normal);
-    float3 NormalizeLightDirection = normalize(-LightDirection);
-    
-    FMaterial material;
-    material.BaseColor = BaseColor;
     // material.BaseColor = float4(0.82f, 0.82f, 0.82f, 1.0f);
     
     float DotDiffValue = 0.f;

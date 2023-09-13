@@ -312,12 +312,34 @@ int CDirectXRenderingEngine::PostInit()
 		// 单独显示顶点颜色
 		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 30, 30))
 		{
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 6.f));
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 9.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::BaseColor);
 				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+			}
+		}
+
+		// 单独显示顶点颜色
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 30, 30))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 9.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetMaterialType(EMaterialType::Normal);
+			}
+		}
+
+		// 单独显示顶点颜色
+		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 30, 30))
+		{
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 9.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetMaterialType(EMaterialType::WorldNormal);
 			}
 		}
 
