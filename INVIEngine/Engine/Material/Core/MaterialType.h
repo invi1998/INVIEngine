@@ -4,6 +4,7 @@
 
 enum EMaterialType : UINT
 {
+	// 局部光照
 	Lambert = 0,					// 兰伯特材质	纸张
 	HalfLambert,					// 半兰伯特材质 粗超表面
 	Phong,							// phong材质	金属
@@ -16,6 +17,9 @@ enum EMaterialType : UINT
 	Back,							// 玉石材质
 	AnisotoropyKaijiyakay,			// GDC 2004年 KajiyaKay 头发渲染模型（各项异性渲染）
 	OrenNayar,						// GDC 粗糙表面
+
+	// 单独显示
+	BaseColor,						// 单独显示顶点颜色
 
 	PBR = 20,						// PBR 基于真实物理的渲染
 

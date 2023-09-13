@@ -100,6 +100,11 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
+    if (MaterialType == 12)
+    {
+        return mvOut.Color;
+    }
+    
     // »·¾³¹â
     float4 AmbientLight = { 0.15f, 0.15f, 0.22f, 1.0f };
 
