@@ -12,7 +12,7 @@ public:
 	virtual void Tick(float DeltaTime);
 
 	template<typename T>
-	static T* CreateObject(CCoreMinimalObject* NewObject);
+	T* CreateObject(CCoreMinimalObject* NewObject);
 
 	bool IsTick() const { return bTick; }
 

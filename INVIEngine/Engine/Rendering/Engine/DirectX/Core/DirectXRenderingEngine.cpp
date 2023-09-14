@@ -405,13 +405,15 @@ int CDirectXRenderingEngine::PostInit()
 		// 单独显示顶点颜色
 		if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
 		{
-			SphereMesh->CreateMesh("Asserts/Mesh/cameraMesh.obj");
+			SphereMesh->CreateMesh("Asserts/Mesh/SunMesh2.obj");
 
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 19.f));
+			SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
 			}
 		}
 
