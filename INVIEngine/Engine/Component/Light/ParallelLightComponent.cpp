@@ -5,16 +5,17 @@
 
 CParallelLightComponent::CParallelLightComponent()
 {
-	ParallelLightMesh = GetMeshManage()->CreateMeshComponent("Asserts/Mesh/SunMesh.obj");
+	// 读取平行光模型
+	SetLightMesh(GetMeshManage()->CreateMeshComponent("Asserts/Mesh/SunMesh.obj"));
 
-	if (ParallelLightMesh)
+	// 设置平行光为线框模式显示
+	if (GetLightMesh())
 	{
-		ParallelLightMesh->SetPosition({ 1.f, 1.f, 1.f });
-		if (CMaterial* material = (*ParallelLightMesh->GetMaterial())[0])
+		if (CMaterial* material = (*GetLightMesh()->GetMaterial())[0])
 		{
-			material->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
-			material->SetBaseColor(XMFLOAT4(Colors::OrangeRed));
 			material->SetMaterialType(EMaterialType::BaseColor);
+			material->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+			material->SetBaseColor(XMFLOAT4(Colors::AntiqueWhite));
 		}
 	}
 	
@@ -25,12 +26,3 @@ CParallelLightComponent::~CParallelLightComponent()
 {
 }
 
-void CParallelLightComponent::BeginInit()
-{
-	CLightComponent::BeginInit();
-}
-
-void CParallelLightComponent::Tick(float DeltaTime)
-{
-	CLightComponent::Tick(DeltaTime);
-}

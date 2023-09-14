@@ -1,5 +1,6 @@
 #include "LightComponent.h"
 
+#include "Component/Mesh/Core/MeshComponent.h"
 #include "Light/LightManager.h"
 
 CLightComponent::CLightComponent()
@@ -21,3 +22,52 @@ void CLightComponent::Tick(float DeltaTime)
 {
 	CTransformationComponent::Tick(DeltaTime);
 }
+
+void CLightComponent::SetPosition(const XMFLOAT3& InNewPosition)
+{
+	CTransformationComponent::SetPosition(InNewPosition);
+
+	LightMesh->SetPosition(InNewPosition);
+}
+
+void CLightComponent::SetRotation(const fvector_3d& InNewRotation)
+{
+	CTransformationComponent::SetRotation(InNewRotation);
+
+	LightMesh->SetRotation(InNewRotation);
+}
+
+void CLightComponent::SetScale(const fvector_3d& InNewScale)
+{
+	CTransformationComponent::SetScale(InNewScale);
+
+	LightMesh->SetScale(InNewScale);
+}
+
+void CLightComponent::SetForwardVector(const XMFLOAT3& InForwardVector)
+{
+	CTransformationComponent::SetForwardVector(InForwardVector);
+
+	LightMesh->SetForwardVector(InForwardVector);
+}
+
+void CLightComponent::SetRightVector(const XMFLOAT3& InRightVector)
+{
+	CTransformationComponent::SetRightVector(InRightVector);
+
+	LightMesh->SetRightVector(InRightVector);
+}
+
+void CLightComponent::SetUpVector(const XMFLOAT3& InUPVector)
+{
+	CTransformationComponent::SetUpVector(InUPVector);
+
+	LightMesh->SetUpVector(InUPVector);
+}
+
+void CLightComponent::SetLightMesh(CMeshComponent* inLightMesh)
+{
+	LightMesh = inLightMesh;
+}
+
+
