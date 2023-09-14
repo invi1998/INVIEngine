@@ -65,12 +65,6 @@ void init_def_c_paths(def_c_paths *c_paths)
 	memset(c_paths->paths,0,sizeof(c_paths->paths) - 1);
 }
 
-void init_def_c_paths_w(def_c_paths_w* c_paths)
-{
-	c_paths->index = 0;
-	memset(c_paths->paths, 0, sizeof(c_paths->paths) - 1);
-}
-
 int copy_file(char *Src, char *Dest)
 {
 	//当前的缓存 缓存1MB大小，如果超过就会出问题 这个会在std C课程里面继续扩展
@@ -100,34 +94,13 @@ int copy_file(char *Src, char *Dest)
 }
 void find_files(char const *in_path, def_c_paths *str, bool b_recursion)
 {
-#ifdef  _WIN64
-	struct _finddatai64_t finddata;
-#else
-#ifdef _WIN32    
 	struct _finddata_t finddata;
-#endif 
-#endif 
 
-#ifdef  _WIN64
-	intptr_t hfile = 0;
-#else
-#ifdef _WIN32    
 	long hfile = 0;
-#endif 
-#endif 
-	
-	char tmp_path[1024] = { 0 };
+	char tmp_path[8196] = { 0 };
 	strcpy(tmp_path, in_path);
 	strcat(tmp_path, "\\*");
-	if ((hfile = 
-#ifdef _WIN64
-		_findfirst64
-#else
-#ifdef WIN32	
-		_findfirst
-#endif // _WIN64
-#endif // _WIN32
-		(tmp_path, &finddata)) != -1)
+	if ((hfile = _findfirst(tmp_path, &finddata)) != -1)
 	{
 		do
 		{
@@ -141,7 +114,7 @@ void find_files(char const *in_path, def_c_paths *str, bool b_recursion)
 						continue;
 					}
 
-					char new_path[1024] = { 0 };
+					char new_path[8196] = { 0 };
 					strcpy(new_path, in_path);
 					strcat(new_path, "\\");
 					strcat(new_path, finddata.name);
@@ -156,29 +129,9 @@ void find_files(char const *in_path, def_c_paths *str, bool b_recursion)
 				strcat(str->paths[str->index++], finddata.name);
 			}
 
-		} while (
-#ifdef _WIN64
-		_findnext64
-#else
-#ifdef _WIN32
-			
-		_findnext
-#endif
-#endif
-			(hfile, &finddata) == 0);
+		} while (_findnext(hfile, &finddata) == 0);
 		_findclose(hfile);
 	}
-}
-
-bool is_file_exists(char const* filename)
-{
-	FILE* file = fopen(filename, "r");
-	if(file)
-	{
-		fclose(file);
-		return true;
-	}
-	return false;
 }
 
 bool create_file(char const *filename)
@@ -232,41 +185,6 @@ bool open_url(const char* url)
 	return open_url_w(path);
 }
 
-bool open_url_by_param(const char* url, const char* param)
-{
-	//宽字符转为窄字符
-	wchar_t path[1024] = { 0 };
-	char_to_wchar_t(path, 1024, url);
-
-	wchar_t my_param[1024] = { 0 };
-	char_to_wchar_t(my_param, 1024, param);
-	return open_url_by_param_w(path, my_param);
-}
-
-bool open_by_operation(const char* in_operation, const char* url, const char* param)
-{
-	wchar_t my_operation[1024] = { 0 };
-	char_to_wchar_t(my_operation, 1024, in_operation);
-
-	//宽字符转为窄字符
-	wchar_t path[1024] = { 0 };
-	char_to_wchar_t(path, 1024, url);
-
-	wchar_t my_param[1024] = { 0 };
-	char_to_wchar_t(my_param, 1024, param);
-
-	return open_by_operation_w(my_operation,path, my_param);
-}
-
-bool open_explore(const char* url)
-{
-	//宽字符转为窄字符
-	wchar_t path[1024] = { 0 };
-	char_to_wchar_t(path, 1024, url);
-
-	return open_explore_w(path);
-}
-
 bool get_file_buf(const char *path, char *buf)
 {
 	FILE *f = NULL;
@@ -283,20 +201,6 @@ bool get_file_buf(const char *path, char *buf)
 		fclose(f);
 
 		return buf[0] != '\0';
-	}
-
-	return false;
-}
-
-bool save_file_buff(const char* path, char* buf)
-{
-	FILE* f = NULL;
-	if ((f = fopen(path, "w")) != NULL)
-	{
-		fprintf(f, "%s", buf);
-		fclose(f);
-
-		return true;
 	}
 
 	return false;
@@ -405,42 +309,14 @@ bool load_data_from_disk_w(const wchar_t* path, char* buf)
 	return false;
 }
 
-bool is_file_exists_w(const wchar_t* filename)
-{
-	FILE* f = NULL;
-	if ((f = _wfopen(filename, L"r")) != NULL)
-	{
-		fclose(f);
-
-		return true;
-	}
-
-	return false;
-}
-
 bool open_url_w(const wchar_t* url)
 {
-	return open_by_operation_w(L"open", url, NULL);;
-}
-
-bool open_url_by_param_w(const wchar_t* url, const wchar_t* param)
-{
-	return open_by_operation_w(L"open", url, param);;
-}
-
-bool open_by_operation_w(const wchar_t* in_operation, const wchar_t* url, const wchar_t* param)
-{
 	return check_ShellExecute_ret(ShellExecute(NULL,
-		in_operation,
+		L"open",
 		url,
-		param,
+		NULL,
 		NULL,
 		SW_SHOWNORMAL));
-}
-
-bool open_explore_w(const wchar_t* url)
-{
-	return open_by_operation_w(L"explore", url,NULL);;
 }
 
 unsigned int get_file_size_by_filename_w(const wchar_t* filename)

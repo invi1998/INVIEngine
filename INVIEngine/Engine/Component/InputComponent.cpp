@@ -33,7 +33,7 @@ void CInputComponent::OnMouseWheel(int X, int Y, float InDelta)
 {
 	if (OnMouseWheelDelegate.IsBound())
 	{
-		OnMouseWheelDelegate.Execute(X, Y, InDelta);
+		OnMouseWheelDelegate.Execute((int)X, (int)Y, (float)InDelta);
 	}
 }
 

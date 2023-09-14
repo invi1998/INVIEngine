@@ -1,10 +1,9 @@
 // Copyright (C) RenZhai.2022.All Rights Reserved.
 #pragma once
 #include "../../simple_array/simple_hash_array.h"
-#include "../../simple_library_macro.h"
 
 class FSimpleConnetion;
-class SIMPLE_LIBRARY_API FSimpleChannel
+class FSimpleChannel
 {
 public:
 	FSimpleChannel();

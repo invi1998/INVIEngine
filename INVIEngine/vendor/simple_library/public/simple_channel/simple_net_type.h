@@ -1,7 +1,6 @@
 // Copyright (C) RenZhai.2022.All Rights Reserved.
 #pragma once
 #include "../simple_core_minimal/simple_c_core/simple_core_minimal.h"
-#include "../simple_library_macro.h"
 
 enum class ESimpleSocketType :unsigned char
 {
@@ -29,7 +28,7 @@ enum class ESimpleConnetionType :unsigned char
 	CONNETION_LISTEN,	  //监听已经投递过来的
 };
 
-struct SIMPLE_LIBRARY_API FSimpleIOData
+struct FSimpleIOData
 {
 	FSimpleIOData();
 
@@ -40,7 +39,7 @@ struct SIMPLE_LIBRARY_API FSimpleIOData
 	WSABUF WsaBuffer;
 };
 
-struct SIMPLE_LIBRARY_API FSimpleBunchHead
+struct FSimpleBunchHead
 {
 	FSimpleBunchHead();
 

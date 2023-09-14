@@ -34,7 +34,7 @@ void CLightComponent::SetRotation(const fvector_3d& InNewRotation)
 {
 	CTransformationComponent::SetRotation(InNewRotation);
 
-	LightMesh->SetRotation(InNewRotation);
+	LightMesh->SetRotation(InNewRotation * (-1.f));
 }
 
 void CLightComponent::SetScale(const fvector_3d& InNewScale)
