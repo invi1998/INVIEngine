@@ -8,7 +8,6 @@
  */
 GMesh::GMesh() : GActorObject()
 {
-	MeshComponent = CreateObject<CMeshComponent>(new CMeshComponent());
 }
 
 GMesh::~GMesh()
@@ -17,10 +16,6 @@ GMesh::~GMesh()
 
 void GMesh::Init()
 {
-	if (MeshComponent)
-	{
-		MeshComponent->Init();
-	}
 }
 
 void GMesh::PreDraw(float DeltaTime)
@@ -36,14 +31,6 @@ void GMesh::Draw(float DeltaTime)
 
 void GMesh::PostDraw(float DeltaTime)
 {
-}
-
-void GMesh::BuildMesh(const FMeshRenderingData* InRenderingData)
-{
-	if (MeshComponent)
-	{
-		MeshComponent->BuildMesh(InRenderingData);
-	}
 }
 
 UINT GMesh::GetMaterialNum() const

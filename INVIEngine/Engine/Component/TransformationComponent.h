@@ -17,7 +17,7 @@ public:
 	virtual void SetUpVector(const XMFLOAT3& InUp);
 
 	XMFLOAT3 &GetPosition() { return Position; }
-	const fvector_3d &GetRotation() const { return fvector_3d(Rotation.x, Rotation.y, Rotation.z); }
+	XMFLOAT3& GetRotation() { return Rotation; }
 	XMFLOAT3& GetScale() { return Scale; }
 	XMFLOAT3 &GetForwardVector() { return ForwardVector; }
 	XMFLOAT3 &GetRightVector() { return RightVector; }

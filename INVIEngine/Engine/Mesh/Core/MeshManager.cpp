@@ -100,7 +100,7 @@ CMeshComponent* CMeshManager::CreateSphereMeshComponent(float InRadius, uint32_t
 	return CreateMeshComponent<CSphereMeshComponent>(InRadius, InAxialSubdivision, InHeightSubdivision);
 }
 
-CMeshComponent* CMeshManager::CreateMeshComponent(const string& InPath)
+CMeshComponent* CMeshManager::CreateCustomMeshComponent(const string& InPath)
 {
 	return CreateMeshComponent<CCustomMeshComponent>(InPath);
 }

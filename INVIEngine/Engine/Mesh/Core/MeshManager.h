@@ -58,7 +58,7 @@ public:
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
-	CMeshComponent* CreateMeshComponent(const string& InPath);
+	CMeshComponent* CreateCustomMeshComponent(const string& InPath);
 
 protected:
 	FRenderingPipeline RenderingPipeline;		// 渲染管线对象

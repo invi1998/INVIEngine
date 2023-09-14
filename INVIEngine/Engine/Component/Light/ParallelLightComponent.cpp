@@ -6,7 +6,7 @@
 CParallelLightComponent::CParallelLightComponent()
 {
 	// 读取平行光模型
-	SetLightMesh(GetMeshManage()->CreateMeshComponent("Asserts/Mesh/SunMesh.obj"));
+	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/SunMesh.obj"));
 
 	// 设置平行光为线框模式显示
 	if (GetLightMesh())

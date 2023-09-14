@@ -23,6 +23,6 @@ public:
 	void Tick(float DeltaTime) override;
 
 	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
-	void Init();
+	virtual void Init();
 };
 

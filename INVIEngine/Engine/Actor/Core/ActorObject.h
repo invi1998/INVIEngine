@@ -24,7 +24,9 @@ public:
 
 public:
 	XMFLOAT3& GetPosition();
+	XMFLOAT3& GetRotation();
 	XMFLOAT3& GetScale();
+
 	XMFLOAT3& GetForwardVector();
 	XMFLOAT3& GetRightVector();
 	XMFLOAT3& GetUpVector();

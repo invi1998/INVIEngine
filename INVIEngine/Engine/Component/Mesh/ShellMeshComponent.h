@@ -8,7 +8,6 @@ class CShellMeshComponent : public CMeshComponent
 {
 public:
 	CShellMeshComponent();
-	void BuildMesh(const FMeshRenderingData* mesh_rendering_data);
-	void Init();
+	void Init() override;
 };
 

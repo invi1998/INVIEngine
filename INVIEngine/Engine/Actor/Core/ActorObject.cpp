@@ -28,6 +28,11 @@ XMFLOAT3& GActorObject::GetPosition()
 	return TransformationComponent->GetPosition();
 }
 
+XMFLOAT3& GActorObject::GetRotation()
+{
+	return TransformationComponent->GetRotation();
+}
+
 XMFLOAT3& GActorObject::GetScale()
 {
 	return TransformationComponent->GetScale();

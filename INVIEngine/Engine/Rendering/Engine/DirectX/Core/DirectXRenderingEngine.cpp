@@ -109,7 +109,6 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, 20.f));
 			ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-			ParallelLight->SetScale(fvector_3d(1.f, 1.f, 1.f));
 
 			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
 			{
@@ -400,6 +399,19 @@ int CDirectXRenderingEngine::PostInit()
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::WorldNormal);
+			}
+		}
+
+		// 单独显示顶点颜色
+		if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
+		{
+			SphereMesh->CreateMesh("Asserts/Mesh/cameraMesh.obj");
+
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 19.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 			}
 		}
 

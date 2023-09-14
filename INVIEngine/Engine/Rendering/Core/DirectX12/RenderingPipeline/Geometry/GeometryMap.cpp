@@ -98,8 +98,7 @@ D3D12_INDEX_BUFFER_VIEW FGeometry::GetIndexBufferView()
  * \brief //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 FGeometryMap::FGeometryMap()
-{
-	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
+{Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
 }
 
 void FGeometryMap::BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
@@ -244,14 +243,14 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	}
 
 	// ¸üÐÂµÆ¹â
-	for (int i = 0; i < GetLightManger()->Lights.size(); i++)
+	for (size_t i = 0; i < GetLightManger()->Lights.size(); i++)
 	{
 		FLightConstantBuffer LightConstantBuffer;
 
 		{
-			if (CLightComponent* light = GetLightManger()->Lights[i])
+			if (CLightComponent* lightComponent = GetLightManger()->Lights[0])
 			{
-				LightConstantBuffer.LightDirection = light->GetForwardVector();
+				LightConstantBuffer.LightDirection = lightComponent->GetForwardVector();
 			}
 		}
 		LightConstantBufferViews.Update(i, &LightConstantBuffer);

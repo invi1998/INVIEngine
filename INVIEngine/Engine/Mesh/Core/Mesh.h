@@ -31,8 +31,6 @@ public:
 	virtual void Draw(float DeltaTime) override;
 	virtual void PostDraw(float DeltaTime) override;
 
-	virtual void BuildMesh(const FMeshRenderingData* InRenderingData);
-
 public:
 	UINT GetMaterialNum() const;
 

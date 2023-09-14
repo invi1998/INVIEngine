@@ -14,6 +14,6 @@ void GCustomMesh::Draw(float DeltaTime)
 
 void GCustomMesh::CreateMesh(const string& InPath)
 {
-	SetMeshComponent(GetMeshManage()->CreateMeshComponent(InPath));
+	SetMeshComponent(GetMeshManage()->CreateCustomMeshComponent(InPath));
 }
 
