@@ -91,7 +91,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 
     outV.UTangent = mv.UTangent;
 
-    outV.Color = mv.Color;
+    outV.Color.rgb = mv.Color.rgb;
 
 	return outV;
 }
