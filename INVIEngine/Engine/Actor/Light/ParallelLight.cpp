@@ -21,15 +21,16 @@ void GParallelLight::Tick(float DeltaTime)
 
 void GParallelLight::SetPosition(const XMFLOAT3& position)
 {
-	ParallelLightComponent->SetPosition(position);
+	GActorObject::SetPosition(position);
 }
 
 void GParallelLight::SetRotation(const fvector_3d& rotation)
 {
-	ParallelLightComponent->SetRotation(rotation);
+	GActorObject::SetRotation(rotation);
 }
 
 void GParallelLight::SetScale(const fvector_3d& scale)
 {
-	ParallelLightComponent->SetScale(scale);
+	GActorObject::SetScale(scale);
 }
+

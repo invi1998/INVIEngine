@@ -17,7 +17,7 @@ public:
 
 	GQuaternionCamera* GetQuaternionCamera() const { return QuaternionCamera; }
 
-	template<class T>
+	template<typename T>
 	T* CreateActorObject()
 	{
 		T* InArray = new T();
