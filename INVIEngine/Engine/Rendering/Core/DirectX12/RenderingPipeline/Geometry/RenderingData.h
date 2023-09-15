@@ -11,6 +11,7 @@ struct FRenderingData : public IDirectXDeviceInterface_Struct
 {
 public:
 	FRenderingData();
+	~FRenderingData();
 
 public:
 	UINT GetVertexSizeInBytes() const { return VertexSize * VertexTypeSize; };		// 获取顶点数据字节大小

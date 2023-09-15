@@ -1,5 +1,6 @@
 #include "RenderingData.h"
 
+#include "Component/Mesh/Core/MeshComponent.h"
 #include "Mesh/Core/MeshType.h"
 
 FRenderingData::FRenderingData()
@@ -12,5 +13,9 @@ FRenderingData::FRenderingData()
 	, IndexFormat(DXGI_FORMAT_R16_UINT)
 	, WorldMatrix(EngineMath::IdentityMatrix4x4())
 	, Mesh(nullptr)
+{
+}
+
+FRenderingData::~FRenderingData()
 {
 }

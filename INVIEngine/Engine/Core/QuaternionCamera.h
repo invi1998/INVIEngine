@@ -10,6 +10,7 @@ class CTransformationComponent;
 
 class GQuaternionCamera : public GActorObject, public FViewPort, public IDirectXDeviceInterface
 {
+
 public:
     GQuaternionCamera();
     ~GQuaternionCamera() override = default;

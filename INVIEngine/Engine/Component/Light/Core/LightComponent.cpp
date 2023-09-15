@@ -1,7 +1,7 @@
 #include "LightComponent.h"
 
 #include "Component/Mesh/Core/MeshComponent.h"
-#include "Light/LightManager.h"
+#include "Manage/LightManager.h"
 
 CLightComponent::CLightComponent()
 {

@@ -20,15 +20,15 @@ bool FGeometry::bRenderingDataExistence(CMeshComponent* InKey)
 	return false;
 }
 
-void FGeometry::BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
+void FGeometry::BuildMesh(CMeshComponent* inMesh, const FMeshRenderingData& MeshData)
 {
 	// 判断当前模型是否已经被添加过了
-	if (!bRenderingDataExistence(Mesh))
+	if (!bRenderingDataExistence(inMesh))
 	{
 		DescribeMeshRenderingData.push_back(FRenderingData());
 		FRenderingData& InRenderingData = DescribeMeshRenderingData[DescribeMeshRenderingData.size() - 1];
 
-		InRenderingData.Mesh = Mesh;
+		InRenderingData.Mesh = inMesh;
 		// 记录顶点数据
 		InRenderingData.IndexSize = MeshData.IndexData.size();
 		InRenderingData.VertexSize = MeshData.VertexData.size();
@@ -98,7 +98,8 @@ D3D12_INDEX_BUFFER_VIEW FGeometry::GetIndexBufferView()
  * \brief //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 FGeometryMap::FGeometryMap()
-{Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
+{
+	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
 }
 
 void FGeometryMap::BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
@@ -173,7 +174,7 @@ void FGeometryMap::BuildMaterialConstantBuffer()
 
 void FGeometryMap::BuildLightConstantBuffer()
 {
-	// 创建常量缓冲区
+	// 创建灯光常量缓冲区
 	LightConstantBufferViews.CreateConstant(sizeof(FLightConstantBuffer), GetDrawLightCount());
 
 	// 描述堆句柄

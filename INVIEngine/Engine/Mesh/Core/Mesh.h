@@ -8,7 +8,6 @@
 #include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/Rendering.h"
 
-class CShellMeshComponent;
 class CMaterial;
 
 class GMesh : public GActorObject, public IRenderingInterface, public IDirectXDeviceInterface

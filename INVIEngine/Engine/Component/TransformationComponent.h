@@ -19,9 +19,18 @@ public:
 	XMFLOAT3 &GetPosition() { return Position; }
 	XMFLOAT3& GetRotation() { return Rotation; }
 	XMFLOAT3& GetScale() { return Scale; }
-	XMFLOAT3 &GetForwardVector() { return ForwardVector; }
-	XMFLOAT3 &GetRightVector() { return RightVector; }
-	XMFLOAT3 &GetUpVector() { return UpVector; }
+	XMFLOAT3 &GetForwardVector()
+	{
+		return ForwardVector;
+	}
+	XMFLOAT3 &GetRightVector()
+	{
+		return RightVector;
+	}
+	XMFLOAT3 &GetUpVector()
+	{
+		return UpVector;
+	}
 
 public:
 	// Ð£Õý Up, Right, Look(Forward)
