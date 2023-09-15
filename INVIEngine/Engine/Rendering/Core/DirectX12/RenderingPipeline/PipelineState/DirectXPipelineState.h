@@ -11,7 +11,7 @@ struct FDirectXPipelineState : public IDirectXDeviceInterface_Struct
 public:
 	FDirectXPipelineState();
 
-	void BuildPipeline();
+	void BuildPipelineState();
 
 	void ResetGPSDesc();
 

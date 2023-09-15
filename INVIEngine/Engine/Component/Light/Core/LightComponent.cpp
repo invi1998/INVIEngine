@@ -4,6 +4,7 @@
 #include "Manage/LightManager.h"
 
 CLightComponent::CLightComponent()
+	: LightIntensity(1.f, 1.f, 1.f)
 {
 	GetLightManger()->AddLight(this);
 }
@@ -63,6 +64,11 @@ void CLightComponent::SetUpVector(const XMFLOAT3& InUPVector)
 	CTransformationComponent::SetUpVector(InUPVector);
 
 	LightMesh->SetUpVector(InUPVector);
+}
+
+void CLightComponent::SetLightIntensity(XMFLOAT3& Intensity)
+{
+	LightIntensity = Intensity;
 }
 
 void CLightComponent::SetLightMesh(CMeshComponent* inLightMesh)

@@ -60,7 +60,7 @@ void FRenderingPipeline::BuildPipeline()
 	GeometryMap.BuildViewportConstantBuffer();
 
 	// 构建渲染管线
-	DirectXPipelineState.BuildPipeline();
+	DirectXPipelineState.BuildPipelineState();
 }
 
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)

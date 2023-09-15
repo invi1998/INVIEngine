@@ -9,7 +9,7 @@ FDirectXPipelineState::FDirectXPipelineState()
 	PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(5, ComPtr<ID3D12PipelineState>()));		// 5 表示 面渲染模式的渲染管线
 }
 
-void FDirectXPipelineState::BuildPipeline()
+void FDirectXPipelineState::BuildPipelineState()
 {
 	// 配置光栅化状态
 	GPSDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);		// 光栅化状态
@@ -72,7 +72,7 @@ void FDirectXPipelineState::BindRootSignature(ID3D12RootSignature* RootSignature
 void FDirectXPipelineState::BindShader(const FShader& InVertexShader, const FShader& InPixelShader)
 {
 	// 绑定shader
-	GPSDesc.VS.pShaderBytecode = reinterpret_cast<BYTE*>(InVertexShader.GetBufferPointer());
+	GPSDesc.VS.pShaderBytecode = static_cast<BYTE*>(InVertexShader.GetBufferPointer());
 	GPSDesc.VS.BytecodeLength = InVertexShader.GetBufferSize();
 
 	GPSDesc.PS.pShaderBytecode = InPixelShader.GetBufferPointer();

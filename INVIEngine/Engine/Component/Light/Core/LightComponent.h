@@ -29,8 +29,16 @@ public:
 	virtual void SetRightVector(const XMFLOAT3& InRightVector) override;
 	virtual void SetUpVector(const XMFLOAT3& InUPVector) override;
 
+	void SetLightIntensity(XMFLOAT3& Intensity);
+
+	const XMFLOAT3& GetLightIntensity() const { return LightIntensity; }
+
 protected:
 	void SetLightMesh(CMeshComponent* inLightMesh);
+
+
+protected:
+	XMFLOAT3 LightIntensity;
 
 };
 

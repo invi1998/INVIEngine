@@ -32,10 +32,7 @@ cbuffer MaterialConstBuffer : register(b2)
 cbuffer LightConstBuffer : register(b3)
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-	float3 LightIntensity;		// 光照强度
-    float xx;
-	float3 LightDirection;		// 光照方向
-    float xx1;
+    FLight SceneLights[16];      // 场景灯光
 }
 
 struct MeshVertexIn
@@ -114,7 +111,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     material.BaseColor = BaseColor;
     
     float3 ModelNormal = normalize(mvOut.Normal);
-    float3 NormalizeLightDirection = normalize(-LightDirection);
+    
     
     if (MaterialType == 12)
     {
@@ -140,295 +137,307 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     
     float4 Specular = { 0.f, 0.f, 0.f, 1.f };
     
-    if (MaterialType == 0)
+    for (int i = 0; i < 16; i++)
     {
-        // 兰伯特材质
-        DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
-    }
-    else if (MaterialType == 1)
-    {
-        // 半兰伯特材质
-        float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
-        DotDiffValue = max(0.0f, (DotDiffValue * 0.5f + 0.5f));     // [-1, 1]->[0.1]
-    }
-    else if (MaterialType == 2)
-    {
-        // Phong
-        // reflect hlsl中用于求光线的反射光的函数，可以用来计算反射向量
-        float3 ReflectDirection = normalize(-reflect(NormalizeLightDirection, ModelNormal));
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-        
-        DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
-        
-        if (DotDiffValue > 0.f)
+        if (length(SceneLights[i].LightIntensity.xyz) > 0.f)
         {
-            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-            float M = MaterialShiniess * 100.f;
-            
-            Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.f), M);
-        }
-    }
-    else if (MaterialType == 3)
-    {
-        // Blinn-Phong
         
-        // 获取摄像机到像素点的向量
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-        // 获取光线和摄像机视角的半程向量
-        float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+        
+            float3 NormalizeLightDirection = normalize(-SceneLights[i].LightDirection);
     
-        // 计算出Blinn-phong值
-        DotDiffValue = max(0.0f, dot(ModelNormal, HalfDirection));
+    
+            if (MaterialType == 0)
+            {
+            // 兰伯特材质
+                DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
+            }
+            else if (MaterialType == 1)
+            {
+            // 半兰伯特材质
+                float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
+                DotDiffValue = max(0.0f, (DotDiffValue * 0.5f + 0.5f)); // [-1, 1]->[0.1]
+            }
+            else if (MaterialType == 2)
+            {
+            // Phong
+            // reflect hlsl中用于求光线的反射光的函数，可以用来计算反射向量
+                float3 ReflectDirection = normalize(-reflect(NormalizeLightDirection, ModelNormal));
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
-        if (DotDiffValue > 0.f)
-        {
-            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-            float M = MaterialShiniess * 100.f;
+                DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
+        
+                if (DotDiffValue > 0.f)
+                {
+                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                    float M = MaterialShiniess * 100.f;
             
-            Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
-        }
-
-    }
-    else if (MaterialType == 4)
-    {
-        // WrapLight模型 早期皮肤模拟
+                    Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.f), M);
+                }
+            }
+            else if (MaterialType == 3)
+            {
+            // Blinn-Phong
         
-        // float WrapValue = 1.f;  // 该值为1的时候，是半兰伯特材质
-        float WrapValue = 2.5f;    // 该值越高，皮肤效果越通透
-        float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
-        DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
+            // 获取摄像机到像素点的向量
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+            // 获取光线和摄像机视角的半程向量
+                float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+    
+            // 计算出Blinn-phong值
+                DotDiffValue = max(0.0f, dot(ModelNormal, HalfDirection));
         
-    }
-    else if (MaterialType == 5)
-    {
-        // Minnaert模型（月光模型）
-        
-        // 第一种 dot(l, n) * dot(n, v)
-        
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-        
-        float DotLight = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
-        float DotView = max(dot(ModelNormal, ViewDirection), 0.f);
-        
-        // DotDiffValue = DotLight * DotView;
-        
-        // 第二种 dot(l, n) * pow(dot(l, n) * dot(n, v), r)
-        
-        float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-        float M = MaterialShiniess * 10.f;
-        
-        DotDiffValue = saturate(DotLight * pow(DotLight * DotView, M));
-        
-        
-    }
-    else if (MaterialType == 6)
-    {
-        // Banded 基础卡通
-        
-        float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
-        
-        // 分层数量
-        float Layered = 4.f;
-        
-        DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
-        
-    }
-    else if (MaterialType == 7)
-    {
-        // GradualBanded  带渐变的卡通效果
-        
-        // 渐变颜色
-        float4 GradualColor = { 0.87f, 0.12f, 0.6f, 1.f };
-        
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-        
-        float LightDotValue = dot(ModelNormal, NormalizeLightDirection);
-        
-        float DiffueseReflection = (LightDotValue + 1.f) * 0.5f;
-        
-        // 分层数量
-        float Layered = 8.f;
-        
-        DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
-        
-        material.BaseColor = lerp(material.BaseColor, GradualColor, LightDotValue);
-        
-    }
-    else if (MaterialType == 8)
-    {
-        // CustomBanded  自定义卡通效果
-        
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-        
-        float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
-        
-        // 分层数量
-        float Layered = 4.f;
-        
-        DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
-        
-        // 加入菲尼尔效果
-        float3 f0 = { 0.02f, 0.02f, 0.02f };
-        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
-        
-        // 获取光线和摄像机视角的半程向量
-        float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
-        
-        // 加入高光
-        if (DotDiffValue > 0.f)
-        {
-            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-            float M = MaterialShiniess * 70.f;
+                if (DotDiffValue > 0.f)
+                {
+                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                    float M = MaterialShiniess * 100.f;
             
-            Specular += pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f;
-        }
-        
-    }
-    else if (MaterialType == 9)
-    {
-        // Back 玉石材质
+                    Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
+                }
 
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+            }
+            else if (MaterialType == 4)
+            {
+            // WrapLight模型 早期皮肤模拟
+        
+            // float WrapValue = 1.f;  // 该值为1的时候，是半兰伯特材质
+                float WrapValue = 2.5f; // 该值越高，皮肤效果越通透
+                float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
+                DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
+        
+            }
+            else if (MaterialType == 5)
+            {
+            // Minnaert模型（月光模型）
+        
+            // 第一种 dot(l, n) * dot(n, v)
+        
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+                float DotLight = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
+                float DotView = max(dot(ModelNormal, ViewDirection), 0.f);
+        
+            // DotDiffValue = DotLight * DotView;
+        
+            // 第二种 dot(l, n) * pow(dot(l, n) * dot(n, v), r)
+        
+                float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                float M = MaterialShiniess * 10.f;
+        
+                DotDiffValue = saturate(DotLight * pow(DotLight * DotView, M));
+        
+        
+            }
+            else if (MaterialType == 6)
+            {
+            // Banded 基础卡通
+        
+                float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
+        
+            // 分层数量
+                float Layered = 4.f;
+        
+                DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+        
+            }
+            else if (MaterialType == 7)
+            {
+            // GradualBanded  带渐变的卡通效果
+        
+            // 渐变颜色
+                float4 GradualColor = { 0.87f, 0.12f, 0.6f, 1.f };
+        
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+                float LightDotValue = dot(ModelNormal, NormalizeLightDirection);
+        
+                float DiffueseReflection = (LightDotValue + 1.f) * 0.5f;
+        
+            // 分层数量
+                float Layered = 8.f;
+        
+                DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+        
+                material.BaseColor = lerp(material.BaseColor, GradualColor, LightDotValue);
+        
+            }
+            else if (MaterialType == 8)
+            {
+            // CustomBanded  自定义卡通效果
+        
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+        
+                float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
+        
+            // 分层数量
+                float Layered = 4.f;
+        
+                DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+        
+            // 加入菲尼尔效果
+                float3 f0 = { 0.02f, 0.02f, 0.02f };
+                Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
+        
+            // 获取光线和摄像机视角的半程向量
+                float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+        
+            // 加入高光
+                if (DotDiffValue > 0.f)
+                {
+                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                    float M = MaterialShiniess * 70.f;
+            
+                    Specular += pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f;
+                }
+        
+            }
+            else if (MaterialType == 9)
+            {
+            // Back 玉石材质
 
-        // 模拟透射光线
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
 
-        // 玉石的面光面算法（使用BlinnPhong来模拟）
-        // wrap
-        float WrapValue = 1.2f;    // 该值越高，皮肤效果越通透
-        float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
-        DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
+            // 模拟透射光线
 
-        // 获取光线和摄像机视角的半程向量
-        float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+            // 玉石的面光面算法（使用BlinnPhong来模拟）
+            // wrap
+                float WrapValue = 1.2f; // 该值越高，皮肤效果越通透
+                float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
+                DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
 
-        // 计算出Blinn-phong值
-        if (DotDiffValue > 0.f)
-        {
-            float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-            float M = MaterialShiniess * 100.f;
+            // 获取光线和摄像机视角的半程向量
+                float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
 
-            Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
-        }
+            // 计算出Blinn-phong值
+                if (DotDiffValue > 0.f)
+                {
+                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                    float M = MaterialShiniess * 100.f;
 
-        // 添加菲尼尔效果
-        /*float3 f0 = { 0.02f, 0.02f, 0.02f };
-        Specular.xyz += FresnelSchlick(f0, ModelNormal, ViewDirection, 2);*/
+                    Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
+                }
+
+            // 添加菲尼尔效果
+            /*float3 f0 = { 0.02f, 0.02f, 0.02f };
+            Specular.xyz += FresnelSchlick(f0, ModelNormal, ViewDirection, 2);*/
 
 
-        // 背光面透射模拟
-        // 光线取反
-		// 法线取反 然后 乘以一个给定的透射值(sss)
-		// 获取反光和反法的半程向量
-		// 这个半程向量就是我们要模拟的透射效果
-        float SSSValue = 1.55f;
-        float TransmissionScale = 1.5f;     // 透射范围
-        float TransmissionIntensity = 2.5f; // 透射强度
+            // 背光面透射模拟
+            // 光线取反
+		    // 法线取反 然后 乘以一个给定的透射值(sss)
+		    // 获取反光和反法的半程向量
+		    // 这个半程向量就是我们要模拟的透射效果
+                float SSSValue = 1.55f;
+                float TransmissionScale = 1.5f; // 透射范围
+                float TransmissionIntensity = 2.5f; // 透射强度
 
-        float3 BackLightNormalValue = -normalize(ModelNormal * SSSValue + NormalizeLightDirection);
+                float3 BackLightNormalValue = -normalize(ModelNormal * SSSValue + NormalizeLightDirection);
 
-        // pow 收拢折射光强
-        DotDiffValue += pow(saturate(dot(BackLightNormalValue, ViewDirection)), TransmissionScale) * TransmissionIntensity;
+            // pow 收拢折射光强
+                DotDiffValue += pow(saturate(dot(BackLightNormalValue, ViewDirection)), TransmissionScale) * TransmissionIntensity;
 
         
-    }
-    else if (MaterialType == 10)
-    {
-	    // 各向异性，头发模拟
-    }
-    else if (MaterialType == 11)
-    {
-	    // OrenNayar GDC粗糙表面
+            }
+            else if (MaterialType == 10)
+            {
+	        // 各向异性，头发模拟
+            }
+            else if (MaterialType == 11)
+            {
+	        // OrenNayar GDC粗糙表面
         
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-        float3 NormalLight = saturate(dot(ModelNormal, NormalizeLightDirection));
-        float3 NormalView = saturate(dot(ModelNormal, ViewDirection));
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+                float3 NormalLight = saturate(dot(ModelNormal, NormalizeLightDirection));
+                float3 NormalView = saturate(dot(ModelNormal, ViewDirection));
         
-        float PhiR = 
-            length(ViewDirection - ModelNormal * NormalView) *      // 视角到法线的距离
-            length(NormalizeLightDirection - ModelNormal * NormalLight);    // 灯光到法线的距离
+                float PhiR =
+                length(ViewDirection - ModelNormal * NormalView) * // 视角到法线的距离
+                length(NormalizeLightDirection - ModelNormal * NormalLight); // 灯光到法线的距离
         
-        // 这里可以看到，我们的法线乘以了一个 NormalView 值，ModelNormal * NormalView 的结果就是实现了对法线的一个缩放
+            // 这里可以看到，我们的法线乘以了一个 NormalView 值，ModelNormal * NormalView 的结果就是实现了对法线的一个缩放
         
-        float ACosNormalView = acos(NormalView); // [0, 1]
-        float ACosNormalLight = acos(NormalLight);
+                float ACosNormalView = acos(NormalView); // [0, 1]
+                float ACosNormalLight = acos(NormalLight);
         
-        float Alpha = max(ACosNormalView, ACosNormalLight);
-        float Beta = min(ACosNormalView, ACosNormalLight);
+                float Alpha = max(ACosNormalView, ACosNormalLight);
+                float Beta = min(ACosNormalView, ACosNormalLight);
         
-        float Roughness = pow(MaterialRoughness, 2);        // 粗糙度
+                float Roughness = pow(MaterialRoughness, 2); // 粗糙度
         
-        float A = 1 - 0.5f * (Roughness / (Roughness + 0.33f));
-        float B = 0.45f * (Roughness / (Roughness + 0.09f));
-        
-        
-        DotDiffValue = NormalLight * (A + B * max(0, PhiR) * sin(Alpha) * tan(Beta));
+                float A = 1 - 0.5f * (Roughness / (Roughness + 0.33f));
+                float B = 0.45f * (Roughness / (Roughness + 0.09f));
         
         
-    }
-    else if (MaterialType == 20)
-    {
-        // PBR 基于真实物理的材质渲染
-        float3 L = NormalizeLightDirection;
-        float3 V = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+                DotDiffValue = NormalLight * (A + B * max(0, PhiR) * sin(Alpha) * tan(Beta));
         
-        float3 H = normalize(V + L);
         
-        float3 N = ModelNormal;
+            }
+            else if (MaterialType == 20)
+            {
+            // PBR 基于真实物理的材质渲染
+                float3 L = NormalizeLightDirection;
+                float3 V = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
-        float PI = 3.1415926f;
+                float3 H = normalize(V + L);
         
-        float Roughness = 0.02f;     // 粗糙度
-        float Matallic = 0.2f;      // 金属度
+                float3 N = ModelNormal;
         
-        // D 项 D_GGX
-        float4 D = GetDistributionGGX(N, H, Roughness);
+                float PI = 3.1415926f;
         
-        float F0 = 0.04f;
-        F0 = lerp(F0, material.BaseColor, Matallic);
+                float Roughness = 0.02f; // 粗糙度
+                float Matallic = 0.2f; // 金属度
         
-        // 菲尼尔项 F项
-        float4 F = float4(FresnelSchlick(F0, N, V, 5), 1.0f);
+            // D 项 D_GGX
+                float4 D = GetDistributionGGX(N, H, Roughness);
         
-        // G 项 几何函数项
-        float4 G = GSmith(N, V, L, Roughness);
+                float F0 = 0.04f;
+                F0 = lerp(F0, material.BaseColor, Matallic);
         
-        // 获取兰伯特项
-        float4 Kd = 1 - F;      // 就是菲尼尔取反
-        Kd *= 1 - Matallic;
+            // 菲尼尔项 F项
+                float4 F = float4(FresnelSchlick(F0, N, V, 5), 1.0f);
         
-        float4 Diffuse = float4(Kd * GetDiffuseLambert(material.BaseColor.xyz), 1.f);
+            // G 项 几何函数项
+                float4 G = GSmith(N, V, L, Roughness);
         
-        float NoV = saturate(dot(N, V));
-        float NoL = saturate(dot(N, L));
+            // 获取兰伯特项
+                float4 Kd = 1 - F; // 就是菲尼尔取反
+                Kd *= 1 - Matallic;
         
-        float4 Value = (D * F * G) / (4 * (NoV * NoL));
+                float4 Diffuse = float4(Kd * GetDiffuseLambert(material.BaseColor.xyz), 1.f);
         
-        Specular = float4(Value.rgb, 1.f);
+                float NoV = saturate(dot(N, V));
+                float NoL = saturate(dot(N, L));
         
-        float3 Radiance = LightIntensity.xyz;
-        // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）
-        float3 PBRColor = (Diffuse + Specular.xyz) * NoL * Radiance;
+                float4 Value = (D * F * G) / (4 * (NoV * NoL));
         
-        return float4(PBRColor, 1.f);
+                Specular = float4(Value.rgb, 1.f);
+        
+                float3 Radiance = SceneLights[i].LightIntensity.xyz;
+            // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）
+                float3 PBRColor = (Diffuse + Specular.xyz) * NoL * Radiance;
+        
+                return float4(PBRColor, 1.f);
 
-    }
-    else if (MaterialType == 100)
-    {
-        // 菲尼尔
-        float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+            }
+            else if (MaterialType == 100)
+            {
+            // 菲尼尔
+                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
-        float3 f0 = { 0.02f, 0.02f, 0.02f };
-        Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
-    }
+                float3 f0 = { 0.02f, 0.02f, 0.02f };
+                Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
+            }
  
-    // 最终颜色贡献
-    // material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    mvOut.Color = material.BaseColor * DotDiffValue // 漫反射
-    + material.BaseColor * AmbientLight // 间接光（环境光）
-    + material.BaseColor * Specular; // 高光
+            // 最终颜色贡献
+            // material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+            mvOut.Color += material.BaseColor * DotDiffValue // 漫反射
+                        + material.BaseColor * AmbientLight // 间接光（环境光）
+                        + material.BaseColor * Specular; // 高光
     
-	// 伽马校正
-    // mvOut.Color = sqrt(mvOut.Color);
+	        // 伽马校正
+            // mvOut.Color = sqrt(mvOut.Color);
+        }
+        
+    }
     
     return mvOut.Color;
     

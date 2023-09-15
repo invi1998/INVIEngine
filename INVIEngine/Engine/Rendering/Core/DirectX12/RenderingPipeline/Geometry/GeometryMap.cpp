@@ -244,18 +244,16 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	}
 
 	// 更新灯光
+	FLightConstantBuffer LightConstantBuffer;
 	for (size_t i = 0; i < GetLightManger()->Lights.size(); i++)
 	{
-		FLightConstantBuffer LightConstantBuffer;
-
+		if (CLightComponent* lightComponent = GetLightManger()->Lights[i])
 		{
-			if (CLightComponent* lightComponent = GetLightManger()->Lights[0])
-			{
-				LightConstantBuffer.LightDirection = lightComponent->GetForwardVector();
-			}
+			LightConstantBuffer.SceneLights[i].LightDirection = lightComponent->GetForwardVector();
+			LightConstantBuffer.SceneLights[i].LightIntensity = lightComponent->GetLightIntensity();
 		}
-		LightConstantBufferViews.Update(i, &LightConstantBuffer);
 	}
+	LightConstantBufferViews.Update(0, &LightConstantBuffer);
 
 	// 更新视口
 	XMMATRIX ViewProjection = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
