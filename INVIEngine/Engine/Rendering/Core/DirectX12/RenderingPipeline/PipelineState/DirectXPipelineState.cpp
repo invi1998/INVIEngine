@@ -35,7 +35,7 @@ void FDirectXPipelineState::BuildPipelineState()
 	GPSDesc.DSVFormat = GetEngine()->GetRenderingEngine()->GetDepthStencilFormat();			// 深度模板缓冲区格式
 
 	GPSDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;			// 以线框方式显示
-
+	
 	// 通过D3D创建渲染管线状态对象
 	ANALYSIS_RESULT(GetD3dDevice()->CreateGraphicsPipelineState(
 		&GPSDesc,
