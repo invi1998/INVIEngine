@@ -79,9 +79,10 @@ void FRenderingPipeline::Draw(float DeltaTime)
 
 	DirectXRootSignature.PreDraw(DeltaTime);
 
-	DirectXPipelineState.Draw(DeltaTime);
-
 	GeometryMap.Draw(DeltaTime);
+
+	DirectXPipelineState.Draw(DeltaTime);
+	
 }
 
 void FRenderingPipeline::PostDraw(float DeltaTime)

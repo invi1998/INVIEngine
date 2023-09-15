@@ -32,7 +32,7 @@ cbuffer MaterialConstBuffer : register(b2)
 cbuffer LightConstBuffer : register(b3)
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-    FLight SceneLights[16];      // 场景灯光
+    Light SceneLights[16];      // 场景灯光
 }
 
 struct MeshVertexIn
@@ -141,11 +141,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     {
         if (length(SceneLights[i].LightIntensity.xyz) > 0.f)
         {
-        
-        
             float3 NormalizeLightDirection = normalize(-SceneLights[i].LightDirection);
-    
-    
             if (MaterialType == 0)
             {
                 // 兰伯特材质
@@ -155,7 +151,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
             {
                 // 半兰伯特材质
                 float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
-                DotDiffValue = max(0.0f, (DotDiffValue * 0.5f + 0.5f)); // [-1, 1]->[0.1]
+                DotDiffValue = max(0.0f, (DiffueseReflection * 0.5f + 0.5f)); // [-1, 1]->[0.1]
             }
             else if (MaterialType == 2)
             {

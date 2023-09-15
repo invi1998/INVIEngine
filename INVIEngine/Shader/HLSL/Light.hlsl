@@ -1,4 +1,4 @@
-struct FLight
+struct Light
 {
     float3 LightIntensity; // π‚’’«ø∂»
     float xx;
