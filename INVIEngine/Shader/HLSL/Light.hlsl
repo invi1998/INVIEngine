@@ -1,3 +1,4 @@
+
 struct Light
 {
     float3 LightIntensity; // π‚’’«ø∂»

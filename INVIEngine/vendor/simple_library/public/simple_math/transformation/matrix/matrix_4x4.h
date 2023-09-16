@@ -74,8 +74,12 @@ public:
 	}
 
 	//行列式
-	float Determinant()const;
+	float determinant()const;
 
 	//单位化
 	static fmatrix_4x4 identity();
+
+	void transpose();
+
+	fmatrix_4x4 to_transpose();
 };

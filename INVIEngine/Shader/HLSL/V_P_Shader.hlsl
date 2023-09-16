@@ -130,18 +130,18 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     
     // 环境光
     float4 AmbientLight = { 0.15f, 0.15f, 0.22f, 1.0f };
-
-    // material.BaseColor = float4(0.82f, 0.82f, 0.82f, 1.0f);
     
     float DotDiffValue = 0.f;
     
     float4 Specular = { 0.f, 0.f, 0.f, 1.f };
+    float4 LightStrength = { 0.f,0.f,0.f,1.f };
     
     for (int i = 0; i < 16; i++)
     {
         if (length(SceneLights[i].LightIntensity.xyz) > 0.f)
         {
             float3 NormalizeLightDirection = normalize(-SceneLights[i].LightDirection);
+
             if (MaterialType == 0)
             {
                 // 兰伯特材质
@@ -422,18 +422,20 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float3 f0 = { 0.02f, 0.02f, 0.02f };
                 Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
             }
- 
-            // 最终颜色贡献
-            // material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-            mvOut.Color += material.BaseColor * DotDiffValue // 漫反射
-                        + material.BaseColor * AmbientLight // 间接光（环境光）
-                        + material.BaseColor * Specular; // 高光
-    
-	        // 伽马校正
-            // mvOut.Color = sqrt(mvOut.Color);
+
+            LightStrength = LightStrength + float4(SceneLights[i].LightIntensity.xyz, 1.f) * DotDiffValue;
+            LightStrength.w = 1.f;
         }
-        
     }
+
+    // 最终颜色贡献
+	// material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    mvOut.Color = material.BaseColor * DotDiffValue // 漫反射
+        + material.BaseColor * AmbientLight // 间接光（环境光）
+        + material.BaseColor * Specular; // 高光
+
+    // 伽马校正
+    // mvOut.Color = sqrt(mvOut.Color);
     
     return mvOut.Color;
     

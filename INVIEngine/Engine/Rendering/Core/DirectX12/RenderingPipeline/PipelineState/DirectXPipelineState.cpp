@@ -3,10 +3,10 @@
 #include "Shader/Core/Shader.h"
 #include "Rendering/Engine/DirectX/Core/DirectXRenderingEngine.h"
 
-FDirectXPipelineState::FDirectXPipelineState()
+FDirectXPipelineState::FDirectXPipelineState() : IDirectXDeviceInterface_Struct(), GPSDesc()
 {
-	PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(4, ComPtr<ID3D12PipelineState>()));		// 4 表示 线框渲染模式的渲染管线
-	PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(5, ComPtr<ID3D12PipelineState>()));		// 5 表示 面渲染模式的渲染管线
+	PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(4, ComPtr<ID3D12PipelineState>())); // 4 表示 线框渲染模式的渲染管线
+	PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(5, ComPtr<ID3D12PipelineState>())); // 5 表示 面渲染模式的渲染管线
 }
 
 void FDirectXPipelineState::BuildPipelineState()

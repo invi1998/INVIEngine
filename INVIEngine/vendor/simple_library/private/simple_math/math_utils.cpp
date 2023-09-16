@@ -18,24 +18,24 @@ namespace math_utils
     fvector_4d mul(const fvector_4d& in_3d, const fmatrix_4x4& in_matrix_3x3)
     {
         return fvector_4d(
-            in_3d.x * in_matrix_3x3.m11 + 
+            in_3d.x * in_matrix_3x3.m11 +
             in_3d.y * in_matrix_3x3.m21 +
             in_3d.z * in_matrix_3x3.m31 +
             in_3d.w * in_matrix_3x3.m41,
 
-            in_3d.x * in_matrix_3x3.m12+
-            in_3d.y * in_matrix_3x3.m22+
-            in_3d.z * in_matrix_3x3.m32+
-            in_3d.w * in_matrix_3x3.m42 ,
-            
-            in_3d.x * in_matrix_3x3.m13+
-            in_3d.y * in_matrix_3x3.m23+
-            in_3d.z * in_matrix_3x3.m33+
-            in_3d.w * in_matrix_3x3.m43 ,
+            in_3d.x * in_matrix_3x3.m12 +
+            in_3d.y * in_matrix_3x3.m22 +
+            in_3d.z * in_matrix_3x3.m32 +
+            in_3d.w * in_matrix_3x3.m42,
 
-            in_3d.x * in_matrix_3x3.m14+
-            in_3d.y * in_matrix_3x3.m24+
-            in_3d.z * in_matrix_3x3.m34+
+            in_3d.x * in_matrix_3x3.m13 +
+            in_3d.y * in_matrix_3x3.m23 +
+            in_3d.z * in_matrix_3x3.m33 +
+            in_3d.w * in_matrix_3x3.m43,
+
+            in_3d.x * in_matrix_3x3.m14 +
+            in_3d.y * in_matrix_3x3.m24 +
+            in_3d.z * in_matrix_3x3.m34 +
             in_3d.w * in_matrix_3x3.m44);
     }
 
@@ -80,28 +80,69 @@ namespace math_utils
         return fabsf(f1 - f2) <= epsilon;
     }
 
-    fmatrix_4x4 matrix_perspective_base_r(float in_fov_radian, float aspect_ratio, float near_z, float far_z)
+    fmatrix_4x4 matrix_perspective(
+        float in_fov_radian,
+        float aspect_ratio, 
+        float near_z, float far_z)
     {
-        //作为检测是否合理
         assert(near_z > 0.f && far_z > 0.f);
-        assert(!scalar_neare_qual_float(in_fov_radian,0.0f,0.00001f * 2.f));
+        assert(!scalar_neare_qual_float(in_fov_radian, 0.0f, 0.00001f * 2.f));
         assert(!scalar_neare_qual_float(aspect_ratio, 0.0f, 0.00001f));
         assert(!scalar_neare_qual_float(near_z, far_z, 0.00001f));
-        
+
         //构建透视矩阵
         fmatrix_4x4 matrix_4x4;
         {
-            float d = near_z - far_z;
-            float yscale = cos(in_fov_radian) / sin(in_fov_radian);
-            float xscale = yscale / aspect_ratio;
+            float t = tan(in_fov_radian * 0.5f) * near_z;
+            float b = -t;
+            float r = aspect_ratio * t;
+            float l = -r;
 
-            matrix_4x4.m11 = xscale;
-            matrix_4x4.m22 = yscale;
-            matrix_4x4.m33 = (near_z - far_z) / d;
+            float d = far_z - near_z;
+
+            matrix_4x4.m11 = (2.f * near_z) / (r - l);
+            matrix_4x4.m22 = (2.f * near_z) / (t - b);
+            matrix_4x4.m33 = -((far_z + near_z) / d);
             matrix_4x4.m34 = -1.f;
-            matrix_4x4.m43 = (2.f * near_z * far_z) / d;
+            matrix_4x4.m43 = -(2 * near_z * far_z / d);
+            matrix_4x4.m44 = 0.f;
         }
 
         return matrix_4x4;
+    }
+
+    fmatrix_4x4 matrix_look_at_target(const fvector_4d& in_view_pos, const fvector_4d& in_target_pos, const fvector_4d& in_view_up)
+    {
+        fvector_4d n = in_target_pos - in_view_pos;
+        n.normalize();//单位化
+
+        fvector_4d u = fvector_4d::cross_product(in_view_up,n);
+        u.normalize();
+
+        fvector_4d v = fvector_4d::cross_product(n, u);
+        v.normalize();
+
+        return fmatrix_4x4(
+            u.x, v.x, n.x, 0.f,
+            u.y, v.y, n.y, 0.f,
+            u.z, v.z, n.z, 0.f,
+            -fvector_4d::dot(u, in_view_pos),
+            -fvector_4d::dot(v, in_view_pos),
+            -fvector_4d::dot(n, in_view_pos),1.f);
+    }
+
+    fmatrix_4x4 build_view_matrix(const fvector_4d& in_view_pos, const fmatrix_4x4& in_view_matrix)
+    {
+        fvector_4d u = fvector_4d(in_view_matrix.m11, in_view_matrix.m21, in_view_matrix.m31,1.f);
+        fvector_4d v = fvector_4d(in_view_matrix.m12, in_view_matrix.m22, in_view_matrix.m32,1.f);
+        fvector_4d n = fvector_4d(in_view_matrix.m13, in_view_matrix.m23, in_view_matrix.m33,1.f);
+        
+        return fmatrix_4x4(
+            u.x, v.x, n.x, 0.f,
+            u.y, v.y, n.y, 0.f,
+            u.z, v.z, n.z, 0.f,
+            -fvector_4d::dot(u, in_view_pos),
+            -fvector_4d::dot(v, in_view_pos),
+            -fvector_4d::dot(n, in_view_pos), 1.f);
     }
 }
