@@ -160,15 +160,12 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float3 ReflectDirection = normalize(-reflect(NormalizeLightDirection, ModelNormal));
                 float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
-                DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.0f);
+                DotDiffValue = pow(max(dot(ModelNormal, NormalizeLightDirection), 0.0f), 2.f);
         
-                if (DotDiffValue > 0.f)
-                {
-                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-                    float M = MaterialShiniess * 100.f;
+                float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                float M = MaterialShiniess * 100.f;
             
-                    Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.f), M);
-                }
+                Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.f), M);
             }
             else if (MaterialType == 3)
             {
@@ -180,15 +177,13 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
     
                 // 计算出Blinn-phong值
-                DotDiffValue = max(0.0f, dot(ModelNormal, HalfDirection));
+                DotDiffValue = pow(max(0.0f, dot(ModelNormal, HalfDirection)), 2.f);
         
-                if (DotDiffValue > 0.f)
-                {
-                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-                    float M = MaterialShiniess * 100.f;
-            
-                    Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
-                }
+                float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                float M = MaterialShiniess * 100.f;
+                
+                // c=(m+2.f/PI) blinnPhong归一化系数
+                Specular = (M + 2.f)*pow(max(dot(HalfDirection, ModelNormal), 0.f), M)/3.1415926f;
 
             }
             else if (MaterialType == 4)
