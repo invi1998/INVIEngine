@@ -1,6 +1,7 @@
 #include "DirectXRenderingEngine.h"
 
 #include "Actor/Light/ParallelLight.h"
+#include "Actor/Light/SpotLight.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/World.h"
 #include "Manage/LightManager.h"
@@ -105,26 +106,41 @@ int CDirectXRenderingEngine::PostInit()
 		}*/
 
 		// 灯光
-		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
+		//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
+		//{
+		//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, 20.f));
+		//	ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+
+		//	/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
+		//	{
+		//		InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
+		//		InMaterial->SetMaterialType(EMaterialType::BaseColor);
+		//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+
+		//		InMaterial->SetRoughness(1.0f);
+		//	}*/
+		//}
+
+		//// 灯光
+		//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
+		//{
+		//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
+		//	ParallelLight->SetRotation(fvector_3d(-90.f, 0.f, 0.f));
+
+		//	/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
+		//	{
+		//		InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
+		//		InMaterial->SetMaterialType(EMaterialType::BaseColor);
+		//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+
+		//		InMaterial->SetRoughness(1.0f);
+		//	}*/
+		//}
+
+		// 点光
+		if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
 		{
-			ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, 20.f));
-			ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-
-			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
-				InMaterial->SetMaterialType(EMaterialType::BaseColor);
-				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
-
-				InMaterial->SetRoughness(1.0f);
-			}*/
-		}
-
-		// 灯光
-		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
-		{
-			ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
-			ParallelLight->SetRotation(fvector_3d(-90.f, 0.f, 0.f));
+			SpotLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
 
 			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
 			{

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineMinimal.h"
+#include "LightType.h"
 #include "Component/TransformationComponent.h"
 #include "Interface/DirectXDeviceInterface.h"
 
@@ -29,9 +30,15 @@ public:
 	virtual void SetRightVector(const XMFLOAT3& InRightVector) override;
 	virtual void SetUpVector(const XMFLOAT3& InUPVector) override;
 
-	void SetLightIntensity(XMFLOAT3& Intensity);
+	virtual void SetLightIntensity(XMFLOAT3& Intensity);
+	virtual void SetLightType(ELightType type);
+	virtual void SetStartAttenuation(float Start);
+	virtual void SetEndAttenuation(float end);
 
-	const XMFLOAT3& GetLightIntensity() const { return LightIntensity; }
+	virtual const XMFLOAT3& GetLightIntensity() const { return LightIntensity; }
+	virtual ELightType GetLightType() const { return LightType; }
+	virtual float GetStartAttenuation() const { return StartAttenuation; }
+	virtual float GetEndAttenuation() const { return EndAttenuation; }
 
 protected:
 	void SetLightMesh(CMeshComponent* inLightMesh);
@@ -39,6 +46,8 @@ protected:
 
 protected:
 	XMFLOAT3 LightIntensity;
-
+	ELightType LightType;
+	float StartAttenuation; // ¿ªÊ¼Ë¥¼õ
+	float EndAttenuation;   // ½áÊøË¥¼õ
 };
 

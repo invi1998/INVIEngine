@@ -71,6 +71,21 @@ void CLightComponent::SetLightIntensity(XMFLOAT3& Intensity)
 	LightIntensity = Intensity;
 }
 
+void CLightComponent::SetLightType(ELightType type)
+{
+	LightType = type;
+}
+
+void CLightComponent::SetStartAttenuation(float Start)
+{
+	StartAttenuation = Start;
+}
+
+void CLightComponent::SetEndAttenuation(float end)
+{
+	EndAttenuation = end;
+}
+
 void CLightComponent::SetLightMesh(CMeshComponent* inLightMesh)
 {
 	LightMesh = inLightMesh;

@@ -1,14 +1,16 @@
-#include "ParallelLightComponent.h"
-#include "Core/LightComponent.h"
+#include "SpotLightComponent.h"
+
 #include "Material/Core/Material.h"
+#include "Material/Core/MaterialType.h"
 #include "Mesh/Core/MeshManager.h"
 
-CParallelLightComponent::CParallelLightComponent()
+CSpotLightComponent::CSpotLightComponent()
+	: CLightComponent()
 {
-	// 读取平行光模型
-	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/SunMesh.obj"));
+	// 读取点光模型
+	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/SpotMesh.obj"));
 
-	// 设置平行光为线框模式显示
+	// 设置点光模型为线框模式显示
 	if (GetLightMesh())
 	{
 		if (CMaterial* material = (*GetLightMesh()->GetMaterial())[0])
@@ -19,11 +21,10 @@ CParallelLightComponent::CParallelLightComponent()
 		}
 	}
 
-	LightType = ELightType::DirectionalLight;
-	
+	LightType = ELightType::SpotLight;
 }
 
-CParallelLightComponent::~CParallelLightComponent()
+CSpotLightComponent::~CSpotLightComponent()
 {
 }
 

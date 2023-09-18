@@ -18,13 +18,13 @@ void GParallelLight::Tick(float DeltaTime)
 {
 	CCoreMinimalObject::Tick(DeltaTime);
 
-	XMFLOAT3 v3 = GetRotation();
+	//XMFLOAT3 v3 = GetRotation();
 
-	v3.x += DeltaTime * 40.f;
-	v3.y += DeltaTime * 40.f;
-	//v3.z += DeltaTime * 100.f;
+	//v3.x += DeltaTime * 40.f;
+	//v3.y += DeltaTime * 40.f;
+	////v3.z += DeltaTime * 100.f;
 
-	SetRotation(fvector_3d(v3.x, v3.y, v3.z));
+	//SetRotation(fvector_3d(v3.x, v3.y, v3.z));
 	
 }
 

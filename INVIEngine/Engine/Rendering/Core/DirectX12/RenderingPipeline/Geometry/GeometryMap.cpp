@@ -1,5 +1,6 @@
 #include "GeometryMap.h"
 
+#include "Component/Light/SpotLightComponent.h"
 #include "Component/Light/Core/LightComponent.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
@@ -251,6 +252,10 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 		{
 			LightConstantBuffer.SceneLights[i].LightDirection = lightComponent->GetForwardVector();
 			LightConstantBuffer.SceneLights[i].LightIntensity = lightComponent->GetLightIntensity();
+			LightConstantBuffer.SceneLights[i].LightType = static_cast<int>(lightComponent->GetLightType());
+			LightConstantBuffer.SceneLights[i].LightPosition = lightComponent->GetPosition();
+			LightConstantBuffer.SceneLights[i].StartAttenuation = lightComponent->GetStartAttenuation();
+			LightConstantBuffer.SceneLights[i].EndAttenuation = lightComponent->GetEndAttenuation();
 		}
 	}
 	LightConstantBufferViews.Update(0, &LightConstantBuffer);
