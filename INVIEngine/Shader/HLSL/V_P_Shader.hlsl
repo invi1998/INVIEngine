@@ -140,7 +140,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     {
         if (length(SceneLights[i].LightIntensity.xyz) > 0.f)
         {
-            float3 NormalizeLightDirection = normalize(-SceneLights[i].LightDirection);
+            float3 LightDirection = GetLightDirection(SceneLights[i], mvOut.WorldPosition.xyz);
+            float3 NormalizeLightDirection = normalize(LightDirection);
+            
+            float4 LightStrengthTemp = CaculateLightStrength(SceneLights[i], ModelNormal, mvOut.WorldPosition.xyz, LightDirection);
 
             if (MaterialType == 0)
             {
@@ -421,7 +424,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
             }
 
-            LightStrength = LightStrength + float4(SceneLights[i].LightIntensity.xyz, 1.f) * DotDiffValue;
+            LightStrength += LightStrengthTemp * float4(SceneLights[i].LightIntensity.xyz, 1.f) * DotDiffValue;
             LightStrength.w = 1.f;
         }
     }
@@ -429,7 +432,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     // 最终颜色贡献
 	// material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     mvOut.Color = material.BaseColor * LightStrength // 漫反射
-        + material.BaseColor * AmbientLight // 间接光（环境光）
+        + material.BaseColor * AmbientLight * LightStrength // 间接光（环境光）
         + material.BaseColor * Specular; // 高光
 
     // 伽马校正

@@ -140,7 +140,7 @@ int CDirectXRenderingEngine::PostInit()
 		// µã¹â
 		if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
 		{
-			SpotLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
+			SpotLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
 
 			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
 			{
