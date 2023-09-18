@@ -145,7 +145,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
             if (MaterialType == 0)
             {
                 // 兰伯特材质
-                DotDiffValue = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
+                DotDiffValue = pow(max(dot(ModelNormal, NormalizeLightDirection), 0.f), 2.f);
             }
             else if (MaterialType == 1)
             {
@@ -203,13 +203,13 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
             }
             else if (MaterialType == 5)
             {
-                // Minnaert模型（月光模型）
+                // Minnaert模型 模拟月球和天鹅绒效果
         
                 // 第一种 dot(l, n) * dot(n, v)
         
                 float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
-                float DotLight = max(dot(ModelNormal, NormalizeLightDirection), 0.f);
+                float DotLight = pow(max(dot(ModelNormal, NormalizeLightDirection), 0.f), 2.f);
                 float DotView = max(dot(ModelNormal, ViewDirection), 0.f);
         
                 // DotDiffValue = DotLight * DotView;
@@ -241,8 +241,6 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 // 渐变颜色
                 float4 GradualColor = { 0.87f, 0.12f, 0.6f, 1.f };
-        
-                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
                 float LightDotValue = dot(ModelNormal, NormalizeLightDirection);
         
@@ -342,7 +340,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	            // OrenNayar GDC粗糙表面
         
                 float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-                float3 NormalLight = saturate(dot(ModelNormal, NormalizeLightDirection));
+                float3 NormalLight = saturate(pow(max(0.f, dot(ModelNormal, NormalizeLightDirection)), 2.f));
                 float3 NormalView = saturate(dot(ModelNormal, ViewDirection));
         
                 float PhiR =
@@ -430,7 +428,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 
     // 最终颜色贡献
 	// material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    mvOut.Color = material.BaseColor * DotDiffValue // 漫反射
+    mvOut.Color = material.BaseColor * LightStrength // 漫反射
         + material.BaseColor * AmbientLight // 间接光（环境光）
         + material.BaseColor * Specular; // 高光
 
