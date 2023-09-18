@@ -221,63 +221,68 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
             else if (MaterialType == 6)
             {
                 // Banded 基础卡通
+                if (i == 0)
+                {
+                    float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
         
-                float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
+                    // 分层数量
+                    float Layered = 4.f;
         
-                // 分层数量
-                float Layered = 4.f;
-        
-                DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
-        
+                    DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+                }
             }
             else if (MaterialType == 7)
             {
                 // GradualBanded  带渐变的卡通效果
+                
+                if (i == 0)
+                {
+                    // 渐变颜色
+                    float4 GradualColor = { 0.87f, 0.12f, 0.6f, 1.f };
         
-                // 渐变颜色
-                float4 GradualColor = { 0.87f, 0.12f, 0.6f, 1.f };
+                    float LightDotValue = dot(ModelNormal, NormalizeLightDirection);
         
-                float LightDotValue = dot(ModelNormal, NormalizeLightDirection);
+                    float DiffueseReflection = (LightDotValue + 1.f) * 0.5f;
         
-                float DiffueseReflection = (LightDotValue + 1.f) * 0.5f;
+                    // 分层数量
+                    float Layered = 8.f;
         
-                // 分层数量
-                float Layered = 8.f;
+                    DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
         
-                DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
-        
-                material.BaseColor = lerp(material.BaseColor, GradualColor, LightDotValue);
-        
+                    material.BaseColor = lerp(material.BaseColor, GradualColor, LightDotValue);
+                }
             }
             else if (MaterialType == 8)
             {
                 // CustomBanded  自定义卡通效果
-        
-                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-        
-                float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
-        
-                // 分层数量
-                float Layered = 4.f;
-        
-                DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
-        
-                // 加入菲尼尔效果
-                float3 f0 = { 0.02f, 0.02f, 0.02f };
-                Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
-        
-                // 获取光线和摄像机视角的半程向量
-                float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
-        
-                // 加入高光
-                if (DotDiffValue > 0.f)
+                
+                if (i == 0)
                 {
-                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
-                    float M = MaterialShiniess * 70.f;
-            
-                    Specular += pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f;
-                }
+                    float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
+                    float DiffueseReflection = (dot(ModelNormal, NormalizeLightDirection) + 1.f) * 0.5f;
+        
+                    // 分层数量
+                    float Layered = 4.f;
+        
+                    DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
+        
+                    // 加入菲尼尔效果
+                    float3 f0 = { 0.02f, 0.02f, 0.02f };
+                    Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
+        
+                    // 获取光线和摄像机视角的半程向量
+                    float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+        
+                    // 加入高光
+                    if (DotDiffValue > 0.f)
+                    {
+                        float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+                        float M = MaterialShiniess * 70.f;
+            
+                        Specular += pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f;
+                    }
+                }
             }
             else if (MaterialType == 9)
             {
