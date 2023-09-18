@@ -120,6 +120,22 @@ int CDirectXRenderingEngine::PostInit()
 			}*/
 		}
 
+		// ตฦนโ
+		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
+		{
+			ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
+			ParallelLight->SetRotation(fvector_3d(-90.f, 0.f, 0.f));
+
+			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
+				InMaterial->SetMaterialType(EMaterialType::BaseColor);
+				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+
+				InMaterial->SetRoughness(1.0f);
+			}*/
+		}
+
 		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{
 			PlaneMesh->CreateMesh(4.f, 3.f, 40, 40);
