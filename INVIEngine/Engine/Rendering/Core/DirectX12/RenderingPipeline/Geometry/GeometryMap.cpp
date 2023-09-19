@@ -258,6 +258,9 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			{
 				LightConstantBuffer.SceneLights[i].StartAttenuation = spotLightComponent->GetStartAttenuation();
 				LightConstantBuffer.SceneLights[i].EndAttenuation = spotLightComponent->GetEndAttenuation();
+				LightConstantBuffer.SceneLights[i].Kc = spotLightComponent->GetKc();
+				LightConstantBuffer.SceneLights[i].Kl = spotLightComponent->GetKl();
+				LightConstantBuffer.SceneLights[i].Kq = spotLightComponent->GetKq();
 			}
 		}
 	}

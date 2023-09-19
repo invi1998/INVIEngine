@@ -4,7 +4,7 @@
 
 
 FLight::FLight(): LightIntensity(), StartAttenuation(1.0f), LightDirection(), EndAttenuation(10.f), LightPosition(),
-                  LightType(ELightType::DirectionalLight)
+                  LightType(ELightType::DirectionalLight), Kc(1.0f), Kl(0.7f), Kq(1.8f)
 {
 }
 

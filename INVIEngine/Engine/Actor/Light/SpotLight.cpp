@@ -46,6 +46,30 @@ void GSpotLight::SetEndAttenuation(float end)
 	}
 }
 
+void GSpotLight::SetKc(float c)
+{
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		spotLightComponent->SetKc(c);
+	}
+}
+
+void GSpotLight::SetKl(float l)
+{
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		spotLightComponent->SetKl(l);
+	}
+}
+
+void GSpotLight::SetKq(float q)
+{
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		spotLightComponent->SetKq(q);
+	}
+}
+
 float GSpotLight::GetStartAttenuation() const
 {
 	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
@@ -61,6 +85,36 @@ float GSpotLight::GetEndAttenuation() const
 	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
 	{
 		return spotLightComponent->GetEndAttenuation();
+	}
+
+	return 0.f;
+}
+
+float GSpotLight::GetKc() const
+{
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		return spotLightComponent->GetKc();
+	}
+
+	return 0.f;
+}
+
+float GSpotLight::GetKl() const
+{
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		return spotLightComponent->GetKl();
+	}
+
+	return 0.f;
+}
+
+float GSpotLight::GetKq() const
+{
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		return spotLightComponent->GetKq();
 	}
 
 	return 0.f;

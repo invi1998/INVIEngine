@@ -7,7 +7,27 @@ struct Light
     float EndAttenuation;   // 结束衰减
     float3 LightPosition;    // 灯光位置
     int LightType;          // 灯光类型
+    float Kc;               // 非线性衰减常数项
+    float Kl;               // 非线性衰减一次项
+    float Kq;               // 非线性衰减二次项
 };
+
+// 光线衰减计算方式1 (线性衰减）
+float4 AttenuationPointLight(Light L, float LightDistence, float4 LightStrenth)
+{
+    float AttenuationRange = L.EndAttenuation - L.StartAttenuation;
+    LightStrenth = LightStrenth * (LightDistence / AttenuationRange);
+    return LightStrenth;
+}
+
+// 光线衰减计算方式2 (非线性平滑衰减）
+// 常数项Kc、一次项Kl和二次项Kq
+float4 AttenuationPointLightCLQ(Light L, float LightDistence, float4 LightStrenth)
+{
+    float AttenuationRange = 1.f / (L.Kc + L.Kl * LightDistence, L.Kq * LightDistence * LightDistence);
+    LightStrenth *= AttenuationRange;
+    return LightStrenth;
+}
 
 float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, float3 LightDirection)
 {
@@ -26,8 +46,8 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
 
         if (LightDistence < L.EndAttenuation)
         {
-            float AttenuationRange = L.EndAttenuation - L.StartAttenuation;
-        	LightStrenth = LightStrenth * (LightDistence / AttenuationRange);
+            // LightStrenth = AttenuationPointLight(L, LightDistence, LightStrenth);        // 线性衰减
+            LightStrenth = AttenuationPointLightCLQ(L, LightDistence, LightStrenth);        // 非线性衰减
         }
         else
         {
@@ -59,4 +79,5 @@ float3 GetLightDirection(Light L, float3 WorldLocation)
 
     return Direction;
 }
+
 

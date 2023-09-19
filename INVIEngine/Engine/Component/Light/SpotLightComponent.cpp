@@ -38,3 +38,18 @@ void CSpotLightComponent::SetEndAttenuation(float end)
 	EndAttenuation = end;
 }
 
+void CSpotLightComponent::SetKc(float c)
+{
+	Kc = c;
+}
+
+void CSpotLightComponent::SetKl(float l)
+{
+	Kl = l;
+}
+
+void CSpotLightComponent::SetKq(float q)
+{
+	Kq = q;
+}
+
