@@ -2,6 +2,7 @@
 
 #include "Actor/Light/ParallelLight.h"
 #include "Actor/Light/SpotLight.h"
+#include "Component/Light/SpotLightComponent.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/World.h"
 #include "Manage/LightManager.h"
@@ -141,6 +142,10 @@ int CDirectXRenderingEngine::PostInit()
 		if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
 		{
 			SpotLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
+			SpotLight->SetLightIntensity(XMFLOAT3{ 5.f, 5.f, 5.f });
+
+			SpotLight->SetStartAttenuation(1.0f);
+			SpotLight->SetEndAttenuation(100.0f);
 
 			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
 			{

@@ -28,3 +28,13 @@ CSpotLightComponent::~CSpotLightComponent()
 {
 }
 
+void CSpotLightComponent::SetStartAttenuation(float Start)
+{
+	StartAttenuation = Start;
+}
+
+void CSpotLightComponent::SetEndAttenuation(float end)
+{
+	EndAttenuation = end;
+}
+

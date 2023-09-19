@@ -4,7 +4,7 @@
 
 GSpotLight::GSpotLight()
 {
-	SpotLightComponent = CreateObject<CSpotLightComponent>(new CSpotLightComponent());
+	CLight::SetLightComponent(CreateObject<CSpotLightComponent>(new CSpotLightComponent()));
 }
 
 GSpotLight::~GSpotLight()
@@ -13,12 +13,12 @@ GSpotLight::~GSpotLight()
 
 void GSpotLight::BeginInit()
 {
-	CCoreMinimalObject::BeginInit();
+	CLight::BeginInit();
 }
 
 void GSpotLight::Tick(float DeltaTime)
 {
-	CCoreMinimalObject::Tick(DeltaTime);
+	CLight::Tick(DeltaTime);
 
 	//XMFLOAT3 v3 = GetRotation();
 
@@ -30,23 +30,40 @@ void GSpotLight::Tick(float DeltaTime)
 
 }
 
-void GSpotLight::SetPosition(const XMFLOAT3& position)
+void GSpotLight::SetStartAttenuation(float Start)
 {
-	GActorObject::SetPosition(position);
-
-	SpotLightComponent->SetPosition(position);
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		spotLightComponent->SetStartAttenuation(Start);
+	}
 }
 
-void GSpotLight::SetRotation(const fvector_3d& rotation)
+void GSpotLight::SetEndAttenuation(float end)
 {
-	GActorObject::SetRotation(rotation);
-
-	SpotLightComponent->SetRotation(rotation);
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		spotLightComponent->SetEndAttenuation(end);
+	}
 }
 
-void GSpotLight::SetScale(const fvector_3d& scale)
+float GSpotLight::GetStartAttenuation() const
 {
-	GActorObject::SetScale(scale);
-	SpotLightComponent->SetScale(scale);
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		return spotLightComponent->GetStartAttenuation();
+	}
+
+	return 0.f;
 }
+
+float GSpotLight::GetEndAttenuation() const
+{
+	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	{
+		return spotLightComponent->GetEndAttenuation();
+	}
+
+	return 0.f;
+}
+
 

@@ -3,23 +3,25 @@
 #include "EngineMinimal.h"
 
 #include "Actor/Core/ActorObject.h"
+#include "Core/Light.h"
 
 class CSpotLightComponent;
 
-class GSpotLight : public GActorObject
+class GSpotLight : public CLight
 {
-	CVARIABLE()
-		CSpotLightComponent* SpotLightComponent;
-
 public:
 	GSpotLight();
 	~GSpotLight() override;
 
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
-	virtual void SetPosition(const XMFLOAT3& position) override;
-	virtual void SetRotation(const fvector_3d& rotation) override;
-	virtual void SetScale(const fvector_3d& scale) override;
+
+public:
+	void SetStartAttenuation(float Start);
+	void SetEndAttenuation(float end);
+
+	float GetStartAttenuation() const;
+	float GetEndAttenuation() const;
 
 };
 

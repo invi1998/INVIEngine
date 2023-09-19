@@ -254,8 +254,11 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			LightConstantBuffer.SceneLights[i].LightIntensity = lightComponent->GetLightIntensity();
 			LightConstantBuffer.SceneLights[i].LightType = static_cast<int>(lightComponent->GetLightType());
 			LightConstantBuffer.SceneLights[i].LightPosition = lightComponent->GetPosition();
-			LightConstantBuffer.SceneLights[i].StartAttenuation = lightComponent->GetStartAttenuation();
-			LightConstantBuffer.SceneLights[i].EndAttenuation = lightComponent->GetEndAttenuation();
+			if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
+			{
+				LightConstantBuffer.SceneLights[i].StartAttenuation = spotLightComponent->GetStartAttenuation();
+				LightConstantBuffer.SceneLights[i].EndAttenuation = spotLightComponent->GetEndAttenuation();
+			}
 		}
 	}
 	LightConstantBufferViews.Update(0, &LightConstantBuffer);

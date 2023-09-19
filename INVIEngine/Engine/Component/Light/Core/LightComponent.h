@@ -20,7 +20,7 @@ public:
 	void Tick(float DeltaTime) override;
 
 public:
-	CMeshComponent* GetLightMesh() { return LightMesh; }
+	CMeshComponent* GetLightMesh() const { return LightMesh; }
 
 	virtual void SetPosition(const XMFLOAT3& InNewPosition) override;
 	virtual void SetRotation(const fvector_3d& InNewRotation) override;
@@ -30,15 +30,11 @@ public:
 	virtual void SetRightVector(const XMFLOAT3& InRightVector) override;
 	virtual void SetUpVector(const XMFLOAT3& InUPVector) override;
 
-	virtual void SetLightIntensity(XMFLOAT3& Intensity);
+	virtual void SetLightIntensity(const XMFLOAT3& Intensity);
 	virtual void SetLightType(ELightType type);
-	virtual void SetStartAttenuation(float Start);
-	virtual void SetEndAttenuation(float end);
 
 	virtual const XMFLOAT3& GetLightIntensity() const { return LightIntensity; }
 	virtual ELightType GetLightType() const { return LightType; }
-	virtual float GetStartAttenuation() const { return StartAttenuation; }
-	virtual float GetEndAttenuation() const { return EndAttenuation; }
 
 protected:
 	void SetLightMesh(CMeshComponent* inLightMesh);
@@ -47,7 +43,5 @@ protected:
 protected:
 	XMFLOAT3 LightIntensity;
 	ELightType LightType;
-	float StartAttenuation; // ¿ªÊ¼Ë¥¼õ
-	float EndAttenuation;   // ½áÊøË¥¼õ
 };
 
