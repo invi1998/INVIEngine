@@ -140,10 +140,9 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     {
         if (length(SceneLights[i].LightIntensity.xyz) > 0.f)
         {
-            float3 LightDirection = GetLightDirection(SceneLights[i], mvOut.WorldPosition.xyz);
-            float3 NormalizeLightDirection = normalize(LightDirection);
+            float3 NormalizeLightDirection = normalize(GetLightDirection(SceneLights[i], mvOut.WorldPosition.xyz));
             
-            float4 LightStrengthTemp = CaculateLightStrength(SceneLights[i], ModelNormal, mvOut.WorldPosition.xyz, LightDirection);
+            float4 LightStrengthTemp = CaculateLightStrength(SceneLights[i], ModelNormal, mvOut.WorldPosition.xyz, NormalizeLightDirection);
 
             if (MaterialType == 0)
             {
@@ -424,7 +423,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
             }
 
-            LightStrength += LightStrengthTemp * float4(SceneLights[i].LightIntensity.xyz, 1.f) * DotDiffValue;
+            LightStrength += LightStrengthTemp * DotDiffValue * float4(SceneLights[i].LightIntensity.xyz, 1.f);
             LightStrength.w = 1.f;
         }
     }

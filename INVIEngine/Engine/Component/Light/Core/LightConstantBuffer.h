@@ -18,6 +18,8 @@ struct FLight
     float Kc;               // 非线性衰减常数项
     float Kl;               // 非线性衰减一次项
     float Kq;               // 非线性衰减二次项
+
+    float xxs;
 };
 
 // 灯光常量缓冲区

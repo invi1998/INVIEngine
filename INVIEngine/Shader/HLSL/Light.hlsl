@@ -10,6 +10,7 @@ struct Light
     float Kc;               // 非线性衰减常数项
     float Kl;               // 非线性衰减一次项
     float Kq;               // 非线性衰减二次项
+    float xxs;
 };
 
 // 光线衰减计算方式1 (线性衰减）
@@ -21,12 +22,10 @@ float4 AttenuationPointLight(Light L, float LightDistence, float4 LightStrenth)
 }
 
 // 光线衰减计算方式2 (非线性平滑衰减）
-// 常数项Kc、一次项Kl和二次项Kq
+// 常数项Kc、一次项Kl、二次项Kq
 float4 AttenuationPointLightCLQ(Light L, float LightDistence, float4 LightStrenth)
 {
-    float AttenuationRange = 1.f / (L.Kc + L.Kl * LightDistence, L.Kq * LightDistence * LightDistence);
-    LightStrenth *= AttenuationRange;
-    return LightStrenth;
+    return (1.f / (L.Kc + L.Kl * LightDistence + L.Kq * pow(LightDistence, 2.f))) * LightStrenth;
 }
 
 float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, float3 LightDirection)
