@@ -1,5 +1,6 @@
 #include "GeometryMap.h"
 
+#include "Component/Light/PointLightComponent.h"
 #include "Component/Light/SpotLightComponent.h"
 #include "Component/Light/Core/LightComponent.h"
 #include "Core/Viewport/ViewportInfo.h"
@@ -254,7 +255,15 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			LightConstantBuffer.SceneLights[i].LightIntensity = lightComponent->GetLightIntensity();
 			LightConstantBuffer.SceneLights[i].LightType = static_cast<int>(lightComponent->GetLightType());
 			LightConstantBuffer.SceneLights[i].LightPosition = lightComponent->GetPosition();
-			if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
+			if (auto pointLightComponent = dynamic_cast<CPointLightComponent*>(lightComponent))
+			{
+				LightConstantBuffer.SceneLights[i].StartAttenuation = pointLightComponent->GetStartAttenuation();
+				LightConstantBuffer.SceneLights[i].EndAttenuation = pointLightComponent->GetEndAttenuation();
+				LightConstantBuffer.SceneLights[i].Kc = pointLightComponent->GetKc();
+				LightConstantBuffer.SceneLights[i].Kl = pointLightComponent->GetKl();
+				LightConstantBuffer.SceneLights[i].Kq = pointLightComponent->GetKq();
+			}
+			else if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
 			{
 				LightConstantBuffer.SceneLights[i].StartAttenuation = spotLightComponent->GetStartAttenuation();
 				LightConstantBuffer.SceneLights[i].EndAttenuation = spotLightComponent->GetEndAttenuation();

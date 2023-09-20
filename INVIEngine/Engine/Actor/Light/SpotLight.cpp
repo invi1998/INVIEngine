@@ -27,7 +27,6 @@ void GSpotLight::Tick(float DeltaTime)
 	////v3.z += DeltaTime * 100.f;
 
 	//SetRotation(fvector_3d(v3.x, v3.y, v3.z));
-
 }
 
 void GSpotLight::SetStartAttenuation(float Start)
@@ -119,5 +118,3 @@ float GSpotLight::GetKq() const
 
 	return 0.f;
 }
-
-

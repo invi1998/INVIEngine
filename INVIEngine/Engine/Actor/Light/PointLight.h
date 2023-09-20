@@ -2,13 +2,14 @@
 
 #include "EngineMinimal.h"
 
+#include "Actor/Core/ActorObject.h"
 #include "Core/Light.h"
 
-class GSpotLight : public CLight
+class GPointLight : public CLight
 {
 public:
-	GSpotLight();
-	~GSpotLight() override;
+	GPointLight();
+	~GPointLight() override;
 
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;

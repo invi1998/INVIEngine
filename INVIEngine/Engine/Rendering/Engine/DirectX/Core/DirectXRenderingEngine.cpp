@@ -1,6 +1,7 @@
 #include "DirectXRenderingEngine.h"
 
 #include "Actor/Light/ParallelLight.h"
+#include "Actor/Light/PointLight.h"
 #include "Actor/Light/SpotLight.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/World.h"
@@ -138,26 +139,31 @@ int CDirectXRenderingEngine::PostInit()
 		//}
 
 		// µã¹â
+		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
+		{
+			PointLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
+			PointLight->SetLightIntensity(XMFLOAT3{ 3.f, 3.f, 3.f });
+
+			PointLight->SetStartAttenuation(0.0f);
+			PointLight->SetEndAttenuation(100.0f);
+
+			PointLight->SetKc(1.f);
+			PointLight->SetKl(0.045f);
+			PointLight->SetKq(0.0075f);
+		}
+
+		// ¾Û¹â
 		if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
 		{
-			SpotLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
-			SpotLight->SetLightIntensity(XMFLOAT3{ 4.f, 4.f, 4.f });
+			SpotLight->SetPosition(XMFLOAT3(-10.f, 10.f, 20.f));
+			SpotLight->SetLightIntensity(XMFLOAT3{ 2.f, 2.f, 1.43f });
 
 			SpotLight->SetStartAttenuation(0.0f);
-			SpotLight->SetEndAttenuation(100.0f);
+			SpotLight->SetEndAttenuation(200.0f);
 
 			SpotLight->SetKc(1.f);
-			SpotLight->SetKl(0.045f);
-			SpotLight->SetKq(0.0075f);
-
-			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
-				InMaterial->SetMaterialType(EMaterialType::BaseColor);
-				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
-
-				InMaterial->SetRoughness(1.0f);
-			}*/
+			SpotLight->SetKl(0.022f);
+			SpotLight->SetKq(0.0019f);
 		}
 
 		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())

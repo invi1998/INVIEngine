@@ -431,8 +431,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     // 最终颜色贡献
 	// material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     mvOut.Color = material.BaseColor * LightStrength // 漫反射
-        + material.BaseColor * AmbientLight * LightStrength // 间接光（环境光）
-        + material.BaseColor * Specular; // 高光
+        + material.BaseColor * Specular * LightStrength // 高光
+        + material.BaseColor * AmbientLight;  // 间接光（环境光）
 
     // 伽马校正
     // mvOut.Color = sqrt(mvOut.Color);

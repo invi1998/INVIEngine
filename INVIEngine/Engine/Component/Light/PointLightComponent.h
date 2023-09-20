@@ -1,12 +1,13 @@
 #pragma once
+
 #include "EngineMinimal.h"
 #include "Core/LightComponent.h"
 
-class CSpotLightComponent : public CLightComponent
+class CPointLightComponent : public CLightComponent
 {
 public:
-	CSpotLightComponent();
-	~CSpotLightComponent() override;
+	CPointLightComponent();
+	~CPointLightComponent() override;
 
 public:
 	void SetStartAttenuation(float Start);
