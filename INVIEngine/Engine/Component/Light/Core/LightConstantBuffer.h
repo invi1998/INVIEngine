@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "EngineMinimal.h"
 
@@ -6,23 +6,28 @@ struct FLight
 {
     FLight();
 
-    XMFLOAT3 LightIntensity;  // ¹âÕÕÇ¿¶È
-    float StartAttenuation; // ¿ªÊ¼Ë¥¼õ
+    XMFLOAT3 LightIntensity;  // å…‰ç…§å¼ºåº¦
+    float StartAttenuation; // å¼€å§‹è¡°å‡
 
-    XMFLOAT3 LightDirection;  // ¹âÕÕ·½Ïò
-    float EndAttenuation;   // ½áÊøË¥¼õ
+    XMFLOAT3 LightDirection;  // å…‰ç…§æ–¹å‘
+    float EndAttenuation;   // ç»“æŸè¡°å‡
 
-    XMFLOAT3 LightPosition;    // µÆ¹âÎ»ÖÃ
-    int LightType;          // µÆ¹âÀàĞÍ
+    XMFLOAT3 LightPosition;    // ç¯å…‰ä½ç½®
+    int LightType;          // ç¯å…‰ç±»å‹
 
-    float Kc;               // ·ÇÏßĞÔË¥¼õ³£ÊıÏî
-    float Kl;               // ·ÇÏßĞÔË¥¼õÒ»´ÎÏî
-    float Kq;               // ·ÇÏßĞÔË¥¼õ¶ş´ÎÏî
+    float Kc;               // éçº¿æ€§è¡°å‡å¸¸æ•°é¡¹
+    float Kl;               // éçº¿æ€§è¡°å‡ä¸€æ¬¡é¡¹
+    float Kq;               // éçº¿æ€§è¡°å‡äºŒæ¬¡é¡¹
 
-    float xxs;
+    float SpotInnerCornerPhi;          // æŒ‡å®šäº†èšå…‰åŠå¾„çš„åˆ‡å…‰è§’ã€‚è½åœ¨è¿™ä¸ªè§’åº¦ä¹‹å¤–çš„ç‰©ä½“éƒ½ä¸ä¼šè¢«è¿™ä¸ªèšå…‰æ‰€ç…§äº®ã€‚
+    float SpotOuterCornerTheta;        // LightDirå‘é‡å’ŒSpotDirå‘é‡ä¹‹é—´çš„å¤¹è§’ã€‚åœ¨èšå…‰å†…éƒ¨çš„è¯Î¸å€¼åº”è¯¥æ¯”Ï•å€¼å°
+
+    float xxs1;
+    float xxs2;
+    float xxs3;
 };
 
-// µÆ¹â³£Á¿»º³åÇø
+// ç¯å…‰å¸¸é‡ç¼“å†²åŒº
 struct FLightConstantBuffer
 {
 	FLightConstantBuffer();

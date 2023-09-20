@@ -2,9 +2,12 @@
 
 #include "Component/Light/SpotLightComponent.h"
 
+static float index_test = 0.f;
+
 GSpotLight::GSpotLight()
 {
 	CLight::SetLightComponent(CreateObject<CSpotLightComponent>(new CSpotLightComponent()));
+	index_test = 0.f;
 }
 
 GSpotLight::~GSpotLight()
@@ -20,101 +23,53 @@ void GSpotLight::Tick(float DeltaTime)
 {
 	CLight::Tick(DeltaTime);
 
-	//XMFLOAT3 v3 = GetRotation();
+	index_test += DeltaTime;
 
-	//v3.x += DeltaTime * 40.f;
-	//v3.y += DeltaTime * 40.f;
+	float O = 50.f;
+	float I = 30.f;
+
+	SetConicalInnerCorner(I * fabsf(cos(index_test)) + 10.f);
+	SetConicalOuterCorner(O * fabsf(cos(index_test)) + 20.f);
+
+	XMFLOAT3 v3 = GetRotation();
+	v3.x += DeltaTime * 40.f;
+	v3.y += DeltaTime * 40.f;
 	////v3.z += DeltaTime * 100.f;
 
-	//SetRotation(fvector_3d(v3.x, v3.y, v3.z));
+	SetRotation(fvector_3d(v3.x, v3.y, v3.z));
 }
 
-void GSpotLight::SetStartAttenuation(float Start)
+float GSpotLight::GetConicalInnerCorner() const
 {
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	if (const auto SpotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
 	{
-		spotLightComponent->SetStartAttenuation(Start);
+		return SpotLightComponent->GetSpotInnerCornerPhi();
 	}
-}
-
-void GSpotLight::SetEndAttenuation(float end)
-{
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
-	{
-		spotLightComponent->SetEndAttenuation(end);
-	}
-}
-
-void GSpotLight::SetKc(float c)
-{
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
-	{
-		spotLightComponent->SetKc(c);
-	}
-}
-
-void GSpotLight::SetKl(float l)
-{
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
-	{
-		spotLightComponent->SetKl(l);
-	}
-}
-
-void GSpotLight::SetKq(float q)
-{
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
-	{
-		spotLightComponent->SetKq(q);
-	}
-}
-
-float GSpotLight::GetStartAttenuation() const
-{
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
-	{
-		return spotLightComponent->GetStartAttenuation();
-	}
-
 	return 0.f;
 }
 
-float GSpotLight::GetEndAttenuation() const
+float GSpotLight::GetConicalOuterCorner() const
 {
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	if (const auto SpotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
 	{
-		return spotLightComponent->GetEndAttenuation();
+		return SpotLightComponent->GetSpotOuterCornerTheta();
 	}
-
 	return 0.f;
 }
 
-float GSpotLight::GetKc() const
+void GSpotLight::SetConicalInnerCorner(float InConicalInnerCorner)
 {
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	if (const auto SpotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
 	{
-		return spotLightComponent->GetKc();
+		return SpotLightComponent->SetSpotInnerCornerPhi(InConicalInnerCorner);
 	}
-
-	return 0.f;
 }
 
-float GSpotLight::GetKl() const
+void GSpotLight::SetConicalOuterCorner(float InConicalOuterCorner)
 {
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
+	if (const auto SpotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
 	{
-		return spotLightComponent->GetKl();
+		return SpotLightComponent->SetSpotOuterCornerTheta(InConicalOuterCorner);
 	}
-
-	return 0.f;
 }
 
-float GSpotLight::GetKq() const
-{
-	if (CSpotLightComponent* spotLightComponent = dynamic_cast<CSpotLightComponent*>(GetLightComponent()))
-	{
-		return spotLightComponent->GetKq();
-	}
-
-	return 0.f;
-}

@@ -164,6 +164,10 @@ int CDirectXRenderingEngine::PostInit()
 			SpotLight->SetKc(1.f);
 			SpotLight->SetKl(0.022f);
 			SpotLight->SetKq(0.0019f);
+
+			SpotLight->SetConicalInnerCorner(10.f);
+			SpotLight->SetConicalOuterCorner(25.f);
+
 		}
 
 		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())

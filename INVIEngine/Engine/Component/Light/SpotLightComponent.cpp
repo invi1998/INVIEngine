@@ -4,7 +4,7 @@
 #include "Material/Core/MaterialType.h"
 #include "Mesh/Core/MeshManager.h"
 
-CSpotLightComponent::CSpotLightComponent(): CLightComponent()
+CSpotLightComponent::CSpotLightComponent(): CRangeLightComponent()
 {
 	// 读取点光模型
 	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/SpotMesh.obj"));
@@ -20,34 +20,46 @@ CSpotLightComponent::CSpotLightComponent(): CLightComponent()
 		}
 	}
 
-	LightType = ELightType::PointLight;
+	LightType = ELightType::SpotLight;
 }
 
 CSpotLightComponent::~CSpotLightComponent()
 {
 }
 
-void CSpotLightComponent::SetStartAttenuation(float Start)
+float CSpotLightComponent::GetSpotInnerCornerPhi() const
 {
-	StartAttenuation = Start;
+	return SpotInnerCornerPhi;
 }
 
-void CSpotLightComponent::SetEndAttenuation(float end)
+float CSpotLightComponent::GetSpotOuterCornerTheta() const
 {
-	EndAttenuation = end;
+	return SpotOuterCornerTheta;
 }
 
-void CSpotLightComponent::SetKc(float c)
+void CSpotLightComponent::SetSpotInnerCornerPhi(float phi)
 {
-	Kc = c;
+	if (SpotOuterCornerTheta < phi)
+	{
+		SpotOuterCornerTheta = phi;
+		SpotInnerCornerPhi = phi;
+	}
+	else if (SpotOuterCornerTheta > phi)
+	{
+		SpotInnerCornerPhi = phi;
+	}
 }
 
-void CSpotLightComponent::SetKl(float l)
+void CSpotLightComponent::SetSpotOuterCornerTheta(float theta)
 {
-	Kl = l;
+	if (SpotInnerCornerPhi > theta)
+	{
+		SpotOuterCornerTheta = theta;
+		SpotInnerCornerPhi = theta;
+	}
+	else if (SpotInnerCornerPhi < theta)
+	{
+		SpotOuterCornerTheta = theta;
+	}
 }
 
-void CSpotLightComponent::SetKq(float q)
-{
-	Kq = q;
-}

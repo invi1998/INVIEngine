@@ -2,9 +2,9 @@
 
 #include "EngineMinimal.h"
 
-#include "Core/Light.h"
+#include "Core/RangeLight.h"
 
-class GSpotLight : public CLight
+class GSpotLight : public GRangeLight
 {
 public:
 	GSpotLight();
@@ -13,18 +13,10 @@ public:
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
 
-public:
-	void SetStartAttenuation(float Start);
-	void SetEndAttenuation(float end);
-	void SetKc(float c);
-	void SetKl(float l);
-	void SetKq(float q);
+	float GetConicalInnerCorner() const;
+	float GetConicalOuterCorner() const;
 
-	float GetStartAttenuation() const;
-	float GetEndAttenuation() const;
-	float GetKc() const;
-	float GetKl() const;
-	float GetKq() const;
-
+	void SetConicalInnerCorner(float InConicalInnerCorner);
+	void SetConicalOuterCorner(float InConicalOuterCorner);
 };
 

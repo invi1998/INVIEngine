@@ -5,7 +5,7 @@
 #include "Mesh/Core/MeshManager.h"
 
 CPointLightComponent::CPointLightComponent()
-	: CLightComponent()
+	: CRangeLightComponent()
 {
 	// 读取点光模型
 	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/PointMesh.obj"));
@@ -26,30 +26,5 @@ CPointLightComponent::CPointLightComponent()
 
 CPointLightComponent::~CPointLightComponent()
 {
-}
-
-void CPointLightComponent::SetStartAttenuation(float Start)
-{
-	StartAttenuation = Start;
-}
-
-void CPointLightComponent::SetEndAttenuation(float end)
-{
-	EndAttenuation = end;
-}
-
-void CPointLightComponent::SetKc(float c)
-{
-	Kc = c;
-}
-
-void CPointLightComponent::SetKl(float l)
-{
-	Kl = l;
-}
-
-void CPointLightComponent::SetKq(float q)
-{
-	Kq = q;
 }
 

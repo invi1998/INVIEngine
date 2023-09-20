@@ -1,32 +1,22 @@
-#pragma once
+ï»¿#pragma once
 #include "EngineMinimal.h"
 #include "Core/LightComponent.h"
+#include "Core/RangeLightComponent.h"
 
-class CSpotLightComponent : public CLightComponent
+class CSpotLightComponent : public CRangeLightComponent
 {
 public:
 	CSpotLightComponent();
 	~CSpotLightComponent() override;
 
-public:
-	void SetStartAttenuation(float Start);
-	void SetEndAttenuation(float end);
-	void SetKc(float c);
-	void SetKl(float l);
-	void SetKq(float q);
+	float GetSpotInnerCornerPhi() const;
+	float GetSpotOuterCornerTheta() const;
 
-	float GetStartAttenuation() const { return StartAttenuation; }
-	float GetEndAttenuation() const { return EndAttenuation; }
-	float GetKc() const { return Kc; }
-	float GetKl() const { return Kl; }
-	float GetKq() const { return Kq; }
+	void SetSpotInnerCornerPhi(float phi);
+	void SetSpotOuterCornerTheta(float theta);
 
-protected:
-	float StartAttenuation; // ¿ªÊ¼Ë¥¼õ
-	float EndAttenuation;   // ½áÊøË¥¼õ
-
-	float Kc;               // ·ÇÏßĞÔË¥¼õ³£ÊıÏî
-	float Kl;               // ·ÇÏßĞÔË¥¼õÒ»´ÎÏî
-	float Kq;               // ·ÇÏßĞÔË¥¼õ¶ş´ÎÏî
+private:
+	float SpotInnerCornerPhi;		// æŒ‡å®šäº†èšå…‰åŠå¾„çš„åˆ‡å…‰è§’ã€‚è½åœ¨è¿™ä¸ªè§’åº¦ä¹‹å¤–çš„ç‰©ä½“éƒ½ä¸ä¼šè¢«è¿™ä¸ªèšå…‰æ‰€ç…§äº®ã€‚
+	float SpotOuterCornerTheta;		// LightDirå‘é‡å’ŒSpotDirå‘é‡ä¹‹é—´çš„å¤¹è§’ã€‚åœ¨èšå…‰å†…éƒ¨çš„è¯Î¸å€¼åº”è¯¥æ¯”Ï•å€¼å°
 };
 

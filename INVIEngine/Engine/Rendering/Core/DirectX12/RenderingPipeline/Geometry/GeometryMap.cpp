@@ -255,21 +255,19 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			LightConstantBuffer.SceneLights[i].LightIntensity = lightComponent->GetLightIntensity();
 			LightConstantBuffer.SceneLights[i].LightType = static_cast<int>(lightComponent->GetLightType());
 			LightConstantBuffer.SceneLights[i].LightPosition = lightComponent->GetPosition();
-			if (auto pointLightComponent = dynamic_cast<CPointLightComponent*>(lightComponent))
+
+			if (auto rangeLightComponent = dynamic_cast<CRangeLightComponent*>(lightComponent))
 			{
-				LightConstantBuffer.SceneLights[i].StartAttenuation = pointLightComponent->GetStartAttenuation();
-				LightConstantBuffer.SceneLights[i].EndAttenuation = pointLightComponent->GetEndAttenuation();
-				LightConstantBuffer.SceneLights[i].Kc = pointLightComponent->GetKc();
-				LightConstantBuffer.SceneLights[i].Kl = pointLightComponent->GetKl();
-				LightConstantBuffer.SceneLights[i].Kq = pointLightComponent->GetKq();
+				LightConstantBuffer.SceneLights[i].StartAttenuation = rangeLightComponent->GetStartAttenuation();
+				LightConstantBuffer.SceneLights[i].EndAttenuation = rangeLightComponent->GetEndAttenuation();
+				LightConstantBuffer.SceneLights[i].Kc = rangeLightComponent->GetKc();
+				LightConstantBuffer.SceneLights[i].Kl = rangeLightComponent->GetKl();
+				LightConstantBuffer.SceneLights[i].Kq = rangeLightComponent->GetKq();
 			}
-			else if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
+			if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
 			{
-				LightConstantBuffer.SceneLights[i].StartAttenuation = spotLightComponent->GetStartAttenuation();
-				LightConstantBuffer.SceneLights[i].EndAttenuation = spotLightComponent->GetEndAttenuation();
-				LightConstantBuffer.SceneLights[i].Kc = spotLightComponent->GetKc();
-				LightConstantBuffer.SceneLights[i].Kl = spotLightComponent->GetKl();
-				LightConstantBuffer.SceneLights[i].Kq = spotLightComponent->GetKq();
+				LightConstantBuffer.SceneLights[i].SpotInnerCornerPhi = spotLightComponent->GetSpotInnerCornerPhi();
+				LightConstantBuffer.SceneLights[i].SpotOuterCornerTheta = spotLightComponent->GetSpotOuterCornerTheta();
 			}
 		}
 	}

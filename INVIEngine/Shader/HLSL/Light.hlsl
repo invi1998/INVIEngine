@@ -1,19 +1,49 @@
-
+ï»¿
 struct Light
 {
-    float3 LightIntensity;  // ¹âÕÕÇ¿¶È
-    float StartAttenuation; // ¿ªÊ¼Ë¥¼õ
-    float3 LightDirection;  // ¹âÕÕ·½Ïò
-    float EndAttenuation;   // ½áÊøË¥¼õ
-    float3 LightPosition;    // µÆ¹âÎ»ÖÃ
-    int LightType;          // µÆ¹âÀàĞÍ
-    float Kc;               // ·ÇÏßĞÔË¥¼õ³£ÊıÏî
-    float Kl;               // ·ÇÏßĞÔË¥¼õÒ»´ÎÏî
-    float Kq;               // ·ÇÏßĞÔË¥¼õ¶ş´ÎÏî
-    float xxs;
+    float3 LightIntensity;  // å…‰ç…§å¼ºåº¦
+    float StartAttenuation; // å¼€å§‹è¡°å‡
+    float3 LightDirection;  // å…‰ç…§æ–¹å‘
+    float EndAttenuation;   // ç»“æŸè¡°å‡
+    float3 LightPosition;    // ç¯å…‰ä½ç½®
+    int LightType;          // ç¯å…‰ç±»å‹
+    float Kc;               // éçº¿æ€§è¡°å‡å¸¸æ•°é¡¹
+    float Kl;               // éçº¿æ€§è¡°å‡ä¸€æ¬¡é¡¹
+    float Kq;               // éçº¿æ€§è¡°å‡äºŒæ¬¡é¡¹
+    float SpotInnerCornerPhi;   // æŒ‡å®šäº†èšå…‰åŠå¾„çš„åˆ‡å…‰è§’ã€‚è½åœ¨è¿™ä¸ªè§’åº¦ä¹‹å¤–çš„ç‰©ä½“éƒ½ä¸ä¼šè¢«è¿™ä¸ªèšå…‰æ‰€ç…§äº®ã€‚
+    float SpotOuterCornerTheta; // LightDirå‘é‡å’ŒSpotDirå‘é‡ä¹‹é—´çš„å¤¹è§’ã€‚åœ¨èšå…‰å†…éƒ¨çš„è¯Î¸å€¼åº”è¯¥æ¯”Ï•å€¼å°
+    float xxs1;
+    float xxs2;
+    float xxs3;
 };
 
-// ¹âÏßË¥¼õ¼ÆËã·½Ê½1 (ÏßĞÔË¥¼õ£©
+float3 GetLightDirection(Light L, float3 WorldLocation)
+{
+    float3 Direction;
+    if (L.LightType == 0)
+    {
+		// å¹³è¡Œå…‰
+        Direction = -L.LightDirection;
+
+    }
+    else if (L.LightType == 1)
+    {
+	    // ç‚¹å…‰
+        Direction = L.LightPosition - WorldLocation;
+       
+    }
+    else if (L.LightType == 2)
+    {
+	    // èšå…‰
+        Direction = L.LightPosition - WorldLocation;
+       
+    }
+
+    return Direction;
+}
+
+
+// å…‰çº¿è¡°å‡è®¡ç®—æ–¹å¼1 (çº¿æ€§è¡°å‡ï¼‰
 float4 AttenuationPointLight(Light L, float LightDistence, float4 LightStrenth)
 {
     float AttenuationRange = L.EndAttenuation - L.StartAttenuation;
@@ -21,8 +51,8 @@ float4 AttenuationPointLight(Light L, float LightDistence, float4 LightStrenth)
     return LightStrenth;
 }
 
-// ¹âÏßË¥¼õ¼ÆËã·½Ê½2 (·ÇÏßĞÔÆ½»¬Ë¥¼õ£©
-// ³£ÊıÏîKc¡¢Ò»´ÎÏîKl¡¢¶ş´ÎÏîKq
+// å…‰çº¿è¡°å‡è®¡ç®—æ–¹å¼2 (éçº¿æ€§å¹³æ»‘è¡°å‡ï¼‰
+// å¸¸æ•°é¡¹Kcã€ä¸€æ¬¡é¡¹Klã€äºŒæ¬¡é¡¹Kq
 float4 AttenuationPointLightCLQ(Light L, float LightDistence, float4 LightStrenth)
 {
     return (1.f / (L.Kc + L.Kl * LightDistence + L.Kq * pow(LightDistence, 2.f))) * LightStrenth;
@@ -30,14 +60,14 @@ float4 AttenuationPointLightCLQ(Light L, float LightDistence, float4 LightStrent
 
 float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, float3 LightDirection)
 {
-    float4 LightStrenth = float4(L.LightIntensity, 1.f);
+    float4 LightStrenth = float4(1.f, 1.f, 1.f, 1.f) * float4(L.LightIntensity, 1.f);
 	if (L.LightType == 0)
 	{
-		// Æ½ĞĞ¹â
+		// å¹³è¡Œå…‰
 	}
     else if(L.LightType == 1)
     {
-	    // µã¹â
+	    // ç‚¹å…‰
 
         float3 LightVector = L.LightPosition - WorldLocation;
         
@@ -45,8 +75,8 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
 
         if (LightDistence < L.EndAttenuation)
         {
-            // LightStrenth = AttenuationPointLight(L, LightDistence, LightStrenth);        // ÏßĞÔË¥¼õ
-            LightStrenth = AttenuationPointLightCLQ(L, LightDistence, LightStrenth);        // ·ÇÏßĞÔË¥¼õ
+            // LightStrenth = AttenuationPointLight(L, LightDistence, LightStrenth);        // çº¿æ€§è¡°å‡
+            LightStrenth = AttenuationPointLightCLQ(L, LightDistence, LightStrenth);        // éçº¿æ€§è¡°å‡
         }
         else
         {
@@ -54,29 +84,35 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
 
         }
     }
+    else if (L.LightType == 2)
+    {
+	    // èšå…‰ç¯
+        float3 LightVector = L.LightPosition - WorldLocation;
+        float LightDistence = length(LightVector);
+
+        if (LightDistence < L.EndAttenuation)
+        {
+            float DotValue = max(dot(LightDirection, L.LightDirection), 0.f);
+
+            float Theta = acos(DotValue);
+            if (Theta == 0.f)
+            {
+                return LightStrenth;
+            }
+            else if (Theta <= L.SpotOuterCornerTheta)
+            {
+                return LightStrenth;
+            }
+            else if (Theta <= L.SpotInnerCornerPhi)
+            {
+                LightStrenth = AttenuationPointLightCLQ(L, LightDistence, LightStrenth); // éçº¿æ€§è¡°å‡
+            }
+        }
+        
+    }
 
     return LightStrenth;
 
-}
-
-
-float3 GetLightDirection(Light L, float3 WorldLocation)
-{
-    float3 Direction;
-    if (L.LightType == 0)
-    {
-		// Æ½ĞĞ¹â
-        Direction = -L.LightDirection;
-
-    }
-    else if (L.LightType == 1)
-    {
-	    // µã¹â
-        Direction = L.LightPosition - WorldLocation;
-       
-    }
-
-    return Direction;
 }
 
 
