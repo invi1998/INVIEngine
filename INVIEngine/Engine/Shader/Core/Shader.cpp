@@ -33,6 +33,7 @@ void FShader::BuildShader(const std::wstring& InFileName, const std::string& InE
 
     if (ErrorShaderMsg)
     {
+        std::cout << "shader±àÒë´íÎó" << ErrorShaderMsg->GetBufferPointer() << std::endl;
         ENGINE_LOG_ERROR("shader±àÒë´íÎó£¬%s", static_cast<char*>(ErrorShaderMsg->GetBufferPointer()));
     }
 

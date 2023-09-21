@@ -46,31 +46,31 @@ public:
 
 	fmatrix_4x4 operator*=(const fmatrix_4x4& a)
 	{
-		*this = *this * a;
+		return *this * a;
 	}
 
 	fmatrix_4x4 operator*(const fmatrix_4x4& a)const
 	{
 		return fmatrix_4x4(
-			m11 * a.m11 + m12 * a.m12 + m13 * a.m13 + m14 * a.m14,
-			m11 * a.m21 + m12 * a.m22 + m13 * a.m23 + m14 * a.m24,
-			m11 * a.m31 + m12 * a.m32 + m13 * a.m33 + m14 * a.m34,
-			m11 * a.m41 + m12 * a.m42 + m13 * a.m43 + m14 * a.m44,
+			m11 * a.m11 + m12 * a.m21 + m13 * a.m31 + m14 * a.m41,
+			m11 * a.m12 + m12 * a.m22 + m13 * a.m32 + m14 * a.m42,
+			m11 * a.m13 + m12 * a.m23 + m13 * a.m33 + m14 * a.m43,
+			m11 * a.m14 + m12 * a.m24 + m13 * a.m34 + m14 * a.m44,
 			
-			m21* a.m11 + m22 * a.m12 + m23 * a.m13 + m24 * a.m14,
-			m21* a.m21 + m22 * a.m22 + m23 * a.m23 + m24 * a.m24,
-			m21* a.m31 + m22 * a.m32 + m23 * a.m33 + m24 * a.m34,
-			m21* a.m41 + m22 * a.m42 + m23 * a.m43 + m24 * a.m44,
+			m21* a.m11 + m22 * a.m21 + m23 * a.m31 + m24 * a.m41,
+			m21* a.m12 + m22 * a.m22 + m23 * a.m32 + m24 * a.m42,
+			m21* a.m13 + m22 * a.m23 + m23 * a.m33 + m24 * a.m43,
+			m21* a.m14 + m22 * a.m24 + m23 * a.m34 + m24 * a.m44,
 			
-			m31* a.m11 + m32 * a.m12 + m33 * a.m13 + m34 * a.m14,
-			m31* a.m21 + m32 * a.m22 + m33 * a.m23 + m34 * a.m24,
-			m31* a.m31 + m32 * a.m32 + m33 * a.m33 + m34 * a.m34,
-			m31* a.m41 + m32 * a.m42 + m33 * a.m43 + m34 * a.m44,
+			m31* a.m11 + m32 * a.m21 + m33 * a.m31 + m34 * a.m41,
+			m31* a.m12 + m32 * a.m22 + m33 * a.m32 + m34 * a.m42,
+			m31* a.m13 + m32 * a.m23 + m33 * a.m33 + m34 * a.m43,
+			m31* a.m14 + m32 * a.m24 + m33 * a.m34 + m34 * a.m44,
 		
-			m41* a.m11 + m42 * a.m12 + m43 * a.m13 + m44 * a.m14,
-			m41* a.m21 + m42 * a.m22 + m43 * a.m23 + m44 * a.m24,
-			m41* a.m31 + m42 * a.m32 + m43 * a.m33 + m44 * a.m34,
-			m41* a.m41 + m42 * a.m42 + m43 * a.m43 + m44 * a.m44);
+			m41* a.m11 + m42 * a.m21 + m43 * a.m31 + m44 * a.m41,
+			m41* a.m12 + m42 * a.m22 + m43 * a.m32 + m44 * a.m42,
+			m41* a.m13 + m42 * a.m23 + m43 * a.m33 + m44 * a.m43,
+			m41* a.m14 + m42 * a.m24 + m43 * a.m34 + m44 * a.m44);
 	}
 
 	//ÐÐÁÐÊ½

@@ -19,6 +19,9 @@ namespace math_utils
 	fvector_3d mul(const fvector_3d &in_3d, const fmatrix_3x3& in_matrix_3x3);
 	fvector_4d mul(const fvector_4d &in_3d, const fmatrix_4x4& in_matrix_3x3);
 
+	float angle_to_radian(float angle);
+	float radian_to_angle(float radian);
+
 	//矩阵旋转
 	void rot_radian(float in_radian, fmatrix_3x3& in_world_matrix_3x3);
 	void rot_angle(float in_angle, fmatrix_3x3& in_world_matrix_3x3);
@@ -34,5 +37,11 @@ namespace math_utils
 	//看向目标
 	fmatrix_4x4 matrix_look_at_target(const fvector_4d &in_view_pos, const fvector_4d& in_target_pos, const fvector_4d& in_view_up);
 
-	fmatrix_4x4 build_view_matrix(const fvector_4d& in_view_pos,const fmatrix_4x4 &in_view_matrix);
+	//构建透视矩阵
+	fmatrix_4x4 build_view_matrix(const fvector_4d& in_view_pos, const fmatrix_4x4& in_view_matrix);
+
+	//旋转
+	fmatrix_4x4 matrix_rotation_y(const float angle);
+	fmatrix_4x4 matrix_rotation_x(const float angle);
+	fmatrix_4x4 matrix_rotation_z(const float angle);
 }

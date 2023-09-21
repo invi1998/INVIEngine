@@ -39,6 +39,16 @@ namespace math_utils
             in_3d.w * in_matrix_3x3.m44);
     }
 
+    float angle_to_radian(float angle)
+    {
+        return angle * 0.0174;//angle * (¦Ð / 180£©= radian
+    }
+
+    float radian_to_angle(float radian)
+    {
+        return radian * 57.3;//radian * (180/¦Ð£©= angle
+    }
+
     void rot_radian(float in_radian, fmatrix_3x3& in_world_matrix_3x3)
     {
         //Ðý×ª¾ØÕó
@@ -133,10 +143,10 @@ namespace math_utils
 
     fmatrix_4x4 build_view_matrix(const fvector_4d& in_view_pos, const fmatrix_4x4& in_view_matrix)
     {
-        fvector_4d u = fvector_4d(in_view_matrix.m11, in_view_matrix.m21, in_view_matrix.m31,1.f);
-        fvector_4d v = fvector_4d(in_view_matrix.m12, in_view_matrix.m22, in_view_matrix.m32,1.f);
-        fvector_4d n = fvector_4d(in_view_matrix.m13, in_view_matrix.m23, in_view_matrix.m33,1.f);
-        
+        fvector_4d u = fvector_4d(in_view_matrix.m11, in_view_matrix.m21, in_view_matrix.m31, 1.f);
+        fvector_4d v = fvector_4d(in_view_matrix.m12, in_view_matrix.m22, in_view_matrix.m32, 1.f);
+        fvector_4d n = fvector_4d(in_view_matrix.m13, in_view_matrix.m23, in_view_matrix.m33, 1.f);
+
         return fmatrix_4x4(
             u.x, v.x, n.x, 0.f,
             u.y, v.y, n.y, 0.f,
@@ -144,5 +154,35 @@ namespace math_utils
             -fvector_4d::dot(u, in_view_pos),
             -fvector_4d::dot(v, in_view_pos),
             -fvector_4d::dot(n, in_view_pos), 1.f);
+    }
+    fmatrix_4x4 matrix_rotation_y(const float angle)
+    {
+        float radian = angle_to_radian(angle);
+
+        return fmatrix_4x4(
+            cos(radian),    0.f,            sin(radian),   0.f,
+            0.f,            1.f,            0.f,            0.f,
+            -sin(radian),   0.f,            cos(radian),    0.f,
+            0.f,            0.f,            0.f,            1.f);
+    }
+    fmatrix_4x4 matrix_rotation_x(const float angle)
+    {
+        float radian = angle_to_radian(angle);
+        
+        return fmatrix_4x4(
+        1.f,            0.f,            0.f,           0.f,
+        0.f,            cos(radian),    -sin(radian),  0.f,
+        0.f,            sin(radian),    cos(radian),   0.f,
+        0.f,            0.f,            0.f,           1.f);
+    }
+    fmatrix_4x4 matrix_rotation_z(const float angle)
+    {
+        float radian = angle_to_radian(angle);
+
+        return fmatrix_4x4(
+            cos(radian),    -sin(radian),   0.f,    0.f,
+            sin(radian),    cos(radian),    0.f,    0.f,
+            0.f,            0.f,            1.f,    0.f, 
+            0.f,            0.f,            0.f,    1.f);
     }
 }

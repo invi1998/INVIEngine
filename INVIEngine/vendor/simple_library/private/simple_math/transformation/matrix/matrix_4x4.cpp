@@ -62,7 +62,7 @@ fmatrix_4x4 fmatrix_4x4::identity()
 }
 
 void fmatrix_4x4::transpose()
-{
+ {
     *this = to_transpose();
 }
 

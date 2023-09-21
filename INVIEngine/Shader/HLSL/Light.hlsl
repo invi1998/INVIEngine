@@ -3,14 +3,18 @@ struct Light
 {
     float3 LightIntensity;  // 光照强度
     float StartAttenuation; // 开始衰减
+
     float3 LightDirection;  // 光照方向
     float EndAttenuation;   // 结束衰减
+
     float3 LightPosition;    // 灯光位置
     int LightType;          // 灯光类型
+
     float Kc;               // 非线性衰减常数项
     float Kl;               // 非线性衰减一次项
     float Kq;               // 非线性衰减二次项
-    float SpotInnerCornerPhi;   // 指定了聚光半径的切光角。落在这个角度之外的物体都不会被这个聚光所照亮。
+    float SpotInnerCornerPhi; // 指定了聚光半径的切光角。落在这个角度之外的物体都不会被这个聚光所照亮。
+
     float SpotOuterCornerTheta; // LightDir向量和SpotDir向量之间的夹角。在聚光内部的话θ值应该比ϕ值小
     float xxs1;
     float xxs2;
@@ -24,21 +28,17 @@ float3 GetLightDirection(Light L, float3 WorldLocation)
     {
 		// 平行光
         Direction = -L.LightDirection;
-
     }
     else if (L.LightType == 1)
     {
 	    // 点光
         Direction = L.LightPosition - WorldLocation;
-       
     }
     else if (L.LightType == 2)
     {
 	    // 聚光
         Direction = L.LightPosition - WorldLocation;
-       
     }
-
     return Direction;
 }
 
@@ -81,7 +81,6 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
         else
         {
             LightStrenth = float4(0.f, 0.f, 0.f, 1.f);
-
         }
     }
     else if (L.LightType == 2)
@@ -99,20 +98,15 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
             {
                 return LightStrenth;
             }
-            else if (Theta <= L.SpotOuterCornerTheta)
+            else if (Theta <= L.SpotInnerCornerPhi)
             {
                 return LightStrenth;
             }
-            else if (Theta <= L.SpotInnerCornerPhi)
+            else if (Theta <= L.SpotOuterCornerTheta)
             {
                 LightStrenth = AttenuationPointLightCLQ(L, LightDistence, LightStrenth); // 非线性衰减
             }
         }
-        
     }
-
     return LightStrenth;
-
 }
-
-
