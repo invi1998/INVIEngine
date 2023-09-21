@@ -266,8 +266,8 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			}
 			if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
 			{
-				LightConstantBuffer.SceneLights[i].SpotInnerCornerPhi = spotLightComponent->GetSpotInnerCornerPhi();
-				LightConstantBuffer.SceneLights[i].SpotOuterCornerTheta = spotLightComponent->GetSpotOuterCornerTheta();
+				LightConstantBuffer.SceneLights[i].SpotInnerCornerPhi = math_utils::angle_to_radian(spotLightComponent->GetSpotInnerCornerPhi());
+				LightConstantBuffer.SceneLights[i].SpotOuterCornerTheta = math_utils::angle_to_radian(spotLightComponent->GetSpotOuterCornerTheta());
 			}
 		}
 	}
