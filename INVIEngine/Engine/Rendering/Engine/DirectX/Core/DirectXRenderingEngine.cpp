@@ -166,7 +166,7 @@ int CDirectXRenderingEngine::PostInit()
 			SpotLight->SetKq(0.0019f);
 
 			SpotLight->SetConicalInnerCorner(10.f);
-			SpotLight->SetConicalOuterCorner(25.f);
+			SpotLight->SetConicalOuterCorner(15.f);
 
 		}
 
