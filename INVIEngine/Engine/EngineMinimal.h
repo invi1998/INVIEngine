@@ -14,6 +14,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 #include "Rendering/DirectX12/d3dx12.h"
+#include "Rendering/DirectX12/DDSTextureLoader.h"
 #include "Debug/EngineDebug.h"
 #include "Math/EngineMath.h"
 #include "Component/Input/Input.h"
