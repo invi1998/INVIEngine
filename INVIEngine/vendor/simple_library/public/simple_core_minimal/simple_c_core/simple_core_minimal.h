@@ -48,5 +48,8 @@
 #include <wchar.h>
 #include <process.h>
 #include <shellapi.h>
+#include <corecrt_wstring.h>
 
-#define SIMPLE_C_BUFF_SIZE 1024 //如果嫌小就给大点
+//#include <array>
+
+#define SIMPLE_C_BUFF_SIZE 2024 //如果嫌小就给大点
