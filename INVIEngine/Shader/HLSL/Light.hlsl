@@ -56,13 +56,14 @@ float4 AttenuationPointLightCLQ(Light L, float LightDistence, float4 LightStrent
     return (1.f / (L.Kc + L.Kl * LightDistence + L.Kq * pow(LightDistence, 2.f))) * LightStrenth;
 }
 
-float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, float3 LightDirection)
+float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, float3 NormalizeLightDirection)
 {
     float4 LightStrenth = float4(1.f, 1.f, 1.f, 1.f) * float4(L.LightIntensity, 1.f);
 	if (L.LightType == 0)
 	{
 		// 平行光
-	}
+        return LightStrenth;
+    }
     else if(L.LightType == 1)
     {
 	    // 点光
@@ -74,12 +75,9 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
         if (LightDistence < L.EndAttenuation)
         {
             // LightStrenth = AttenuationPointLight(L, LightDistence, LightStrenth);        // 线性衰减
-            LightStrenth = AttenuationPointLightCLQ(L, LightDistence, LightStrenth);        // 非线性衰减
+            return AttenuationPointLightCLQ(L, LightDistence, LightStrenth); // 非线性衰减
         }
-        else
-        {
-            LightStrenth = float4(0.f, 0.f, 0.f, 1.f);
-        }
+    	return float4(0.f, 0.f, 0.f, 1.f);
     }
     else if (L.LightType == 2)
     {
@@ -89,18 +87,14 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
 
         if (LightDistence < L.EndAttenuation)
         {
-            float DotValue = max(dot(normalize(LightDirection), normalize(-L.LightDirection)), 0.f);
+            float DotValue = max(dot(NormalizeLightDirection, L.LightDirection), 0.f);
 
             float Theta = acos(DotValue);   // 算出角度
-            if (Theta == 0.f)
+            if (Theta <= L.SpotInnerCornerPhi)
             {
                 return LightStrenth;
             }
-            else if (Theta <= L.SpotInnerCornerPhi)
-            {
-                return LightStrenth;
-            }
-            else if (Theta <= L.SpotOuterCornerTheta)
+            if (Theta <= L.SpotOuterCornerTheta && Theta > L.SpotInnerCornerPhi)
             {
                 float OuterInnerDistance = L.SpotOuterCornerTheta - L.SpotInnerCornerPhi;
                 float CurrentDistance = OuterInnerDistance - (Theta - L.SpotInnerCornerPhi);
@@ -110,5 +104,5 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
             }
         }
     }
-    return LightStrenth;
+    return float4(0.f, 0.f, 0.f, 1.f);
 }
