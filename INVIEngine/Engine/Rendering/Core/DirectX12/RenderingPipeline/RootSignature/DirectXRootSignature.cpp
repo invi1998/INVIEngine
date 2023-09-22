@@ -87,7 +87,8 @@ void FDirectXRootSignature::BuildRootSignature()
 	SamplerDesc.push_back(
 		CD3DX12_STATIC_SAMPLER_DESC(
 			0,			// 指定寄存器编号
-			));
+			D3D12_FILTER_MIN_MAG_MIP_LINEAR	// 纹理采样方式
+		));
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
