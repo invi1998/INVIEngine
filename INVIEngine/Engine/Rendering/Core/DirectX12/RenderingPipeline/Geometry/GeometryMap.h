@@ -9,6 +9,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
+class FRenderingTextureResourcesUpdate;
 class CMeshComponent;
 struct FViewportInfo;
 
@@ -77,6 +78,12 @@ public:
 	// 构建视口buffer
 	void BuildViewportConstantBuffer();
 
+	// 读取贴图
+	void LoadTexture();
+
+	// 构建贴图视图 SRV shader资源视图
+	void BuildTextureConstBuffer();
+
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 	void PreDraw(float DeltaTime);
@@ -102,6 +109,8 @@ protected:
 	FConstantBufferViews MaterialConstantBufferViews;		// 材质常量缓冲区
 	FConstantBufferViews LightConstantBufferViews;			// 灯光常量缓冲区
 	FConstantBufferViews ViewportConstantBufferViews;		// 摄像机常量缓冲区
+
+	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTextureResourceViews;		// shader纹理资源视图
 };
 
 

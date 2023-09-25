@@ -9,7 +9,7 @@
 #include "Material/Core/MaterialConstantBuffer.h"
 #include "Mesh/Core/Mesh.h"
 #include "Mesh/Core/ObjectTransformation.h"
-#include "Rendering/Core/RenderingResourcesUpdate.h"
+#include "Rendering/Core/RenderingTextureResourcesUpdate.h"
 #include "Rendering/Core/Buffer/ConstructBuffer.h"
 
 bool FGeometry::bRenderingDataExistence(CMeshComponent* InKey)
@@ -102,6 +102,8 @@ D3D12_INDEX_BUFFER_VIEW FGeometry::GetIndexBufferView()
 FGeometryMap::FGeometryMap()
 {
 	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
+
+	RenderingTextureResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
 }
 
 void FGeometryMap::BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
@@ -196,6 +198,17 @@ void FGeometryMap::BuildViewportConstantBuffer()
 
 	// 构建常量缓冲区
 	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, 1, GetDrawMeshCount() + GetDrawMaterialCount() + GetDrawLightCount());
+}
+
+void FGeometryMap::LoadTexture()
+{
+	RenderingTextureResourceViews->LoadTextureResource(L"");
+}
+
+void FGeometryMap::BuildTextureConstBuffer()
+{
+	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口
+	RenderingTextureResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + GetDrawMaterialCount() + 1);
 }
 
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
