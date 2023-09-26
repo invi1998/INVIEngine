@@ -16,5 +16,6 @@ struct FMaterialConstantBuffer
 	XMFLOAT4 BaseColor;				// 16字节
 	float Roughness; // 材质粗糙度	// 4字节
 
-	XMFLOAT4X4 MaterialProjectionMatrix;	// 64字节
+	XMFLOAT4X4 Transformation;	// 64字节
+
 };

@@ -252,6 +252,10 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 					MaterialConstantBuffer.MaterialType = material->GetMaterialType();
 					MaterialConstantBuffer.BaseColor = material->GetBaseColor();
 					MaterialConstantBuffer.Roughness = material->GetRoughness();
+					XMFLOAT4X4 MaterialTransform = material->GetTransformation();
+					XMMATRIX Transform = XMLoadFloat4x4(&MaterialTransform);
+					// 将材质里的行矩阵转为列矩阵传入shader中
+					XMStoreFloat4x4(&MaterialConstantBuffer.Transformation, XMMatrixTranspose(Transform));
 				}
 			}
 			MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
