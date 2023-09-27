@@ -102,6 +102,9 @@ private:
 	// 渲染灯光
 	void DrawLight(float DeltaTime);
 
+	// 渲染纹理
+	void DrawTexture(float DeltaTime);
+
 protected:
 	map<int, FGeometry> Geometries;				// 几何体
 	FDirectXDescriptorHeap DescriptorHeap;		// 描述堆

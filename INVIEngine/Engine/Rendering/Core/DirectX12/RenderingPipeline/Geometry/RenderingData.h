@@ -29,9 +29,11 @@ public:
 	
 	DXGI_FORMAT IndexFormat;	// 顶点索引数据格式（无符号16）
 
-	XMFLOAT4X4 WorldMatrix;			// 世界矩阵
+	XMFLOAT4X4 MaterialTransformationMatrix;			// 材质变化矩阵
 
 	// std::shared_ptr<FRenderingResourcesUpdate> ObjectConstants;		// 对象常量（指向上传堆）
+
+	XMFLOAT4X4 TextureTransformationMatrix;		// 纹理变化矩阵
 
 	CMeshComponent* Mesh;
 };

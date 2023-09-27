@@ -4,15 +4,23 @@
 #include "PBR.hlsl"
 
 // 采样状态
-SamplerState SimplerTextureState : register(s0)
-{
-    // 
-}
+SamplerState SimplerTextureState : register(s0);
+
+// 纹理 CBV描述表
+//CD3DX12_DESCRIPTOR_RANGE DescriptorRangeTextureSRV; // 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
+//	DescriptorRangeTextureSRV.Init(
+//		D3D12_DESCRIPTOR_RANGE_TYPE_SRV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型）），对于纹理，这里我们选择shaderRenderingView
+//		1,									// 描述数量 1
+//		4);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
+
+// 贴图 (这里寄存器的编号对应你在根签名那里设置的纹理的CBV描述表的寄存器编号
+Texture2D BaseColorMap : register(t4);
 
 cbuffer MeshConstBuffer : register(b0)
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-	float4x4 WorldMatrix;
+	float4x4 MaterialTransformationMatrix;      // 材质变换矩阵
+    float4x4 TextureTransformationMatrix;       // 纹理变换矩阵
 }
 
 
@@ -47,6 +55,7 @@ struct MeshVertexIn
 	float4 Color : COLOR;			// 颜色
 	float3 Normal : NORMAL;			// 法线
     float3 UTangent : TANGENT;      // 切线（U方向）
+    float2 Texcoord : TEXCOORD;     // UV
 };
 
 struct MeshVertexOut
@@ -56,6 +65,7 @@ struct MeshVertexOut
 	float4 Color : COLOR;
 	float3 Normal : NORMAL;
     float3 UTangent : TANGENT;      // 切线（U方向）
+    float2 Texcoord : TEXCOORD;     // UV
 };
 
 //float2 tri(in float2 x)
@@ -77,7 +87,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	MeshVertexOut outV;
 
 	// 获取顶点的世界坐标
-    outV.WorldPosition = mul(float4(mv.Position, 1.0f), WorldMatrix);
+    outV.WorldPosition = mul(float4(mv.Position, 1.0f), MaterialTransformationMatrix);
     
     // 将模型转到其次裁剪空间
     outV.Position = mul(outV.WorldPosition, ViewportProjectionMatrix);
@@ -89,12 +99,20 @@ MeshVertexOut VSMain(MeshVertexIn mv)
     }
     else
     {
-        outV.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
+        outV.Normal = mul(mv.Normal, (float3x3) MaterialTransformationMatrix);
     }
 
+    // 切线
     outV.UTangent = mv.UTangent;
 
+    // 颜色
     outV.Color.rgb = mv.Color.rgb;
+    
+    // UV
+    // 先将传入的uv坐标和模型的纹理变换相乘，得到纹理变换后的UV
+    float4 TextureTexcoord = mul(float4(mv.Texcoord, 0.f, 1.f), TextureTransformationMatrix);
+    // 然后再与材质的变换矩阵相乘，得到材质变换后的UV，就是我们最终的顶点UV了
+    outV.Texcoord = mul(TextureTexcoord, MaterialTransformationMatrix).xy;
 
 	return outV;
 }
@@ -113,8 +131,10 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
+    
     FMaterial material;
-    material.BaseColor = BaseColor;
+    // 纹理采样 (v传入采样方式，传入UV）
+    material.BaseColor = BaseColor * BaseColorMap.Sample(SimplerTextureState, mvOut.Texcoord);
     
     float3 ModelNormal = normalize(mvOut.Normal);
     

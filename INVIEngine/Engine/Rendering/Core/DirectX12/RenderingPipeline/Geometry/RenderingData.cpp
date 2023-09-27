@@ -11,7 +11,8 @@ FRenderingData::FRenderingData()
 	, VertexTypeSize(sizeof(FVertex))
 	, IndexTypeSize(sizeof(uint16_t))
 	, IndexFormat(DXGI_FORMAT_R16_UINT)
-	, WorldMatrix(EngineMath::IdentityMatrix4x4())
+	, MaterialTransformationMatrix(EngineMath::IdentityMatrix4x4())
+	, TextureTransformationMatrix(EngineMath::IdentityMatrix4x4())
 	, Mesh(nullptr)
 {
 }

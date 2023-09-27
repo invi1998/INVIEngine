@@ -13,6 +13,7 @@ struct FVertex
 	DirectX::XMFLOAT3 Normal;		// 顶点法线
 	DirectX::XMFLOAT3 UTangent;		// 顶点切线（U切线，垂直向的切线）
 	// DirectX::XMFLOAT3 VTangent;		// 顶点切线（V切线，水平向的切线）
+	XMFLOAT2 TexCoord;				// uv坐标（纹理坐标）
 };
 
 struct FMeshRenderingData

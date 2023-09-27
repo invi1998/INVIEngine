@@ -502,3 +502,33 @@ GDI是Windows图形设备接口（Graphics Device Interface）的缩写，是Mic
 GDI支持多种输出设备和显示器，包括打印机、显示器、文件和内存等。它还提供了丰富的绘图对象和属性，如线条、矩形、椭圆、笔刷、字体和颜色等，以满足各种绘图需求。同时，GDI还提供了一些高级功能，如透明度、旋转、位图混合和蒙板等，可用于创建复杂的图形效果和动画。
 
 尽管现代的Windows应用程序通常使用更高级的图形API，如Direct2D、WPF和OpenGL等，但GDI仍然具有广泛的应用和重要性。特别是在老旧的Windows桌面应用程序中，如Office、Photoshop和WinZip等，GDI仍然是必不可少的API之一。
+
+
+
+# HLSL寄存器
+
+在HLSL中，寄存器的编号通常由两部分组成：资源类型和寄存器号。不同的资源类型有不同的寄存器编号范围，而每个寄存器编号则用于唯一标识一个特定的资源。
+
+以下是常见的几种资源类型及其寄存器编号的范围：
+
+- 静态纹理（Texture2D）：t0 ~ t255
+- 动态纹理（Texture2DArray）：d0 ~ d15
+- 立方体贴图（TextureCube）：t0 ~ t15
+- 缓冲区（Buffer）：b0 ~ b15
+- 常量缓冲区（ConstantBuffer）：cb0 ~ cb15
+- 采样器（SamplerState）：s0 ~ s15
+
+需要注意的是，某些资源类型的寄存器编号范围可能会根据驱动程序、硬件平台或者API版本等因素而略有不同，具体应以当前环境下的文档或示例代码为准。
+
+在实际使用中，可以在shader中声明出需要使用的资源类型和寄存器号，并在渲染管线中进行绑定。例如，在HLSL中声明一个常量缓冲区并将其绑定到寄存器cb1上，可以像下面这样写：
+
+```c++
+cbuffer MyConstants : register(b1)
+{
+    float4x4 g_WorldViewProjectionMatrix;
+    float3   g_LightDirection;
+    float    g_Time;
+};
+```
+
+在上述代码中，cbuffer表示声明一个常量缓冲区，MyConstants是缓冲区的名称，register(b1)则指明了该缓冲区应该绑定到寄存器b1上。最后，我们定义了三个变量作为缓冲区的内容，包括一个4x4矩阵、一个3元向量和一个标量。这样，在渲染管线中使用该缓冲区时，只需要将其绑定到管线上下文的对应寄存器即可。

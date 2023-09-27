@@ -123,8 +123,8 @@ void FGeometryMap::Build()
 
 void FGeometryMap::BuildDescriptorHeap()
 {
-	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 材质数量 + 灯光数量 + 摄像机）
-	DescriptorHeap.Build(GetDrawMeshCount() + GetDrawMaterialCount() + GetDrawLightCount() + 1);
+	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 材质数量 + 灯光数量 + 摄像机 + 纹理贴图）
+	DescriptorHeap.Build(GetDrawMeshCount() + GetDrawMaterialCount() + GetDrawLightCount() + 1 + 1);
 }
 
 UINT FGeometryMap::GetDrawMeshCount()
@@ -202,7 +202,7 @@ void FGeometryMap::BuildViewportConstantBuffer()
 
 void FGeometryMap::LoadTexture()
 {
-	RenderingTextureResourceViews->LoadTextureResource(L"");
+	RenderingTextureResourceViews->LoadTextureResource(L"Asserts/Texture/towgils.dds");
 }
 
 void FGeometryMap::BuildTextureConstBuffer()
@@ -231,17 +231,20 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 				XMFLOAT3 ForwardVector = renderingData.Mesh->GetForwardVector();
 
 				// 构造模型world
-				renderingData.WorldMatrix = {
+				renderingData.MaterialTransformationMatrix = {
 					RightVector.x * Scale.x,	UpVector.x,				ForwardVector.x,			0.f,
 					RightVector.y,				UpVector.y * Scale.y,	ForwardVector.y,			0.f,
 					RightVector.z,				UpVector.z,				ForwardVector.z	* Scale.z,	0.f,
 					Position.x,					Position.y,				Position.z,					1.f
 				};
 			}
-			XMMATRIX MatrixWorld = XMLoadFloat4x4(&renderingData.WorldMatrix);
+			XMMATRIX ATRTIXMatrixWorld = XMLoadFloat4x4(&renderingData.MaterialTransformationMatrix);
+			XMMATRIX ATRTIXTextureWorld = XMLoadFloat4x4(&renderingData.TextureTransformationMatrix);
 
 			FObjectTransformation OBJTransformation;
-			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(MatrixWorld));
+			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(ATRTIXMatrixWorld));
+			XMStoreFloat4x4(&OBJTransformation.TextureTransformation, XMMatrixTranspose(ATRTIXTextureWorld));
+
 			MeshConstantBufferViews.Update(i, &OBJTransformation);
 
 			// 更新材质
@@ -315,6 +318,9 @@ void FGeometryMap::Draw(float DeltaTime)
 
 	// 渲染模型
 	DrawMesh(DeltaTime);
+
+	// 渲染贴图
+	DrawTexture(DeltaTime);
 }
 
 void FGeometryMap::PostDraw(float DeltaTime)
@@ -392,4 +398,14 @@ void FGeometryMap::DrawLight(float DeltaTime)
 
 	DesHandle.Offset(static_cast<INT>(GetDrawMeshCount() + GetDrawMaterialCount()), DescriptorOffset);
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(3, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
+}
+
+void FGeometryMap::DrawTexture(float DeltaTime)
+{
+	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
+	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+
+	DesHandle.Offset(static_cast<INT>(GetDrawMeshCount() + GetDrawMaterialCount() + GetDrawLightCount() + 1), DescriptorOffset);
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(4, DesHandle);
 }
