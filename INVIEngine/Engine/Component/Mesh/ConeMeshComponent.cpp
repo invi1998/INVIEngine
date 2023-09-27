@@ -16,7 +16,7 @@ void CConeMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InBottom
 	// 弧度
 	float BetaValue = XM_2PI / static_cast<float>(InAxialSubdivision);
 
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0.f, 0.5f * InHeight, 0.f), XMFLOAT4(Colors::Pink)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0.f, 0.5f * InHeight, 0.f), XMFLOAT4(Colors::White)));
 
 	uint32_t Index = MeshData.VertexData.size();
 
@@ -31,12 +31,12 @@ void CConeMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InBottom
 					Radius * cosf(j * BetaValue),//x
 					Y,//y
 					Radius * sinf(j * BetaValue)), //z
-				XMFLOAT4(j * 0.02f, i * 0.1f, (i + j) * 0.4f, 1.0f)));
+				XMFLOAT4(Colors::White)));
 		}
 	}
 
 	//添加中点
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0.f, -0.5f * InHeight, 0.f), XMFLOAT4(Colors::Azure)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0.f, -0.5f * InHeight, 0.f), XMFLOAT4(Colors::White)));
 
 	//绘制index模型
 	for (uint32_t i = 0; i < InAxialSubdivision; ++i)

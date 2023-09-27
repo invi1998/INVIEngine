@@ -141,7 +141,7 @@ int CDirectXRenderingEngine::PostInit()
 		// µã¹â
 		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
 		{
-			PointLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
+			PointLight->SetPosition(XMFLOAT3(-10.f, 10.f, 20.f));
 			PointLight->SetLightIntensity(XMFLOAT3{ 3.f, 3.f, 3.f });
 
 			PointLight->SetStartAttenuation(0.0f);
@@ -155,7 +155,7 @@ int CDirectXRenderingEngine::PostInit()
 		// ¾Û¹â
 		if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
 		{
-			SpotLight->SetPosition(XMFLOAT3(-10.f, 10.f, 20.f));
+			SpotLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
 			SpotLight->SetLightIntensity(XMFLOAT3{ 2.f, 2.f, 1.43f });
 
 			SpotLight->SetStartAttenuation(0.0f);
@@ -178,7 +178,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			if (CMaterial* InMaterial = (*PlaneMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.15f, 0.15f, 0.15f, 1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Lambert);
 
 				InMaterial->SetRoughness(1.0f);
@@ -193,7 +193,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 0.5f, 0.5f, 0.6f, 1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Lambert);
 
 				InMaterial->SetRoughness(1.0f);
@@ -208,10 +208,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
-					221.f / 255.f,
-					154.f / 255.f,
-					255.f / 255.f, 1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
 
 				InMaterial->SetRoughness(1.0f);
@@ -226,10 +223,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
-					191.f / 255.f,
-					173.f / 255.f,
-					111.f / 255.f, 1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Phong);
 
 				InMaterial->SetRoughness(0.8f);
@@ -244,10 +238,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
-					220.f / 255.f,
-					223.f / 255.f,
-					227.f / 255.f, 1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Phong);
 
 				InMaterial->SetRoughness(0.1f);
@@ -262,6 +253,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Fresnel);
 
 				// InMaterial->SetRoughness(1.0f);
@@ -312,8 +304,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(9.f, 8, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
-					76.f/255.f,175.f/255.f,80.f/255.f, 1.f });
+				InMaterial->SetBaseColor({ XMFLOAT4(Colors::White) });
 				InMaterial->SetMaterialType(EMaterialType::Banded);
 			}
 		}

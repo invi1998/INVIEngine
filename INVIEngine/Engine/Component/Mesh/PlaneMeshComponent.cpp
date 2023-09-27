@@ -33,7 +33,7 @@ void CPlaneMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InHeigh
 				0,
 				Z
 			),
-				XMFLOAT4(Colors::Gray), XMFLOAT3(0.f, 1.f, 0.f)));
+				XMFLOAT4(Colors::White), XMFLOAT3(0.f, 1.f, 0.f)));
 		}
 	}
 

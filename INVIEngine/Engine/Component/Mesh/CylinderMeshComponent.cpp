@@ -29,9 +29,7 @@ void CCylinderMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InTo
 					Y,							// Y
 					Radius * sinf(j * BetaValue)	// z
 				),
-				XMFLOAT4(
-					j * 0.02f, i * 0.1f, (i + j) * 0.4f, 1.0f
-				)
+				XMFLOAT4(Colors::White)
 			));
 		}
 	}
@@ -78,9 +76,7 @@ void CCylinderMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InTo
 					Y,							// Y
 					InTopRadius * sinf(i * BetaValue)	// z
 				),
-				XMFLOAT4(
-					0.12f, 0.21f, 0.84f, 1.0f
-				)
+				XMFLOAT4(Colors::White)
 			));
 		}
 
@@ -90,9 +86,7 @@ void CCylinderMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InTo
 				Y,	// Y
 				0.f	// z
 			),
-			XMFLOAT4(
-				0.92f, 0.1f, 0.21f, 1.0f
-			)
+			XMFLOAT4(Colors::White)
 		));
 
 		// index
@@ -120,9 +114,7 @@ void CCylinderMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InTo
 					Y,							// Y
 					InTopRadius * sinf(i * BetaValue)	// z
 				),
-				XMFLOAT4(
-					0.12f, 0.81f, 0.4f, 1.0f
-				)
+				XMFLOAT4(Colors::White)
 			));
 		}
 
@@ -132,9 +124,7 @@ void CCylinderMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InTo
 				Y,	// Y
 				0.f	// z
 			),
-			XMFLOAT4(
-				0.92f, 0.1f, 0.21f, 1.0f
-			)
+			XMFLOAT4(Colors::White)
 		));
 
 		// index
