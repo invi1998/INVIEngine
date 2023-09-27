@@ -318,11 +318,11 @@ void FGeometryMap::Draw(float DeltaTime)
 	// 渲染灯光
 	DrawLight(DeltaTime);
 
-	// 渲染模型
-	DrawMesh(DeltaTime);
-
 	// 渲染贴图
 	DrawTexture(DeltaTime);
+
+	// 渲染模型
+	DrawMesh(DeltaTime);
 }
 
 void FGeometryMap::PostDraw(float DeltaTime)

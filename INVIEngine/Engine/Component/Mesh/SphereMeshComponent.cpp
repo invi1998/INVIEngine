@@ -11,7 +11,7 @@ void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadi
 	float Beta = XM_PI / static_cast<float>(InAxialSubdivision);
 
 	// 顶部
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, 1.f, 0.f)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT2(1.f, 0.5f)));
 
 	for (size_t i = 1; i < InAxialSubdivision; ++i)
 	{
@@ -42,6 +42,10 @@ void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadi
 			InVertex.UTangent.y = 0.f;
 			InVertex.UTangent.z = InRadius * sinf(BetaValue) * cosf(ThetaValue);
 
+			// uv
+			InVertex.TexCoord.x = ThetaValue / XM_2PI;
+			InVertex.TexCoord.y = BetaValue / XM_PI;
+
 			// 计算出切线后，对切线值进行归一化存储
 			XMVECTOR Tangent = XMLoadFloat3(&InVertex.UTangent);
 			XMStoreFloat3(&InVertex.UTangent, XMVector3Normalize(Tangent));
@@ -49,7 +53,7 @@ void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadi
 	}
 
 	// 底部
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, -1.f, 0.f)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, -1.f, 0.f), XMFLOAT2(0.f, 0.5f)));
 
 
 	// 构建顶点索引 (绘制北极）
