@@ -19,6 +19,9 @@ void FRenderingPipeline::BuildPipeline()
 {
 	DirectXPipelineState.ResetGPSDesc();	// 重置图形管线资源描述符
 
+	// 加载纹理贴图
+	GeometryMap.LoadTexture();
+
 	DirectXRootSignature.BuildRootSignature();	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
@@ -42,9 +45,6 @@ void FRenderingPipeline::BuildPipeline()
 
 	// 绑定输入布局
 	DirectXPipelineState.BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
-
-	// 加载纹理贴图
-	GeometryMap.LoadTexture();
 
 	// 构建模型
 	GeometryMap.Build();

@@ -79,7 +79,7 @@ public:
 	void BuildViewportConstantBuffer();
 
 	// 读取贴图
-	void LoadTexture();
+	void LoadTexture() const;
 
 	// 构建贴图视图 SRV shader资源视图
 	void BuildTextureConstBuffer();

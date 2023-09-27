@@ -202,12 +202,13 @@ void FGeometryMap::BuildViewportConstantBuffer()
 	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, 1, GetDrawMeshCount() + GetDrawMaterialCount() + GetDrawLightCount());
 }
 
-void FGeometryMap::LoadTexture()
+void FGeometryMap::LoadTexture() const
 {
 	def_c_paths Paths;
 	init_def_c_paths(&Paths);
 
-	find_files("Asserts/Texture", &Paths, true);
+	char RootPath[] = "Asserts/Texture";
+	find_files(RootPath, &Paths, true);
 
 	for (size_t i = 0; i < Paths.index; i++)
 	{

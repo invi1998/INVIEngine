@@ -58,6 +58,11 @@ project "INVIEngine"
 		runtime "Release"
 		optimize "on"
 
+	filter "action:vs*"
+		buildoptions "/F 16000000"
+		linkoptions "/STACK:16000000"
 
-
-
+	filter "action:gcc*"
+		linkoptions "-Wl,--stack,16000000"
+		linkoptions "-Wl,-z,stack-size=16000000"
+		

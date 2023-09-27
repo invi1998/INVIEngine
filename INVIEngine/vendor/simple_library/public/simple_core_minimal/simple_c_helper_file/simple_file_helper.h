@@ -27,7 +27,7 @@ _CRT_BEGIN_C_HEADER
 typedef struct
 {
 	int index;
-	char paths[8196][1024];//MAX_PATH
+	char paths[1024][1024];//MAX_PATH
 }def_c_paths;
 
 typedef struct
