@@ -19,6 +19,7 @@ void FRenderingTextureResourcesUpdate::LoadTextureResource(const std::wstring& p
 		Texture->UploadBuffer		// ÉÏ´«»º³åÇø
 	);
 
+	Texture->RenderingTextureID = TextureUnorderedMap.size();
 	TextureUnorderedMap[Texture->Name] = std::move(Texture);
 
 }

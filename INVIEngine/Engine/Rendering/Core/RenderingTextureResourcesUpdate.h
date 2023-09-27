@@ -5,10 +5,16 @@
 
 struct FRenderingTexture
 {
+	FRenderingTexture()
+		: RenderingTextureID(0)
+	{}
+
 	ComPtr<ID3D12Resource> UploadBuffer;		// 上传堆
 	ComPtr<ID3D12Resource> Data;				// 纹理资源
 	std::wstring Name;							// 纹理名字
 	std::wstring Filename;						// 资源路径(使用宽字符，避免出现中文路径字符读取不到的问题）
+
+	UINT RenderingTextureID;
 };
 
 class FRenderingTextureResourcesUpdate : public std::enable_shared_from_this<FRenderingTextureResourcesUpdate>, public IDirectXDeviceInterface

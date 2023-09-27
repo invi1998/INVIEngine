@@ -204,7 +204,23 @@ void FGeometryMap::BuildViewportConstantBuffer()
 
 void FGeometryMap::LoadTexture()
 {
-	RenderingTextureResourceViews->LoadTextureResource(L"Asserts/Texture/girlsDt3.dds");
+	def_c_paths Paths;
+	init_def_c_paths(&Paths);
+
+	find_files("Asserts/Texture", &Paths, true);
+
+	for (size_t i = 0; i < Paths.index; i++)
+	{
+		if (find_string(Paths.paths[i], ".dds", 0) != -1)
+		{
+			// 单位化路径
+			normalization_path(Paths.paths[i]);
+
+			wchar_t TexturePath[1024] = { 0 };
+			char_to_wchar_t(TexturePath, 1024, Paths.paths[i]);
+			RenderingTextureResourceViews->LoadTextureResource(TexturePath);
+		}
+	}
 }
 
 void FGeometryMap::BuildTextureConstBuffer()
