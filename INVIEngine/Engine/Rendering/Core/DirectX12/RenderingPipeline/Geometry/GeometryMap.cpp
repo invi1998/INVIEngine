@@ -1,5 +1,7 @@
 #include "GeometryMap.h"
 
+#include <ranges>
+
 #include "Component/Light/PointLightComponent.h"
 #include "Component/Light/SpotLightComponent.h"
 #include "Component/Light/Core/LightComponent.h"
@@ -202,7 +204,7 @@ void FGeometryMap::BuildViewportConstantBuffer()
 
 void FGeometryMap::LoadTexture()
 {
-	RenderingTextureResourceViews->LoadTextureResource(L"Asserts/Texture/towgils.dds");
+	RenderingTextureResourceViews->LoadTextureResource(L"Asserts/Texture/girlsDt3.dds");
 }
 
 void FGeometryMap::BuildTextureConstBuffer()
@@ -340,18 +342,18 @@ void FGeometryMap::DrawViewport(float DeltaTime)
 void FGeometryMap::DrawMesh(float DeltaTime)
 {
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	for (auto& geometry : Geometries)
+	for (auto& geometry : Geometries | views::values)
 	{
 		// 获取顶点/索引缓冲区视图
-		D3D12_VERTEX_BUFFER_VIEW vbv = geometry.second.GetVertexBufferView();
-		D3D12_INDEX_BUFFER_VIEW ibv = geometry.second.GetIndexBufferView();
+		D3D12_VERTEX_BUFFER_VIEW vbv = geometry.GetVertexBufferView();
+		D3D12_INDEX_BUFFER_VIEW ibv = geometry.GetIndexBufferView();
 
-		for (size_t i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
+		for (size_t i = 0; i < geometry.DescribeMeshRenderingData.size(); i++)
 		{
 			CD3DX12_GPU_DESCRIPTOR_HANDLE DesMeshHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 模型描述handle
 			CD3DX12_GPU_DESCRIPTOR_HANDLE DesMaterialHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 材质描述handle
 
-			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
+			FRenderingData& renderingData = geometry.DescribeMeshRenderingData[i];
 
 			// 设置索引视图
 			GetD3dGraphicsCommandList()->IASetIndexBuffer(&ibv);
