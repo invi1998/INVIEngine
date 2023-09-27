@@ -122,26 +122,27 @@ int CDirectXRenderingEngine::PostInit()
 		//	}*/
 		//}
 
-		//// 灯光
-		//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
-		//{
-		//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
-		//	ParallelLight->SetRotation(fvector_3d(-90.f, 0.f, 0.f));
+		//// 平行光
+		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
+		{
+			ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
+			ParallelLight->SetRotation(fvector_3d(-90.f, 0.f, 0.f));
+			ParallelLight->SetLightIntensity({ 0.5f, 0.5f, 0.5f });
 
-		//	/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
-		//	{
-		//		InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
-		//		InMaterial->SetMaterialType(EMaterialType::BaseColor);
-		//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
+				InMaterial->SetMaterialType(EMaterialType::BaseColor);
+				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
 
-		//		InMaterial->SetRoughness(1.0f);
-		//	}*/
-		//}
+				InMaterial->SetRoughness(1.0f);
+			}*/
+		}
 
 		// 点光
 		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
 		{
-			PointLight->SetPosition(XMFLOAT3(-10.f, 10.f, 20.f));
+			PointLight->SetPosition(XMFLOAT3(-10.f, 20.f, 40.f));
 			PointLight->SetLightIntensity(XMFLOAT3{ 3.f, 3.f, 3.f });
 
 			PointLight->SetStartAttenuation(0.0f);
@@ -172,9 +173,9 @@ int CDirectXRenderingEngine::PostInit()
 
 		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{
-			PlaneMesh->CreateMesh(4.f, 3.f, 40, 40);
+			PlaneMesh->CreateMesh(400.f, 400.f, 2, 2);
 			PlaneMesh->SetPosition(XMFLOAT3(0.f, -2.f, 0.f));
-			PlaneMesh->SetScale(fvector_3d(40.f, 10.f, 40.f));
+			// PlaneMesh->SetScale(fvector_3d(40.f, 40.f, 40.f));
 
 			if (CMaterial* InMaterial = (*PlaneMesh->GetMaterial())[0])
 			{
