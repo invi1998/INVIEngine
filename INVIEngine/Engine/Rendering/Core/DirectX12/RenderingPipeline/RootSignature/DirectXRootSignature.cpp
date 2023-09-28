@@ -6,7 +6,7 @@ FDirectXRootSignature::FDirectXRootSignature()
 {
 }
 
-void FDirectXRootSignature::BuildRootSignature()
+void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建根签名
@@ -43,7 +43,7 @@ void FDirectXRootSignature::BuildRootSignature()
 	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeTextureSRV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
 	DescriptorRangeTextureSRV.Init(
 		D3D12_DESCRIPTOR_RANGE_TYPE_SRV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型）），对于纹理，这里我们选择shaderRenderingView
-		1,									// 描述数量 1
+		textureNum,							// 贴图数量
 		4);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
 

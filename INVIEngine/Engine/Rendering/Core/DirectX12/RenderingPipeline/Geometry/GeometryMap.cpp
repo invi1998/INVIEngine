@@ -128,7 +128,12 @@ void FGeometryMap::Build()
 void FGeometryMap::BuildDescriptorHeap()
 {
 	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 材质数量 + 灯光数量 + 摄像机 + 纹理贴图）
-	DescriptorHeap.Build(GetDrawMeshCount() + GetDrawMaterialCount() + GetDrawLightCount() + 1 + 1);
+	DescriptorHeap.Build(GetDrawMeshCount() + GetDrawMaterialCount() + GetDrawLightCount() + 1 + GetDrawTextureCount());
+}
+
+UINT FGeometryMap::GetDrawTextureCount()
+{
+	return RenderingTextureResourceViews->Size();
 }
 
 UINT FGeometryMap::GetDrawMeshCount()

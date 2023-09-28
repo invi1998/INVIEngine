@@ -9,7 +9,7 @@ public:
 
 	ID3D12RootSignature *GetRootSignature() const { return RootSignature.Get(); }
 
-	void BuildRootSignature();
+	void BuildRootSignature(UINT textureNum = 1);
 
 	void PreDraw(float DeltaTime);
 	void Draw(float DeltaTime);

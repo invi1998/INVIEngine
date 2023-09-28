@@ -22,6 +22,8 @@ public:
 	void LoadTextureResource(const std::wstring& path);		// 加载纹理
 	void BuildTextureConstantBuffer(ID3D12DescriptorHeap* heap, int offset = 0);	// 创建纹理资源常量缓冲区
 
+	UINT Size() const { return TextureUnorderedMap.size(); }
+
 protected:
 	// 贴图名字：贴图资源指针
 	std::unordered_map<std::wstring, std::unique_ptr<FRenderingTexture>> TextureUnorderedMap;

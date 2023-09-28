@@ -12,14 +12,16 @@ SIZE_T FShader::GetBufferSize() const
     return ShaderCode->GetBufferSize();
 }
 
-void FShader::BuildShader(const std::wstring& InFileName, const std::string& InEntryFunName,
-                          const std::string& InShaderVersion)
+void FShader::BuildShader(const std::wstring& InFileName,
+							const std::string& InEntryFunName,
+							const std::string& InShaderVersion,
+							const D3D_SHADER_MACRO* shaderMacro)
 {
     ComPtr<ID3DBlob> ErrorShaderMsg;
 	// 编译 HLSL（High-Level Shader Language）代码并生成字节码数据。
 	HRESULT Res =D3DCompileFromFile(
 		InFileName.c_str(),                             // 文件名
-        nullptr,                                        // 宏定义数组
+		shaderMacro,                                    // 宏定义数组
         D3D_COMPILE_STANDARD_FILE_INCLUDE,              // 自定义 include 文件接口 （如果在shader里面需要包含include另外的shader文件，那么这个值不能设置为null)
         InEntryFunName.c_str(),                         // 入口点函数名称
         InShaderVersion.c_str(),                        // 目标着色器模型(shader版本）

@@ -24,13 +24,20 @@ void FRenderingPipeline::BuildPipeline()
 	// 加载纹理贴图
 	GeometryMap.LoadTexture();
 
-	DirectXRootSignature.BuildRootSignature();	// 构建根签名
+	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTextureCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
-	VertexShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "VSMain", "vs_5_0");
-	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_0");
+
+	// shader宏定义
+	D3D_SHADER_MACRO ShaderMacro[] = {
+		"TEXTURE2DNUM", "3",
+		NULL, NULL,
+	};
+
+	VertexShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "VSMain", "vs_5_0", ShaderMacro);
+	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_0", ShaderMacro);
 	// 绑定shader
 	DirectXPipelineState.BindShader(VertexShader, PixelShader);
 

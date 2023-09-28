@@ -56,6 +56,9 @@ public:
 
 	void BuildDescriptorHeap();
 
+	// 绘制贴图数量
+	UINT GetDrawTextureCount();
+
 	// 对象模型的绘制数量
 	UINT GetDrawMeshCount();
 

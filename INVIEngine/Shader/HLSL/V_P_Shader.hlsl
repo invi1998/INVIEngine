@@ -14,7 +14,7 @@ SamplerState SimplerTextureState : register(s0);
 //		4);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
 // 贴图 (这里寄存器的编号对应你在根签名那里设置的纹理的CBV描述表的寄存器编号
-Texture2D BaseColorMap : register(t4);
+Texture2D SimpleTexture2DMap[TEXTURE2DNUM] : register(t4);
 
 cbuffer MeshConstBuffer : register(b0)
 {
@@ -136,7 +136,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     
     FMaterial material;
     // 纹理采样 (v传入采样方式，传入UV）
-    material.BaseColor = BaseColor * BaseColorMap.Sample(SimplerTextureState, mvOut.Texcoord);
+	material.BaseColor = BaseColor * SimpleTexture2DMap[1].Sample(SimplerTextureState, mvOut.Texcoord);
     
     float3 ModelNormal = normalize(mvOut.Normal);
     
