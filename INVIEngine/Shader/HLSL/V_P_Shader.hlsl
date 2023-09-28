@@ -38,7 +38,7 @@ cbuffer MaterialConstBuffer : register(b2)
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
     int MaterialType;       // 材质类型
     float MaterialRoughness; // 材质粗糙度
-    float Reserved1;
+    int BaseColorIndex;		// 纹理贴图索引（默认为-1，表示没有贴图）
     float Reserved2;
     
     float4 BaseColor;       // 材质基础颜色
@@ -136,7 +136,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     
     FMaterial material;
     // 纹理采样 (v传入采样方式，传入UV）
-	material.BaseColor = BaseColor * SimpleTexture2DMap[1].Sample(SimplerTextureState, mvOut.Texcoord);
+	material.BaseColor = BaseColor * SimpleTexture2DMap[0].Sample(SimplerTextureState, mvOut.Texcoord);
     
     float3 ModelNormal = normalize(mvOut.Normal);
     

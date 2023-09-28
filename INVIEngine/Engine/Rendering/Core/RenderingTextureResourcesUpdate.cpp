@@ -63,3 +63,35 @@ void FRenderingTextureResourcesUpdate::BuildTextureConstantBuffer(ID3D12Descript
 	}
 
 }
+
+std::unique_ptr<FRenderingTexture>* FRenderingTextureResourcesUpdate::FindRenderingTexture(const std::string& key)
+{
+	const char* instring = key.c_str();
+	wchar_t texturePath[1024] = { 0 };
+	char_to_wchar_t(texturePath, 1024, instring);
+
+	if (TextureUnorderedMap.find(texturePath) != TextureUnorderedMap.end())
+	{
+		return &TextureUnorderedMap[texturePath];			// key查找
+	}
+	else
+	{
+		for(auto &temp : TextureUnorderedMap)
+		{
+			if (temp.second->Filename == texturePath)	// 路径
+			{
+				return &temp.second;
+			}
+			if (temp.second->AssertFilename == texturePath)	// 资源路径
+			{
+				return &temp.second;
+			}
+			if (temp.second->SimpleAssertFilename == texturePath)	// 简单资源路径
+			{
+				return &temp.second;
+			}
+		}
+	}
+
+	return nullptr;
+}

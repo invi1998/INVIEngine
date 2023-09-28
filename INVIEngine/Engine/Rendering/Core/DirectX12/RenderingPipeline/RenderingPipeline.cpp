@@ -29,10 +29,13 @@ void FRenderingPipeline::BuildPipeline()
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
+	///
+
+	char TextureNumBuff[10] = { 0 };
 
 	// shader宏定义
 	D3D_SHADER_MACRO ShaderMacro[] = {
-		"TEXTURE2DNUM", "3",
+		"TEXTURE2DNUM", _itoa(GeometryMap.GetDrawTextureCount(), TextureNumBuff, 10),
 		NULL, NULL,
 	};
 

@@ -274,20 +274,33 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			MeshConstantBufferViews.Update(i, &OBJTransformation);
 
 			// 更新材质
-			FMaterialConstantBuffer MaterialConstantBuffer;
+			if (CMaterial* material = (*renderingData.Mesh->GetMaterial())[0])
 			{
-				if (CMaterial* material = (*renderingData.Mesh->GetMaterial())[0])
+				FMaterialConstantBuffer MaterialConstantBuffer;
+				if (material->IsDirty())
 				{
 					MaterialConstantBuffer.MaterialType = material->GetMaterialType();
 					MaterialConstantBuffer.BaseColor = material->GetBaseColor();
 					MaterialConstantBuffer.Roughness = material->GetRoughness();
+
+					if (auto basecolorPtr = RenderingTextureResourceViews->FindRenderingTexture(material->GetBaseColorIndexKey()))
+					{
+						MaterialConstantBuffer.BaseColorIndex = (*basecolorPtr)->RenderingTextureID;
+					}
+					else
+					{
+						MaterialConstantBuffer.BaseColorIndex = -1;
+					}
+
 					XMFLOAT4X4 MaterialTransform = material->GetTransformation();
 					XMMATRIX Transform = XMLoadFloat4x4(&MaterialTransform);
 					// 将材质里的行矩阵转为列矩阵传入shader中
 					XMStoreFloat4x4(&MaterialConstantBuffer.Transformation, XMMatrixTranspose(Transform));
+
+					material->SetDirty(false);
 				}
+				MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
 			}
-			MaterialConstantBufferViews.Update(i, &MaterialConstantBuffer);
 		}
 	}
 
