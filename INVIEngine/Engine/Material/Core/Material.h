@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "MaterialType.h"
 #include "Core/CoreObject/CoreMinimalObject.h"
 

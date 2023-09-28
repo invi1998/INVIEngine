@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "MeshComponent.h"
 
 #include "Material/Core/Material.h"

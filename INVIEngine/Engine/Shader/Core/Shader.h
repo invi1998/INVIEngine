@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 class FShader
 {
 public:

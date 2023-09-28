@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 #include "MeshType.h"
 #include "Actor/Core/ActorObject.h"
 #include "Component/Mesh/ShellMeshComponent.h"

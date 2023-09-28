@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "ShellMeshComponent.h"
 
 class CCylinderMeshComponent : public CShellMeshComponent

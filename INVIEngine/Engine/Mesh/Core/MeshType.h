@@ -1,5 +1,5 @@
 #pragma once
-#include "EngineMinimal.h"
+
 #include "Math/EngineMath.h"
 
 // ¶¥µãÊý¾Ý

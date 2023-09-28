@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 struct FViewportInfo
 {
 	// 定义摄像机位置，up, right, look 视口矩阵

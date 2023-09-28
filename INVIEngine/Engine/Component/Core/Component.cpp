@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "Component.h"
 
 CComponent::~CComponent()

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 struct FViewportTransformation
 {
 	FViewportTransformation();

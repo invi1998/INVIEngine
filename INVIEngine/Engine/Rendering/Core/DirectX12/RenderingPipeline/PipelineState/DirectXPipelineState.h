@@ -1,5 +1,5 @@
 #pragma once
-#include "EngineMinimal.h"
+
 #include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 

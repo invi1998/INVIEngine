@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "Shader.h"
 
 LPVOID FShader::GetBufferPointer() const

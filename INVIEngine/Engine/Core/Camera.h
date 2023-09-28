@@ -1,10 +1,7 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 #include "ColdeReflection/CodeReflectionMacro.h"
 #include "CoreObject/CoreMinimalObject.h"
-#include "Component/Input/Input.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Viewport/ViewPort.h"
 

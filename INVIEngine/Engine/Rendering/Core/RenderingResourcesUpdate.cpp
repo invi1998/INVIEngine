@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "RenderingResourcesUpdate.h"
 
 FRenderingResourcesUpdate::FRenderingResourcesUpdate()

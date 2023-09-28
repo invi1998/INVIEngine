@@ -1,9 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-#include "Core/Engine.h"
-
-
 class CLightManager;
 class CWorld;
 class CMeshManager;

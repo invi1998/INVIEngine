@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "RenderingPipeline.h"
 
 #include "Component/Mesh/Core/MeshComponent.h"

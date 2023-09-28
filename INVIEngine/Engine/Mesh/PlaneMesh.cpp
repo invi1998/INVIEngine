@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "PlaneMesh.h"
 
 #include "Core/MeshManager.h"

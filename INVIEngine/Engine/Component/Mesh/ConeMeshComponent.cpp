@@ -1,4 +1,8 @@
+#include "EngineMinimal.h"
+
 #include "ConeMeshComponent.h"
+
+#include "Mesh/Core/MeshType.h"
 
 CConeMeshComponent::CConeMeshComponent()
 {

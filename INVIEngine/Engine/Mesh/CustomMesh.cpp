@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "CustomMesh.h"
 
 #include "Core/MeshManager.h"

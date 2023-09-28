@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "RangeLightComponent.h"
 
 CRangeLightComponent::CRangeLightComponent(): CLightComponent(), StartAttenuation(0), EndAttenuation(0), Kc(0), Kl(0), Kq(0)

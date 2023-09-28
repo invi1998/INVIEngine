@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "CoreObject/CoreMinimalObject.h"
 
 class GActorObject;

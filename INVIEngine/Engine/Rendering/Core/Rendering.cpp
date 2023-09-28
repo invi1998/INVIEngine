@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "Rendering.h"
 
 #include "Platform/Windows/WindowsEngine.h"

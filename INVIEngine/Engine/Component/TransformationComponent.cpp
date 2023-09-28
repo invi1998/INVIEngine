@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "TransformationComponent.h"
 
 CTransformationComponent::CTransformationComponent()

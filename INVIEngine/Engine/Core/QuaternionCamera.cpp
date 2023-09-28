@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "QuaternionCamera.h"
 
 #include "Component/InputComponent.h"

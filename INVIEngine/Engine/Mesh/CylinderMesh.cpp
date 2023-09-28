@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "CylinderMesh.h"
 
 #include "Core/MeshManager.h"

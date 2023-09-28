@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ViewPort.h"
 
 #include "Config/EngineRenderConfig.h"

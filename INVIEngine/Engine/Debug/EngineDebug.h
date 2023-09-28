@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 #define ANALYSIS_RESULT(InValue)\
 {\
 	HRESULT HandleResult = InValue;\

@@ -1,6 +1,9 @@
+#include "EngineMinimal.h"
+
 #include "RenderingData.h"
 
 #include "Component/Mesh/Core/MeshComponent.h"
+
 #include "Mesh/Core/MeshType.h"
 
 FRenderingData::FRenderingData()

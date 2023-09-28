@@ -1,4 +1,8 @@
+#include "EngineMinimal.h"
+
 #include "CylinderMeshComponent.h"
+
+#include "Mesh/Core/MeshType.h"
 
 CCylinderMeshComponent::CCylinderMeshComponent()
 {

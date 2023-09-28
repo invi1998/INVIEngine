@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "DirectXDescriptorHeap.h"
 
 void FDirectXDescriptorHeap::Build(UINT InNumDescriptor)

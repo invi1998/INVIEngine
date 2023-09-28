@@ -7,18 +7,18 @@ project "INVIEngine"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-	-- pchheader "hzpch.h"
-	-- pchsource "src/hzpch.cpp"
+	pchheader "EngineMinimal.h"
+	pchsource "Engine/EngineMinimal.cpp"
 	
 
 	files
 	{
 		"Engine/**.h",
 		"Engine/**.cpp",
-		"vendor/simple_library/**.h",
-		"vendor/simple_library/**.c",
-		"vendor/simple_library/**.cpp",
-        "vendor/simple_library/**.hpp",
+		-- "vendor/simple_library/**.h",
+		-- "vendor/simple_library/**.c",
+		-- "vendor/simple_library/**.cpp",
+        -- "vendor/simple_library/**.hpp",
 	}
 
 	defines
@@ -35,6 +35,7 @@ project "INVIEngine"
 		"d3dcompiler.lib",
 		"D3D12.lib",
 		"dxgi.lib",
+		"simple_library"
 	}
 
 	filter "system:windows"

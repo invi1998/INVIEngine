@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Mesh/Core/Mesh.h"

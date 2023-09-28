@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "SphereMesh.h"
 
 #include "Core/MeshManager.h"

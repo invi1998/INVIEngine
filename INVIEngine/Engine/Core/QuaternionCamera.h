@@ -1,6 +1,5 @@
 #pragma once
 #include "CameraType.h"
-#include "EngineMinimal.h"
 #include "Actor/Core/ActorObject.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Viewport/ViewPort.h"

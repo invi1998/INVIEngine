@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "LightConstantBuffer.h"
 
 #include "LightType.h"

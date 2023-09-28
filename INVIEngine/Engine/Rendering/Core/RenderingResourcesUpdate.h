@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 
 // 该继承可以实现
 // 在当前类中保存一个弱指针，当我们把这个指针变成裸指针后，他可以将其变成一个智能指针（shared_ptr）

@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "CoreMinimalObject.h"
 
 std::vector<CCoreMinimalObject*> GObjects;		// 全局对象

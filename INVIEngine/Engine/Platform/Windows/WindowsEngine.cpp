@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "WindowsEngine.h"
 
 #include "WindowsMessageProcessing.h"

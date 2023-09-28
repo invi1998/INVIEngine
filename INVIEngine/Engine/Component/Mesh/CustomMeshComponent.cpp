@@ -1,4 +1,8 @@
+#include "EngineMinimal.h"
+
 #include "CustomMeshComponent.h"
+
+#include "Mesh/Core/MeshType.h"
 
 CCustomMeshComponent::CCustomMeshComponent()
 {

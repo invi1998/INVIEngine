@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "PointLightComponent.h"
 
 #include "Material/Core/Material.h"

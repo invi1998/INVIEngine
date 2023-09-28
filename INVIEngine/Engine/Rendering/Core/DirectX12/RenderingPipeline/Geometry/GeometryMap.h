@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "RenderingData.h"
 #include "Component/Light/Core/LightConstantBuffer.h"
 #include "Interface/DirectXDeviceInterface.h"

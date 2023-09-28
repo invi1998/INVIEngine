@@ -1,4 +1,8 @@
+#include "EngineMinimal.h"
+
 #include "PlaneMeshComponent.h"
+
+#include "Mesh/Core/MeshType.h"
 
 CPlaneMeshComponent::CPlaneMeshComponent()
 {

@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "EngineFactory.h"
 
 #if defined(_WIN32)

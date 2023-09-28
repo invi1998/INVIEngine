@@ -17,8 +17,16 @@ workspace "INVIEngine"
 		".editorconfig"
 	}
 
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 group "Dev"
-	include "vendor/premake"
 	include "INVIEngine"
+
+group "Dependencies"
+	include "vendor/premake"
+	include "INVIEngine/vendor/simple_library"

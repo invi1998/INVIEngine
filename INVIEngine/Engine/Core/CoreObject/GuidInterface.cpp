@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "GuidInterface.h"
 
 IGuidInterface::IGuidInterface()

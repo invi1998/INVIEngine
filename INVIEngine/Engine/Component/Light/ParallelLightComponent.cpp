@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ParallelLightComponent.h"
 #include "Core/LightComponent.h"
 #include "Material/Core/Material.h"

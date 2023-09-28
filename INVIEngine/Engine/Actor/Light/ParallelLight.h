@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "Component/Light/ParallelLightComponent.h"
 #include "Core/Light.h"
 

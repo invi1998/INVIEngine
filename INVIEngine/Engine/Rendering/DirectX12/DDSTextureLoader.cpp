@@ -17,6 +17,7 @@
 // http://go.microsoft.com/fwlink/?LinkId=248926
 // http://go.microsoft.com/fwlink/?LinkId=248929
 //--------------------------------------------------------------------------------------
+#include "EngineMinimal.h"
 
 #include <assert.h>
 #include <algorithm>

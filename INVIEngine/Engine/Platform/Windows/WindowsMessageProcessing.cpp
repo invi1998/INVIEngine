@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "WindowsMessageProcessing.h"
 
 #include <unordered_set>

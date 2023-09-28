@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "Light.h"
 
 #include "Component/Light/Core/LightComponent.h"

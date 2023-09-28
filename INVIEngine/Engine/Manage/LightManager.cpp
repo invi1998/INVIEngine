@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "LightManager.h"
 
 void CLightManager::AddLight(CLightComponent* lightInstance)

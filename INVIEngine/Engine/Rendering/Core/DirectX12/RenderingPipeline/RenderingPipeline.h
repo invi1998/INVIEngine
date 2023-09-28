@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "Geometry/GeometryMap.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "PipelineState/DirectXPipelineState.h"

@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "SpotLightComponent.h"
 
 #include "Material/Core/Material.h"

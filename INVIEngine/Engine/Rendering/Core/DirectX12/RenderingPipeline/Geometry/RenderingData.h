@@ -1,5 +1,5 @@
 #pragma once
-#include "EngineMinimal.h"
+
 #include "Interface/DirectXDeviceInterface.h"
 
 

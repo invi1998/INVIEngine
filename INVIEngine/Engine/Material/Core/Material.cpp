@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "Material.h"
 
 CMaterial::CMaterial()

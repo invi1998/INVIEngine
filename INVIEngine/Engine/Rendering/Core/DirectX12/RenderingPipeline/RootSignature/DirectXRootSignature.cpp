@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "DirectXRootSignature.h"
 
 FDirectXRootSignature::FDirectXRootSignature()

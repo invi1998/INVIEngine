@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "DirectXPipelineState.h"
 
 #include "Shader/Core/Shader.h"

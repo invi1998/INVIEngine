@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "MeshManager.h"
 
 #include "ObjectTransformation.h"

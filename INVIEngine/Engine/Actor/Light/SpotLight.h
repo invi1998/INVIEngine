@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 #include "Core/RangeLight.h"
 
 class GSpotLight : public GRangeLight

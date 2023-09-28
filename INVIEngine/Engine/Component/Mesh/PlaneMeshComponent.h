@@ -1,5 +1,5 @@
 #pragma once
-#include "EngineMinimal.h"
+
 #include "ShellMeshComponent.h"
 
 class CPlaneMeshComponent : public CShellMeshComponent

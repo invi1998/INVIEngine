@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "Camera.h"
 
 #include "Component/InputComponent.h"

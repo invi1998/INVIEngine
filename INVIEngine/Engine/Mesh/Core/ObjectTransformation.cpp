@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ObjectTransformation.h"
 
 FObjectTransformation::FObjectTransformation()

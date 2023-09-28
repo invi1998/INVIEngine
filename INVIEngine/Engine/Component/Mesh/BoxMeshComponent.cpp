@@ -1,4 +1,8 @@
+#include "EngineMinimal.h"
+
 #include "BoxMeshComponent.h"
+
+#include "Mesh/Core/MeshType.h"
 
 CBoxMeshComponent::CBoxMeshComponent()
 {

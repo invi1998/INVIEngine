@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "MaterialConstantBuffer.h"
 
 FMaterialConstantBuffer::FMaterialConstantBuffer()

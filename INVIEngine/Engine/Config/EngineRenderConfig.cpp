@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "EngineRenderConfig.h"
 
 FEngineRenderConfig* FEngineRenderConfig::RenderConfig = nullptr;

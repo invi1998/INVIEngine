@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "WinMainCommandParameters.h"
 
 FWinMainCommandParameters::FWinMainCommandParameters(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine,

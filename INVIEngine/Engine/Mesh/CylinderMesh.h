@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "Mesh/Core/Mesh.h"
 
 // Ô²Öù¡¢Ô²Ì¨

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "Interface/DirectXDeviceInterface.h"
 
 // 常量缓冲区视图

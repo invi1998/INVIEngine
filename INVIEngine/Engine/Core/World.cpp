@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "World.h"
 
 #include "Camera.h"

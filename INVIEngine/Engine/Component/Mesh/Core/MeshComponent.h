@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "Component/TransformationComponent.h"
 
 struct FMeshRenderingData;

@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ActorObject.h"
 
 #include "Component/TransformationComponent.h"

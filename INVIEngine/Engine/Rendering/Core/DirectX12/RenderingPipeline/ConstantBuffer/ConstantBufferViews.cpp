@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ConstantBufferViews.h"
 
 #include "Core/Viewport/ViewportTransformation.h"

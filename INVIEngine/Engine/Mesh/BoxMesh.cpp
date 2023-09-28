@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "BoxMesh.h"
 
 #include "Core/MeshManager.h"

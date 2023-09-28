@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "DirectXRenderingEngine.h"
 
 #include "Actor/Light/ParallelLight.h"

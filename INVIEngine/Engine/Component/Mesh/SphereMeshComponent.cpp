@@ -1,4 +1,8 @@
+#include "EngineMinimal.h"
+
 #include "SphereMeshComponent.h"
+
+#include "Mesh/Core/MeshType.h"
 
 CSphereMeshComponent::CSphereMeshComponent()
 {

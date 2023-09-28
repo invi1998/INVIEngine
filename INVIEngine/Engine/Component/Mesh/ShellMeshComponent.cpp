@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ShellMeshComponent.h"
 
 CShellMeshComponent::CShellMeshComponent()

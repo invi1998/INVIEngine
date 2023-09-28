@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
 #include "Interface/DirectXDeviceInterface.h"
 
 struct FDirectXRootSignature : public IDirectXDeviceInterface_Struct

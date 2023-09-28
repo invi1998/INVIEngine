@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "RangeLight.h"
 
 #include "Component/Light/Core/RangeLightComponent.h"

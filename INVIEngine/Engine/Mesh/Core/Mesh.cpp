@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "Mesh.h"
 
 #include "Component/Mesh/ShellMeshComponent.h"

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EngineMinimal.h"
-
 enum EMaterialType : UINT;
 
 struct FMaterialConstantBuffer

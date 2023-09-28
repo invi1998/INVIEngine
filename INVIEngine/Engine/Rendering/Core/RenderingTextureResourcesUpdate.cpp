@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "RenderingTextureResourcesUpdate.h"
 
 #include <ranges>

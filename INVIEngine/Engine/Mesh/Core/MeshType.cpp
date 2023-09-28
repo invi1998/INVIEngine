@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "MeshType.h"
 
 FVertex::FVertex(const DirectX::XMFLOAT3& InPos, const DirectX::XMFLOAT4& InColor)

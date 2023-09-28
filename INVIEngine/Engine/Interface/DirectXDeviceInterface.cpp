@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "DirectXDeviceInterface.h"
 
 #include "Platform/Windows/WindowsEngine.h"

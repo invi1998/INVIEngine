@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "GeometryMap.h"
 
 #include <ranges>
@@ -208,7 +210,7 @@ void FGeometryMap::LoadTexture() const
 	init_def_c_paths(&Paths);
 
 	char RootPath[] = "Asserts/Texture";
-	find_files(RootPath, &Paths, true);
+	find_files(RootPath, &Paths, true, true);
 
 	for (size_t i = 0; i < Paths.index; i++)
 	{

@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ConeMesh.h"
 
 #include "Core/MeshManager.h"

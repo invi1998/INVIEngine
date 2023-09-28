@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "ParallelLight.h"
 
 GParallelLight::GParallelLight()

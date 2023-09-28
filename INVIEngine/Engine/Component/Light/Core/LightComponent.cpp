@@ -1,3 +1,5 @@
+#include "EngineMinimal.h"
+
 #include "LightComponent.h"
 
 #include "Component/Mesh/Core/MeshComponent.h"

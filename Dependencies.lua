@@ -2,7 +2,7 @@
 -- INVIEngine Dependencies
 
 IncludeDir = {}
-IncludeDir["simple_library"] = "%{wks.location}/INVIEngine/vendor/simple_library/public"
+IncludeDir["simple_library"] = "%{wks.location}/INVIEngine/vendor/simple_library/include"
 
 LibraryDir = {}
 
