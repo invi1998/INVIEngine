@@ -54,7 +54,9 @@ project "simple_library"
         {}
 
         defines
-        {}
+        {
+            "CLOSE_DISABLE_DEBUG_INFOR"
+        }
 
     filter "system:windows"
         systemversion "latest"

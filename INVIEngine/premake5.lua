@@ -42,7 +42,9 @@ project "INVIEngine"
 		systemversion "latest"
 
 		defines
-		{}
+		{
+			"CLOSE_DISABLE_DEBUG_INFOR"
+		}
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
