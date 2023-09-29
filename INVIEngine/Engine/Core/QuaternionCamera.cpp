@@ -76,10 +76,10 @@ void GQuaternionCamera::OnUpdate(float ts)
 
         UpdateViewMatrix();
     }
-    /*if (FInput::IsKeyReleased(Key::W))
+    if (FInput::IsKeyReleased(Key::W))
     {
 	    
-    }*/
+    }
 }
 
 XMVECTOR GQuaternionCamera::GetUpDirection() const
@@ -159,7 +159,7 @@ void GQuaternionCamera::UpdateProjectionMatrix(float aspectRatio)
 XMVECTOR GQuaternionCamera::GetRotationQuaternion() const
 {
     // 将欧拉角转换为四元数并设置Roll为0。
-    XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(Pitch, Yaw, 0.0f);
+    XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(math_utils::angle_to_radian(Pitch), math_utils::angle_to_radian(Yaw), 0.0f);
     return quaternion;
 }
 
@@ -200,9 +200,10 @@ void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 	switch (CameraType) {
 		case CameraRoaming:
 			{
-	            XMFLOAT3 up;
+	            XMFLOAT3 up{};
 	            XMStoreFloat3(&up, GetUpDirection());
-	            float yawSign = up.y < 0 ? -1 : 1.0f;
+				ENGINE_LOG_ERROR("UP DIRECTION = %f, %f, %f", up.x, up.y, up.z);
+	            const float yawSign = up.y < 0 ? -1.0f : 1.0f;
 	            Yaw += yawSign * delta.x * RotationSpeed();
 	            Pitch += delta.y * RotationSpeed();
 
@@ -212,7 +213,7 @@ void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 			{
 				float XRadians = XMConvertToRadians(delta.x * 10.f);
 				float YRadians = XMConvertToRadians(delta.y * 10.f);
-
+				
                 Theta += -XRadians;
                 Phi += YRadians;
 
@@ -245,6 +246,18 @@ void GQuaternionCamera::MouseZoom(float delta)
 	    }
     }
    
+}
+
+void GQuaternionCamera::MoveForward()
+{
+	if (CameraType == ECameraType::CameraRoaming)
+	{
+		
+	}
+}
+
+void GQuaternionCamera::MoveRight()
+{
 }
 
 std::pair<float, float> GQuaternionCamera::PanSpeed() const
