@@ -11,7 +11,7 @@ struct FConstantBufferViews : IDirectXDeviceInterface_Struct
 
 public:
 	// 创建常量
-	void CreateConstant(UINT ObjectSize, UINT ObjectCount);
+	void CreateConstant(UINT ObjectSize, UINT ObjectCount, bool bConstBuffer = true);
 
 	void Update(int Index, const void* InData);
 

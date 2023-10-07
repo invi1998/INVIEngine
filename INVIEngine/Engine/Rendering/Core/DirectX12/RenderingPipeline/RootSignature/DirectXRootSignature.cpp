@@ -26,11 +26,11 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 		1);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
 	// 材质 CBV描述表
-	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeMaterialCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
-	DescriptorRangeMaterialCBV.Init(
-		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
-		1,									// 描述数量 1
-		2);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
+	// CD3DX12_DESCRIPTOR_RANGE DescriptorRangeMaterialCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
+	// DescriptorRangeMaterialCBV.Init(
+	// 	D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
+	// 	1,									// 描述数量 1
+	// 	2);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
 	// 灯光 CBV描述表
 	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeLightCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
@@ -62,10 +62,15 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
 	);
 
-	RootParam[2].InitAsDescriptorTable(
-		1,							// 描述符数量
-		&DescriptorRangeMaterialCBV		// 指向描述符范围数组的指针
-		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
+	// RootParam[2].InitAsDescriptorTable(
+	// 	1,							// 描述符数量
+	// 	&DescriptorRangeMaterialCBV		// 指向描述符范围数组的指针
+	// 	// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
+	// );
+
+	RootParam[2].InitAsShaderResourceView(
+		0,	// 指定shaderGPU寄存器
+		1	// 指定存储空间
 	);
 
 	RootParam[3].InitAsDescriptorTable(

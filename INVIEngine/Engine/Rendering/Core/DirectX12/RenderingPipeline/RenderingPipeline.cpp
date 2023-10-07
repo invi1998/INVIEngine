@@ -68,7 +68,7 @@ void FRenderingPipeline::BuildPipeline()
 	GeometryMap.BuildMeshConstantBuffer();
 
 	// 构建材质常量缓冲区
-	GeometryMap.BuildMaterialConstantBuffer();
+	GeometryMap.BuildMaterialShaderResourceView();
 
 	// 构建灯光常量缓冲区
 	GeometryMap.BuildLightConstantBuffer();

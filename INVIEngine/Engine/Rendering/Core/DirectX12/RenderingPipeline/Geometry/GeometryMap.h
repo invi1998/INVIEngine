@@ -8,6 +8,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
+class CMaterial;
 class FRenderingTextureResourcesUpdate;
 class CMeshComponent;
 struct FViewportInfo;
@@ -72,7 +73,7 @@ public:
 	void BuildMeshConstantBuffer();
 
 	// 构建模型材质的buff缓冲区
-	void BuildMaterialConstantBuffer();
+	void BuildMaterialShaderResourceView();
 
 	// 构建灯光的buff缓冲区
 	void BuildLightConstantBuffer();
@@ -88,6 +89,8 @@ public:
 
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
+	void UpdateMaterialShaderResourceView(float delta_time, const FViewportInfo& viewport_info);
+
 	void PreDraw(float DeltaTime);
 	void Draw(float DeltaTime);
 	void PostDraw(float DeltaTime);
@@ -100,6 +103,9 @@ private:
 
 	// 渲染模型
 	void DrawMesh(float DeltaTime);
+
+	// 绘制材质
+	void DrawMaterial(float DeltaTime);
 
 	// 渲染灯光
 	void DrawLight(float DeltaTime);
@@ -116,6 +122,7 @@ protected:
 	FConstantBufferViews ViewportConstantBufferViews;		// 摄像机常量缓冲区
 
 	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTextureResourceViews;		// shader纹理资源视图
+	std::vector<CMaterial> MaterialsSRV;
 };
 
 

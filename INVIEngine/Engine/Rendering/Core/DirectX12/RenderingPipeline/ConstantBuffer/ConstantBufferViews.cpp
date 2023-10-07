@@ -5,10 +5,10 @@
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Rendering/Core/RenderingResourcesUpdate.h"
 
-void FConstantBufferViews::CreateConstant(UINT ObjectSize, UINT ObjectCount)
+void FConstantBufferViews::CreateConstant(UINT ObjectSize, UINT ObjectCount, bool bConstBuffer)
 {
 	Constants = std::make_shared<FRenderingResourcesUpdate>();
-	Constants->Init(GetD3dDevice().Get(), ObjectSize, ObjectCount);
+	Constants->Init(GetD3dDevice().Get(), ObjectSize, ObjectCount, bConstBuffer);
 }
 
 void FConstantBufferViews::Update(int Index, const void* InData)

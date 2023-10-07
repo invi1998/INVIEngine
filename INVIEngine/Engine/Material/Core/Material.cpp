@@ -3,7 +3,7 @@
 #include "Material.h"
 
 CMaterial::CMaterial()
-	: bDirty(true), BaseColor(0.45f, 0.45f, 0.45f, 1.f), Roughness(0.2f), MaterialTransformation(EngineMath::IdentityMatrix4x4())
+	: bDirty(true), MaterialID(-1), BaseColor(0.45f, 0.45f, 0.45f, 1.f), Roughness(0.2f), MaterialTransformation(EngineMath::IdentityMatrix4x4())
 {
 }
 
@@ -60,4 +60,10 @@ void CMaterial::SetBaseColorIndexKey(const std::string& key)
 void CMaterial::SetDirty(bool dirty)
 {
 	bDirty = dirty;
+}
+
+void CMaterial::SetMaterialID(const int id)
+{
+	MaterialID = id;
+	SetDirty(true);
 }
