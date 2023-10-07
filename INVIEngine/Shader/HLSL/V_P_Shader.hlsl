@@ -21,6 +21,11 @@ cbuffer MeshConstBuffer : register(b0)
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
 	float4x4 MaterialTransformationMatrix;      // 材质变换矩阵
     float4x4 TextureTransformationMatrix;       // 纹理变换矩阵
+	
+	uint MaterialID;		// 材质id
+	uint rr1;
+	uint rr2;
+	uint rr3;
 }
 
 
@@ -33,17 +38,19 @@ cbuffer ViewportConstBuffer : register(b1)
     
 }
 
-cbuffer MaterialConstBuffer : register(b2)
+struct MaterialConstBuffer
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-    int MaterialType;       // 材质类型
-    float MaterialRoughness; // 材质粗糙度
-    int BaseColorIndex;		// 纹理贴图索引（默认为-1，表示没有贴图）
-    float Reserved2;
+	int MaterialType; // 材质类型
+	float MaterialRoughness; // 材质粗糙度
+	int BaseColorIndex; // 纹理贴图索引（默认为-1，表示没有贴图）
+	float Reserved2;
     
-    float4 BaseColor;       // 材质基础颜色
+	float4 BaseColor; // 材质基础颜色
 	float4x4 MaterialProjectionMatrix;
-}
+};
+
+StructuredBuffer<MaterialConstBuffer> Materials : register(t0, space1);
 
 cbuffer LightConstBuffer : register(b3)
 {
@@ -86,6 +93,8 @@ struct MeshVertexOut
 
 MeshVertexOut VSMain(MeshVertexIn mv)
 {
+	MaterialConstBuffer MatConstbuffer = Materials[MaterialID];
+	
 	MeshVertexOut outV;
 
 	// 获取顶点的世界坐标
@@ -94,7 +103,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
     // 将模型转到其次裁剪空间
     outV.Position = mul(outV.WorldPosition, ViewportProjectionMatrix);
     
-    if (MaterialType == 13)
+	if (MatConstbuffer.MaterialType == 13)
     {
         // 局部法线
         outV.Normal = mv.Normal;
@@ -133,24 +142,35 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
-    
+	MaterialConstBuffer MatConstbuffer = Materials[MaterialID];
+	
     FMaterial material;
-    // 纹理采样 (v传入采样方式，传入UV）
-	material.BaseColor = BaseColor * SimpleTexture2DMap[0].Sample(SimplerTextureState, mvOut.Texcoord);
+	
+	if (MatConstbuffer.BaseColorIndex == -1)
+	{
+		material.BaseColor = MatConstbuffer.BaseColor;
+	}
+	else
+	{
+		// 纹理采样 (v传入采样方式，传入UV）
+		material.BaseColor = MatConstbuffer.BaseColor * SimpleTexture2DMap[0].Sample(SimplerTextureState, mvOut.Texcoord);
+	}
+	
+   
     
     float3 ModelNormal = normalize(mvOut.Normal);
     
     
-    if (MaterialType == 12)
+	if (MatConstbuffer.MaterialType == 12)
     {
         return material.BaseColor;
     }
-    if (MaterialType == 13)
+	if (MatConstbuffer.MaterialType == 13)
     {
         // 显示顶点法线
         return float4(ModelNormal, 1.0f);
     }
-    if (MaterialType == 14)
+	if (MatConstbuffer.MaterialType == 14)
     {
         // 显示世界法线
         return float4(ModelNormal, 1.0f);
@@ -172,18 +192,18 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
             
             float4 LightStrengthTemp = CaculateLightStrength(SceneLights[i], ModelNormal, mvOut.WorldPosition.xyz, NormalizeLightDirection);
 
-            if (MaterialType == 0)
+			if (MatConstbuffer.MaterialType == 0)
             {
                 // 兰伯特材质
                 DotDiffValue = pow(max(dot(ModelNormal, NormalizeLightDirection), 0.f), 2.f);
             }
-            else if (MaterialType == 1)
+			else if (MatConstbuffer.MaterialType == 1)
             {
                 // 半兰伯特材质
                 float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
                 DotDiffValue = max(0.0f, (DiffueseReflection * 0.5f + 0.5f)); // [-1, 1]->[0.1]
             }
-            else if (MaterialType == 2)
+			else if (MatConstbuffer.MaterialType == 2)
             {
                 // Phong
                 // reflect hlsl中用于求光线的反射光的函数，可以用来计算反射向量
@@ -192,12 +212,12 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 DotDiffValue = pow(max(dot(ModelNormal, NormalizeLightDirection), 0.0f), 2.f);
         
-                float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 100.f;
             
                 Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.f), M);
             }
-            else if (MaterialType == 3)
+			else if (MatConstbuffer.MaterialType == 3)
             {
                 // Blinn-Phong
         
@@ -209,14 +229,14 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 // 计算出Blinn-phong值
                 DotDiffValue = pow(max(0.0f, dot(ModelNormal, HalfDirection)), 2.f);
         
-                float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 100.f;
                 
                 // c=(m+2.f/PI) blinnPhong归一化系数
                 Specular = (M + 2.f)*pow(max(dot(HalfDirection, ModelNormal), 0.f), M)/3.1415926f;
 
             }
-            else if (MaterialType == 4)
+			else if (MatConstbuffer.MaterialType == 4)
             {
                 // WrapLight模型 早期皮肤模拟
         
@@ -226,7 +246,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
         
             }
-            else if (MaterialType == 5)
+			else if (MatConstbuffer.MaterialType == 5)
             {
                 // Minnaert模型 模拟月球和天鹅绒效果
         
@@ -241,14 +261,14 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 // 第二种 dot(l, n) * pow(dot(l, n) * dot(n, v), r)
         
-                float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 10.f;
         
                 DotDiffValue = saturate(DotLight * pow(DotLight * DotView, M));
         
         
             }
-            else if (MaterialType == 6)
+			else if (MatConstbuffer.MaterialType == 6)
             {
                 // Banded 基础卡通
                 if (i == 0)
@@ -261,7 +281,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                     DotDiffValue = floor(DiffueseReflection * Layered) / Layered;
                 }
             }
-            else if (MaterialType == 7)
+			else if (MatConstbuffer.MaterialType == 7)
             {
                 // GradualBanded  带渐变的卡通效果
                 
@@ -282,7 +302,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                     material.BaseColor = lerp(material.BaseColor, GradualColor, LightDotValue);
                 }
             }
-            else if (MaterialType == 8)
+			else if (MatConstbuffer.MaterialType == 8)
             {
                 // CustomBanded  自定义卡通效果
                 
@@ -307,14 +327,14 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                     // 加入高光
                     if (DotDiffValue > 0.f)
                     {
-                        float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+						float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                         float M = MaterialShiniess * 70.f;
             
                         Specular += pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f;
                     }
                 }
             }
-            else if (MaterialType == 9)
+			else if (MatConstbuffer.MaterialType == 9)
             {
                 // Back 玉石材质
 
@@ -334,7 +354,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 // 计算出Blinn-phong值
                 if (DotDiffValue > 0.f)
                 {
-                    float MaterialShiniess = 1.f - saturate(MaterialRoughness);
+					float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                     float M = MaterialShiniess * 100.f;
 
                     Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
@@ -361,11 +381,11 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 
         
             }
-            else if (MaterialType == 10)
+			else if (MatConstbuffer.MaterialType == 10)
             {
 	            // 各向异性，头发模拟
             }
-            else if (MaterialType == 11)
+			else if (MatConstbuffer.MaterialType == 11)
             {
 	            // OrenNayar GDC粗糙表面
         
@@ -385,7 +405,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float Alpha = max(ACosNormalView, ACosNormalLight);
                 float Beta = min(ACosNormalView, ACosNormalLight);
         
-                float Roughness = pow(MaterialRoughness, 2); // 粗糙度
+				float Roughness = pow(MatConstbuffer.MaterialRoughness, 2); // 粗糙度
         
                 float A = 1 - 0.5f * (Roughness / (Roughness + 0.33f));
                 float B = 0.45f * (Roughness / (Roughness + 0.09f));
@@ -395,7 +415,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
         
             }
-            else if (MaterialType == 20)
+			else if (MatConstbuffer.MaterialType == 20)
             {
                 // PBR 基于真实物理的材质渲染
                 float3 L = NormalizeLightDirection;
@@ -442,7 +462,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 return float4(PBRColor, 1.f);
 
             }
-            else if (MaterialType == 100)
+			else if (MatConstbuffer.MaterialType == 100)
             {
                 // 菲尼尔
                 float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);

@@ -39,3 +39,12 @@ void FConstantBufferViews::BuildConstantBuffer(CD3DX12_CPU_DESCRIPTOR_HANDLE InH
 		GetD3dDevice()->CreateConstantBufferView(&CBVDesc, handle);
 	}
 }
+
+ID3D12Resource* FConstantBufferViews::GetBuffer() const
+{
+	if (Constants)
+	{
+		return Constants->GetBuffer();
+	}
+	return nullptr;
+}

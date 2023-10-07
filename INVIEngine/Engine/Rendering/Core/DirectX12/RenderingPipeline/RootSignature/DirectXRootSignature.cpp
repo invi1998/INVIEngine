@@ -68,9 +68,10 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 	// 	// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
 	// );
 
+	// register(t0, space1)
 	RootParam[2].InitAsShaderResourceView(
 		0,	// 指定shaderGPU寄存器
-		1	// 指定存储空间
+		1	// 指定GPU寄存器存储空间
 	);
 
 	RootParam[3].InitAsDescriptorTable(

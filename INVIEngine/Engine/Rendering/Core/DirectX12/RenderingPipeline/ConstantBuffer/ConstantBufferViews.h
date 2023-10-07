@@ -20,6 +20,8 @@ public:
 
 	std::shared_ptr<FRenderingResourcesUpdate> GetConstant() const { return Constants; }
 
+	ID3D12Resource* GetBuffer() const;
+
 protected:
 	std::shared_ptr<FRenderingResourcesUpdate> Constants;		// 常量资源（指向上传堆）
 

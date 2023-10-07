@@ -7,6 +7,7 @@
 #include "Component/Light/PointLightComponent.h"
 #include "Component/Light/SpotLightComponent.h"
 #include "Component/Light/Core/LightComponent.h"
+#include "Component/Light/Core/LightConstantBuffer.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Material/Core/Material.h"
@@ -181,20 +182,18 @@ void FGeometryMap::BuildMaterialShaderResourceView()
 	int ShaderIndex = 0;
 
 	// 收集材质
-	for (auto& geometry : Geometries | views::values)
+	for (auto& geometry : Geometries)
 	{
-		for (const auto& renderData: geometry.DescribeMeshRenderingData)
+		for (auto& renderData: geometry.second.DescribeMeshRenderingData)
 		{
-			for (auto& materials:renderData.Mesh->GetMaterial())
+			if (auto materials = renderData.Mesh->GetMaterial())
 			{
-				for (auto& material : materials)
+				for (size_t i = 0; i < materials->size(); i++)
 				{
 					// 设置材质ID
-					material->SetMaterialID(ShaderIndex);
+					(*materials)[i]->SetMaterialID(materials->size());
 					// 保存材质
-					MaterialsSRV.push_back(*material);
-					// id++
-					ShaderIndex++;
+					MaterialsSRV.push_back((*materials)[i]);
 				}
 			}
 		}
@@ -233,7 +232,7 @@ void FGeometryMap::LoadTexture() const
 	char RootPath[] = "Asserts/Texture";
 	find_files(RootPath, &Paths, true, true);
 
-	for (size_t i = 0; i < Paths.index; i++)
+	for (int i = 0; i < Paths.index; i++)
 	{
 		if (find_string(Paths.paths[i], ".dds", 0) != -1)
 		{
@@ -287,6 +286,11 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(ATRTIXMatrixWorld));
 			XMStoreFloat4x4(&OBJTransformation.TextureTransformation, XMMatrixTranspose(ATRTIXTextureWorld));
 
+			if (auto& material = (*renderingData.Mesh->GetMaterial())[0])
+			{
+				OBJTransformation.MaterialID = material->GetMaterialID();
+			}
+
 			MeshConstantBufferViews.Update(i, &OBJTransformation);
 
 		}
@@ -339,13 +343,13 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 	// 更新材质
 	for (auto& material :MaterialsSRV)
 	{
-		if (material.IsDirty())
+		if (material->IsDirty())
 		{
-			MaterialConstantBuffer.MaterialType = material.GetMaterialType();
-			MaterialConstantBuffer.BaseColor = material.GetBaseColor();
-			MaterialConstantBuffer.Roughness = material.GetRoughness();
+			MaterialConstantBuffer.MaterialType = material->GetMaterialType();
+			MaterialConstantBuffer.BaseColor = material->GetBaseColor();
+			MaterialConstantBuffer.Roughness = material->GetRoughness();
 
-			if (auto basecolorPtr = RenderingTextureResourceViews->FindRenderingTexture(material.GetBaseColorIndexKey()))
+			if (auto basecolorPtr = RenderingTextureResourceViews->FindRenderingTexture(material->GetBaseColorIndexKey()))
 			{
 				MaterialConstantBuffer.BaseColorIndex = (*basecolorPtr)->RenderingTextureID;
 			}
@@ -354,14 +358,14 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 				MaterialConstantBuffer.BaseColorIndex = -1;
 			}
 
-			XMFLOAT4X4 MaterialTransform = material.GetTransformation();
+			XMFLOAT4X4 MaterialTransform = material->GetTransformation();
 			XMMATRIX Transform = XMLoadFloat4x4(&MaterialTransform);
 			// 将材质里的行矩阵转为列矩阵传入shader中
 			XMStoreFloat4x4(&MaterialConstantBuffer.Transformation, XMMatrixTranspose(Transform));
 
-			material.SetDirty(false);
+			material->SetDirty(false);
 		}
-		MaterialConstantBufferViews.Update(material.GetMaterialID(), &MaterialConstantBuffer);
+		MaterialConstantBufferViews.Update(material->GetMaterialID(), &MaterialConstantBuffer);
 	}
 	
 }
@@ -381,6 +385,9 @@ void FGeometryMap::Draw(float DeltaTime)
 
 	// 渲染贴图
 	DrawTexture(DeltaTime);
+
+	// 渲染材质
+	DrawMaterial(DeltaTime);
 
 	// 渲染模型
 	DrawMesh(DeltaTime);
@@ -450,9 +457,11 @@ void FGeometryMap::DrawMesh(float DeltaTime)
 
 void FGeometryMap::DrawMaterial(float DeltaTime)
 {
-	CD3DX12_GPU_DESCRIPTOR_HANDLE DesMaterialHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 材质描述handle
 
-	GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView();
+	GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(
+		2,	// 要绑定的根签名槽的索引
+		MaterialConstantBufferViews.GetBuffer()->GetGPUVirtualAddress()	// 着色器资源视图的 GPU 描述符句柄。
+		);
 }
 
 void FGeometryMap::DrawLight(float DeltaTime)

@@ -1,9 +1,7 @@
 #pragma once
 
 #include "RenderingData.h"
-#include "Component/Light/Core/LightConstantBuffer.h"
 #include "Interface/DirectXDeviceInterface.h"
-#include "Material/Core/MaterialConstantBuffer.h"
 #include "Mesh/Core/MeshType.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
@@ -114,7 +112,7 @@ private:
 	void DrawTexture(float DeltaTime);
 
 protected:
-	map<int, FGeometry> Geometries;				// 几何体
+	map<int, FGeometry> Geometries{};				// 几何体
 	FDirectXDescriptorHeap DescriptorHeap;		// 描述堆
 	FConstantBufferViews MeshConstantBufferViews;			// 对象常量缓冲区
 	FConstantBufferViews MaterialConstantBufferViews;		// 材质常量缓冲区
@@ -122,7 +120,7 @@ protected:
 	FConstantBufferViews ViewportConstantBufferViews;		// 摄像机常量缓冲区
 
 	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTextureResourceViews;		// shader纹理资源视图
-	std::vector<CMaterial> MaterialsSRV;
+	std::vector<CMaterial*> MaterialsSRV{};
 };
 
 

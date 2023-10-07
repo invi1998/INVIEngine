@@ -39,8 +39,8 @@ void FRenderingPipeline::BuildPipeline()
 		NULL, NULL,
 	};
 
-	VertexShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "VSMain", "vs_5_0", ShaderMacro);
-	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_0", ShaderMacro);
+	VertexShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "VSMain", "vs_5_1", ShaderMacro);
+	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_1", ShaderMacro);
 	// °ó¶¨shader
 	DirectXPipelineState.BindShader(VertexShader, PixelShader);
 

@@ -24,6 +24,10 @@ void FRenderingResourcesUpdate::Init(ID3D12Device* InDevice, UINT InElementSize,
 	{
 		ElementSize = GetConstantsBufferByteSize(InElementSize);;
 	}
+	else
+	{
+		ElementSize = InElementSize;
+	}
 
 	// 指定上传堆
 	CD3DX12_HEAP_PROPERTIES HeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
