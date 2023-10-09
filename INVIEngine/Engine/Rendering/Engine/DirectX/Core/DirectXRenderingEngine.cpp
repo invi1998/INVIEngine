@@ -181,6 +181,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			if (CMaterial* InMaterial = (*PlaneMesh->GetMaterial())[0])
 			{
+				InMaterial->SetBaseColorIndexKey("Earth");
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Lambert);
 
@@ -211,6 +212,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
+				InMaterial->SetBaseColorIndexKey("Wood");
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
 

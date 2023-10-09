@@ -4,12 +4,19 @@
 
 #include <ranges>
 
+wchar_t DDS[] = L".dds";
+wchar_t ASSET[] = L"Asserts/";
+wchar_t PROJECT[] = L"Project/";
+
+
 void FRenderingTextureResourcesUpdate::LoadTextureResource(const std::wstring& path)
 {
 	std::unique_ptr<FRenderingTexture> Texture = std::make_unique<FRenderingTexture>();
 	Texture->Filename = path;
 	wchar_t name[1024] = { 0 };
 	get_path_clean_filename_w(name, Texture->Filename.c_str());
+	wremove_string_start(name, DDS);
+
 	Texture->Name = name;
 
 	// ¶ÁÈ¡DDSÌùÍ¼Êý¾Ý
@@ -22,6 +29,20 @@ void FRenderingTextureResourcesUpdate::LoadTextureResource(const std::wstring& p
 	);
 
 	Texture->RenderingTextureID = TextureUnorderedMap.size();
+
+	wchar_t AssetFilenameBuffer[1024] = { 0 };
+	wchar_t* AssetFilenamePtr = const_cast<wchar_t*>(Texture->Filename.c_str());
+
+	int pos = wfind_string(AssetFilenamePtr, ASSET);
+	wchar_t* v = wstring_mid(AssetFilenamePtr, AssetFilenameBuffer, pos, wcslen(AssetFilenamePtr));
+	wreplace_string_inline(v, ASSET, PROJECT);
+
+	wreplace_string_inline(v, DDS, (L"." + Texture->Name).c_str());
+
+	wchar_t AssetFilenameBufferRet[1024] = { 0 };
+	wget_printf_s(AssetFilenameBufferRet, L"Texture'%s'", v);
+
+	Texture->AssertFilename = AssetFilenameBufferRet;
 	TextureUnorderedMap[Texture->Name] = std::move(Texture);
 
 }
@@ -66,6 +87,11 @@ void FRenderingTextureResourcesUpdate::BuildTextureConstantBuffer(ID3D12Descript
 
 std::unique_ptr<FRenderingTexture>* FRenderingTextureResourcesUpdate::FindRenderingTexture(const std::string& key)
 {
+	if (key.empty())
+	{
+		return nullptr;
+	}
+
 	const char* instring = key.c_str();
 	wchar_t texturePath[1024] = { 0 };
 	char_to_wchar_t(texturePath, 1024, instring);

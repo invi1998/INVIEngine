@@ -191,7 +191,7 @@ void FGeometryMap::BuildMaterialShaderResourceView()
 				for (size_t i = 0; i < materials->size(); i++)
 				{
 					// 设置材质ID
-					(*materials)[i]->SetMaterialID(materials->size());
+					(*materials)[i]->SetMaterialID(MaterialsSRV.size());
 					// 保存材质
 					MaterialsSRV.push_back((*materials)[i]);
 				}

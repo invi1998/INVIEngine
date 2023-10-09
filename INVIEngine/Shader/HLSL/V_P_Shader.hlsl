@@ -154,7 +154,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	else
 	{
 		// 纹理采样 (v传入采样方式，传入UV）
-		material.BaseColor = MatConstbuffer.BaseColor * SimpleTexture2DMap[0].Sample(SimplerTextureState, mvOut.Texcoord);
+		material.BaseColor = SimpleTexture2DMap[MatConstbuffer.BaseColorIndex].Sample(SimplerTextureState, mvOut.Texcoord);
 	}
 	
    
