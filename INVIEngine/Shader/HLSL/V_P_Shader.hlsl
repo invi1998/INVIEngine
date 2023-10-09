@@ -14,7 +14,7 @@ SamplerState SimplerTextureState : register(s0);
 //		4);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
 // 贴图 (这里寄存器的编号对应你在根签名那里设置的纹理的CBV描述表的寄存器编号
-Texture2D SimpleTexture2DMap[TEXTURE2DNUM] : register(t4);
+Texture2D SimpleTexture2DMap[TEXTURE2DNUM] : register(t3);
 
 cbuffer MeshConstBuffer : register(b0)
 {
@@ -38,6 +38,12 @@ cbuffer ViewportConstBuffer : register(b1)
     
 }
 
+cbuffer LightConstBuffer : register(b2)
+{
+	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
+	Light SceneLights[16]; // 场景灯光
+}
+
 struct MaterialConstBuffer
 {
 	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
@@ -50,13 +56,8 @@ struct MaterialConstBuffer
 	float4x4 MaterialProjectionMatrix;
 };
 
-StructuredBuffer<MaterialConstBuffer> Materials : register(t0, space1);
+StructuredBuffer<MaterialConstBuffer> Materials : register(t4, space1);
 
-cbuffer LightConstBuffer : register(b3)
-{
-	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-    Light SceneLights[16];      // 场景灯光
-}
 
 struct MeshVertexIn
 {

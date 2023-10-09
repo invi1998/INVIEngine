@@ -364,8 +364,9 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			XMStoreFloat4x4(&MaterialConstantBuffer.Transformation, XMMatrixTranspose(Transform));
 
 			material->SetDirty(false);
+
+			MaterialConstantBufferViews.Update(material->GetMaterialID(), &MaterialConstantBuffer);
 		}
-		MaterialConstantBufferViews.Update(material->GetMaterialID(), &MaterialConstantBuffer);
 	}
 	
 }
@@ -459,7 +460,7 @@ void FGeometryMap::DrawMaterial(float DeltaTime)
 {
 
 	GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(
-		2,	// 要绑定的根签名槽的索引
+		4,	// 要绑定的根签名槽的索引
 		MaterialConstantBufferViews.GetBuffer()->GetGPUVirtualAddress()	// 着色器资源视图的 GPU 描述符句柄。
 		);
 }
@@ -471,7 +472,7 @@ void FGeometryMap::DrawLight(float DeltaTime)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
 	DesHandle.Offset(static_cast<INT>(GetDrawMeshCount()), DescriptorOffset);
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(3, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(2, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
 }
 
 void FGeometryMap::DrawTexture(float DeltaTime)
@@ -481,5 +482,5 @@ void FGeometryMap::DrawTexture(float DeltaTime)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
 	DesHandle.Offset(static_cast<INT>(GetDrawMeshCount() + GetDrawLightCount() + 1), DescriptorOffset);
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(4, DesHandle);
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(3, DesHandle);
 }
