@@ -50,8 +50,8 @@ protected:
     void MousePan(const XMFLOAT2& delta);
     void MouseZoom(float delta);
 
-	void MoveForward();
-	void MoveRight();
+	void MoveForward(float delta);
+	void MoveRight(float delta);
 
     std::pair<float, float> PanSpeed() const;
     float RotationSpeed() const;

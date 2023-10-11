@@ -78,8 +78,37 @@ void GQuaternionCamera::OnUpdate(float ts)
     }
     if (FInput::IsKeyReleased(Key::W))
     {
-	    
+		MoveForward(10.f);
+		UpdateViewMatrix();
     }
+	if (FInput::IsKeyReleased(Key::S))
+	{
+		MoveForward(-10.f);
+		UpdateViewMatrix();
+	}
+	if (FInput::IsKeyReleased(Key::A))
+	{
+		MoveRight(10.f);
+		UpdateViewMatrix();
+	}
+	if (FInput::IsKeyReleased(Key::D))
+	{
+		MoveRight(-10.f);
+		UpdateViewMatrix();
+	}
+	if (FInput::IsKeyReleased(Key::E))
+	{
+		XMFLOAT2 delta = { 10.f, 0.f};
+		MouseRotate(delta);
+		UpdateViewMatrix();
+	}
+	if (FInput::IsKeyReleased(Key::Q))
+	{
+		XMFLOAT2 delta = { -10.f, 0.f };
+		MouseRotate(delta);
+		UpdateViewMatrix();
+	}
+	
 }
 
 XMVECTOR GQuaternionCamera::GetUpDirection() const
@@ -159,7 +188,9 @@ void GQuaternionCamera::UpdateProjectionMatrix(float aspectRatio)
 XMVECTOR GQuaternionCamera::GetRotationQuaternion() const
 {
     // 将欧拉角转换为四元数并设置Roll为0。
-    XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(math_utils::angle_to_radian(Pitch), math_utils::angle_to_radian(Yaw), 0.0f);
+	XMVECTOR rotation = XMVectorSet(math_utils::angle_to_radian(Pitch), math_utils::angle_to_radian(Yaw), 0.f, 0.f);
+	XMVECTOR quaternion = XMQuaternionRotationRollPitchYawFromVector(rotation);
+    // XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(quaternionRotation);
     return quaternion;
 }
 
@@ -206,6 +237,8 @@ void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 	            const float yawSign = up.y < 0 ? -1.0f : 1.0f;
 	            Yaw += yawSign * delta.x * RotationSpeed();
 	            Pitch += delta.y * RotationSpeed();
+				FocalPoint += -GetRightDirection() * delta.x * Distance;
+				FocalPoint += GetUpDirection() * delta.y * Distance;
 
                 break;
 			}
@@ -234,30 +267,31 @@ void GQuaternionCamera::MouseZoom(float delta)
 {
     if (CameraType == ObservationObject)
     {
-        Radius += (delta * ZoomSpeed());
+        Radius += delta * ZoomSpeed();
     }
 	else
     {
-    	Distance -= delta * ZoomSpeed();
-	    if (Distance < 1.0f)
-	    {
-	        FocalPoint += GetForwardDirection();
-	        Distance = 1.0f;
-	    }
+		Distance -= delta * ZoomSpeed();
     }
    
 }
 
-void GQuaternionCamera::MoveForward()
+void GQuaternionCamera::MoveForward(float delta)
 {
 	if (CameraType == ECameraType::CameraRoaming)
 	{
-		
+		// FocalPoint += GetForwardDirection();
+		Distance -= delta;
 	}
 }
 
-void GQuaternionCamera::MoveRight()
+void GQuaternionCamera::MoveRight(float delta)
 {
+	if (CameraType == ECameraType::CameraRoaming)
+	{
+		// FocalPoint += -GetRightDirection() * delta.x * xSpeed * Distance;
+		FocalPoint += GetRightDirection() * delta;
+	}
 }
 
 std::pair<float, float> GQuaternionCamera::PanSpeed() const
@@ -279,8 +313,8 @@ float GQuaternionCamera::RotationSpeed() const
 float GQuaternionCamera::ZoomSpeed() const
 {
     float distance = Distance * 0.2f;
-    distance = max(distance, 0.0f);
+    distance = max(distance, 0.2f);
     float speed = distance * distance;
-    speed = min(speed, 100.0f); // max speed = 100
+    speed = min(speed, 50.0f); // max speed = 100
     return speed;
 }
