@@ -28,6 +28,8 @@ void CTransformationComponent::SetRotation(const fvector_3d& InRotation)
 	float pitchRadians = XMConvertToRadians(InRotation.x);
 	float yawRadians = XMConvertToRadians(InRotation.y);
 
+	// Rotation = XMFLOAT3(pitchRadians, yawRadians, rollRadians);
+
 	// 求出旋转矩阵
 	XMMATRIX RotationRollPitchYawMatrix = XMMatrixRotationRollPitchYaw(pitchRadians, yawRadians, rollRadians);
 
@@ -37,9 +39,9 @@ void CTransformationComponent::SetRotation(const fvector_3d& InRotation)
 	XMVECTOR Forward = XMLoadFloat3(&ForwardVector);
 
 	// 用方向向量乘以旋转矩阵，得到旋转变换后的向量
-	XMStoreFloat3(&RightVector, XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationRollPitchYawMatrix));
-	XMStoreFloat3(&UpVector, XMVector3TransformNormal(XMLoadFloat3(&UpVector), RotationRollPitchYawMatrix));
-	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(XMLoadFloat3(&ForwardVector), RotationRollPitchYawMatrix));
+	XMStoreFloat3(&RightVector, XMVector3TransformNormal(Right, RotationRollPitchYawMatrix));
+	XMStoreFloat3(&UpVector, XMVector3TransformNormal(Up, RotationRollPitchYawMatrix));
+	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(Forward, RotationRollPitchYawMatrix));
 
 }
 
@@ -63,6 +65,16 @@ void CTransformationComponent::SetRightVector(const XMFLOAT3& InRight)
 void CTransformationComponent::SetUpVector(const XMFLOAT3& InUp)
 {
 	UpVector = InUp;
+}
+
+XMFLOAT3& CTransformationComponent::GetRotation()
+{
+	/*float x = XMConvertToDegrees(Rotation.x);
+	float y = XMConvertToDegrees(Rotation.y);
+	float z = XMConvertToDegrees(Rotation.z);
+
+	XMFLOAT3 rotation = { x, y, z };*/
+	return Rotation;
 }
 
 void CTransformationComponent::CorrectionVector()

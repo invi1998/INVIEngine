@@ -34,9 +34,10 @@ void GSpotLight::Tick(float DeltaTime)
 	SetConicalOuterCorner(O * fabsf(cos(index_test)) + 20.f);
 
 	XMFLOAT3 v3 = GetRotation();
+	
 	v3.x += DeltaTime * 40.f;
 	v3.y += DeltaTime * 40.f;
-	////v3.z += DeltaTime * 100.f;
+	//v3.z += DeltaTime * 100.f;
 
 	SetRotation(fvector_3d(v3.x, v3.y, v3.z));
 }
