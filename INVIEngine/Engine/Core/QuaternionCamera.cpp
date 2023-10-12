@@ -78,22 +78,22 @@ void GQuaternionCamera::OnUpdate(float ts)
     }
     if (FInput::IsKeyReleased(Key::W))
     {
-		MoveForward(10.f);
+		MoveForward(2.f);
 		UpdateViewMatrix();
     }
 	if (FInput::IsKeyReleased(Key::S))
 	{
-		MoveForward(-10.f);
+		MoveForward(-2.f);
 		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::A))
 	{
-		MoveRight(10.f);
+		MoveRight(2.f);
 		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::D))
 	{
-		MoveRight(-10.f);
+		MoveRight(-2.f);
 		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::E))
@@ -318,9 +318,9 @@ float GQuaternionCamera::RotationSpeed() const
 
 float GQuaternionCamera::ZoomSpeed() const
 {
-    float distance = Distance * 0.2f;
-    distance = max(distance, 0.2f);
-    float speed = distance * distance;
-    speed = min(speed, 50.0f); // max speed = 100
-    return speed;
+	float distance = Distance * 0.2f;
+	distance = max(distance, 0.2f);
+	float speed = distance * distance;
+	speed = min(speed, 50.0f); // max speed = 100
+	return speed;
 }

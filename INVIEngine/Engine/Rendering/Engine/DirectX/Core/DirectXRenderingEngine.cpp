@@ -197,6 +197,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
+				InMaterial->SetBaseColorIndexKey("Earth");
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Lambert);
 
@@ -448,7 +449,7 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		// 单独显示顶点颜色
+		// 平行光模型
 		if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
 		{
 			SphereMesh->CreateMesh("Asserts/Mesh/SunMesh2.obj");
@@ -462,6 +463,49 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
 			}
 		}
+
+		// 地球材质
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 19.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColorIndexKey("Earth");
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+			}
+		}
+
+		// 木头材质
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 19.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColorIndexKey("Wood");
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+			}
+		}
+
+		// 木头材质2
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 19.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColorIndexKey("Wood2");
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+			}
+		}
+
 
 		// 平行光模型
 		if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())

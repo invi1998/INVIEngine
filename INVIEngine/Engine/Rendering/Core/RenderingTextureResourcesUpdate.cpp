@@ -30,6 +30,8 @@ void FRenderingTextureResourcesUpdate::LoadTextureResource(const std::wstring& p
 
 	Texture->RenderingTextureID = TextureUnorderedMap.size();
 
+	ENGINE_LOG("读取DDS贴图数据 材质索引 = %d, 材质名 = %ls", Texture->RenderingTextureID, Texture->Name.c_str());
+
 	wchar_t AssetFilenameBuffer[1024] = { 0 };
 	wchar_t* AssetFilenamePtr = const_cast<wchar_t*>(Texture->Filename.c_str());
 

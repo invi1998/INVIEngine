@@ -289,6 +289,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			if (auto& material = (*renderingData.Mesh->GetMaterial())[0])
 			{
 				OBJTransformation.MaterialID = material->GetMaterialID();
+				// ENGINE_LOG("材质id = %d, 材质名 = %s", OBJTransformation.MaterialID, material->GetBaseColorIndexKey().c_str());
 			}
 
 			MeshConstantBufferViews.Update(i, &OBJTransformation);
@@ -339,7 +340,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 
 void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FViewportInfo& viewport_info)
 {
-	FMaterialConstantBuffer MaterialConstantBuffer;
+	FMaterialConstantBuffer MaterialConstantBuffer = {};
 	// 更新材质
 	for (auto& material :MaterialsSRV)
 	{
@@ -352,6 +353,7 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			if (auto basecolorPtr = RenderingTextureResourceViews->FindRenderingTexture(material->GetBaseColorIndexKey()))
 			{
 				MaterialConstantBuffer.BaseColorIndex = (*basecolorPtr)->RenderingTextureID;
+				ENGINE_LOG("更新材质 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.BaseColorIndex, (*basecolorPtr)->Name.c_str());
 			}
 			else
 			{
