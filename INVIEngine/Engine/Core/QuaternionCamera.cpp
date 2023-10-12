@@ -98,13 +98,13 @@ void GQuaternionCamera::OnUpdate(float ts)
 	}
 	if (FInput::IsKeyReleased(Key::E))
 	{
-		XMFLOAT2 delta = { 10.f, 0.f};
+		XMFLOAT2 delta = { 2.f, 0.f};
 		MouseRotate(delta);
 		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::Q))
 	{
-		XMFLOAT2 delta = { -10.f, 0.f };
+		XMFLOAT2 delta = { -2.f, 0.f };
 		MouseRotate(delta);
 		UpdateViewMatrix();
 	}
@@ -237,8 +237,7 @@ void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 	            const float yawSign = up.y < 0 ? -1.0f : 1.0f;
 	            Yaw += yawSign * delta.x * RotationSpeed();
 	            Pitch += delta.y * RotationSpeed();
-				FocalPoint += -GetRightDirection() * delta.x * Distance;
-				FocalPoint += GetUpDirection() * delta.y * Distance;
+				MousePanEdit(delta);
 
                 break;
 			}
@@ -261,6 +260,13 @@ void GQuaternionCamera::MousePan(const XMFLOAT2& delta)
     auto [xSpeed, ySpeed] = PanSpeed();
     FocalPoint += -GetRightDirection() * delta.x * xSpeed * Distance;
     FocalPoint += GetUpDirection() * delta.y * ySpeed * Distance;
+}
+
+void GQuaternionCamera::MousePanEdit(const XMFLOAT2& delta)
+{
+	auto [xSpeed, ySpeed] = PanSpeed();
+	FocalPoint += GetRightDirection() * delta.x * xSpeed * Distance;
+	FocalPoint += -GetUpDirection() * delta.y * ySpeed * Distance;
 }
 
 void GQuaternionCamera::MouseZoom(float delta)

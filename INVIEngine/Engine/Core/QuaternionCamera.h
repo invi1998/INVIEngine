@@ -48,6 +48,7 @@ protected:
 
     void MouseRotate(const XMFLOAT2& delta);
     void MousePan(const XMFLOAT2& delta);
+    void MousePanEdit(const XMFLOAT2& delta);
     void MouseZoom(float delta);
 
 	void MoveForward(float delta);
