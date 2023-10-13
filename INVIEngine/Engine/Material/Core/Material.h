@@ -20,6 +20,7 @@ public:
 	FORCEINLINE XMFLOAT4X4 GetTransformation() const { return MaterialTransformation; }
 	FORCEINLINE bool IsDirty() const { return bDirty; }
 	FORCEINLINE const std::string& GetBaseColorIndexKey() const { return BaseColorIndexKey; }
+	FORCEINLINE const std::string& GetNormalIndexKey() const { return NormalIndexKey; }
 	FORCEINLINE int GetMaterialID() const { return MaterialID; }
 
 public:
@@ -29,6 +30,7 @@ public:
 	void SetMaterialDisplayStatus(EMaterialDisplayStatusType type);
 	void SetTransformation(const XMFLOAT4X4& transform);
 	void SetBaseColorIndexKey(const std::string& key);
+	void SetNormalIndexKey(const std::string& key);
 	void SetDirty(bool dirty);
 	void SetMaterialID(const int id);
 
@@ -44,7 +46,8 @@ private:
 	EMaterialDisplayStatusType MaterialDisplayType = EMaterialDisplayStatusType::TriangleDisplay;
 	XMFLOAT4X4 MaterialTransformation;
 
-	std::string BaseColorIndexKey;
+	std::string BaseColorIndexKey;	// Œ∆¿ÌÃ˘Õº
+	std::string NormalIndexKey;		// ∑®œﬂÃ˘Õº
 
 };
 

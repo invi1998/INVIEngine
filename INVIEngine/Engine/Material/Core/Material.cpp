@@ -57,6 +57,12 @@ void CMaterial::SetBaseColorIndexKey(const std::string& key)
 	SetDirty(true);
 }
 
+void CMaterial::SetNormalIndexKey(const std::string& key)
+{
+	NormalIndexKey = key;
+	SetDirty(true);
+}
+
 void CMaterial::SetDirty(bool dirty)
 {
 	bDirty = dirty;

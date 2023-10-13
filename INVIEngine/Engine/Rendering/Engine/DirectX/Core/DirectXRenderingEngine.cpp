@@ -487,6 +487,7 @@ int CDirectXRenderingEngine::PostInit()
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColorIndexKey("Wood");
+				InMaterial->SetNormalIndexKey("Wood_NRM");
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 			}
@@ -501,6 +502,7 @@ int CDirectXRenderingEngine::PostInit()
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColorIndexKey("Wood2");
+				InMaterial->SetNormalIndexKey("Wood2_Nor");
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 			}

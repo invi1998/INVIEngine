@@ -360,6 +360,17 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 				MaterialConstantBuffer.BaseColorIndex = -1;
 			}
 
+			// 法线贴图
+			if (auto normalColor = RenderingTextureResourceViews->FindRenderingTexture(material->GetNormalIndexKey()))
+			{
+				MaterialConstantBuffer.NormalIndex = (*normalColor)->RenderingTextureID;
+				ENGINE_LOG("更新法线贴图 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.BaseColorIndex, (*normalColor)->Name.c_str());
+			}
+			else
+			{
+				MaterialConstantBuffer.NormalIndex = -1;
+			}
+
 			XMFLOAT4X4 MaterialTransform = material->GetTransformation();
 			XMMATRIX Transform = XMLoadFloat4x4(&MaterialTransform);
 			// 将材质里的行矩阵转为列矩阵传入shader中
