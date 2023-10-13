@@ -2,6 +2,7 @@
 #include "Light.hlsl"
 #include "Material.hlsl"
 #include "PBR.hlsl"
+#include "ShaderFunctionLibrary.hlsl"
 
 // ²ÉÑù×´Ì¬
 SamplerState SimplerTextureState : register(s0);
