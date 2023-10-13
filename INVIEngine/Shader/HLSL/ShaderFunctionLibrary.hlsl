@@ -1,5 +1,4 @@
 
-
 /**
  * \brief 放回TBN矩阵
  * \param unitWorldNormal  单位化的世界法线
@@ -15,5 +14,4 @@ float3x3 GetTBNMatrix(float3 unitWorldNormal, float3 worldTangent)
 	float3 B = cross(N, T);
 
 	return float3x3(T, B, N);
-
 }

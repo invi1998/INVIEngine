@@ -1,96 +1,24 @@
-
-#include "Light.hlsl"
 #include "Material.hlsl"
 #include "PBR.hlsl"
-#include "ShaderFunctionLibrary.hlsl"
-
-// 采样状态
-SamplerState SimplerTextureState : register(s0);
-
-// 纹理 CBV描述表
-//CD3DX12_DESCRIPTOR_RANGE DescriptorRangeTextureSRV; // 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
-//	DescriptorRangeTextureSRV.Init(
-//		D3D12_DESCRIPTOR_RANGE_TYPE_SRV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型）），对于纹理，这里我们选择shaderRenderingView
-//		1,									// 描述数量 1
-//		4);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
-
-// 贴图 (这里寄存器的编号对应你在根签名那里设置的纹理的CBV描述表的寄存器编号
-Texture2D SimpleTexture2DMap[TEXTURE2DNUM] : register(t3);
-
-cbuffer MeshConstBuffer : register(b0)
-{
-	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-	float4x4 MaterialTransformationMatrix;      // 材质变换矩阵
-    float4x4 TextureTransformationMatrix;       // 纹理变换矩阵
-	
-	uint MaterialID;		// 材质id
-	uint rr1;
-	uint rr2;
-	uint rr3;
-}
-
-
-cbuffer ViewportConstBuffer : register(b1)
-{
-	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-    float4 CameraPosition;
-	// 视口投影矩阵
-	float4x4 ViewportProjectionMatrix;
-    
-}
-
-cbuffer LightConstBuffer : register(b2)
-{
-	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-	Light SceneLights[16]; // 场景灯光
-}
-
-struct MaterialConstBuffer
-{
-	// 声明常量缓冲区(我们需要将程序里的常量缓冲区的数据寄存到寄存器里，寄存器有15个b0-b14，然后从寄存器里读取出来使用)
-	int MaterialType; // 材质类型
-	float MaterialRoughness; // 材质粗糙度
-	int BaseColorIndex; // 纹理贴图索引（默认为-1，表示没有贴图）
-	float Reserved2;
-    
-	float4 BaseColor; // 材质基础颜色
-	float4x4 MaterialProjectionMatrix;
-};
-
-StructuredBuffer<MaterialConstBuffer> Materials : register(t4, space1);
-
 
 struct MeshVertexIn
 {
-	float3 Position : POSITION;		// 位置
-	float4 Color : COLOR;			// 颜色
-	float3 Normal : NORMAL;			// 法线
-    float3 UTangent : TANGENT;      // 切线（U方向）
-    float2 Texcoord : TEXCOORD;     // UV
+	float3 Position : POSITION; // 位置
+	float4 Color : COLOR; // 颜色
+	float3 Normal : NORMAL; // 法线
+	float3 UTangent : TANGENT; // 切线（U方向）
+	float2 Texcoord : TEXCOORD; // UV
 };
 
 struct MeshVertexOut
 {
-    float4 WorldPosition : POSITION;
+	float4 WorldPosition : POSITION;
 	float4 Position : SV_POSITION;
 	float4 Color : COLOR;
 	float3 Normal : NORMAL;
-    float3 UTangent : TANGENT;      // 切线（U方向）
-    float2 Texcoord : TEXCOORD;     // UV
+	float3 UTangent : TANGENT; // 切线（U方向）
+	float2 Texcoord : TEXCOORD; // UV
 };
-
-//float2 tri(in float2 x)
-//{
-//    float2 h = frac(x * 0.5f) - 0.5f;
-//    return 1.f - 2.f * abs(h);
-//}
-
-//float checkersGrid(float2 uv, float2 ddx, float2 ddy)
-//{
-//    float2 w = max(abs(ddx), abs(ddy)) + 0.01f;
-//    float2 i = (tri(uv + 0.5 * w) - tri(uv - 0.5 * w)) / w;
-//    return 0.5 - 0.5 * i.x * i.y;
-//}
 
 
 MeshVertexOut VSMain(MeshVertexIn mv)
@@ -149,16 +77,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	
     FMaterial material;
 	
-	if (MatConstbuffer.BaseColorIndex == -1)
-	{
-		material.BaseColor = MatConstbuffer.BaseColor;
-	}
-	else
-	{
-		// 纹理采样 (v传入采样方式，传入UV）
-		material.BaseColor = SimpleTexture2DMap[MatConstbuffer.BaseColorIndex].Sample(SimplerTextureState, mvOut.Texcoord);
-	}
 	
+	MatConstbuffer.BaseColor = GetMaterialBaseColor(MatConstbuffer, mvOut.Texcoord);
    
     
     float3 ModelNormal = normalize(mvOut.Normal);
@@ -186,6 +106,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     
     float4 Specular = { 0.f, 0.f, 0.f, 1.f };
     float4 LightStrength = { 0.f,0.f,0.f,1.f };
+	
+	// 获取法线，如果设置了法线贴图，则绘制法线贴图
+	ModelNormal = GetMaterialNormal(MatConstbuffer, mvOut.Texcoord, mvOut.Normal, mvOut.UTangent);
+	
     
     for (int i = 0; i < 16; i++)
     {
