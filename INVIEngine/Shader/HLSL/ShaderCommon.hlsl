@@ -1,7 +1,7 @@
 #include "Light.hlsl"
 
 // 采样状态
-SamplerState SimplerTextureState : register(s0);
+SamplerState TextureSampler : register(s0);
 SamplerState AnisotropicSampler : register(s1);
 
 // 纹理 CBV描述表

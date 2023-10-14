@@ -48,7 +48,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	outV.UTangent = mul(mv.UTangent, (float3x3) MaterialTransformationMatrix);
 
     // 颜色
-    outV.Color.rgb = mv.Color.rgb;
+    outV.Color = mv.Color;
     
     // UV
     // 先将传入的uv坐标和模型的纹理变换相乘，得到纹理变换后的UV
@@ -108,7 +108,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     float4 LightStrength = { 0.f,0.f,0.f,1.f };
 	
 	// 获取法线，如果设置了法线贴图，则绘制法线贴图
-	ModelNormal = GetMaterialNormal(MatConstbuffer, mvOut.Texcoord, mvOut.Normal, mvOut.UTangent);
+	// ModelNormal = GetMaterialNormal(MatConstbuffer, mvOut.Texcoord, ModelNormal, mvOut.UTangent);
 	
     
     for (int i = 0; i < 16; i++)
@@ -400,6 +400,11 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 
             LightStrength += LightStrengthTemp * DotDiffValue * float4(SceneLights[i].LightIntensity.xyz, 1.f);
             LightStrength.w = 1.f;
+
+			// 将数值限制为【0-1】
+			LightStrength = saturate(LightStrength);
+			Specular = saturate(Specular);
+			material.BaseColor = saturate(material.BaseColor);
         }
     }
 

@@ -452,7 +452,7 @@ int CDirectXRenderingEngine::PostInit()
 		// 平行光模型
 		if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
 		{
-			SphereMesh->CreateMesh("Asserts/Mesh/SunMesh2.obj");
+			SphereMesh->CreateMesh("Asserts/Mesh/SunMesh.obj");
 
 			SphereMesh->SetPosition(XMFLOAT3(19.f, 2, 19.f));
 			SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));

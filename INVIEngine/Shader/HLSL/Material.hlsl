@@ -24,7 +24,7 @@ float4 GetMaterialBaseColor(MaterialConstBuffer MatConstbuffer, float2 Texcoord)
 	}
 
 	// 纹理采样 (v传入采样方式，传入UV）
-	return SimpleTexture2DMap[MatConstbuffer.BaseColorIndex].Sample(SimplerTextureState, Texcoord);
+	return SimpleTexture2DMap[MatConstbuffer.BaseColorIndex].Sample(TextureSampler, Texcoord);
 }
 
 // 获取法线贴图
