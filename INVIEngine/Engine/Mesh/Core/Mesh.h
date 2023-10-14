@@ -2,7 +2,7 @@
 
 #include "MeshType.h"
 #include "Actor/Core/ActorObject.h"
-#include "Component/Mesh/ShellMeshComponent.h"
+#include "Component/Mesh/Core/ShellMeshComponent.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/Rendering.h"
 

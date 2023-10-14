@@ -28,4 +28,11 @@ struct FMeshRenderingData
 	std::vector<uint16_t> IndexData;	// 索引数据
 };
 
+//Pyramid的边数
+enum EPyramidNumberSides
+{
+	Pyramid_3 = 3,
+	Pyramid_4,
+	Pyramid_5,
+};
 

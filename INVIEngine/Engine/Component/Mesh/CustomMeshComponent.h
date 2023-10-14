@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShellMeshComponent.h"
+#include "Core/ShellMeshComponent.h"
 
 class CCustomMeshComponent : public CShellMeshComponent
 {

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "ShellMeshComponent.h"
+#include "Core/ShellMeshComponent.h"
+
+struct FMeshRenderingData;
 
 class CBoxMeshComponent : public CShellMeshComponent
 {

@@ -2,7 +2,7 @@
 
 #include "Mesh.h"
 
-#include "Component/Mesh/ShellMeshComponent.h"
+#include "Component/Mesh/Core/ShellMeshComponent.h"
 #include "Material/Core/Material.h"
 
 /**
