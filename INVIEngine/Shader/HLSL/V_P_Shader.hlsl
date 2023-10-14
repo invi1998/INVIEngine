@@ -398,7 +398,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
             }
 
-            LightStrength += LightStrengthTemp * DotDiffValue * float4(SceneLights[i].LightIntensity.xyz, 1.f);
+            LightStrength += saturate(LightStrengthTemp * DotDiffValue * float4(SceneLights[i].LightIntensity.xyz, 1.f));
             LightStrength.w = 1.f;
 
 			// 将数值限制为【0-1】
