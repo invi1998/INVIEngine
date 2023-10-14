@@ -32,10 +32,10 @@ float3 GetMaterialNormal(MaterialConstBuffer MatConstbuffer, float2 Texcoord, fl
 {
 	if (MatConstbuffer.NormalIndex != -1)
 	{
-		float4 simpleNormal = SimpleTexture2DMap[MatConstbuffer.NormalIndex].Sample(SimplerTextureState, Texcoord);
+		float4 simpleNormal = SimpleTexture2DMap[MatConstbuffer.NormalIndex].Sample(AnisotropicSampler, Texcoord);
 
 		// 将 【0，1】的simpleNormal值 映射到 【-1， 1】
-		float3 normalTangentSpace = (simpleNormal * 2.f - 1.f).rgb;
+		float3 normalTangentSpace = simpleNormal.rgb * 2.f - 1.f;
 
 		// 拿到世界TBN
 		float3x3 tbn = GetTBNMatrix(unitWorldNormal, worldTangent);

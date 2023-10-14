@@ -2,6 +2,7 @@
 
 // 采样状态
 SamplerState SimplerTextureState : register(s0);
+SamplerState AnisotropicSampler : register(s1);
 
 // 纹理 CBV描述表
 //CD3DX12_DESCRIPTOR_RANGE DescriptorRangeTextureSRV; // 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建

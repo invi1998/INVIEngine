@@ -28,7 +28,7 @@ void FRenderingTextureResourcesUpdate::LoadTextureResource(const std::wstring& p
 		Texture->UploadBuffer		// 上传缓冲区
 	);
 
-	Texture->RenderingTextureID = TextureUnorderedMap.size();
+	Texture->RenderingTextureID = TextureMap.size();
 
 	ENGINE_LOG("读取DDS贴图数据 材质索引 = %d, 材质名 = %ls", Texture->RenderingTextureID, Texture->Name.c_str());
 
@@ -45,7 +45,7 @@ void FRenderingTextureResourcesUpdate::LoadTextureResource(const std::wstring& p
 	wget_printf_s(AssetFilenameBufferRet, L"Texture'%s'", v);
 
 	Texture->AssertFilename = AssetFilenameBufferRet;
-	TextureUnorderedMap[Texture->Name] = std::move(Texture);
+	TextureMap[Texture->Name] = std::move(Texture);
 
 }
 
@@ -70,7 +70,7 @@ void FRenderingTextureResourcesUpdate::BuildTextureConstantBuffer(ID3D12Descript
 	ShaderResourceViewDesc.Texture2D.MipLevels = 1; // 指定使用的mip级别的数量，用于控制纹理的细节级别，通常设置为mip级别的数量，如果设置为-1，则表示使用所有可用的mip级别。
 	ShaderResourceViewDesc.Texture2D.ResourceMinLODClamp = 0.f;	// 用于设置对纹理资源的LOD（Level of Detail）限制，指定LOD的最小允许值，用于限制着色器对纹理资源的访问范围。这可以用于控制纹理的细节级别。
 
-	for (auto& val : TextureUnorderedMap | views::values)
+	for (auto& val : TextureMap | views::values)
 	{
 		ShaderResourceViewDesc.Format = val->Data->GetDesc().Format;
 		ShaderResourceViewDesc.Texture2D.MipLevels = val->Data->GetDesc().MipLevels;
@@ -98,13 +98,13 @@ std::unique_ptr<FRenderingTexture>* FRenderingTextureResourcesUpdate::FindRender
 	wchar_t texturePath[1024] = { 0 };
 	char_to_wchar_t(texturePath, 1024, instring);
 
-	if (TextureUnorderedMap.find(texturePath) != TextureUnorderedMap.end())
+	if (TextureMap.find(texturePath) != TextureMap.end())
 	{
-		return &TextureUnorderedMap[texturePath];			// key查找
+		return &TextureMap[texturePath];			// key查找
 	}
 	else
 	{
-		for(auto &temp : TextureUnorderedMap)
+		for(auto &temp : TextureMap)
 		{
 			if (temp.second->Filename == texturePath)	// 路径
 			{
