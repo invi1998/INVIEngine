@@ -77,34 +77,16 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)
 
 	// 设置采样方式-静态采样方式
-	std::vector<CD3DX12_STATIC_SAMPLER_DESC> SamplerDesc;
+	StaticSamplerObject.BuildStaticSampler();
 
-	// 设置采样方式为默认
-	SamplerDesc.push_back(
-		CD3DX12_STATIC_SAMPLER_DESC(
-			0,			// 指定寄存器编号
-			D3D12_FILTER_MIN_MAG_MIP_POINT	// 纹理采样方式
-		));
-
-	// 设置法线贴图的采样方式
-	SamplerDesc.push_back(
-		CD3DX12_STATIC_SAMPLER_DESC(
-			1,
-			D3D12_FILTER_ANISOTROPIC,
-			D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-			D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-			D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-			0,
-			8
-		)
-	);
+	
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
 		5,			// 参数数量
 		RootParam,	// 根签名参数
-		SamplerDesc.size(),			// 静态采样数量
-		SamplerDesc.data(),			// 静态采样数据（传入采样数据指针）
+		StaticSamplerObject.GetSize(),			// 静态采样数量
+		StaticSamplerObject.GetData(),			// 静态采样数据（传入采样数据指针）
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT // 指定根签名布局选项 表示根签名允许输入汇编程序访问根常量数据。
 	);
 

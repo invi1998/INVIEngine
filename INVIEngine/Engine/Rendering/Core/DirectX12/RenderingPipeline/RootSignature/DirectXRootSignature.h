@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/DirectXDeviceInterface.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/StaticSimpler/StaticSampler.h"
 
 struct FDirectXRootSignature : public IDirectXDeviceInterface_Struct
 {
@@ -17,5 +18,6 @@ public:
 
 private:
 	ComPtr<ID3D12RootSignature> RootSignature;		// 根签名
+	FStaticSampler StaticSamplerObject;				// 静态采样器
 };
 
