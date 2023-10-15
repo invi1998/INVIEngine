@@ -283,6 +283,8 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 			XMMATRIX ATRTIXTextureWorld = XMLoadFloat4x4(&renderingData.TextureTransformationMatrix);
 
 			FObjectTransformation OBJTransformation;
+			// CPU端存储矩阵是先行后列的顺序，与GPU的默认情况（column_major）正好相反
+			// 因此当我们要把CPU的矩阵通过Constant Buffer传递到GPU时，可以在存储矩阵时进行 矩阵的转置 操作
 			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(ATRTIXMatrixWorld));
 			XMStoreFloat4x4(&OBJTransformation.TextureTransformation, XMMatrixTranspose(ATRTIXTextureWorld));
 
