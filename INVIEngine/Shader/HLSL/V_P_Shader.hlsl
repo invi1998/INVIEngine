@@ -105,16 +105,21 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     float DotDiffValue = 0.f;
     
     float4 Specular = { 0.f, 0.f, 0.f, 1.f };
-    float4 LightStrength = { 0.f,0.f,0.f,1.f };
+    float4 LightStrength = { 0.f, 0.f, 0.f, 1.f };
 	
 	// 获取法线，如果设置了法线贴图，则绘制法线贴图
-	// ModelNormal = GetMaterialNormal(MatConstbuffer, mvOut.Texcoord, ModelNormal, mvOut.UTangent);
+	ModelNormal = GetMaterialNormal(MatConstbuffer, mvOut.Texcoord, ModelNormal, mvOut.UTangent);
 	
+	// return float4(mvOut.UTangent, 1.0f);
+	// return MatConstbuffer.BaseColor;
+	
+	return MatConstbuffer.BaseColor * (SceneLights[1].LightIntensity, 1.0f);
     
     for (int i = 0; i < 16; i++)
     {
         if (length(SceneLights[i].LightIntensity.xyz) > 0.f)
         {
+			
             float3 NormalizeLightDirection = normalize(GetLightDirection(SceneLights[i], mvOut.WorldPosition.xyz));
             
             float4 LightStrengthTemp = CaculateLightStrength(SceneLights[i], ModelNormal, mvOut.WorldPosition.xyz, NormalizeLightDirection);

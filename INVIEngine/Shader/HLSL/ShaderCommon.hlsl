@@ -50,15 +50,15 @@ struct MaterialConstBuffer
 	int BaseColorIndex; // 纹理贴图索引（默认为-1，表示没有贴图）
 	int NormalIndex;	// 法线贴图索引
 
-	int SpecularIndex;
-	int XX1;
-	int XX2;
-	int XX3;
+	//int SpecularIndex;
+	//int XX1;
+	//int XX2;
+	//int XX3;
     
 	float4 BaseColor; // 材质基础颜色
 
-	float3 SpecularColor;
-	int XX6;
+	//float3 SpecularColor;
+	//int XX6;
 
 	float4x4 MaterialProjectionMatrix;
 };
