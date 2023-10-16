@@ -13,6 +13,8 @@
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+#include "pix3.h"
+
 #include "Rendering/DirectX12/d3dx12.h"
 #include "Rendering/DirectX12/DDSTextureLoader.h"
 #include "Debug/EngineDebug.h"

@@ -179,7 +179,23 @@ void FGeometryMap::BuildMaterialShaderResourceView()
 	// 创建常量缓冲区
 	MaterialConstantBufferViews.CreateConstant(sizeof(FMaterialConstantBuffer), GetDrawMaterialCount(), false);
 
-	int ShaderIndex = 0;
+	//for (auto& Tmp : Geometries)
+	//{
+	//	for (size_t i = 0; i < Tmp.second.DescribeMeshRenderingData.size(); i++)
+	//	{
+	//		auto& InData = Tmp.second.DescribeMeshRenderingData[i];
+	//		if (auto InMaterials = InData.Mesh->GetMaterial())
+	//		{
+	//			for (size_t j = 0; j < InMaterials->size(); j++)
+	//			{
+	//				//做ShaderIndex所有
+	//				(*InMaterials)[j]->SetMaterialID(MaterialsSRV.size());
+
+	//				MaterialsSRV.push_back((*InMaterials)[j]);
+	//			}
+	//		}
+	//	}
+	//}
 
 	// 收集材质
 	for (auto& geometry : Geometries)

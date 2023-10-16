@@ -43,16 +43,18 @@ project "INVIEngine"
 
 		defines
 		{
-			"CLOSE_DISABLE_DEBUG_INFOR"
+			"CLOSE_DISABLE_DEBUG_INFOR",
+			"USE_PIX",
+			"DBG",
+			"_DEBUG",
+			"PROFILE",
+			"PROFILE_BUILD",
 		}
 
 	filter "configurations:Debug"
 		defines
 		{
-			"HZ_DEBUG",
-			"USE_PIX",
-			"DBG",
-			"_DEBUG",
+			"HZ_DEBUG"
 		}
 		runtime "Debug"
 		symbols "on"

@@ -142,8 +142,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 100.f;
             
-                Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.f), M);
-            }
+				Specular = saturate(pow(max(dot(ViewDirection, ReflectDirection), 0.f), M));
+			}
 			else if (MatConstbuffer.MaterialType == 3)
             {
                 // Blinn-Phong
@@ -160,7 +160,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float M = MaterialShiniess * 100.f;
                 
                 // c=(m+2.f/PI) blinnPhong归一化系数
-                Specular = (M + 2.f)*pow(max(dot(HalfDirection, ModelNormal), 0.f), M)/3.1415926f;
+				Specular = saturate((M + 2.f) * pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 3.1415926f);
 
             }
 			else if (MatConstbuffer.MaterialType == 4)
@@ -257,8 +257,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 						float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                         float M = MaterialShiniess * 70.f;
             
-                        Specular += pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f;
-                    }
+						Specular += saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f);
+					}
                 }
             }
 			else if (MatConstbuffer.MaterialType == 9)
@@ -284,8 +284,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 					float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                     float M = MaterialShiniess * 100.f;
 
-                    Specular = pow(max(dot(HalfDirection, ModelNormal), 0.f), M);
-                }
+					Specular = saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M));
+				}
 
                 // 添加菲尼尔效果
                 /*float3 f0 = { 0.02f, 0.02f, 0.02f };
@@ -304,7 +304,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float3 BackLightNormalValue = -normalize(ModelNormal * SSSValue + NormalizeLightDirection);
 
                 // pow 收拢折射光强
-                DotDiffValue += pow(saturate(dot(BackLightNormalValue, ViewDirection)), TransmissionScale) * TransmissionIntensity;
+				DotDiffValue += saturate(pow(saturate(dot(BackLightNormalValue, ViewDirection)), TransmissionScale) * TransmissionIntensity);
 
         
             }

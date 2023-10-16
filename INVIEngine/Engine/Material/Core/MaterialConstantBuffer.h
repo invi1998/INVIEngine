@@ -11,7 +11,16 @@ struct FMaterialConstantBuffer
 	int BaseColorIndex;			// 材质贴图索引，默认-1
 	int NormalIndex;			// 法线贴图索引
 
+	int SpecularIndex;
+	int XX1;
+	int XX2;
+	int XX3;
+
 	XMFLOAT4 BaseColor;				// 16字节
+
+	XMFLOAT3 SpecularColor;
+	int XX6;
+
 	XMFLOAT4X4 Transformation;	// 64字节
 
 };
