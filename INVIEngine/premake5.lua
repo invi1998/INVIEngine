@@ -47,7 +47,13 @@ project "INVIEngine"
 		}
 
 	filter "configurations:Debug"
-		defines "HZ_DEBUG"
+		defines
+		{
+			"HZ_DEBUG",
+			"USE_PIX",
+			"DBG",
+			"_DEBUG",
+		}
 		runtime "Debug"
 		symbols "on"
 
@@ -68,4 +74,3 @@ project "INVIEngine"
 	filter "action:gcc*"
 		linkoptions "-Wl,--stack,16000000"
 		linkoptions "-Wl,-z,stack-size=16000000"
-		
