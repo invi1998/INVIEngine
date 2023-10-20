@@ -113,7 +113,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	// return float4(mvOut.UTangent, 1.0f);
 	// return MatConstbuffer.BaseColor;
 	
-	return MatConstbuffer.BaseColor * (SceneLights[1].LightIntensity, 1.0f);
+	// return MatConstbuffer.BaseColor * (SceneLights[1].LightIntensity, 1.0f);
     
     for (int i = 0; i < 16; i++)
     {

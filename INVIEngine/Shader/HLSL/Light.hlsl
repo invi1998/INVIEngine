@@ -18,6 +18,7 @@ struct Light
     float xxs1;
     float xxs2;
     float xxs3;
+	
 };
 
 float3 GetLightDirection(Light L, float3 WorldLocation)
