@@ -382,11 +382,22 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			if (auto normalColor = RenderingTextureResourceViews->FindRenderingTexture(material->GetNormalIndexKey()))
 			{
 				MaterialConstantBuffer.NormalIndex = (*normalColor)->RenderingTextureID;
-				ENGINE_LOG("更新法线贴图 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.BaseColorIndex, (*normalColor)->Name.c_str());
+				ENGINE_LOG("更新法线贴图 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.NormalIndex, (*normalColor)->Name.c_str());
 			}
 			else
 			{
 				MaterialConstantBuffer.NormalIndex = -1;
+			}
+
+			// 高光贴图
+			if (auto specularColor = RenderingTextureResourceViews->FindRenderingTexture(material->GetSpecularIndexKey()))
+			{
+				MaterialConstantBuffer.SpecularIndex = (*specularColor)->RenderingTextureID;
+				ENGINE_LOG("更新高光贴图 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.SpecularIndex, (*specularColor)->Name.c_str());
+			}
+			else
+			{
+				MaterialConstantBuffer.SpecularIndex = -1;
 			}
 
 			XMFLOAT4X4 MaterialTransform = material->GetTransformation();

@@ -21,6 +21,7 @@ public:
 	FORCEINLINE bool IsDirty() const { return bDirty; }
 	FORCEINLINE const std::string& GetBaseColorIndexKey() const { return BaseColorIndexKey; }
 	FORCEINLINE const std::string& GetNormalIndexKey() const { return NormalIndexKey; }
+	FORCEINLINE const std::string& GetSpecularIndexKey() const { return SpecularIndexKey; }
 	FORCEINLINE int GetMaterialID() const { return MaterialID; }
 
 public:
@@ -31,6 +32,8 @@ public:
 	void SetTransformation(const XMFLOAT4X4& transform);
 	void SetBaseColorIndexKey(const std::string& key);
 	void SetNormalIndexKey(const std::string& key);
+	void SetSpecular(const std::string& key);
+	void SetSpecular(const XMFLOAT3& color);
 	void SetDirty(bool dirty);
 	void SetMaterialID(const int id);
 
@@ -48,6 +51,7 @@ private:
 
 	std::string BaseColorIndexKey;	// 纹理贴图
 	std::string NormalIndexKey;		// 法线贴图
+	std::string SpecularIndexKey;	// 高光贴图
 
 };
 

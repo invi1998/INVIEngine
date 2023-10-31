@@ -63,6 +63,17 @@ void CMaterial::SetNormalIndexKey(const std::string& key)
 	SetDirty(true);
 }
 
+void CMaterial::SetSpecular(const std::string& key)
+{
+	SpecularIndexKey = key;
+	SetDirty(true);
+}
+
+void CMaterial::SetSpecular(const XMFLOAT3& color)
+{
+
+}
+
 void CMaterial::SetDirty(bool dirty)
 {
 	bDirty = dirty;

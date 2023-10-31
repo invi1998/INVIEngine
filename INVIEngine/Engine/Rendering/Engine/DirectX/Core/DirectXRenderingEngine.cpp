@@ -437,7 +437,6 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetRoughness(3.15f);
 			}
 		}
-
 		// OrenNayar ´Ö²Ú±íÃæ
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
@@ -546,6 +545,7 @@ int CDirectXRenderingEngine::PostInit()
 			{
 				InMaterial->SetBaseColorIndexKey("Wood2");
 				InMaterial->SetNormalIndexKey("Wood2_Nor");
+				InMaterial->SetSpecular("Wood2_SPEC");
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 			}
