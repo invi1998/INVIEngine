@@ -54,7 +54,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
     // 先将传入的uv坐标和模型的纹理变换相乘，得到纹理变换后的UV
     float4 TextureTexcoord = mul(float4(mv.Texcoord, 0.f, 1.f), TextureTransformationMatrix);
     // 然后再与材质的变换矩阵相乘，得到材质变换后的UV，就是我们最终的顶点UV了
-    outV.Texcoord = mul(TextureTexcoord, MaterialTransformationMatrix).xy;
+    outV.Texcoord = mul(TextureTexcoord, MatConstbuffer.MaterialProjectionMatrix).xy;
 
 	return outV;
 }
@@ -78,7 +78,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     FMaterial material;
 	
 	
-	MatConstbuffer.BaseColor = GetMaterialBaseColor(MatConstbuffer, mvOut.Texcoord);
+	material.BaseColor = GetMaterialBaseColor(MatConstbuffer, mvOut.Texcoord);
    
     
     float3 ModelNormal = normalize(mvOut.Normal);
@@ -410,7 +410,19 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			LightStrength = saturate(LightStrength);
 			Specular = saturate(Specular);
 			material.BaseColor = saturate(material.BaseColor);
-        }
+			
+			// return material.BaseColor;
+			
+			//if (i == 0)
+			//{
+			//	// return float4(NormalizeLightDirection, 1.0f);
+			//	mvOut.Color = material.BaseColor * LightStrength // 漫反射
+			//			+ material.BaseColor * Specular * LightStrength // 高光
+			//			+ material.BaseColor * AmbientLight; // 间接光（环境光）
+				
+			//	return mvOut.Color;
+			//}
+		}
     }
 
     // 最终颜色贡献

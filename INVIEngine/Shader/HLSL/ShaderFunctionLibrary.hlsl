@@ -1,6 +1,6 @@
 
 /**
- * \brief 放回TBN矩阵
+ * \brief 返回TBN矩阵
  * \param unitWorldNormal  单位化的世界法线
  * \param worldTangent 世界切线
  * \return 返回3x3的矩阵
