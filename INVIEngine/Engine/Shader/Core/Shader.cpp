@@ -38,8 +38,9 @@ void FShader::BuildShader(const std::wstring& InFileName,
     if (ErrorShaderMsg)
     {
         auto sss = ErrorShaderMsg->GetBufferPointer();
-        std::cout << "shader±àÒë´íÎó" << ErrorShaderMsg->GetBufferPointer() << std::endl;
         ENGINE_LOG_ERROR("shader±àÒë´íÎó£¬%s", static_cast<char*>(ErrorShaderMsg->GetBufferPointer()));
+
+		// open_url(get_log_filename());
     }
 
     ANALYSIS_RESULT(Res);
