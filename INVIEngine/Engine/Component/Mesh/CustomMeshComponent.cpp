@@ -114,3 +114,11 @@ bool CCustomMeshComponent::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSi
 
 	return false;
 }
+
+void CCustomMeshComponent::BuildKey(size_t& meshKey, const std::string& InPath)
+{
+	constexpr std::hash<std::string> strHash;
+
+	meshKey = 3;
+	meshKey += strHash(InPath);
+}

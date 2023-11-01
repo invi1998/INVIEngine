@@ -16,7 +16,7 @@ struct FGeometry : IDirectXDeviceInterface_Struct
 	friend struct FGeometryMap;
 public:
 	bool bRenderingDataExistence(CMeshComponent* InKey);
-	void BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
+	void BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
 
 	// 构建模型
 	void Build();
@@ -27,6 +27,9 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView();
 	// 获取顶点index缓冲区视图
 	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView();
+
+	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data);
+	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data);
 
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
@@ -49,7 +52,7 @@ struct FGeometryMap : IDirectXDeviceInterface_Struct
 {
 public:
 	FGeometryMap();
-	void BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
+	void BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
 
 	void Build();
 
@@ -94,6 +97,8 @@ public:
 	void PostDraw(float DeltaTime);
 
 	ID3D12DescriptorHeap* GetHeap() const { return DescriptorHeap.GetHeap(); }
+	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data);
+	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data);
 
 private:
 	// 渲染视口

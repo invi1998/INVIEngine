@@ -122,3 +122,12 @@ void CPyramidMeshComponent::CreateMesh(
 		MeshData.IndexData.push_back(BaseIndex + Index + 1);
 	}
 }
+
+void CPyramidMeshComponent::BuildKey(size_t& meshKey, EPyramidNumberSides InPyramidNumberSidesType, uint32_t InHeightSubdivide, uint32_t InSize)
+{
+	meshKey = 7;
+
+	meshKey += std::hash<int>::_Do_hash(InPyramidNumberSidesType);
+	meshKey += std::hash<int>::_Do_hash(InHeightSubdivide);
+	meshKey += std::hash<int>::_Do_hash(InSize);
+}

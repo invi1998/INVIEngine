@@ -7,4 +7,6 @@ public:
 	CTorusMeshComponent();
 
 	void CreateMesh(FMeshRenderingData& MeshData, float InRadius, float InSectionRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision);
+
+	void BuildKey(size_t& meshKey, float InRadius, float InSectionRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision);
 };

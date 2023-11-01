@@ -27,7 +27,7 @@ bool FGeometry::bRenderingDataExistence(CMeshComponent* InKey)
 	return false;
 }
 
-void FGeometry::BuildMesh(CMeshComponent* inMesh, const FMeshRenderingData& MeshData)
+void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const FMeshRenderingData& MeshData)
 {
 	// 判断当前模型是否已经被添加过了
 	if (!bRenderingDataExistence(inMesh))
@@ -36,6 +36,7 @@ void FGeometry::BuildMesh(CMeshComponent* inMesh, const FMeshRenderingData& Mesh
 		FRenderingData& InRenderingData = DescribeMeshRenderingData[DescribeMeshRenderingData.size() - 1];
 
 		InRenderingData.Mesh = inMesh;
+		InRenderingData.MeshHash = meshHash;
 		// 记录顶点数据
 		InRenderingData.IndexSize = MeshData.IndexData.size();
 		InRenderingData.VertexSize = MeshData.VertexData.size();
@@ -101,6 +102,31 @@ D3D12_INDEX_BUFFER_VIEW FGeometry::GetIndexBufferView()
 	return ibv;
 }
 
+void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data)
+{
+	// 判断当前模型是否已经被添加过了
+	if (!bRenderingDataExistence(mesh_component))
+	{
+		DescribeMeshRenderingData.push_back(rendering_data);
+		FRenderingData& InRenderingData = DescribeMeshRenderingData[DescribeMeshRenderingData.size() - 1];
+
+		InRenderingData.Mesh = mesh_component;
+	}
+}
+
+bool FGeometry::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data)
+{
+	for (auto& tmp : DescribeMeshRenderingData)
+	{
+		if (tmp.MeshHash == hashKey)
+		{
+			rendering_data = tmp;
+			return true;
+		}
+	}
+	return false;
+}
+
 /**
  * \brief //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
@@ -111,11 +137,11 @@ FGeometryMap::FGeometryMap()
 	RenderingTextureResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
 }
 
-void FGeometryMap::BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
+void FGeometryMap::BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
 {
 	FGeometry &Geometry = Geometries[0];
 
-	Geometry.BuildMesh(Mesh, MeshData);
+	Geometry.BuildMesh(meshHash, Mesh, MeshData);
 }
 
 void FGeometryMap::Build()
@@ -439,6 +465,25 @@ void FGeometryMap::Draw(float DeltaTime)
 
 void FGeometryMap::PostDraw(float DeltaTime)
 {
+}
+
+void FGeometryMap::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data)
+{
+	FGeometry& geometry = Geometries[0];
+
+	geometry.DuplicateMesh(mesh_component, rendering_data);
+}
+
+bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data)
+{
+	for (auto& geometry : Geometries)
+	{
+		if (geometry.second.FindMeshRenderingDataByHash(hashKey, rendering_data))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void FGeometryMap::DrawViewport(float DeltaTime)

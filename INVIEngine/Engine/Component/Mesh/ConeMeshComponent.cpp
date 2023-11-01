@@ -79,3 +79,16 @@ void CConeMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InBottom
 		MeshData.IndexData.push_back(BaseIndex + Index + 1);
 	}
 }
+
+void CConeMeshComponent::BuildKey(size_t& meshKey, float InBottomRadius, float InHeight, uint32_t InAxialSubdivision,
+	uint32_t InHeightSubdivision)
+{
+	constexpr std::hash<float> floatHash;
+
+	meshKey = 2;
+	meshKey += floatHash(InBottomRadius);
+	meshKey += floatHash(InHeight);
+
+	meshKey += std::hash<int>::_Do_hash(InAxialSubdivision);
+	meshKey += std::hash<int>::_Do_hash(InHeightSubdivision);
+}

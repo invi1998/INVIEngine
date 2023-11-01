@@ -14,6 +14,14 @@ public:
 		uint32_t InAxialSubdivision,
 		uint32_t InHeightSubdivision);
 
+	void BuildKey(size_t& meshKey, 
+		float InTopRadius,
+		float InBottomRadius,
+		float InHeight,
+		float InThickness,
+		uint32_t InAxialSubdivision,
+		uint32_t InHeightSubdivision);
+
 protected:
 
 	//¹¹½¨°ë¾¶µã

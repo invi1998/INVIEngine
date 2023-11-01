@@ -62,3 +62,15 @@ void CTorusMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadiu
 		}
 	}
 }
+
+void CTorusMeshComponent::BuildKey(size_t& meshKey, float InRadius, float InSectionRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
+{
+	constexpr std::hash<float> floatHash;
+
+	meshKey = 9;
+	meshKey += floatHash(InRadius);
+	meshKey += floatHash(InSectionRadius);
+
+	meshKey += std::hash<int>::_Do_hash(InAxialSubdivision);
+	meshKey += std::hash<int>::_Do_hash(InHeightSubdivision);
+}

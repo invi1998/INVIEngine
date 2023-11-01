@@ -10,5 +10,7 @@ public:
 	void CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath);
 
 	static bool LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData);
+
+	void BuildKey(size_t& meshKey, const std::string& InPath);
 };
 

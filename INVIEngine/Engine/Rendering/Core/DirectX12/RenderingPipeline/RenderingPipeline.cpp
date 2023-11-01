@@ -12,9 +12,9 @@ FRenderingPipeline::FRenderingPipeline()
 
 }
 
-void FRenderingPipeline::BuildMesh(CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
+void FRenderingPipeline::BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
 {
-	GeometryMap.BuildMesh(Mesh, MeshData);
+	GeometryMap.BuildMesh(meshHash, Mesh, MeshData);
 }
 
 void FRenderingPipeline::BuildPipeline()
@@ -108,4 +108,14 @@ void FRenderingPipeline::Draw(float DeltaTime)
 void FRenderingPipeline::PostDraw(float DeltaTime)
 {
 	GeometryMap.PostDraw(DeltaTime);
+}
+
+bool FRenderingPipeline::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data)
+{
+	return GeometryMap.FindMeshRenderingDataByHash(hashKey, rendering_data);
+}
+
+void FRenderingPipeline::DuplicateMesh(CMeshComponent* my_mesh, const FRenderingData& rendering_data)
+{
+	GeometryMap.DuplicateMesh(my_mesh, rendering_data);
 }

@@ -231,3 +231,19 @@ void CPipeMeshComponent::CreateMesh(
 		}
 	}
 }
+
+void CPipeMeshComponent::BuildKey(size_t& meshKey, float InTopRadius, float InBottomRadius, float InHeight,
+	float InThickness, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
+{
+
+	constexpr std::hash<float> floatHash;
+
+	meshKey = 5;
+	meshKey += floatHash(InTopRadius);
+	meshKey += floatHash(InBottomRadius);
+	meshKey += floatHash(InHeight);
+	meshKey += floatHash(InThickness);
+
+	meshKey += std::hash<int>::_Do_hash(InAxialSubdivision);
+	meshKey += std::hash<int>::_Do_hash(InHeightSubdivision);
+}

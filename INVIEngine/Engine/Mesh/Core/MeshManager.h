@@ -5,11 +5,10 @@
 #include "Mesh/Core/Mesh.h"
 
 #include "Rendering/Core/Rendering.h"
-#include "Rendering/Core/RenderingResourcesUpdate.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderingPipeline.h"
-#include "Shader/Core/Shader.h"
 
 class FRenderingResourcesUpdate;
+class CMeshComponent;
 
 class CMeshManager : public CCoreMinimalObject, public IRenderingInterface, public IDirectXDeviceInterface
 {
@@ -79,11 +78,11 @@ public:
 	CMeshComponent* CreateCustomMeshComponent(const string& InPath);
 
 protected:
-	FRenderingPipeline RenderingPipeline;		// 渲染管线对象
-
-protected:
 	template<class T, typename ...ParamTypes>
 	T* CreateMeshComponent(ParamTypes &&...Params);
+
+protected:
+	FRenderingPipeline RenderingPipeline;		// 渲染管线对象
 	
 };
 

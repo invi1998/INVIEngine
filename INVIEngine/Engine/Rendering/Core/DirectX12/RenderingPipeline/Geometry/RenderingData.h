@@ -18,6 +18,9 @@ public:
 	UINT GetIndexSizeInBytes() const { return IndexSize * IndexTypeSize; };			// 获取顶点数据字节大小
 
 public:
+	size_t MeshHash;
+
+public:
 	UINT IndexSize;				// 顶点索引数量
 	UINT VertexSize;			// 顶点的数量
 
