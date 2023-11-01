@@ -147,7 +147,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 100.f;
             
-				Specular += saturate(pow(max(dot(ViewDirection, ReflectDirection), 0.f), M));
+				Specular *= saturate(pow(max(dot(ViewDirection, ReflectDirection), 0.f), M));
 			}
 			else if (MatConstbuffer.MaterialType == 3)
             {
@@ -165,7 +165,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float M = MaterialShiniess * 100.f;
                 
                 // c=(m+2.f/PI) blinnPhong归一化系数
-				Specular += saturate((M + 2.f) * pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 3.1415926f);
+				Specular *= saturate((M + 2.f) * pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 3.1415926f);
 
             }
 			else if (MatConstbuffer.MaterialType == 4)
@@ -262,7 +262,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 						float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                         float M = MaterialShiniess * 70.f;
             
-						Specular += saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f);
+						Specular *= saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f);
 					}
                 }
             }
@@ -289,7 +289,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 					float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                     float M = MaterialShiniess * 100.f;
 
-					Specular += saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M));
+					Specular *= saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M));
 				}
 
                 // 添加菲尼尔效果
@@ -385,7 +385,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 float4 Value = (D * F * G) / (4 * (NoV * NoL));
         
-                Specular += float4(Value.rgb, 1.f);
+                Specular *= float4(Value.rgb, 1.f);
         
                 float3 Radiance = SceneLights[i].LightIntensity.xyz;
                 // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）

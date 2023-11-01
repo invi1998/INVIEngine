@@ -53,7 +53,7 @@ float4 GetMaterialSpecular(MaterialConstBuffer MatConstbuffer, float2 Texcoord)
 {
 	if (MatConstbuffer.SpecularIndex == -1)
 	{
-		return float4(0.f, 0.f, 0.f, 1.0f);
+		return float4(MatConstbuffer.SpecularColor, 1.0f);
 	}
 
 	// 纹理采样 (v传入采样方式，传入UV）

@@ -3,7 +3,8 @@
 #include "Material.h"
 
 CMaterial::CMaterial()
-	: bDirty(true), MaterialID(-1), BaseColor(0.45f, 0.45f, 0.45f, 1.f), Roughness(0.2f), MaterialTransformation(EngineMath::IdentityMatrix4x4())
+	: bDirty(true), MaterialID(-1), BaseColor(0.45f, 0.45f, 0.45f, 1.f), SpecularColor(0.0f, 0.0f, 0.0f), Roughness(0.2f),
+	  MaterialTransformation(EngineMath::IdentityMatrix4x4())
 {
 }
 
@@ -71,7 +72,8 @@ void CMaterial::SetSpecular(const std::string& key)
 
 void CMaterial::SetSpecular(const XMFLOAT3& color)
 {
-
+	SpecularColor = color;
+	SetDirty(true);
 }
 
 void CMaterial::SetDirty(bool dirty)

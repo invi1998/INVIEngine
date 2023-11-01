@@ -14,6 +14,7 @@ public:
 
 public:
 	FORCEINLINE XMFLOAT4 GetBaseColor() const { return BaseColor; }
+	FORCEINLINE XMFLOAT3 GetSpecularColor() const { return SpecularColor; }
 	FORCEINLINE EMaterialType GetMaterialType() const { return MaterialType; }
 	FORCEINLINE EMaterialDisplayStatusType GetMaterialDisplayType() const { return MaterialDisplayType; }
 	FORCEINLINE float GetRoughness()const { return Roughness; }
@@ -44,6 +45,7 @@ private:
 	int MaterialID;		// 材质id
 
 	XMFLOAT4 BaseColor;
+	XMFLOAT3 SpecularColor;		// 高光颜色
 	float Roughness;		// 材质粗糙度
 	EMaterialType MaterialType = EMaterialType::Lambert;
 	EMaterialDisplayStatusType MaterialDisplayType = EMaterialDisplayStatusType::TriangleDisplay;

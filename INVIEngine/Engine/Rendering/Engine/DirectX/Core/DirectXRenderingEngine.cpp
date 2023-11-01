@@ -516,6 +516,7 @@ int CDirectXRenderingEngine::PostInit()
 			{
 				InMaterial->SetBaseColorIndexKey("Earth");
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetSpecular(XMFLOAT3(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 			}
 		}
