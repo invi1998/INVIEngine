@@ -147,7 +147,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 100.f;
             
-				Specular *= saturate(pow(max(dot(ViewDirection, ReflectDirection), 0.f), M));
+				Specular *= saturate(pow(max(dot(ViewDirection, ReflectDirection), 0.f), M)/3.1415926f);
 			}
 			else if (MatConstbuffer.MaterialType == 3)
             {
@@ -159,7 +159,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
     
                 // 计算出Blinn-phong值
-                DotDiffValue = pow(max(0.0f, dot(ModelNormal, HalfDirection)), 2.f);
+				// 先半兰博特化 再减去0.2f曝光的，再平方，变得更柔和
+                DotDiffValue = pow(max(0.0f, dot(ModelNormal, HalfDirection) * 0.5f + 0.5f)-0.2f, 2.f);
         
 				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 100.f;
@@ -173,7 +174,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 // WrapLight模型 早期皮肤模拟
         
                 // float WrapValue = 1.f;  // 该值为1的时候，是半兰伯特材质
-                float WrapValue = 2.5f; // 该值越高，皮肤效果越通透
+                float WrapValue = 2.6f; // 该值越高，皮肤效果越通透
                 float DiffueseReflection = dot(ModelNormal, NormalizeLightDirection);
                 DotDiffValue = max(0.0f, (DiffueseReflection + WrapValue) / (1.f + WrapValue)); // [-1, 1]->[0.1]
         
@@ -262,7 +263,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 						float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                         float M = MaterialShiniess * 70.f;
             
-						Specular *= saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f);
+						Specular += saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M) / 0.032f);
 					}
                 }
             }
@@ -289,7 +290,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 					float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                     float M = MaterialShiniess * 100.f;
 
-					Specular *= saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M));
+					Specular = saturate(pow(max(dot(HalfDirection, ModelNormal), 0.f), M));
 				}
 
                 // 添加菲尼尔效果
@@ -309,7 +310,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float3 BackLightNormalValue = -normalize(ModelNormal * SSSValue + NormalizeLightDirection);
 
                 // pow 收拢折射光强
-				DotDiffValue += saturate(pow(saturate(dot(BackLightNormalValue, ViewDirection)), TransmissionScale) * TransmissionIntensity);
+				DotDiffValue += pow(saturate(dot(BackLightNormalValue, ViewDirection)), TransmissionScale) * TransmissionIntensity;
 
         
             }
