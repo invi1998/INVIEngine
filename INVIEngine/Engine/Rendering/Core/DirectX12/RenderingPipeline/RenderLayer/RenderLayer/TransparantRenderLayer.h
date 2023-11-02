@@ -1,0 +1,9 @@
+#pragma once
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
+
+class FTransparantRenderLayer : public FRenderLayer
+{
+public:
+	FTransparantRenderLayer();
+};
+
