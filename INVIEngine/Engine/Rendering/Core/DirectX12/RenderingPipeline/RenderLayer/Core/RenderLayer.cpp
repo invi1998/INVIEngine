@@ -14,7 +14,7 @@ void FRenderLayer::RegisterRenderLayer()
 
 void FRenderLayer::Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState)
 {
-	Geometry = geometry;
+	GeometryMap = geometry;
 	DirectXPipelineState = directXPipelineState;
 }
 

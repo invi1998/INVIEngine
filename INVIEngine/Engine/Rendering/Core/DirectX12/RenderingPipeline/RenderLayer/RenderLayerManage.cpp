@@ -38,3 +38,11 @@ void FRenderLayerManage::Sort()
 
 	std::sort(RenderLayers.begin(), RenderLayers.end(), CmpRenderLayer);
 }
+
+void FRenderLayerManage::BuildShader()
+{
+	for (auto& layer : RenderLayers)
+	{
+		layer->BuildShader();
+	}
+}

@@ -17,6 +17,8 @@ public:
 	// ≤„º∂≈≈–Ú
 	void Sort();
 
+	void BuildShader();
+
 protected:
 	static std::vector<std::shared_ptr<FRenderLayer>> RenderLayers;
 };
