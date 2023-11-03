@@ -1,5 +1,6 @@
 #pragma once
-// #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
+struct FGeometryMap;
+struct FDirectXPipelineState;
 class FRenderLayer;
 
 class FRenderLayerManage
@@ -9,6 +10,9 @@ class FRenderLayerManage
 public:
 	FRenderLayerManage();
 	~FRenderLayerManage();
+
+	// 基础数据注册
+	void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
 
 	// 层级排序
 	void Sort();

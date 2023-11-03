@@ -21,6 +21,9 @@ void FRenderingPipeline::BuildPipeline()
 {
 	DirectXPipelineState.ResetGPSDesc();	// 重置图形管线资源描述符
 
+	// 渲染层级初始化
+	RenderLayerManage.Init(&GeometryMap, &DirectXPipelineState);
+
 	RenderLayerManage.Sort();		// 渲染层级排序
 
 	// 加载纹理贴图

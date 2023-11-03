@@ -7,5 +7,7 @@ class FOpaqueRenderLayer : public FRenderLayer
 public:
 	FOpaqueRenderLayer();
 
+	virtual void BuildShader() override;
+
 };
 

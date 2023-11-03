@@ -11,3 +11,10 @@ void FRenderLayer::RegisterRenderLayer()
 {
 	FRenderLayerManage::RenderLayers.push_back(this->shared_from_this());
 }
+
+void FRenderLayer::Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState)
+{
+	Geometry = geometry;
+	DirectXPipelineState = directXPipelineState;
+}
+

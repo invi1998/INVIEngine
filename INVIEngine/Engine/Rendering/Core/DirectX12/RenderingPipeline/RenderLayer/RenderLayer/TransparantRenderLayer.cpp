@@ -5,3 +5,7 @@ FTransparantRenderLayer::FTransparantRenderLayer()
 {
 	RenderPriority = 3000;
 }
+
+void FTransparantRenderLayer::BuildShader()
+{
+}
