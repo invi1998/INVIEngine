@@ -8,6 +8,8 @@ class FRenderLayer : public IDirectXDeviceInterface, public std::enable_shared_f
 public:
 	FRenderLayer();
 
+	void RegisterRenderLayer();
+
 protected:
 	UINT RenderPriority;
 
