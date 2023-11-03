@@ -22,14 +22,13 @@ void GPointLight::Tick(float DeltaTime)
 {
 	CLight::Tick(DeltaTime);
 
-	//XMFLOAT3 v3 = GetRotation();
+	time += DeltaTime;
 
-	//v3.x += DeltaTime * 40.f;
-	//v3.y += DeltaTime * 40.f;
-	////v3.z += DeltaTime * 100.f;
+	XMFLOAT3 v3 = GetPosition();
 
-	//SetRotation(fvector_3d(v3.x, v3.y, v3.z));
+	v3.x -= cos(time) * 0.3f;
 
+	SetPosition(v3);
 }
 
 

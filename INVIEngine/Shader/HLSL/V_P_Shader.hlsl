@@ -412,17 +412,6 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			Specular = saturate(Specular);
 			material.BaseColor = saturate(material.BaseColor);
 			
-			// return material.BaseColor;
-			
-			//if (i == 0)
-			//{
-			//	// return float4(NormalizeLightDirection, 1.0f);
-			//	mvOut.Color = material.BaseColor * LightStrength // 漫反射
-			//			+ material.BaseColor * Specular * LightStrength // 高光
-			//			+ material.BaseColor * AmbientLight; // 间接光（环境光）
-				
-			//	return mvOut.Color;
-			//}
 		}
     }
 

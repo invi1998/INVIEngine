@@ -11,5 +11,7 @@ public:
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
 
+	float time = 0;
+
 };
 

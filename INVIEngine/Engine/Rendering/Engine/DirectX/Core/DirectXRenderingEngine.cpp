@@ -16,6 +16,7 @@
 #include "Mesh/PlaneMesh.h"
 #include "Mesh/PyramidMesh.h"
 #include "Mesh/SphereMesh.h"
+#include "Mesh/TorusMesh.h"
 
 CDirectXRenderingEngine::CDirectXRenderingEngine()
 	: CurrentFenceIndex(0),
@@ -70,52 +71,13 @@ int CDirectXRenderingEngine::PostInit()
 	ANALYSIS_RESULT(GraphicsCommandList->Reset(CommandAllocator.Get(), nullptr));
 
 	{
-		// 构建Mesh
-		// MeshManage->CreateBoxMesh(1.3f, 2.4f, 3.1f);
-		//
-		// MeshManage->CreateSphereMesh(2.0f, 40, 40);
-		// 
-		// MeshManage->CreateCylinderMesh(0.0f, 1.0f, 3.0f, 40, 20);
-		// 
-		// MeshManage->CreateConeMesh(2.5f, 4.0f, 20, 10);
-		// 
-		// MeshManage->CreatePlaneMesh(4.0f, 4.0f, 20, 20);
-		// 
-		// MeshManage->CreateMesh("Asserts/Mesh/ball.obj");
 
-		// MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f);
-
-		/*if (GMesh* BoxMesh = MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f))
-		{
-			BoxMesh->SetPosition(XMFLOAT3(4, 3, 5));
-			BoxMesh->SetRotation(fvector_3d(60.f, 1.f, 20.f));
-		}*/
-
-		//MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f);
-		//MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f);
-		/*MeshManage->CreatePlaneMesh(4.f, 3.f, 20, 20);
-		if (GMesh* SphereMesh = MeshManage->CreateSphereMesh(2.f, 20, 20))
-		{
-			SphereMesh->SetPosition(XMFLOAT3(1, 2, 4));
-			SphereMesh->SetScale(fvector_3d(3.f, 3.f, 3.f));
-		}
-
-		if (GMesh* CylinderMesh = MeshManage->CreateCylinderMesh(1.f, 1.f, 5.f, 20, 20))
-		{
-			CylinderMesh->SetPosition(XMFLOAT3(1, -2, -4));
-		}
-
-		if (GMesh* ConeMesh = MeshManage->CreateConeMesh(1.f, 5.f, 20, 20))
-		{
-			ConeMesh->SetPosition(XMFLOAT3(-1, 1, 9));
-			ConeMesh->SetRotation(fvector_3d(90.f, 1.f, 20.f));
-		}*/
-
-		// 灯光
+		//// 平行光
 		//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
 		//{
-		//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, 20.f));
+		//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
 		//	ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+		//	ParallelLight->SetLightIntensity({ 1.0f, 1.0f, 1.1f });
 
 		//	/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
 		//	{
@@ -127,36 +89,20 @@ int CDirectXRenderingEngine::PostInit()
 		//	}*/
 		//}
 
-		//// 平行光
-		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
-		{
-			ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
-			ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-			ParallelLight->SetLightIntensity({ 1.0f, 1.0f, 1.1f });
-
-			/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
-				InMaterial->SetMaterialType(EMaterialType::BaseColor);
-				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
-
-				InMaterial->SetRoughness(1.0f);
-			}*/
-		}
-
 		// 点光
-		/*if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
+		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
 		{
-			PointLight->SetPosition(XMFLOAT3(-10.f, 20.f, 40.f));
-			PointLight->SetLightIntensity(XMFLOAT3{ 3.f, 3.f, 3.f });
+			PointLight->SetPosition(XMFLOAT3(0.f, 2.f, 10.f));
+			PointLight->SetRotation(fvector_3d(0.f));
+			PointLight->SetLightIntensity(XMFLOAT3{ 0.9f, 0.9f, 0.9f });
 
 			PointLight->SetStartAttenuation(0.0f);
-			PointLight->SetEndAttenuation(100.0f);
+			PointLight->SetEndAttenuation(600.f);
 
 			PointLight->SetKc(1.f);
-			PointLight->SetKl(0.045f);
-			PointLight->SetKq(0.0075f);
-		}*/
+			PointLight->SetKl(0.007f);
+			PointLight->SetKq(0.0002f);
+		}
 
 		//// 聚光
 		//if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
@@ -192,12 +138,26 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		////甜甜圈
+		if (GTorusMesh* InTorusMesh = World->CreateActorObject<GTorusMesh>())
+		{
+			InTorusMesh->CreateMesh(6.f, 2.f, 40.f, 40.f);
+			InTorusMesh->SetPosition(XMFLOAT3(-6.f, -2.f, 30.f));
+			InTorusMesh->SetScale(fvector_3d(1.f));
+			if (CMaterial* InMaterial = (*InTorusMesh->GetMaterial())[0])
+			{
+				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+			}
+		}
+
+
 		//三楞锥
 		if (GPyramidMesh* InPyramidMesh = World->CreateActorObject<GPyramidMesh>())
 		{
 			InPyramidMesh->CreateMesh(EPyramidNumberSides::Pyramid_3, 1);
 			InPyramidMesh->SetPosition(XMFLOAT3(-1.f, 2.f, 30.f));
 			InPyramidMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
+			InPyramidMesh->SetScale(fvector_3d(1.f));
 			if (CMaterial* InMaterial = (*InPyramidMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor({ 4.f, 0.f, 0.f, 1.f });
@@ -454,7 +414,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
 
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 9.f));
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 26, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
@@ -468,7 +428,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
 
-			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 9.f));
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 26, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
@@ -481,7 +441,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
 
-			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 9.f));
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 26, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
