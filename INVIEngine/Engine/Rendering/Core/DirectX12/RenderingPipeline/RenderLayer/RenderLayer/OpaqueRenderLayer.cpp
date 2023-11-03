@@ -3,4 +3,5 @@
 
 FOpaqueRenderLayer::FOpaqueRenderLayer()
 {
+	RenderPriority = 2000;
 }

@@ -23,4 +23,10 @@ FRenderLayerManage::~FRenderLayerManage()
 
 void FRenderLayerManage::Sort()
 {
+	auto CmpRenderLayer = [&](const std::shared_ptr<FRenderLayer>& layerA, const std::shared_ptr<FRenderLayer>& layerB)
+		{
+			return layerA->GetRenderPriority() < layerB->GetRenderPriority();
+		};
+
+	std::sort(RenderLayers.begin(), RenderLayers.end(), CmpRenderLayer);
 }

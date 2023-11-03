@@ -10,6 +10,7 @@ public:
 	FRenderLayerManage();
 	~FRenderLayerManage();
 
+	// ≤„º∂≈≈–Ú
 	void Sort();
 
 protected:
