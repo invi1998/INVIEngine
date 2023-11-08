@@ -16,13 +16,19 @@
 #include "Mesh/Core/ObjectTransformation.h"
 #include "Rendering/Core/RenderingTextureResourcesUpdate.h"
 #include "Rendering/Core/Buffer/ConstructBuffer.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
 
 bool FGeometry::bRenderingDataExistence(CMeshComponent* InKey)
 {
-	for(const auto& temp : DescribeMeshRenderingData)
+	if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(InKey->GetRenderLayerType()))
 	{
-		return temp.Mesh == InKey;
+		for(const auto& temp : renderLayer->RenderData)
+		{
+			return temp.Mesh == InKey;
+		}
 	}
+	
 
 	return false;
 }
@@ -32,23 +38,27 @@ void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const F
 	// 判断当前模型是否已经被添加过了
 	if (!bRenderingDataExistence(inMesh))
 	{
-		DescribeMeshRenderingData.push_back(FRenderingData());
-		FRenderingData& InRenderingData = DescribeMeshRenderingData[DescribeMeshRenderingData.size() - 1];
+		if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(inMesh->GetRenderLayerType()))
+		{
+			renderLayer->RenderData.push_back(FRenderingData());
 
-		InRenderingData.Mesh = inMesh;
-		InRenderingData.MeshHash = meshHash;
-		// 记录顶点数据
-		InRenderingData.IndexSize = MeshData.IndexData.size();
-		InRenderingData.VertexSize = MeshData.VertexData.size();
-		// 记录数据偏移
-		InRenderingData.IndexOffsetPosition = MeshRenderingData.IndexData.size();
-		InRenderingData.VertexOffsetPosition = MeshRenderingData.VertexData.size();
+			FRenderingData& InRenderingData = renderLayer->RenderData[renderLayer->RenderData.size() - 1];
 
-		// 一种高效的数据插入方式
-		// 索引合并
-		MeshRenderingData.IndexData.insert(MeshRenderingData.IndexData.end(), MeshData.IndexData.begin(), MeshData.IndexData.end());
-		// 顶点合并
-		MeshRenderingData.VertexData.insert(MeshRenderingData.VertexData.end(), MeshData.VertexData.begin(), MeshData.VertexData.end());
+			InRenderingData.Mesh = inMesh;
+			InRenderingData.MeshHash = meshHash;
+			// 记录顶点数据
+			InRenderingData.IndexSize = MeshData.IndexData.size();
+			InRenderingData.VertexSize = MeshData.VertexData.size();
+			// 记录数据偏移
+			InRenderingData.IndexOffsetPosition = MeshRenderingData.IndexData.size();
+			InRenderingData.VertexOffsetPosition = MeshRenderingData.VertexData.size();
+
+			// 一种高效的数据插入方式
+			// 索引合并
+			MeshRenderingData.IndexData.insert(MeshRenderingData.IndexData.end(), MeshData.IndexData.begin(), MeshData.IndexData.end());
+			// 顶点合并
+			MeshRenderingData.VertexData.insert(MeshRenderingData.VertexData.end(), MeshData.VertexData.begin(), MeshData.VertexData.end());
+		}
 	}
 }
 
@@ -77,7 +87,12 @@ void FGeometry::Build()
 
 UINT FGeometry::GetDrawObjectCount() const
 {
-	return DescribeMeshRenderingData.size();
+	UINT size = 0;
+	for (auto& layers : FRenderLayerManage::RenderLayers)
+	{
+		size += layers->RenderData.size();
+	}
+	return size;
 }
 
 D3D12_VERTEX_BUFFER_VIEW FGeometry::GetVertexBufferView()
@@ -107,24 +122,58 @@ void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingDa
 	// 判断当前模型是否已经被添加过了
 	if (!bRenderingDataExistence(mesh_component))
 	{
-		DescribeMeshRenderingData.push_back(rendering_data);
-		FRenderingData& InRenderingData = DescribeMeshRenderingData[DescribeMeshRenderingData.size() - 1];
+		if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(mesh_component->GetRenderLayerType()))
+		{
+			renderLayer->RenderData.push_back(rendering_data);
+			FRenderingData& InRenderingData = renderLayer->RenderData[renderLayer->RenderData.size() - 1];
 
-		InRenderingData.Mesh = mesh_component;
+			InRenderingData.Mesh = mesh_component;
+		}
 	}
 }
 
-bool FGeometry::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data)
+bool FGeometry::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer)
 {
-	for (auto& tmp : DescribeMeshRenderingData)
-	{
-		if (tmp.MeshHash == hashKey)
+	auto findMeshRenderDataByHash = [&](std::shared_ptr<FRenderLayer> layers)->FRenderingData*
 		{
-			rendering_data = tmp;
-			return true;
+			for (auto& tmp : layers->RenderData)
+			{
+				if (tmp.MeshHash == hashKey)
+				{
+					return &tmp;
+				}
+			}
+			return nullptr;
+		};
+
+	// 全量遍历查找渲染层级里的渲染数据
+	if (layer == -1)
+	{
+		for (auto& layers : FRenderLayerManage::RenderLayers)
+		{
+			if (FRenderingData* renderData = findMeshRenderDataByHash(layers))
+			{
+				rendering_data = *renderData;
+				return true;
+			}
+			return false;
 		}
+		return false;
 	}
-	return false;
+	else
+	{
+		// 传入指定的渲染层级进行查找
+		if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(layer))
+		{
+			if (FRenderingData* renderData = findMeshRenderDataByHash(renderLayer))
+			{
+				rendering_data = *renderData;
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
 
 /**

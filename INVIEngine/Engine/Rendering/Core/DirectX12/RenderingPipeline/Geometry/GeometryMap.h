@@ -29,7 +29,7 @@ public:
 	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView();
 
 	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data);
-	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data);
+	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer = -1);
 
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
@@ -44,7 +44,7 @@ protected:
 
 	FMeshRenderingData MeshRenderingData;
 
-	std::vector<FRenderingData> DescribeMeshRenderingData;					// 渲染数据
+	// std::vector<FRenderingData> DescribeMeshRenderingData;					// 渲染数据
 };
 
 // 几何模型映射阶段

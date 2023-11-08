@@ -46,3 +46,16 @@ void FRenderLayerManage::BuildShader()
 		layer->BuildShader();
 	}
 }
+
+std::shared_ptr<FRenderLayer> FRenderLayerManage::FindByRenderLayer(int layer)
+{
+	for (auto& layerData : RenderLayers)
+	{
+		if (layerData->GetRenderLayerType() == layer)
+		{
+			return layerData;
+		}
+	}
+
+	return nullptr;
+}

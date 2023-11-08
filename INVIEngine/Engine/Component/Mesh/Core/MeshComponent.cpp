@@ -5,6 +5,7 @@
 #include "Material/Core/Material.h"
 
 CMeshComponent::CMeshComponent()
+	: MeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT)
 {
 	Materials.push_back(CreateObject<CMaterial>(new CMaterial()));
 }
@@ -34,4 +35,9 @@ void CMeshComponent::BuildMesh(const FMeshRenderingData* InRenderingData)
 
 void CMeshComponent::Init()
 {
+}
+
+void CMeshComponent::SetRenderLayerType(EMeshRenderLayerType type)
+{
+	MeshRenderLayerType = type;
 }

@@ -8,6 +8,7 @@ struct FGeometryMap;
 
 class FRenderLayer : public IDirectXDeviceInterface, public std::enable_shared_from_this<FRenderLayer>
 {
+	friend struct FGeometry;
 public:
 	FRenderLayer();
 	virtual ~FRenderLayer() = default;
@@ -21,6 +22,8 @@ public:
 	virtual void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
 
 	virtual void BuildShader() = 0;
+
+	virtual int GetRenderLayerType() const = 0;
 
 protected:
 	UINT RenderPriority;
