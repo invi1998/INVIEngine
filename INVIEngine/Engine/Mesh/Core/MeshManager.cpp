@@ -134,7 +134,7 @@ T* CMeshManager::CreateMeshComponent(ParamTypes&&... Params)
 	MyMesh->BuildKey(HashKey, std::forward<ParamTypes>(Params)...);
 
 	FRenderingData RenderingData;
-	if (RenderingPipeline.FindMeshRenderingDataByHash(HashKey, RenderingData))
+	if (RenderingPipeline.FindMeshRenderingDataByHash(HashKey, RenderingData, MyMesh->GetRenderLayerType()))
 	{
 		RenderingPipeline.DuplicateMesh(MyMesh, RenderingData);
 	}
