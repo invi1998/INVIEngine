@@ -1,4 +1,5 @@
 #pragma once
+struct FViewportInfo;
 struct FGeometryMap;
 struct FDirectXPipelineState;
 class FRenderLayer;
@@ -7,6 +8,7 @@ class FRenderLayerManage
 {
 	friend class FRenderLayer;
 	friend class FGeometry;
+	friend struct FGeometryMap;
 
 public:
 	FRenderLayerManage();
@@ -25,6 +27,8 @@ public:
 	void BuildShader();
 
 	static std::shared_ptr<FRenderLayer> FindByRenderLayer(int layer);
+
+	virtual void UpdateCaculations(float deltaTime, const FViewportInfo& viewportInfo);
 
 protected:
 	static std::vector<std::shared_ptr<FRenderLayer>> RenderLayers;

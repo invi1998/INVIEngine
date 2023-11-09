@@ -236,16 +236,7 @@ UINT FGeometryMap::GetDrawMeshCount()
 
 UINT FGeometryMap::GetDrawMaterialCount()
 {
-	UINT MaterialNumber = 0;
-	for (auto& geometry : Geometries)
-	{
-		for (auto& renderData : geometry.second.DescribeMeshRenderingData)
-		{
-			MaterialNumber += renderData.Mesh->GetMaterialNum();
-		}
-	}
-
-	return MaterialNumber;
+	return MaterialsSRV.size();
 }
 
 UINT FGeometryMap::GetDrawLightCount()
@@ -267,33 +258,12 @@ void FGeometryMap::BuildMeshConstantBuffer()
 
 void FGeometryMap::BuildMaterialShaderResourceView()
 {
-	// 创建常量缓冲区
-	MaterialConstantBufferViews.CreateConstant(sizeof(FMaterialConstantBuffer), GetDrawMaterialCount(), false);
-
-	//for (auto& Tmp : Geometries)
-	//{
-	//	for (size_t i = 0; i < Tmp.second.DescribeMeshRenderingData.size(); i++)
-	//	{
-	//		auto& InData = Tmp.second.DescribeMeshRenderingData[i];
-	//		if (auto InMaterials = InData.Mesh->GetMaterial())
-	//		{
-	//			for (size_t j = 0; j < InMaterials->size(); j++)
-	//			{
-	//				//做ShaderIndex所有
-	//				(*InMaterials)[j]->SetMaterialID(MaterialsSRV.size());
-
-	//				MaterialsSRV.push_back((*InMaterials)[j]);
-	//			}
-	//		}
-	//	}
-	//}
-
 	// 收集材质
-	for (auto& geometry : Geometries)
+	for (const auto& layer : FRenderLayerManage::RenderLayers)
 	{
-		for (auto& renderData: geometry.second.DescribeMeshRenderingData)
+		for (const auto& renderData : layer->RenderData)
 		{
-			if (auto materials = renderData.Mesh->GetMaterial())
+			if (const auto materials = renderData.Mesh->GetMaterial())
 			{
 				for (size_t i = 0; i < materials->size(); i++)
 				{
@@ -304,7 +274,11 @@ void FGeometryMap::BuildMaterialShaderResourceView()
 				}
 			}
 		}
+		
 	}
+
+	// 创建常量缓冲区
+	MaterialConstantBufferViews.CreateConstant(sizeof(FMaterialConstantBuffer), GetDrawMaterialCount(), false);
 }
 
 void FGeometryMap::BuildLightConstantBuffer()
@@ -361,53 +335,15 @@ void FGeometryMap::BuildTextureConstBuffer()
 
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
-	XMMATRIX ProjectionMatrix = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);	// 投影矩阵
-	XMMATRIX ViewMatrix = XMLoadFloat4x4(&viewport_info.ViewMatrix);				// 视口矩阵
-	for (auto& geometry : Geometries)
-	{
-		for (int i = 0; i < geometry.second.DescribeMeshRenderingData.size(); i++)
-		{
-			// 更新模型
-			FRenderingData& renderingData = geometry.second.DescribeMeshRenderingData[i];
-			{
-				XMFLOAT3& Position = renderingData.Mesh->GetPosition();
-				XMFLOAT3& Scale = renderingData.Mesh->GetScale();
-
-				// 拿到3个方向向量
-				XMFLOAT3 RightVector = renderingData.Mesh->GetRightVector();
-				XMFLOAT3 UpVector = renderingData.Mesh->GetUpVector();
-				XMFLOAT3 ForwardVector = renderingData.Mesh->GetForwardVector();
-
-				// 构造模型world
-				renderingData.MaterialTransformationMatrix = {
-					RightVector.x * Scale.x,	UpVector.x,				ForwardVector.x,			0.f,
-					RightVector.y,				UpVector.y * Scale.y,	ForwardVector.y,			0.f,
-					RightVector.z,				UpVector.z,				ForwardVector.z	* Scale.z,	0.f,
-					Position.x,					Position.y,				Position.z,					1.f
-				};
-			}
-			XMMATRIX ATRTIXMatrixWorld = XMLoadFloat4x4(&renderingData.MaterialTransformationMatrix);
-			XMMATRIX ATRTIXTextureWorld = XMLoadFloat4x4(&renderingData.TextureTransformationMatrix);
-
-			FObjectTransformation OBJTransformation;
-			// CPU端存储矩阵是先行后列的顺序，与GPU的默认情况（column_major）正好相反
-			// 因此当我们要把CPU的矩阵通过Constant Buffer传递到GPU时，可以在存储矩阵时进行 矩阵的转置 操作
-			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(ATRTIXMatrixWorld));
-			XMStoreFloat4x4(&OBJTransformation.TextureTransformation, XMMatrixTranspose(ATRTIXTextureWorld));
-
-			if (auto& material = (*renderingData.Mesh->GetMaterial())[0])
-			{
-				OBJTransformation.MaterialID = material->GetMaterialID();
-				// ENGINE_LOG("材质id = %d, 材质名 = %s", OBJTransformation.MaterialID, material->GetBaseColorIndexKey().c_str());
-			}
-
-			MeshConstantBufferViews.Update(i, &OBJTransformation);
-
-		}
-	}
 
 	// 更新材质
 	UpdateMaterialShaderResourceView(delta_time, viewport_info);
+
+	XMMATRIX ProjectionMatrix = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);	// 投影矩阵
+	XMMATRIX ViewMatrix = XMLoadFloat4x4(&viewport_info.ViewMatrix);				// 视口矩阵
+	
+
+	
 
 	// 更新灯光
 	FLightConstantBuffer LightConstantBuffer;
@@ -566,50 +502,6 @@ void FGeometryMap::DrawViewport(float DeltaTime)
 
 void FGeometryMap::DrawMesh(float DeltaTime)
 {
-	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	for (auto& geometry : Geometries | views::values)
-	{
-		// 获取顶点/索引缓冲区视图
-		D3D12_VERTEX_BUFFER_VIEW vbv = geometry.GetVertexBufferView();
-		D3D12_INDEX_BUFFER_VIEW ibv = geometry.GetIndexBufferView();
-
-		for (size_t i = 0; i < geometry.DescribeMeshRenderingData.size(); i++)
-		{
-			CD3DX12_GPU_DESCRIPTOR_HANDLE DesMeshHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 模型描述handle
-
-			FRenderingData& renderingData = geometry.DescribeMeshRenderingData[i];
-
-			// 设置索引视图
-			GetD3dGraphicsCommandList()->IASetIndexBuffer(&ibv);
-
-			// 绑定渲染流水线上的输入槽，可以在输入装配器阶段传入顶点数据
-			GetD3dGraphicsCommandList()->IASetVertexBuffers(
-				0,		// 指定起始的顶点缓冲区槽号 `StartSlot`，这个值通常为 0 值范围 0-15
-				1,		// 指定要绑定的顶点缓冲区数量 NumViews，这个值必须小于或等于硬件支持的最大顶点缓冲区数量
-				&vbv	// 使用顶点缓冲区视图数组 pViews 来描述每个顶点缓冲区的位置、大小和布局等信息。
-			);
-
-			// 指定图元类型（点，线，面） 下面设置为 绘制由三角形构成的列表
-			D3D_PRIMITIVE_TOPOLOGY DisplayType = static_cast<D3D_PRIMITIVE_TOPOLOGY>((*renderingData.Mesh->GetMaterial())[0]->GetMaterialDisplayType());
-			GetD3dGraphicsCommandList()->IASetPrimitiveTopology(DisplayType);
-
-			// 模型起始偏移
-			DesMeshHandle.Offset(i, DescriptorOffset);
-			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, DesMeshHandle);
-
-			// 上述步骤只是在提交数据到GPU，并不是在渲染模型
-
-			// 绘制图元（真实渲染模型）
-			GetD3dGraphicsCommandList()->DrawIndexedInstanced(
-				renderingData.IndexSize,						// 顶点数量
-				1,												// 表示要绘制的实例数。如果只需要绘制单个实例，则可以将此参数设置为 1。
-				renderingData.IndexOffsetPosition,				// 表示从索引缓冲区中哪个位置开始读取索引数据。通常情况下，这个值为 0。
-				renderingData.VertexOffsetPosition,				// 表示每个顶点在顶点缓冲区中相对于起始位置的偏移量。如果顶点数据是连续排列的，则可以将此参数设置为 0。
-				0												// 表示从第几个实例开始绘制。如果只需要绘制单个实例，则可以将此参数设置为 0。
-			);
-
-		}
-	}
 }
 
 void FGeometryMap::DrawMaterial(float DeltaTime)

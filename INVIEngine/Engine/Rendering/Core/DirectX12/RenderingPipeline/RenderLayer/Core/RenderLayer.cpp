@@ -2,7 +2,9 @@
 #include "RenderLayer.h"
 
 #include "Component/Mesh/Core/MeshComponent.h"
+#include "Core/Viewport/ViewportInfo.h"
 #include "Material/Core/Material.h"
+#include "Mesh/Core/ObjectTransformation.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 
@@ -70,5 +72,45 @@ void FRenderLayer::Init(FGeometryMap* geometry, FDirectXPipelineState* directXPi
 {
 	GeometryMap = geometry;
 	DirectXPipelineState = directXPipelineState;
+}
+
+void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& ViewportInfo)
+{
+	for (auto& renderingData : RenderData)
+	{
+		// 更新模型
+		XMFLOAT3& Position = renderingData.Mesh->GetPosition();
+		XMFLOAT3& Scale = renderingData.Mesh->GetScale();
+
+		// 拿到3个方向向量
+		XMFLOAT3 RightVector = renderingData.Mesh->GetRightVector();
+		XMFLOAT3 UpVector = renderingData.Mesh->GetUpVector();
+		XMFLOAT3 ForwardVector = renderingData.Mesh->GetForwardVector();
+
+		// 构造模型world
+		renderingData.MaterialTransformationMatrix = {
+			RightVector.x * Scale.x,	UpVector.x,				ForwardVector.x,			0.f,
+			RightVector.y,				UpVector.y * Scale.y,	ForwardVector.y,			0.f,
+			RightVector.z,				UpVector.z,				ForwardVector.z * Scale.z,	0.f,
+			Position.x,					Position.y,				Position.z,					1.f
+		};
+
+		XMMATRIX ATRTIXMatrixWorld = XMLoadFloat4x4(&renderingData.MaterialTransformationMatrix);
+		XMMATRIX ATRTIXTextureWorld = XMLoadFloat4x4(&renderingData.TextureTransformationMatrix);
+
+		FObjectTransformation OBJTransformation;
+		// CPU端存储矩阵是先行后列的顺序，与GPU的默认情况（column_major）正好相反
+		// 因此当我们要把CPU的矩阵通过Constant Buffer传递到GPU时，可以在存储矩阵时进行 矩阵的转置 操作
+		XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(ATRTIXMatrixWorld));
+		XMStoreFloat4x4(&OBJTransformation.TextureTransformation, XMMatrixTranspose(ATRTIXTextureWorld));
+
+		if (auto& material = (*renderingData.Mesh->GetMaterial())[0])
+		{
+			OBJTransformation.MaterialID = material->GetMaterialID();
+			// ENGINE_LOG("材质id = %d, 材质名 = %s", OBJTransformation.MaterialID, material->GetBaseColorIndexKey().c_str());
+		}
+
+		GeometryMap->MeshConstantBufferViews.Update(renderingData.MeshObjectIndex, &OBJTransformation);
+	}
 }
 

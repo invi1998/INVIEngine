@@ -63,6 +63,7 @@ void FRenderingPipeline::BuildPipeline()
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
 	GeometryMap.UpdateCalculations(delta_time, viewport_info);
+	RenderLayerManage.UpdateCaculations(delta_time, viewport_info);
 }
 
 void FRenderingPipeline::PreDraw(float DeltaTime)
