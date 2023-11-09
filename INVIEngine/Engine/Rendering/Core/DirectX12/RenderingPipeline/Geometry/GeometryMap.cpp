@@ -523,11 +523,11 @@ void FGeometryMap::DuplicateMesh(CMeshComponent* mesh_component, const FRenderin
 	geometry.DuplicateMesh(mesh_component, rendering_data);
 }
 
-bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data)
+bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer)
 {
 	for (auto& geometry : Geometries)
 	{
-		if (geometry.second.FindMeshRenderingDataByHash(hashKey, rendering_data))
+		if (geometry.second.FindMeshRenderingDataByHash(hashKey, rendering_data, layer))
 		{
 			return true;
 		}
