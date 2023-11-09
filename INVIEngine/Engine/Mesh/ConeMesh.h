@@ -6,6 +6,7 @@
 class GConeMesh : public GMesh
 {
 public:
+	GConeMesh();
 	void Init() override;
 	void Draw(float DeltaTime) override;
 

@@ -9,7 +9,7 @@
 
 GBoxMesh::GBoxMesh()
 {
-	SetMeshComponent(ConstructionObject<CBoxMeshComponent>());
+	GMesh::SetMeshComponent(ConstructionObject<CBoxMeshComponent>());
 }
 
 GBoxMesh::~GBoxMesh()

@@ -6,6 +6,7 @@ class GTorusMesh :public GMesh
 {
 	typedef GMesh Super;
 public:
+	GTorusMesh();
 	virtual void Init();
 
 	virtual void Draw(float DeltaTime);

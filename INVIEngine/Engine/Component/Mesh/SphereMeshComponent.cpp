@@ -8,14 +8,13 @@ CSphereMeshComponent::CSphereMeshComponent()
 {
 }
 
-void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint32_t InAxialSubdivision,
-	uint32_t InHeightSubdivision)
+void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision, bool bReverse)
 {
 	float Theta = XM_2PI / static_cast<float>(InHeightSubdivision);
 	float Beta = XM_PI / static_cast<float>(InAxialSubdivision);
 
 	// 顶部
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT2(1.f, 0.5f)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, InRadius, 0), XMFLOAT4(Colors::White), bReverse ? XMFLOAT3(0.0f, -1.0f, 0.0f) : XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT2(0.5f, 0.0f)));
 
 	for (size_t i = 1; i < InAxialSubdivision; ++i)
 	{
@@ -57,7 +56,8 @@ void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadi
 	}
 
 	// 底部
-	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(Colors::White), XMFLOAT3(0.f, -1.f, 0.f), XMFLOAT2(0.f, 0.5f)));
+	MeshData.VertexData.push_back(FVertex(XMFLOAT3(0, -InRadius, 0), XMFLOAT4(Colors::White), bReverse ? XMFLOAT3(0.0f, 1.0f, 0.0f) : XMFLOAT3(0.0f, -1.0f, 0.0f),
+		XMFLOAT2(0.f, 0.5f)));
 
 
 	// 构建顶点索引 (绘制北极）
@@ -65,9 +65,18 @@ void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadi
 	for (uint32_t i = 0; i <= InAxialSubdivision; ++i)
 	{
 		// 因为DX是左手螺旋定则，所以需要逆时针绘制顶点，法线才能朝外
-		MeshData.IndexData.push_back(0);
-		MeshData.IndexData.push_back(i + 1);
-		MeshData.IndexData.push_back(i);
+		if (bReverse)
+		{
+			MeshData.IndexData.push_back(0);
+			MeshData.IndexData.push_back(i);
+			MeshData.IndexData.push_back(i + 1);
+		}
+		else
+		{
+			MeshData.IndexData.push_back(0);
+			MeshData.IndexData.push_back(i + 1);
+			MeshData.IndexData.push_back(i);
+		}
 	}
 
 	uint32_t BaseIndex = 1;

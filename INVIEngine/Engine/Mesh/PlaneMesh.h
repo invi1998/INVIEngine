@@ -5,6 +5,7 @@
 class GPlaneMesh : public GMesh
 {
 public:
+	GPlaneMesh();
 	void Init() override;
 	void Draw(float DeltaTime) override;
 

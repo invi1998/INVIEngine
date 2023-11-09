@@ -6,6 +6,7 @@ class GPipeMesh :public GMesh
 {
 	typedef GMesh Super;
 public:
+	GPipeMesh();
 	virtual void Init();
 
 	virtual void Draw(float DeltaTime);

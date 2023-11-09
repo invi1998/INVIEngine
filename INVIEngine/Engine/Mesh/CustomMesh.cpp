@@ -2,7 +2,14 @@
 
 #include "CustomMesh.h"
 
+#include "Component/Mesh/CustomMeshComponent.h"
 #include "Core/MeshManager.h"
+#include "Core/Construction/MacroConstruction.h"
+
+GCustomMesh::GCustomMesh()
+{
+	GMesh::SetMeshComponent(ConstructionObject<CCustomMeshComponent>());
+}
 
 void GCustomMesh::Init()
 {
@@ -16,6 +23,6 @@ void GCustomMesh::Draw(float DeltaTime)
 
 void GCustomMesh::CreateMesh(const string& InPath)
 {
-	SetMeshComponent(GetMeshManage()->CreateCustomMeshComponent(InPath));
+	CREATE_RENDER_DATA(CCustomMeshComponent, InPath);
 }
 

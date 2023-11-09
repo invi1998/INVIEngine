@@ -6,6 +6,7 @@
 class GCylinderMesh : public GMesh
 {
 public:
+	GCylinderMesh();
 	void Init() override;
 	void Draw(float DeltaTime) override;
 
