@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GuidInterface.h"
+#include "Core/Construction/ObjectConstruction.h"
 
 class CCoreMinimalObject : public IGuidInterface
 {
@@ -11,9 +12,6 @@ public:
 	virtual void BeginInit();
 	virtual void Tick(float DeltaTime);
 
-	template<typename T>
-	T* CreateObject(CCoreMinimalObject* NewObject);
-
 	bool IsTick() const { return bTick; }
 
 protected:
@@ -22,11 +20,5 @@ protected:
 };
 
 extern std::vector<CCoreMinimalObject*> GObjects;		// 全局对象
-
-template <typename T>
-T* CCoreMinimalObject::CreateObject(CCoreMinimalObject* NewObject)
-{
-	return dynamic_cast<T*>(NewObject);
-}
 
 

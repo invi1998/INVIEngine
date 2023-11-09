@@ -77,9 +77,7 @@ public:
 
 	CMeshComponent* CreateCustomMeshComponent(const string& InPath);
 
-protected:
-	template<class T, typename ...ParamTypes>
-	T* CreateMeshComponent(ParamTypes &&...Params);
+	FRenderingPipeline& GetRenderingPipeline() { return RenderingPipeline; };		// 渲染管线对象
 
 protected:
 	FRenderingPipeline RenderingPipeline;		// 渲染管线对象
