@@ -11,7 +11,11 @@ struct FDirectXPipelineState : public IDirectXDeviceInterface_Struct
 public:
 	FDirectXPipelineState();
 
-	void BuildPipelineState();
+	// 构建参数
+	void BuildParam();
+
+	// 构建管线状态
+	void BuildPipelineState(int psoType);
 
 	void ResetGPSDesc();
 
@@ -28,6 +32,8 @@ public:
 	void Draw(float DeltaTime);
 	void PostDraw(float DeltaTime);
 
+public:
+	void SetFillModle(bool bWireframe);
 
 private:			
 	std::unordered_map<UINT, ComPtr<ID3D12PipelineState>>	PSO{};		// 渲染管线状态对象

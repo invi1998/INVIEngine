@@ -11,7 +11,7 @@ FDirectXPipelineState::FDirectXPipelineState() : IDirectXDeviceInterface_Struct(
 	PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(5, ComPtr<ID3D12PipelineState>())); // 5 表示 面渲染模式的渲染管线
 }
 
-void FDirectXPipelineState::BuildPipelineState()
+void FDirectXPipelineState::BuildParam()
 {
 	// 配置光栅化状态
 	GPSDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);		// 光栅化状态
@@ -36,21 +36,29 @@ void FDirectXPipelineState::BuildPipelineState()
 	GPSDesc.RTVFormats[0] = GetEngine()->GetRenderingEngine()->GetBackBufferFormat();			// 渲染目标视图格式（后台缓冲区格式）
 	GPSDesc.DSVFormat = GetEngine()->GetRenderingEngine()->GetDepthStencilFormat();			// 深度模板缓冲区格式
 
-	GPSDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;			// 以线框方式显示
-	
+}
+
+void FDirectXPipelineState::BuildPipelineState(int psoType)
+{
+
+	if(PSO.find(psoType) == PSO.end())
+	{
+		PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(psoType, ComPtr<ID3D12PipelineState>())); // 如果PSO里没有该pso类型，那么插入一个该类型的值
+	}
+
 	// 通过D3D创建渲染管线状态对象
 	ANALYSIS_RESULT(GetD3dDevice()->CreateGraphicsPipelineState(
 		&GPSDesc,
-		IID_PPV_ARGS(&PSO[EPipelineState::Wireframe])
+		IID_PPV_ARGS(&PSO[psoType])
 	));
 
-	GPSDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;			// 以实体方式显示
+	//GPSDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;			// 以实体方式显示
 
-	// 通过D3D创建渲染管线状态对象
-	ANALYSIS_RESULT(GetD3dDevice()->CreateGraphicsPipelineState(
-		&GPSDesc,
-		IID_PPV_ARGS(&PSO[EPipelineState::Solid])
-	));
+	//// 通过D3D创建渲染管线状态对象
+	//ANALYSIS_RESULT(GetD3dDevice()->CreateGraphicsPipelineState(
+	//	&GPSDesc,
+	//	IID_PPV_ARGS(&PSO[EPipelineState::Solid])
+	//));
 }
 
 void FDirectXPipelineState::ResetGPSDesc()
@@ -103,4 +111,10 @@ void FDirectXPipelineState::Draw(float DeltaTime)
 
 void FDirectXPipelineState::PostDraw(float DeltaTime)
 {
+}
+
+void FDirectXPipelineState::SetFillModle(bool bWireframe)
+{
+	GPSDesc.RasterizerState.FillMode = bWireframe ? D3D12_FILL_MODE_WIREFRAME : D3D12_FILL_MODE_SOLID;			// 以实体方式显示
+
 }

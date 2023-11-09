@@ -56,8 +56,14 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建shader资源视口 SRV
 	GeometryMap.BuildTextureConstBuffer();
 
+	// 构建PSO参数
+	DirectXPipelineState.BuildParam();
+
 	// 构建渲染管线
-	DirectXPipelineState.BuildPipelineState();
+	DirectXPipelineState.BuildPipelineState(EPipelineState::Wireframe);
+	DirectXPipelineState.SetFillModle(false);
+
+	DirectXPipelineState.BuildPipelineState(EPipelineState::Solid);
 }
 
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
