@@ -16,8 +16,13 @@ void FAlphaTestRenderLayer::BuildShader()
 void FAlphaTestRenderLayer::BuildPSO()
 {
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Wireframe);
-	DirectXPipelineState->SetFillModle(false);
+	DirectXPipelineState->BuildPipelineState(0);
+}
 
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Solid);
+void FAlphaTestRenderLayer::Draw(float deltaTime)
+{
+	// 渲染之前，重置PSO
+	DirectXPipelineState->ResetPSO(1);
+
+	FRenderLayer::Draw(deltaTime);
 }

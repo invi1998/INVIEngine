@@ -524,6 +524,23 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		// 透明球体
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT);
+
+			SphereMesh->CreateMesh(2.f, 50, 50);
+
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 19.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				// InMaterial->SetBaseColorIndexKey("Wood2");
+				InMaterial->SetNormalIndexKey("Wood2_Nor");
+				InMaterial->SetSpecular("Wood2_SPEC");
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+			}
+		}
+
 
 		//// 平行光模型
 		//if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())

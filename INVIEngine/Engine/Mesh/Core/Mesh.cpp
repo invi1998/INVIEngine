@@ -74,4 +74,9 @@ void GMesh::SetMeshComponent(CMeshComponent* InMeshComponent)
 	MeshComponent = InMeshComponent;
 }
 
+void GMesh::SetMeshRenderLayerType(EMeshRenderLayerType type)
+{
+	MeshComponent->SetRenderLayerType(type);
+}
+
 

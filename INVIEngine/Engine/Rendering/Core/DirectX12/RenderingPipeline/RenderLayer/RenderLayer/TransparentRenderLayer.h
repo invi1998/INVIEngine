@@ -11,5 +11,7 @@ public:
 	virtual int GetRenderLayerType() const override { return 1; }
 
 	virtual void BuildPSO() override;
+
+	virtual void Draw(float deltaTime) override;
 };
 

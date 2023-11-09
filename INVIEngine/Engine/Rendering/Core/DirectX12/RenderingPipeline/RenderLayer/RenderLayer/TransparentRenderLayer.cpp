@@ -11,13 +11,20 @@ FTransparentRenderLayer::FTransparentRenderLayer()
 
 void FTransparentRenderLayer::BuildShader()
 {
+
 }
 
 void FTransparentRenderLayer::BuildPSO()
 {
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Wireframe);
-	DirectXPipelineState->SetFillModle(false);
+	DirectXPipelineState->BuildPipelineState(1);
+}
 
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Solid);
+void FTransparentRenderLayer::Draw(float deltaTime)
+{
+	// 渲染之前，重置PSO
+	DirectXPipelineState->ResetPSO(0);
+
+	FRenderLayer::Draw(deltaTime);
+
 }

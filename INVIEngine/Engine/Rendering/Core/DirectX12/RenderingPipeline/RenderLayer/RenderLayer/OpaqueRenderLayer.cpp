@@ -51,3 +51,8 @@ void FOpaqueRenderLayer::BuildPSO()
 
 	DirectXPipelineState->BuildPipelineState(EPipelineState::Solid);
 }
+
+void FOpaqueRenderLayer::Draw(float deltaTime)
+{
+	FRenderLayer::Draw(deltaTime);
+}
