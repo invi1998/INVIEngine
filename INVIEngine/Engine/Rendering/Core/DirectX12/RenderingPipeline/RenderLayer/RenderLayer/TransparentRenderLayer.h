@@ -1,10 +1,10 @@
 #pragma once
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
 
-class FTransparantRenderLayer : public FRenderLayer
+class FTransparentRenderLayer : public FRenderLayer
 {
 public:
-	FTransparantRenderLayer();
+	FTransparentRenderLayer();
 
 	virtual void BuildShader() override;
 

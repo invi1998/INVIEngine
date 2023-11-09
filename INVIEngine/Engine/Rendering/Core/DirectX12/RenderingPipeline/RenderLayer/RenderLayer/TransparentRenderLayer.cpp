@@ -1,19 +1,19 @@
 #include "EngineMinimal.h"
-#include "TransparantRenderLayer.h"
+#include "TransparentRenderLayer.h"
 
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 
-FTransparantRenderLayer::FTransparantRenderLayer()
+FTransparentRenderLayer::FTransparentRenderLayer()
 {
 	RenderPriority = 3000;
 }
 
-void FTransparantRenderLayer::BuildShader()
+void FTransparentRenderLayer::BuildShader()
 {
 }
 
-void FTransparantRenderLayer::BuildPSO()
+void FTransparentRenderLayer::BuildPSO()
 {
 	// 构建渲染管线
 	DirectXPipelineState->BuildPipelineState(EPipelineState::Wireframe);

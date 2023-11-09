@@ -3,7 +3,7 @@
 
 #include "RenderLayer/AlphaTestRenderLayer.h"
 #include "RenderLayer/OpaqueRenderLayer.h"
-#include "RenderLayer/TransparantRenderLayer.h"
+#include "RenderLayer/TransparentRenderLayer.h"
 
 std::vector<std::shared_ptr<FRenderLayer>> FRenderLayerManage::RenderLayers;
 
@@ -13,7 +13,7 @@ FRenderLayerManage::FRenderLayerManage()
 
 	CreateRenderLayer<FAlphaTestRenderLayer>();
 	CreateRenderLayer<FOpaqueRenderLayer>();
-	CreateRenderLayer<FTransparantRenderLayer>();
+	CreateRenderLayer<FTransparentRenderLayer>();
 }
 
 FRenderLayerManage::~FRenderLayerManage()
