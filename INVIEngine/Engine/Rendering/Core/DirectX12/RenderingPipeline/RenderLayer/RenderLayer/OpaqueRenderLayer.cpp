@@ -42,3 +42,12 @@ void FOpaqueRenderLayer::BuildShader()
 	// 绑定输入布局
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
+
+void FOpaqueRenderLayer::BuildPSO()
+{
+	// 构建渲染管线
+	DirectXPipelineState->BuildPipelineState(EPipelineState::Wireframe);
+	DirectXPipelineState->SetFillModle(false);
+
+	DirectXPipelineState->BuildPipelineState(EPipelineState::Solid);
+}

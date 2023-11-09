@@ -26,6 +26,8 @@ public:
 
 	void BuildShader();
 
+	virtual void BuildPSO();
+
 	static std::shared_ptr<FRenderLayer> FindByRenderLayer(int layer);
 
 	virtual void UpdateCaculations(float deltaTime, const FViewportInfo& viewportInfo);

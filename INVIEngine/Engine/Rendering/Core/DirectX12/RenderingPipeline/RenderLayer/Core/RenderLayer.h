@@ -33,6 +33,8 @@ public:
 
 	virtual void UpdateCaculations(float DeltaTime, const FViewportInfo& ViewportInfo);
 
+	virtual void BuildPSO() = 0;
+
 protected:
 	UINT RenderPriority;
 

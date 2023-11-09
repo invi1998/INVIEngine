@@ -17,6 +17,9 @@ public:
 	// 构建管线状态
 	void BuildPipelineState(int psoType);
 
+	// 绘制的时候调用
+	void ResetPSO(int psoType);
+
 	void ResetGPSDesc();
 
 	// 绑定输入布局

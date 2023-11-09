@@ -71,6 +71,14 @@ void FRenderLayerManage::BuildShader()
 	}
 }
 
+void FRenderLayerManage::BuildPSO()
+{
+	for (auto& layer : RenderLayers)
+	{
+		layer->BuildPSO();
+	}
+}
+
 std::shared_ptr<FRenderLayer> FRenderLayerManage::FindByRenderLayer(int layer)
 {
 	for (auto& layerData : RenderLayers)

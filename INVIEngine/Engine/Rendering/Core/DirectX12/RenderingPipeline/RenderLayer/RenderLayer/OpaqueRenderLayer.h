@@ -11,5 +11,7 @@ public:
 
 	virtual int GetRenderLayerType() const override { return 0; }
 
+	virtual void BuildPSO() override;
+
 };
 
