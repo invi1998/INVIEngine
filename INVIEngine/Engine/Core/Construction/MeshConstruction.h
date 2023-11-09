@@ -6,7 +6,7 @@
 namespace MeshConstruction
 {
 	template<class T, typename ...ParamTypes>
-	T* MeshCompenentConstruction(CMeshManager* manage, T* mesh, ParamTypes &&...Params)
+	T* MeshComponentConstruction(CMeshManager* manage, T* mesh, ParamTypes &&...Params)
 	{
 		if (manage && mesh)
 		{
@@ -49,7 +49,7 @@ namespace MeshConstruction
 		{
 			T* MyMesh = CreateObject<T>(new T());
 
-			return MeshCompenentConstruction<T>(manage, MyMesh, Params...);
+			return MeshComponentConstruction<T>(manage, MyMesh, Params...);
 		}
 
 		return nullptr;

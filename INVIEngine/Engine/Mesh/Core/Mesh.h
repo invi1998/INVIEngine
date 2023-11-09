@@ -35,6 +35,12 @@ public:
 
 	virtual CMeshComponent* GetMeshComponent() { return MeshComponent; }
 
+	template<typename T>
+	T* GetMeshComponent()
+	{
+		return dynamic_cast<T*>(MeshComponent);
+	}
+
 public:
 	virtual void SetPosition(const XMFLOAT3& InNewPosition) override;
 	virtual void SetRotation(const fvector_3d& InRotation) override;

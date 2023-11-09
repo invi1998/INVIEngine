@@ -11,7 +11,7 @@ T* CreateObject(CCoreMinimalObject* NewObject)
 template <typename T, typename... ParamType>
 T* ConstructionObject(ParamType&& ... params)
 {
-	return CreateObject<T>(new T(std::forward<ParamType>(params...)));
+	return CreateObject<T>(new T(params...));
 }
 
 
