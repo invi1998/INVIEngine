@@ -16,7 +16,7 @@ struct FGeometry : IDirectXDeviceInterface_Struct
 	friend struct FGeometryMap;
 public:
 	bool bRenderingDataExistence(CMeshComponent* InKey);
-	void BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
+	void BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData, int geometryKey);
 
 	// 构建模型
 	void Build();
@@ -28,7 +28,7 @@ public:
 	// 获取顶点index缓冲区视图
 	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView();
 
-	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data);
+	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data, int geometryKey);
 	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer = -1);
 
 protected:
@@ -50,8 +50,10 @@ protected:
 // 几何模型映射阶段
 struct FGeometryMap : IDirectXDeviceInterface_Struct
 {
+	friend class FRenderLayer;
 public:
 	FGeometryMap();
+	~FGeometryMap();
 	void BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData);
 
 	void Build();

@@ -15,6 +15,10 @@ public:
 	// 基础数据注册
 	void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
 
+	virtual void PreDraw(float deltaTime);
+	virtual void Draw(float deltaTime);
+	virtual void PostDraw(float deltaTime);
+
 	// 层级排序
 	void Sort();
 

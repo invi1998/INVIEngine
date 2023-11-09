@@ -19,6 +19,8 @@ public:
 
 public:
 	size_t MeshHash;
+	int GeometryKey;
+	int MeshObjectIndex;
 
 public:
 	UINT IndexSize;				// 顶点索引数量

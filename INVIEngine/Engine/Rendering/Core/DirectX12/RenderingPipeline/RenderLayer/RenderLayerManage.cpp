@@ -23,9 +23,33 @@ FRenderLayerManage::~FRenderLayerManage()
 
 void FRenderLayerManage::Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState)
 {
-	for (auto& layer:RenderLayers)
+	for (const auto& layer:RenderLayers)
 	{
 		layer->Init(geometry, directXPipelineState);
+	}
+}
+
+void FRenderLayerManage::PreDraw(float deltaTime)
+{
+	for (const auto& layer : RenderLayers)
+	{
+		layer->PreDraw(deltaTime);
+	}
+}
+
+void FRenderLayerManage::Draw(float deltaTime)
+{
+	for (const auto& layer : RenderLayers)
+	{
+		layer->Draw(deltaTime);
+	}
+}
+
+void FRenderLayerManage::PostDraw(float deltaTime)
+{
+	for (const auto& layer : RenderLayers)
+	{
+		layer->PostDraw(deltaTime);
 	}
 }
 

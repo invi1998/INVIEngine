@@ -68,6 +68,7 @@ void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInf
 void FRenderingPipeline::PreDraw(float DeltaTime)
 {
 	DirectXPipelineState.PreDraw(DeltaTime);
+	RenderLayerManage.PreDraw(DeltaTime);
 }
 
 void FRenderingPipeline::Draw(float DeltaTime)
@@ -77,6 +78,7 @@ void FRenderingPipeline::Draw(float DeltaTime)
 	DirectXRootSignature.PreDraw(DeltaTime);
 
 	GeometryMap.Draw(DeltaTime);
+	RenderLayerManage.Draw(DeltaTime);
 
 	DirectXPipelineState.Draw(DeltaTime);
 	
@@ -85,6 +87,8 @@ void FRenderingPipeline::Draw(float DeltaTime)
 void FRenderingPipeline::PostDraw(float DeltaTime)
 {
 	GeometryMap.PostDraw(DeltaTime);
+	RenderLayerManage.PostDraw(DeltaTime);
+	DirectXPipelineState.PostDraw(DeltaTime);
 }
 
 bool FRenderingPipeline::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer)

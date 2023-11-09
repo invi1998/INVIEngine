@@ -17,6 +17,10 @@ public:
 
 	const UINT GetRenderPriority() const { return RenderPriority; }
 
+	virtual void PreDraw(float deltaTime);
+	virtual void Draw(float deltaTime);
+	virtual void PostDraw(float deltaTime);
+
 
 public:
 	virtual void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
@@ -32,11 +36,11 @@ protected:
 	FShader PixelShader;
 
 	// 在 Direct3D 12 中，输入布局是一个包含多个输入元素的数据结构，表示顶点缓冲区中存储的顶点数据的格式和排列方式。
-	std::vector<D3D12_INPUT_ELEMENT_DESC> InputElementDesc;		// 描述输入布局（Input Layout）中的单个元素。
+	std::vector<D3D12_INPUT_ELEMENT_DESC> InputElementDesc{};		// 描述输入布局（Input Layout）中的单个元素。
 
-	std::vector<FRenderingData> RenderData;
+	std::vector<FRenderingData> RenderData{};
 
-	FGeometryMap* GeometryMap;
-	FDirectXPipelineState* DirectXPipelineState;	// 管线状态 pso
+	FGeometryMap* GeometryMap{};
+	FDirectXPipelineState* DirectXPipelineState{};	// 管线状态 pso
 };
 

@@ -19,6 +19,8 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
 
+UINT MeshObjectCount = 0;
+
 bool FGeometry::bRenderingDataExistence(CMeshComponent* InKey)
 {
 	if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(InKey->GetRenderLayerType()))
@@ -33,7 +35,7 @@ bool FGeometry::bRenderingDataExistence(CMeshComponent* InKey)
 	return false;
 }
 
-void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const FMeshRenderingData& MeshData)
+void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const FMeshRenderingData& MeshData, int geometryKey)
 {
 	// 判断当前模型是否已经被添加过了
 	if (!bRenderingDataExistence(inMesh))
@@ -44,6 +46,8 @@ void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const F
 
 			FRenderingData& InRenderingData = renderLayer->RenderData[renderLayer->RenderData.size() - 1];
 
+			InRenderingData.MeshObjectIndex = MeshObjectCount++;
+			InRenderingData.GeometryKey = geometryKey;
 			InRenderingData.Mesh = inMesh;
 			InRenderingData.MeshHash = meshHash;
 			// 记录顶点数据
@@ -87,6 +91,8 @@ void FGeometry::Build()
 
 UINT FGeometry::GetDrawObjectCount() const
 {
+	return MeshObjectCount;
+
 	UINT size = 0;
 	for (auto& layers : FRenderLayerManage::RenderLayers)
 	{
@@ -117,7 +123,7 @@ D3D12_INDEX_BUFFER_VIEW FGeometry::GetIndexBufferView()
 	return ibv;
 }
 
-void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data)
+void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data, int geometryKey)
 {
 	// 判断当前模型是否已经被添加过了
 	if (!bRenderingDataExistence(mesh_component))
@@ -128,6 +134,8 @@ void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingDa
 			FRenderingData& InRenderingData = renderLayer->RenderData[renderLayer->RenderData.size() - 1];
 
 			InRenderingData.Mesh = mesh_component;
+			InRenderingData.MeshObjectIndex = MeshObjectCount++;
+			InRenderingData.GeometryKey = geometryKey;
 		}
 	}
 }
@@ -186,11 +194,19 @@ FGeometryMap::FGeometryMap()
 	RenderingTextureResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
 }
 
+FGeometryMap::~FGeometryMap()
+{
+	MeshObjectCount = 0;
+}
+
 void FGeometryMap::BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const FMeshRenderingData& MeshData)
 {
-	FGeometry &Geometry = Geometries[0];
+	for (auto& geometry:Geometries)
+	{
+		geometry.second.BuildMesh(meshHash, Mesh, MeshData, geometry.first);
+	}
 
-	Geometry.BuildMesh(meshHash, Mesh, MeshData);
+	
 }
 
 void FGeometryMap::Build()
@@ -509,7 +525,7 @@ void FGeometryMap::Draw(float DeltaTime)
 	DrawMaterial(DeltaTime);
 
 	// 渲染模型
-	DrawMesh(DeltaTime);
+	// DrawMesh(DeltaTime);
 }
 
 void FGeometryMap::PostDraw(float DeltaTime)
@@ -518,9 +534,12 @@ void FGeometryMap::PostDraw(float DeltaTime)
 
 void FGeometryMap::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data)
 {
-	FGeometry& geometry = Geometries[0];
 
-	geometry.DuplicateMesh(mesh_component, rendering_data);
+	for (auto& geometry : Geometries)
+	{
+		geometry.second.DuplicateMesh(mesh_component, rendering_data, geometry.first);
+	}
+	
 }
 
 bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer)
