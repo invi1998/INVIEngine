@@ -101,9 +101,9 @@ CMeshComponent* CMeshManager::CreatePlaneMeshComponent(float InHeight, float InW
 	return MeshConstruction::CreateMeshComponent<CPlaneMeshComponent>(this, InHeight, InWidth, InHeightSubdivide, InWidthSubdivide);
 }
 
-CMeshComponent* CMeshManager::CreateSphereMeshComponent(float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
+CMeshComponent* CMeshManager::CreateSphereMeshComponent(float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision, bool bReverse)
 {
-	return MeshConstruction::CreateMeshComponent<CSphereMeshComponent>(this, InRadius, InAxialSubdivision, InHeightSubdivision);
+	return MeshConstruction::CreateMeshComponent<CSphereMeshComponent>(this, InRadius, InAxialSubdivision, InHeightSubdivision, bReverse);
 }
 
 CMeshComponent* CMeshManager::CreatePyramidMeshComponent(EPyramidNumberSides InPyramidNumberSidesType, uint32_t InHeightSubdivide, uint32_t InSize)

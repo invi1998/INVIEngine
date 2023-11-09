@@ -9,7 +9,7 @@ public:
 
 	void CreateMesh(FMeshRenderingData& MeshData, float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision, bool bReverse = false);
 
-	void BuildKey(size_t& meshKey, float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision);
+	void BuildKey(size_t& meshKey, float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision, bool bReverse);
 
 };
 

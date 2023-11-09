@@ -86,15 +86,19 @@ void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadi
 	{
 		for (uint32_t j = 0; j < InAxialSubdivision; ++j)
 		{
-			// 在球体的南北极中间绘制的面是四边形(而一个四边形又是由两个三角形组成的
-			// 三角形1
-			MeshData.IndexData.push_back(BaseIndex + i * VertexCircleNum + j);
-			MeshData.IndexData.push_back(BaseIndex + i * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back(BaseIndex + (i + 1) * VertexCircleNum + j);
-			// 三角形2
-			MeshData.IndexData.push_back(BaseIndex + (i + 1) * VertexCircleNum + j);
-			MeshData.IndexData.push_back(BaseIndex + i * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back(BaseIndex + (i + 1) * VertexCircleNum + j + 1);
+			//// 在球体的南北极中间绘制的面是四边形(而一个四边形又是由两个三角形组成的
+			//// 三角形1
+			//MeshData.IndexData.push_back(BaseIndex + i * VertexCircleNum + j);
+			//MeshData.IndexData.push_back(BaseIndex + i * VertexCircleNum + j + 1);
+			//MeshData.IndexData.push_back(BaseIndex + (i + 1) * VertexCircleNum + j);
+			//// 三角形2
+			//MeshData.IndexData.push_back(BaseIndex + (i + 1) * VertexCircleNum + j);
+			//MeshData.IndexData.push_back(BaseIndex + i * VertexCircleNum + j + 1);
+			//MeshData.IndexData.push_back(BaseIndex + (i + 1) * VertexCircleNum + j + 1);
+
+			DrawQuadrilateral(MeshData,
+				GetQuadrilateralDrawPointTypeA(j, i, InAxialSubdivision, 1),
+				bReverse);
 		}
 	}
 
@@ -104,13 +108,22 @@ void CSphereMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadi
 	for (uint32_t i = 0; i <= InAxialSubdivision; ++i)
 	{
 		// 因为DX是左手螺旋定则，所以需要逆时针绘制顶点，法线才能朝外
-		MeshData.IndexData.push_back(SouthBaseIndex);
-		MeshData.IndexData.push_back(BaseIndex + i);
-		MeshData.IndexData.push_back(BaseIndex + i + 1);
+		if (bReverse)
+		{
+			MeshData.IndexData.push_back(BaseIndex + i);
+			MeshData.IndexData.push_back(SouthBaseIndex);
+			MeshData.IndexData.push_back(BaseIndex + i + 1);
+		}
+		else
+		{
+			MeshData.IndexData.push_back(SouthBaseIndex);
+			MeshData.IndexData.push_back(BaseIndex + i);
+			MeshData.IndexData.push_back(BaseIndex + i + 1);
+		}
 	}
 }
 
-void CSphereMeshComponent::BuildKey(size_t& meshKey, float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
+void CSphereMeshComponent::BuildKey(size_t& meshKey, float InRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision, bool bReverse)
 {
 	constexpr std::hash<float> floatHash;
 
@@ -119,4 +132,5 @@ void CSphereMeshComponent::BuildKey(size_t& meshKey, float InRadius, uint32_t In
 
 	meshKey += std::hash<int>::_Do_hash(InAxialSubdivision);
 	meshKey += std::hash<int>::_Do_hash(InHeightSubdivision);
+	meshKey += std::hash<int>::_Do_hash(bReverse);
 }

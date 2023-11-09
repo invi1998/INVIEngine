@@ -54,7 +54,8 @@ public:
 	CMeshComponent* CreateSphereMeshComponent(
 		float InRadius,
 		uint32_t InAxialSubdivision,
-		uint32_t InHeightSubdivision);
+		uint32_t InHeightSubdivision,
+		bool bReverse = false);
 
 	CMeshComponent* CreatePyramidMeshComponent(
 		EPyramidNumberSides InPyramidNumberSidesType, 
