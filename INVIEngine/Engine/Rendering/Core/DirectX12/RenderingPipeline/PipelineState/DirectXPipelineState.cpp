@@ -94,6 +94,11 @@ void FDirectXPipelineState::BindShader(const FShader& InVertexShader, const FSha
 	GPSDesc.PS.BytecodeLength = InPixelShader.GetBufferSize();
 }
 
+void FDirectXPipelineState::SetRenderTarget(int index, D3D12_RENDER_TARGET_BLEND_DESC& renderTargetBlend)
+{
+	GPSDesc.BlendState.RenderTarget[index] = renderTargetBlend;
+}
+
 void FDirectXPipelineState::PreDraw(float DeltaTime)
 {
 	// 重置命令列表，因为我们每一帧都会有新的提交列表

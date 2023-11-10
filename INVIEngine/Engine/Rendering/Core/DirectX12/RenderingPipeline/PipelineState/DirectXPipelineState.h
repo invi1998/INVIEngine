@@ -31,6 +31,9 @@ public:
 	// 绑定顶点着色器和像素着色器
 	void BindShader(const FShader& InVertexShader, const FShader& InPixelShader);
 
+	// 设置渲染目标
+	void SetRenderTarget(int index, D3D12_RENDER_TARGET_BLEND_DESC& renderTargetBlend);
+
 	void PreDraw(float DeltaTime);
 	void Draw(float DeltaTime);
 	void PostDraw(float DeltaTime);

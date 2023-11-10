@@ -534,9 +534,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 19.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				// InMaterial->SetBaseColorIndexKey("Wood2");
-				InMaterial->SetNormalIndexKey("Wood2_Nor");
-				InMaterial->SetSpecular("Wood2_SPEC");
+				InMaterial->SetBaseColorIndexKey("TransparentContent");
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 			}
 		}
