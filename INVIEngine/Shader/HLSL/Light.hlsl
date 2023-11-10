@@ -46,7 +46,7 @@ float3 GetLightDirection(Light L, float3 WorldLocation)
 float4 AttenuationPointLight(Light L, float LightDistence, float4 LightStrenth)
 {
     float AttenuationRange = L.EndAttenuation - L.StartAttenuation;
-    LightStrenth = LightStrenth * (LightDistence / AttenuationRange);
+    LightStrenth = LightStrenth * (1.f - LightDistence / AttenuationRange);
     return LightStrenth;
 }
 
@@ -75,8 +75,8 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
 
         if (LightDistence < L.EndAttenuation)
         {
-            // LightStrenth = AttenuationPointLight(L, LightDistence, LightStrenth);        // 线性衰减
-            return AttenuationPointLightCLQ(L, LightDistence, LightStrenth); // 非线性衰减
+            return AttenuationPointLight(L, LightDistence, LightStrenth);        // 线性衰减
+            // return AttenuationPointLightCLQ(L, LightDistence, LightStrenth); // 非线性衰减
         }
     	return float4(0.f, 0.f, 0.f, 1.f);
     }
