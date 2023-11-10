@@ -361,13 +361,13 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float PI = 3.1415926f;
         
                 float Roughness = 0.02f; // 粗糙度
-                float Matallic = 0.2f; // 金属度
+                float3 Matallic = 0.2f; // 金属度
         
                 // D 项 D_GGX
                 float4 D = GetDistributionGGX(N, H, Roughness);
         
-                float F0 = 0.04f;
-                F0 = lerp(F0, material.BaseColor, Matallic);
+                float3 F0 = 0.04f;
+                F0 = lerp(F0, material.BaseColor.rgb, Matallic);
         
                 // 菲尼尔项 F项
                 float4 F = float4(FresnelSchlick(F0, N, V, 5), 1.0f);
@@ -377,9 +377,9 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 // 获取兰伯特项
                 float4 Kd = 1 - F; // 就是菲尼尔取反
-                Kd *= 1 - Matallic;
+				Kd *= 1 - float4(Matallic, 1.f);
         
-                float4 Diffuse = float4(Kd.xyz * GetDiffuseLambert(material.BaseColor.xyz), 1.f);
+                float3 Diffuse = Kd.xyz * GetDiffuseLambert(material.BaseColor.xyz);
         
                 float NoV = saturate(dot(N, V));
                 float NoL = saturate(dot(N, L));
