@@ -16,7 +16,7 @@ void FAlphaTestRenderLayer::BuildShader()
 void FAlphaTestRenderLayer::BuildPSO()
 {
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(0);
+	DirectXPipelineState->BuildPipelineState(EPipelineState::AlphaTest);
 }
 
 void FAlphaTestRenderLayer::Draw(float deltaTime)
