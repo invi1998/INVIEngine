@@ -73,13 +73,13 @@ void FTransparentRenderLayer::BuildPSO()
 	DirectXPipelineState->SetRenderTarget(0, RenderTargetBlendDesc);
 
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(RenderLayerType);
+	DirectXPipelineState->BuildPipelineState(Transparent);
 }
 
 void FTransparentRenderLayer::Draw(float deltaTime)
 {
 	// 渲染之前，重置PSO
-	DirectXPipelineState->ResetPSO(RenderLayerType);
+	DirectXPipelineState->ResetPSO(Transparent);
 
 	FRenderLayer::Draw(deltaTime);
 

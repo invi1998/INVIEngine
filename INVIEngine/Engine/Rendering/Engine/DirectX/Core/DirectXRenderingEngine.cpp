@@ -132,7 +132,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			if (CMaterial* material = (*sphere->GetMaterial())[0])
 			{
-				material->SetBaseColorIndexKey("EpicQuadPanorama_CC");
+				// material->SetBaseColorIndexKey("EpicQuadPanorama_CC");
 				material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
 				material->SetMaterialType(BaseColor);
 			}

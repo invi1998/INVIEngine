@@ -63,5 +63,7 @@ void FOpaqueRenderLayer::BuildPSO()
 
 void FOpaqueRenderLayer::Draw(float deltaTime)
 {
+	DirectXPipelineState->ResetPSO();
+
 	FRenderLayer::Draw(deltaTime);
 }

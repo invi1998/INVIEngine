@@ -13,6 +13,8 @@ public:
 	void Draw(float deltaTime) override;
 	void PostDraw(float deltaTime) override;
 	void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState) override;
+
+
 	void BuildShader() override;
 	void UpdateCaculations(float DeltaTime, const FViewportInfo& ViewportInfo) override;
 	void BuildPSO() override;

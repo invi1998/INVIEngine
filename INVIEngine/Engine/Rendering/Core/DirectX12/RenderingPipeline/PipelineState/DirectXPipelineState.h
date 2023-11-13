@@ -20,6 +20,9 @@ public:
 	// 绘制的时候调用
 	void ResetPSO(int psoType);
 
+	// 重置PSO，只提供给不透明层使用
+	void ResetPSO();
+
 	void ResetGPSDesc();
 
 	// 绑定输入布局

@@ -13,7 +13,7 @@ FRenderLayerManage::FRenderLayerManage()
 	RenderLayers.clear();
 
 	CreateRenderLayer<FBackgroundRenderLayer>();
-	CreateRenderLayer<FAlphaTestRenderLayer>();
+	// CreateRenderLayer<FAlphaTestRenderLayer>();
 	CreateRenderLayer<FOpaqueRenderLayer>();
 	CreateRenderLayer<FTransparentRenderLayer>();
 }

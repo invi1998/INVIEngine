@@ -55,13 +55,13 @@ void FAlphaTestRenderLayer::BuildPSO()
 	FRenderLayer::BuildPSO();
 
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(RenderLayerType);
+	DirectXPipelineState->BuildPipelineState(AlphaTest);
 }
 
 void FAlphaTestRenderLayer::Draw(float deltaTime)
 {
 	// 渲染之前，重置PSO
-	DirectXPipelineState->ResetPSO(RenderLayerType);
+	DirectXPipelineState->ResetPSO(AlphaTest);
 
 	FRenderLayer::Draw(deltaTime);
 }

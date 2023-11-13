@@ -68,6 +68,11 @@ void FDirectXPipelineState::ResetPSO(int psoType)
 	GetD3dGraphicsCommandList()->SetPipelineState(PSO[psoType].Get());
 }
 
+void FDirectXPipelineState::ResetPSO()
+{
+	ResetPSO(PipelineState);
+}
+
 void FDirectXPipelineState::ResetGPSDesc()
 {
 	memset(&GPSDesc, 0, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
