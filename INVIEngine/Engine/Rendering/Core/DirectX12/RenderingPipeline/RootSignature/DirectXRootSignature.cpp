@@ -11,67 +11,33 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建根签名
 
-	// 渲染对象（物体） CBV描述表
-	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeObjectCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
-	DescriptorRangeObjectCBV.Init(
-		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
-		1,									// 描述数量 1
-		0);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
-
-	// 视口 CBV描述表
-	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeViewportCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
-	DescriptorRangeViewportCBV.Init(
-		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
-		1,									// 描述数量 1
-		1);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
-
-
-	// 灯光 CBV描述表
-	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeLightCBV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
-	DescriptorRangeLightCBV.Init(
-		D3D12_DESCRIPTOR_RANGE_TYPE_CBV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型））
-		1,									// 描述数量 1
-		2);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
-
 	// 纹理 CBV描述表
 	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeTextureSRV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
 	DescriptorRangeTextureSRV.Init(
 		D3D12_DESCRIPTOR_RANGE_TYPE_SRV,	// 指定视图（这里指向常量缓冲区视图 （描述符类型）），对于纹理，这里我们选择shaderRenderingView
 		textureNum,							// 贴图数量
-		3);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
+		1);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
+	/*CD3DX12_DESCRIPTOR_RANGE DescriptorRangeCubeMapSRV;
+	DescriptorRangeCubeMapSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);*/
 
 
 	// 创建根参数，使用上面的描述符范围
 	CD3DX12_ROOT_PARAMETER RootParam[5];
-	RootParam[0].InitAsDescriptorTable(
-		1,							// 描述符数量
-		&DescriptorRangeObjectCBV		// 指向描述符范围数组的指针
-		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
-	);
 
-	RootParam[1].InitAsDescriptorTable(
-		1,							// 描述符数量
-		&DescriptorRangeViewportCBV		// 指向描述符范围数组的指针
-		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
-	);
+	// register(t0, space1)
+	RootParam[0].InitAsConstantBufferView(0);		// Mesh对象
+	RootParam[1].InitAsConstantBufferView(1);		// 视口
+	RootParam[2].InitAsConstantBufferView(2);		// 灯光
+	// register(t0, space1)
+	RootParam[3].InitAsShaderResourceView(0, 1);		// 材质
 
-	RootParam[2].InitAsDescriptorTable(
-		1,							// 描述符数量
-		&DescriptorRangeLightCBV		// 指向描述符范围数组的指针
-		// D3D12_SHADER_VISIBILITY_ALL	// 着色器可见性(该值默认为shader可见，一般不用设置）
-	);
 
-	RootParam[3].InitAsDescriptorTable(
+	// 2D贴图
+	RootParam[4].InitAsDescriptorTable(
 		1,								// 描述符数量
 		&DescriptorRangeTextureSRV,			// 指向描述符范围数组的指针
 		D3D12_SHADER_VISIBILITY_PIXEL	// 着色器可见性(该值默认为shader可见，一般不用设置）
-	);
-
-	// register(t0, space1)
-	RootParam[4].InitAsShaderResourceView(
-		4,	// 指定shaderGPU寄存器
-		1	// 指定GPU寄存器存储空间
 	);
 
 	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)

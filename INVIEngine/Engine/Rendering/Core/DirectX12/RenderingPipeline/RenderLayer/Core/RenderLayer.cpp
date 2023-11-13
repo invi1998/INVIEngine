@@ -24,7 +24,11 @@ void FRenderLayer::PreDraw(float deltaTime)
 
 void FRenderLayer::Draw(float deltaTime)
 {
-	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	// UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	// 获取mesh偏移
+	UINT MeshOffset = GeometryMap->MeshConstantBufferViews.GetConstantBufferByteSize();
+
 	for (auto& innerRenderData : RenderData)
 	{
 		// 获取顶点/索引缓冲区视图
@@ -32,7 +36,9 @@ void FRenderLayer::Draw(float deltaTime)
 		D3D12_INDEX_BUFFER_VIEW ibv = GeometryMap->Geometries[innerRenderData.GeometryKey].GetIndexBufferView();
 
 
-		CD3DX12_GPU_DESCRIPTOR_HANDLE DesMeshHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 模型描述handle
+		// CD3DX12_GPU_DESCRIPTOR_HANDLE DesMeshHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart());	// 模型描述handle
+
+		D3D12_GPU_VIRTUAL_ADDRESS VirtualMeshAddress = GeometryMap->MeshConstantBufferViews.GetBuffer()->GetGPUVirtualAddress();
 
 		// 设置索引视图
 		GetD3dGraphicsCommandList()->IASetIndexBuffer(&ibv);
@@ -49,8 +55,12 @@ void FRenderLayer::Draw(float deltaTime)
 		GetD3dGraphicsCommandList()->IASetPrimitiveTopology(DisplayType);
 
 		// 模型起始偏移
-		DesMeshHandle.Offset(innerRenderData.MeshObjectIndex, DescriptorOffset);
-		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, DesMeshHandle);
+		// DesMeshHandle.Offset(innerRenderData.MeshObjectIndex, DescriptorOffset);
+		// GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(0, DesMeshHandle);
+
+		// 每个对象相对Geometry首地址的偏移
+		D3D12_GPU_VIRTUAL_ADDRESS VAddress = VirtualMeshAddress + innerRenderData.MeshObjectIndex * MeshOffset;
+		GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(0, VAddress);
 
 		// 上述步骤只是在提交数据到GPU，并不是在渲染模型
 

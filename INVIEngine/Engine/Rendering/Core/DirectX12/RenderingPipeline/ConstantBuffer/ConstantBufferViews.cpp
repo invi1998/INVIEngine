@@ -48,3 +48,8 @@ ID3D12Resource* FConstantBufferViews::GetBuffer() const
 	}
 	return nullptr;
 }
+
+UINT FConstantBufferViews::GetConstantBufferByteSize()
+{
+	return Constants->GetConstantsBufferByteSize();
+}

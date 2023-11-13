@@ -12,8 +12,8 @@ SamplerState AnisotropicSampler : register(s1);
 //		4);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
 // 贴图 (这里寄存器的编号对应你在根签名那里设置的纹理的CBV描述表的寄存器编号
-Texture2D SimpleTexture2DMap[TEXTURE2DNUM] : register(t3);
-TextureCube SimpleCubeMap[CUBE_MAP_NUM] : register(t5, space1);	// 天空盒
+Texture2D SimpleTexture2DMap[TEXTURE2DNUM] : register(t1);
+// TextureCube SimpleCubeMap[CUBE_MAP_NUM] : register(t5, space1);	// 天空盒
 
 cbuffer MeshConstBuffer : register(b0)
 {
@@ -64,4 +64,4 @@ struct MaterialConstBuffer
 	float4x4 MaterialProjectionMatrix;
 };
 
-StructuredBuffer<MaterialConstBuffer> Materials : register(t4, space1);
+StructuredBuffer<MaterialConstBuffer> Materials : register(t0, space1);

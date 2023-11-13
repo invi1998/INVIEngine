@@ -22,6 +22,8 @@ public:
 
 	ID3D12Resource* GetBuffer() const;
 
+	UINT GetConstantBufferByteSize();
+
 protected:
 	std::shared_ptr<FRenderingResourcesUpdate> Constants;		// 常量资源（指向上传堆）
 

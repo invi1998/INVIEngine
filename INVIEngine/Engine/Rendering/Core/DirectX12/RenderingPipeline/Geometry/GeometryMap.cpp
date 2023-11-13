@@ -224,7 +224,10 @@ void FGeometryMap::Build()
 void FGeometryMap::BuildDescriptorHeap()
 {
 	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 灯光数量 + 摄像机 + 纹理贴图 + CubeMap）
-	DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount() + GetDrawCubeMapCount());
+	// DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount() + GetDrawCubeMapCount());
+
+	// 纹理贴图, 只需要为texture2D图片分配堆内存，因为我们将其他的(模型对象数量 + 灯光数量 + 摄像机)从常量缓冲区分离出来了
+	DescriptorHeap.Build(GetDrawTexture2DCount());
 }
 
 UINT FGeometryMap::GetDrawTexture2DCount() const
@@ -258,11 +261,11 @@ void FGeometryMap::BuildMeshConstantBuffer()
 	// 创建常量缓冲区
 	MeshConstantBufferViews.CreateConstant(sizeof(FObjectTransformation), GetDrawMeshCount());
 
-	// 描述堆句柄
-	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
+	//// 描述堆句柄
+	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
-	// 构建常量缓冲区
-	MeshConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawMeshCount());
+	//// 构建常量缓冲区
+	//MeshConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawMeshCount());
 }
 
 void FGeometryMap::BuildMaterialShaderResourceView()
@@ -295,11 +298,11 @@ void FGeometryMap::BuildLightConstantBuffer()
 	// 创建灯光常量缓冲区
 	LightConstantBufferViews.CreateConstant(sizeof(FLightConstantBuffer), GetDrawLightCount());
 
-	// 描述堆句柄
-	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
+	//// 描述堆句柄
+	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
-	// 构建常量缓冲区
-	LightConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawLightCount(), GetDrawMeshCount());
+	//// 构建常量缓冲区
+	//LightConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawLightCount(), GetDrawMeshCount());
 }
 
 void FGeometryMap::BuildViewportConstantBuffer()
@@ -307,11 +310,11 @@ void FGeometryMap::BuildViewportConstantBuffer()
 	// 创建常量缓冲区
 	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1);
 
-	// 描述堆句柄
-	CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
+	//// 描述堆句柄
+	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
 
-	// 构建常量缓冲区
-	ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, 1, GetDrawMeshCount() + GetDrawLightCount());
+	//// 构建常量缓冲区
+	//ViewportConstantBufferViews.BuildConstantBuffer(DesHandle, 1, GetDrawMeshCount() + GetDrawLightCount());
 }
 
 void FGeometryMap::LoadTexture() const
@@ -350,11 +353,14 @@ void FGeometryMap::LoadTexture() const
 void FGeometryMap::BuildTextureConstBuffer()
 {
 	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口
-	RenderingTexture2DResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1);
+	// RenderingTexture2DResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1);
+
+	// 因为将模型，灯光，视口都从常量缓冲区分离出来了，所以这里偏移直接给0就行
+	RenderingTexture2DResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), 0);
 
 	// 构建CubeMap
 	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口 + 贴图数量
-	RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount());
+	// RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount());
 }
 
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
@@ -529,35 +535,42 @@ std::unique_ptr<FRenderingTexture>* FGeometryMap::FindRenderingTexture(const std
 
 void FGeometryMap::DrawViewport(float DeltaTime)
 {
-	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
-	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+	//// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
+	//UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
-	DesHandle.Offset(static_cast<INT>(GetDrawMeshCount() + GetDrawLightCount()), DescriptorOffset);
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(1, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
+	//DesHandle.Offset(static_cast<INT>(GetDrawMeshCount() + GetDrawLightCount()), DescriptorOffset);
+	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(1, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
+
+
+	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(1, ViewportConstantBufferViews.GetBuffer()->GetGPUVirtualAddress());
+
 }
 
 void FGeometryMap::DrawMesh(float DeltaTime)
 {
+	// GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(2, LightConstantBufferViews.GetBuffer()->GetGPUVirtualAddress());
 }
 
 void FGeometryMap::DrawMaterial(float DeltaTime)
 {
 
 	GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(
-		4,	// 要绑定的根签名槽的索引
+		3,	// 要绑定的根签名槽的索引
 		MaterialConstantBufferViews.GetBuffer()->GetGPUVirtualAddress()	// 着色器资源视图的 GPU 描述符句柄。
 		);
 }
 
 void FGeometryMap::DrawLight(float DeltaTime)
 {
-	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
-	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+	//// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
+	//UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
-	DesHandle.Offset(static_cast<INT>(GetDrawMeshCount()), DescriptorOffset);
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(2, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
+	//DesHandle.Offset(static_cast<INT>(GetDrawMeshCount()), DescriptorOffset);
+	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(2, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
+
+	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(2, LightConstantBufferViews.GetBuffer()->GetGPUVirtualAddress());
 }
 
 void FGeometryMap::DrawTexture(float DeltaTime)
@@ -566,6 +579,6 @@ void FGeometryMap::DrawTexture(float DeltaTime)
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
-	DesHandle.Offset(static_cast<INT>(GetDrawMeshCount() + GetDrawLightCount() + 1), DescriptorOffset);
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(3, DesHandle);
+	DesHandle.Offset(0, DescriptorOffset);
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(4, DesHandle);
 }
