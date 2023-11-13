@@ -325,6 +325,11 @@ void FGeometryMap::BuildFog()
 	}
 }
 
+bool FGeometryMap::IsStartUpFog()
+{
+	return Fog != nullptr;
+}
+
 void FGeometryMap::BuildViewportConstantBuffer()
 {
 	// 创建常量缓冲区

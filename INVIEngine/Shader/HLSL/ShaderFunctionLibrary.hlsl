@@ -1,4 +1,7 @@
 
+#ifndef ShaderFunctionLibrary
+#define ShaderFunctionLibrary
+
 /**
  * \brief 返回TBN矩阵
  * \param unitWorldNormal  单位化的世界法线
@@ -15,3 +18,5 @@ float3x3 GetTBNMatrix(float3 unitWorldNormal, float3 worldTangent)
 
 	return float3x3(T, B, N);
 }
+
+#endif

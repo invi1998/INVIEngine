@@ -79,6 +79,47 @@ void FRenderLayer::PostDraw(float deltaTime)
 {
 }
 
+void FRenderLayer::BuildShaderMacro(std::vector<ShaderType::FShaderMacro>& inShaderMacro)
+{
+	char TextureNumBuff[10] = { 0 };
+
+	//inShaderMacro = std::initializer_list{
+	//	{"TEXTURE2DNUM", _itoa(GeometryMap->GetDrawTexture2DCount(), TextureNumBuff, 10)},
+	//	{"CUBE_MAP_NUM", _itoa(GeometryMap->GetDrawCubeMapCount(), TextureNumBuff, 10)},
+	//	{"START_UP_FOG", _itoa(GeometryMap->IsStartUpFog(), TextureNumBuff, 10)},
+	//	// NULL, NULL,
+	//};
+
+	{
+		ShaderType::FShaderMacro ShaderMacro;
+
+		char TextureNumBuff[10] = { 0 };
+		ShaderMacro.Name = "TEXTURE2D_MAP_NUM";
+		ShaderMacro.Definition = _itoa(GeometryMap->GetDrawTexture2DCount(), TextureNumBuff, 10);
+
+		inShaderMacro.push_back(ShaderMacro);
+	}
+
+	{
+		ShaderType::FShaderMacro ShaderMacro;
+
+		char TextureNumBuff[10] = { 0 };
+		ShaderMacro.Name = "CUBE_MAP_NUM";
+		ShaderMacro.Definition = _itoa(GeometryMap->GetDrawCubeMapCount(), TextureNumBuff, 10);
+
+		inShaderMacro.push_back(ShaderMacro);
+	}
+
+	{
+		ShaderType::FShaderMacro ShaderMacro;
+		ShaderMacro.Name = "START_UP_FOG";
+		ShaderMacro.Definition = GeometryMap->IsStartUpFog() ? "1" : "0";
+
+		inShaderMacro.push_back(ShaderMacro);
+	}
+}
+
+
 void FRenderLayer::Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState)
 {
 	GeometryMap = geometry;

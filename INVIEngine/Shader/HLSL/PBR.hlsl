@@ -1,3 +1,7 @@
+#ifndef PBR
+#define PBR
+
+
 // pbr 渲染函数
 
 // D 项 法线分布函数
@@ -40,3 +44,4 @@ float3 GetDiffuseLambert(float3 DiffuseColor)
     return DiffuseColor * (1 / PI);
 }
 
+#endif

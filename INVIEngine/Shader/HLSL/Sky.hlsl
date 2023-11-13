@@ -35,6 +35,9 @@ MeshVertexOut VertexShaderMain(MeshVertexIn mvIn)
 // ÏñËØ×ÅÉ«Æ÷
 float4 PixelShaderMain(MeshVertexOut mvOut) : SV_TARGET
 {
-	return SimpleCubeMap[0].Sample(TextureSampler, mvOut.PositionH);
+	// ¼ÆËãÎí
+	// mvOut.Color = GetFogValue(mvOut.Color);
+	
+	return SimpleCubeMap[0].Sample(TextureSampler, mvOut.PositionH.xyz);
 	// return float4(0.3f, 0.24f, 0.12f, 1.0f);
 }

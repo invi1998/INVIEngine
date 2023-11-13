@@ -1,3 +1,6 @@
+#ifndef Light
+#define Light
+
 struct Light
 {
     float3 LightIntensity;  // π‚’’«ø∂»
@@ -107,3 +110,5 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
     }
     return float4(0.f, 0.f, 0.f, 1.f);
 }
+
+#endif

@@ -4,6 +4,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 #include "Shader/Core/Shader.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/RenderingData.h"
+#include "Shader/Core/ShaderType.h"
 
 struct FViewportInfo;
 struct FDirectXPipelineState;
@@ -25,6 +26,7 @@ public:
 	virtual void Draw(float deltaTime);
 	virtual void PostDraw(float deltaTime);
 
+	virtual void BuildShaderMacro(std::vector<ShaderType::FShaderMacro>& inShaderMacro);
 
 public:
 	virtual void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);

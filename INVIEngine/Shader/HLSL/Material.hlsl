@@ -1,3 +1,7 @@
+#ifndef Material
+#define Material
+
+
 #include "ShaderCommon.hlsl"
 #include "ShaderFunctionLibrary.hlsl"
 
@@ -59,3 +63,5 @@ float4 GetMaterialSpecular(MaterialConstBuffer MatConstbuffer, float2 Texcoord)
 	// 纹理采样 (v传入采样方式，传入UV）
 	return SimpleTexture2DMap[MatConstbuffer.SpecularIndex].Sample(TextureSampler, Texcoord);
 }
+
+#endif

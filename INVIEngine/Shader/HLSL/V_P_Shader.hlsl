@@ -1,5 +1,6 @@
 #include "Material.hlsl"
 #include "PBR.hlsl"
+#include "SkyFunction.hlsl"
 
 struct MeshVertexIn
 {
@@ -420,6 +421,9 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     mvOut.Color = material.BaseColor * LightStrength // 漫反射
         + material.BaseColor * Specular * LightStrength // 高光
         + material.BaseColor * AmbientLight;  // 间接光（环境光）
+	
+	// 计算雾
+	mvOut.Color = GetFogValue(mvOut.Color, mvOut.WorldPosition.xyz);
 
     // 伽马校正
     // mvOut.Color = sqrt(mvOut.Color);

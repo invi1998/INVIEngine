@@ -16,17 +16,14 @@ void FOpaqueRenderLayer::BuildShader()
 	///构建shader HLSL
 	///
 
-	char TextureNumBuff[10] = { 0 };
+	std::vector<ShaderType::FShaderMacro> ShaderMacro;
+	BuildShaderMacro(ShaderMacro);
 
-	// shader宏定义
-	D3D_SHADER_MACRO ShaderMacro[] = {
-		"TEXTURE2DNUM", _itoa(GeometryMap->GetDrawTexture2DCount(), TextureNumBuff, 10),
-		"CUBE_MAP_NUM", _itoa(GeometryMap->GetDrawCubeMapCount(), TextureNumBuff, 10),
-		NULL, NULL,
-	};
+	std::vector<D3D_SHADER_MACRO> D3dShaderMacro;
+	ShaderType::ToD3DShaderMacro(ShaderMacro, D3dShaderMacro);
 
-	VertexShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "VSMain", "vs_5_1", ShaderMacro);
-	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_1", ShaderMacro);
+	VertexShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
+	PixelShader.BuildShader(L"Shader/HLSL/V_P_Shader.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
 	// 绑定shader
 	DirectXPipelineState->BindShader(VertexShader, PixelShader);
 

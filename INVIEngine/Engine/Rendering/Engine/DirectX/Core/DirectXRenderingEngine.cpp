@@ -133,7 +133,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			if (CMaterial* material = (*sphere->GetMaterial())[0])
 			{
-				material->SetBaseColorIndexKey("Snow_CubeMap");
+				material->SetBaseColorIndexKey("Grass_CubeMap");
 				material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
 				material->SetMaterialType(BaseColor);
 			}
@@ -541,7 +541,7 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		// 透明球体
+		// 雾
 		if (GFog* fog = World->CreateActorObject<GFog>())
 		{
 			fog->SetFogColor(XMFLOAT4{Colors::AliceBlue});
@@ -549,7 +549,7 @@ int CDirectXRenderingEngine::PostInit()
 			fog->SetFogRange(200.f);
 		}
 
-		// 雾
+		// 透明球体
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT);

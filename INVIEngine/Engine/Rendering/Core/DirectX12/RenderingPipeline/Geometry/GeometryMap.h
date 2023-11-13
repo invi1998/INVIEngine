@@ -92,6 +92,9 @@ public:
 
 	void BuildFog();
 
+	// 是否开启雾
+	bool IsStartUpFog();
+
 	// 构建视口buffer
 	void BuildViewportConstantBuffer();
 
