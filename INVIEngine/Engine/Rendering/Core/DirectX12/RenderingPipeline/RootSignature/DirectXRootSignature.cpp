@@ -23,25 +23,26 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 
 
 	// 创建根参数，使用上面的描述符范围
-	CD3DX12_ROOT_PARAMETER RootParam[6];
+	CD3DX12_ROOT_PARAMETER RootParam[7];
 
 	// register(t0, space1)
 	RootParam[0].InitAsConstantBufferView(0);		// Mesh对象
 	RootParam[1].InitAsConstantBufferView(1);		// 视口
 	RootParam[2].InitAsConstantBufferView(2);		// 灯光
+	RootParam[3].InitAsConstantBufferView(3);		// 雾
 	// register(t0, space1)
-	RootParam[3].InitAsShaderResourceView(0, 1);		// 材质
+	RootParam[4].InitAsShaderResourceView(0, 1);		// 材质
 
 
 	// 2D贴图
-	RootParam[4].InitAsDescriptorTable(
+	RootParam[5].InitAsDescriptorTable(
 		1,								// 描述符数量
 		&DescriptorRangeTextureSRV,			// 指向描述符范围数组的指针
 		D3D12_SHADER_VISIBILITY_PIXEL	// 着色器可见性(该值默认为shader可见，一般不用设置）
 	);
 
 	// cube map
-	RootParam[5].InitAsDescriptorTable(
+	RootParam[6].InitAsDescriptorTable(
 		1,								// 描述符数量
 		&DescriptorRangeCubeMapSRV,			// 指向描述符范围数组的指针
 		D3D12_SHADER_VISIBILITY_PIXEL	// 着色器可见性(该值默认为shader可见，一般不用设置）
@@ -56,7 +57,7 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
-		6,			// 参数数量
+		7,			// 参数数量
 		RootParam,	// 根签名参数
 		StaticSamplerObject.GetSize(),			// 静态采样数量
 		StaticSamplerObject.GetData(),			// 静态采样数据（传入采样数据指针）

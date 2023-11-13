@@ -8,6 +8,8 @@
 #include "Component/Light/SpotLightComponent.h"
 #include "Component/Light/Core/LightComponent.h"
 #include "Component/Light/Core/LightConstantBuffer.h"
+#include "Component/Sky/FogComponent.h"
+#include "Component/Sky/FogConstantBuffer.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Material/Core/Material.h"
@@ -187,7 +189,7 @@ bool FGeometry::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rend
 /**
  * \brief //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
-FGeometryMap::FGeometryMap()
+FGeometryMap::FGeometryMap() : IDirectXDeviceInterface_Struct(), Fog(nullptr)
 {
 	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
 
@@ -305,6 +307,24 @@ void FGeometryMap::BuildLightConstantBuffer()
 	//LightConstantBufferViews.BuildConstantBuffer(DesHandle, GetDrawLightCount(), GetDrawMeshCount());
 }
 
+void FGeometryMap::BuildFogConstantBuffer()
+{
+	// 构建雾的常量缓冲区
+	FogConstantBufferViews.CreateConstant(sizeof(FFogConstantBuffer), 1);
+}
+
+void FGeometryMap::BuildFog()
+{
+	for (auto & tmp : GObjects)
+	{
+		if (CFogComponent* fogComponent = dynamic_cast<CFogComponent*>(tmp))
+		{
+			Fog = fogComponent;
+			return;
+		}
+	}
+}
+
 void FGeometryMap::BuildViewportConstantBuffer()
 {
 	// 创建常量缓冲区
@@ -410,6 +430,18 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
 
 	ViewportConstantBufferViews.Update(0, &ViewportTransformation);
+
+	// 更新雾
+	if (Fog)
+	{
+		FFogConstantBuffer fogConstbuffer;
+
+		fogConstbuffer.FogColor = Fog->GetFogColor();
+		fogConstbuffer.FogStart = Fog->GetFogStart();
+		fogConstbuffer.FogRange = Fog->GetFogRange();
+
+		FogConstantBufferViews.Update(0, &fogConstbuffer);
+	}
 	
 }
 
@@ -556,7 +588,7 @@ void FGeometryMap::DrawMaterial(float DeltaTime)
 {
 
 	GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(
-		3,	// 要绑定的根签名槽的索引
+		4,	// 要绑定的根签名槽的索引
 		MaterialConstantBufferViews.GetBuffer()->GetGPUVirtualAddress()	// 着色器资源视图的 GPU 描述符句柄。
 		);
 }
@@ -581,7 +613,7 @@ void FGeometryMap::DrawTexture(float DeltaTime)
 		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
 		DesHandle.Offset(0, DescriptorOffset);
-		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(4, DesHandle);
+		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(5, DesHandle);
 	}
 
 
@@ -589,6 +621,11 @@ void FGeometryMap::DrawTexture(float DeltaTime)
 		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
 		DesHandle.Offset(GetDrawTexture2DCount(), DescriptorOffset);
-		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(5, DesHandle);
+		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(6, DesHandle);
 	}
+}
+
+void FGeometryMap::DrawFog(float DeltaTime)
+{
+	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(3, FogConstantBufferViews.GetBuffer()->GetGPUVirtualAddress());
 }

@@ -6,6 +6,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
+class CFogComponent;
 struct FRenderingTexture;
 class CMaterial;
 class FRenderingTextureResourcesUpdate;
@@ -86,6 +87,11 @@ public:
 	// 构建灯光的buff缓冲区
 	void BuildLightConstantBuffer();
 
+	// 构建雾的buff缓冲区
+	void BuildFogConstantBuffer();
+
+	void BuildFog();
+
 	// 构建视口buffer
 	void BuildViewportConstantBuffer();
 
@@ -125,6 +131,9 @@ private:
 	// 渲染纹理
 	void DrawTexture(float DeltaTime);
 
+	// 渲染雾
+	void DrawFog(float DeltaTime);
+
 protected:
 	map<int, FGeometry> Geometries{};						// 几何体
 	FDirectXDescriptorHeap DescriptorHeap;					// 描述堆
@@ -132,10 +141,13 @@ protected:
 	FConstantBufferViews MaterialConstantBufferViews;		// 材质常量缓冲区
 	FConstantBufferViews LightConstantBufferViews;			// 灯光常量缓冲区
 	FConstantBufferViews ViewportConstantBufferViews;		// 摄像机常量缓冲区
+	FConstantBufferViews FogConstantBufferViews;			// 雾常量缓冲区
 
 	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTexture2DResourceViews;		// shader纹理资源视图
 	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingCubeMapResourceViews;		// shader cube map资源视图
 	std::vector<CMaterial*> MaterialsSRV{};
+
+	CFogComponent* Fog;
 };
 
 

@@ -29,6 +29,8 @@ void FRenderingPipeline::BuildPipeline()
 	// 加载纹理贴图
 	GeometryMap.LoadTexture();
 
+	GeometryMap.BuildFog();
+
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
@@ -52,6 +54,9 @@ void FRenderingPipeline::BuildPipeline()
 
 	// 构建shader资源视口 SRV
 	GeometryMap.BuildTextureConstBuffer();
+
+	// 构建雾的常量缓冲区
+	GeometryMap.BuildFogConstantBuffer();
 
 	// 让各个渲染层级构建自己的PSO
 	RenderLayerManage.BuildPSO();
