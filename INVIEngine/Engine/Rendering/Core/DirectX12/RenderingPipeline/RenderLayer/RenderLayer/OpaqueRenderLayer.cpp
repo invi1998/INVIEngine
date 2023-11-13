@@ -11,6 +11,7 @@ FOpaqueRenderLayer::FOpaqueRenderLayer()
 
 void FOpaqueRenderLayer::BuildShader()
 {
+	FRenderLayer::BuildShader();
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
 	///
@@ -45,11 +46,14 @@ void FOpaqueRenderLayer::BuildShader()
 
 void FOpaqueRenderLayer::BuildPSO()
 {
-	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Wireframe);
-	DirectXPipelineState->SetFillModle(false);
+	FRenderLayer::BuildPSO();
 
+	// 构建渲染管线
 	DirectXPipelineState->BuildPipelineState(EPipelineState::Solid);
+
+	DirectXPipelineState->SetFillModle(true);
+
+	DirectXPipelineState->BuildPipelineState(EPipelineState::Wireframe);
 }
 
 void FOpaqueRenderLayer::Draw(float deltaTime)

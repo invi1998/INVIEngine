@@ -27,13 +27,13 @@ public:
 public:
 	virtual void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
 
-	virtual void BuildShader() = 0;
+	virtual void BuildShader();
 
 	virtual int GetRenderLayerType() const = 0;
 
 	virtual void UpdateCaculations(float DeltaTime, const FViewportInfo& ViewportInfo);
 
-	virtual void BuildPSO() = 0;
+	virtual void BuildPSO();
 
 protected:
 	UINT RenderPriority;

@@ -6,6 +6,7 @@
 #include "Material/Core/Material.h"
 #include "Mesh/Core/ObjectTransformation.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 
 FRenderLayer::FRenderLayer(): RenderPriority(0)
@@ -74,6 +75,11 @@ void FRenderLayer::Init(FGeometryMap* geometry, FDirectXPipelineState* directXPi
 	DirectXPipelineState = directXPipelineState;
 }
 
+void FRenderLayer::BuildShader()
+{
+
+}
+
 void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& ViewportInfo)
 {
 	for (auto& renderingData : RenderData)
@@ -112,6 +118,14 @@ void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& Viewp
 
 		GeometryMap->MeshConstantBufferViews.Update(renderingData.MeshObjectIndex, &OBJTransformation);
 	}
+}
+
+void FRenderLayer::BuildPSO()
+{
+	BuildShader();
+
+	// 构建PSO参数
+	DirectXPipelineState->BuildParam();
 }
 
 

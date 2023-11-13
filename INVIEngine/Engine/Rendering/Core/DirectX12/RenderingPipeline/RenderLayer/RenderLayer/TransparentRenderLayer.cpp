@@ -12,6 +12,7 @@ FTransparentRenderLayer::FTransparentRenderLayer()
 
 void FTransparentRenderLayer::BuildShader()
 {
+	FRenderLayer::BuildShader();
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
 	///
@@ -46,6 +47,8 @@ void FTransparentRenderLayer::BuildShader()
 
 void FTransparentRenderLayer::BuildPSO()
 {
+	FRenderLayer::BuildPSO();
+
 	D3D12_RENDER_TARGET_BLEND_DESC RenderTargetBlendDesc;
 	RenderTargetBlendDesc.BlendEnable = true;		// 开启图层混合
 	RenderTargetBlendDesc.LogicOpEnable = false;	// 关闭逻辑混合（开启混合必须将该值关闭，因为他两是互斥的）

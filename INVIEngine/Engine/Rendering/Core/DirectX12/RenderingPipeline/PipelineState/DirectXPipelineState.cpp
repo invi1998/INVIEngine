@@ -16,6 +16,8 @@ void FDirectXPipelineState::BuildParam()
 	// 配置光栅化状态
 	GPSDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);		// 光栅化状态
 
+	GPSDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;		// 默认以固体模式渲染
+
 	GPSDesc.SampleMask = UINT_MAX;		// 多重采样遮罩（混合状态下的实例蒙版）多重采样下，最多是可以采32个的样板（000...000),每个0表示一个样板位，有32个，你想采哪个就设置哪位为1，UINT_MAX表示0xffffffff采样全部的样板
 
 	// 指定图元拓扑类型

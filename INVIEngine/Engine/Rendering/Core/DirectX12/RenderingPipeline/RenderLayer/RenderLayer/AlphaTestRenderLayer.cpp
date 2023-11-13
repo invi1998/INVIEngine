@@ -11,10 +11,13 @@ FAlphaTestRenderLayer::FAlphaTestRenderLayer()
 
 void FAlphaTestRenderLayer::BuildShader()
 {
+	FRenderLayer::BuildShader();
 }
 
 void FAlphaTestRenderLayer::BuildPSO()
 {
+	FRenderLayer::BuildPSO();
+
 	// 构建渲染管线
 	DirectXPipelineState->BuildPipelineState(EPipelineState::AlphaTest);
 }

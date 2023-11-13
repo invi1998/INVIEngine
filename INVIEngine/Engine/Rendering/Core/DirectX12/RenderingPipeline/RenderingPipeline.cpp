@@ -33,7 +33,7 @@ void FRenderingPipeline::BuildPipeline()
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
 	// 渲染每个层级的shader
-	RenderLayerManage.BuildShader();
+	// RenderLayerManage.BuildShader();
 
 	// 构建模型
 	GeometryMap.Build();
@@ -57,7 +57,7 @@ void FRenderingPipeline::BuildPipeline()
 	GeometryMap.BuildTextureConstBuffer();
 
 	// 构建PSO参数
-	DirectXPipelineState.BuildParam();
+	// DirectXPipelineState.BuildParam();
 
 	// 让各个渲染层级构建自己的PSO
 	RenderLayerManage.BuildPSO();
