@@ -132,7 +132,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			if (CMaterial* material = (*sphere->GetMaterial())[0])
 			{
-				// material->SetBaseColorIndexKey("EpicQuadPanorama_CC");
+				material->SetBaseColorIndexKey("Snow_CubeMap");
 				material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
 				material->SetMaterialType(BaseColor);
 			}
@@ -146,8 +146,8 @@ int CDirectXRenderingEngine::PostInit()
 
 			if (CMaterial* InMaterial = (*PlaneMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColorIndexKey("Earth");
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				// InMaterial->SetBaseColorIndexKey("Earth");
+				InMaterial->SetBaseColor(XMFLOAT4(Colors::Gray));
 				InMaterial->SetMaterialType(EMaterialType::Lambert);
 
 				InMaterial->SetRoughness(1.0f);
