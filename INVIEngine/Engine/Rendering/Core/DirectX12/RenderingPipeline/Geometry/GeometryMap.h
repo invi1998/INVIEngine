@@ -6,6 +6,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
 
+struct FRenderingTexture;
 class CMaterial;
 class FRenderingTextureResourcesUpdate;
 class CMeshComponent;
@@ -58,10 +59,14 @@ public:
 
 	void Build();
 
+	// 给描述堆分配堆栈内存
 	void BuildDescriptorHeap();
 
 	// 绘制贴图数量
-	UINT GetDrawTextureCount();
+	UINT GetDrawTexture2DCount() const;
+
+	// 绘制CubeMap数量
+	UINT GetDrawCubeMapCount() const;
 
 	// 对象模型的绘制数量
 	UINT GetDrawMeshCount();
@@ -102,6 +107,8 @@ public:
 	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data);
 	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer = -1);
 
+	std::unique_ptr<FRenderingTexture>* FindRenderingTexture(const std::string& key);
+
 private:
 	// 渲染视口
 	void DrawViewport(float DeltaTime);
@@ -126,7 +133,8 @@ protected:
 	FConstantBufferViews LightConstantBufferViews;			// 灯光常量缓冲区
 	FConstantBufferViews ViewportConstantBufferViews;		// 摄像机常量缓冲区
 
-	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTextureResourceViews;		// shader纹理资源视图
+	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTexture2DResourceViews;		// shader纹理资源视图
+	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingCubeMapResourceViews;		// shader cube map资源视图
 	std::vector<CMaterial*> MaterialsSRV{};
 };
 

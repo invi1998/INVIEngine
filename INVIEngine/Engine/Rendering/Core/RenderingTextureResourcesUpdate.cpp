@@ -9,6 +9,11 @@ wchar_t ASSET[] = L"Asserts/";
 wchar_t PROJECT[] = L"Project/";
 
 
+FRenderingTextureResourcesUpdate::FRenderingTextureResourcesUpdate()
+{
+	BuildParam();
+}
+
 void FRenderingTextureResourcesUpdate::LoadTextureResource(const std::wstring& path)
 {
 	std::unique_ptr<FRenderingTexture> Texture = std::make_unique<FRenderingTexture>();
@@ -59,21 +64,11 @@ void FRenderingTextureResourcesUpdate::BuildTextureConstantBuffer(ID3D12Descript
 	// 然后将句柄指针偏移到指定内存
 	Handle.Offset(offset, DescriptorOffset);
 
-	// Shader资源视图
-	D3D12_SHADER_RESOURCE_VIEW_DESC ShaderResourceViewDesc = {};
-
-	ShaderResourceViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;		// 设置纹理数据格式
-	ShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;	// 设置SRV的维度，2D纹理
-	ShaderResourceViewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;		// 着色器组件映射的结构体。它可以用于指定不同颜色通道之间的映射关系，
-	// D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING是DXGI_ENUM中的一个常量，它代表了默认的着色器组件映射方式。具体地，它表示将RGBA四个颜色通道分别映射到输入数据的RGBA四个颜色通道 (0, 1, 2, 3)
-	ShaderResourceViewDesc.Texture2D.MostDetailedMip = 0; // 指定要在着色器中使用的最详细的mip级别的索引，通常从0开始，表示纹理的最高分辨率mip级别
-	ShaderResourceViewDesc.Texture2D.MipLevels = 1; // 指定使用的mip级别的数量，用于控制纹理的细节级别，通常设置为mip级别的数量，如果设置为-1，则表示使用所有可用的mip级别。
-	ShaderResourceViewDesc.Texture2D.ResourceMinLODClamp = 0.f;	// 用于设置对纹理资源的LOD（Level of Detail）限制，指定LOD的最小允许值，用于限制着色器对纹理资源的访问范围。这可以用于控制纹理的细节级别。
-
+	
 	for (auto& val : TextureMap | views::values)
 	{
-		ShaderResourceViewDesc.Format = val->Data->GetDesc().Format;
-		ShaderResourceViewDesc.Texture2D.MipLevels = val->Data->GetDesc().MipLevels;
+		// 根据对应贴图初始化
+		ResetTextureByType(&val);
 
 		GetD3dDevice()->CreateShaderResourceView(
 			val->Data.Get(),		// 指定资源视图
@@ -122,4 +117,46 @@ std::unique_ptr<FRenderingTexture>* FRenderingTextureResourcesUpdate::FindRender
 	}
 
 	return nullptr;
+}
+
+void FRenderingTextureResourcesUpdate::BuildParam()
+{
+	ShaderResourceViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;		// 设置纹理数据格式
+	ShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;	// 设置SRV的维度，2D纹理
+	ShaderResourceViewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;		// 着色器组件映射的结构体。它可以用于指定不同颜色通道之间的映射关系，
+	// D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING是DXGI_ENUM中的一个常量，它代表了默认的着色器组件映射方式。具体地，它表示将RGBA四个颜色通道分别映射到输入数据的RGBA四个颜色通道 (0, 1, 2, 3)
+
+}
+
+void FRenderingTextureResourcesUpdate::ResetTextureByType(std::unique_ptr<FRenderingTexture>* texturePtr)
+{
+	// 确定纹理格式
+	ShaderResourceViewDesc.Format = (*texturePtr)->Data->GetDesc().Format;
+
+	// 对2D纹理和CubeMap做细致的差异化格式设置
+	switch (ShaderResourceViewDesc.ViewDimension)
+	{
+	case D3D12_SRV_DIMENSION_TEXTURE2D:
+		{
+			ShaderResourceViewDesc.Texture2D.MostDetailedMip = 0; // 指定要在着色器中使用的最详细的mip级别的索引，通常从0开始，表示纹理的最高分辨率mip级别
+			ShaderResourceViewDesc.Texture2D.MipLevels = (*texturePtr)->Data->GetDesc().MipLevels; // 指定使用的mip级别的数量，用于控制纹理的细节级别，通常设置为mip级别的数量，如果设置为-1，则表示使用所有可用的mip级别。
+			ShaderResourceViewDesc.Texture2D.ResourceMinLODClamp = 0.f;	// 用于设置对纹理资源的LOD（Level of Detail）限制，指定LOD的最小允许值，用于限制着色器对纹理资源的访问范围。这可以用于控制纹理的细节级别。
+			ShaderResourceViewDesc.Texture2D.PlaneSlice = 0;
+			break;
+		};
+	case D3D12_SRV_DIMENSION_TEXTURECUBE:
+		{
+			ShaderResourceViewDesc.TextureCube.MostDetailedMip = 0; // 指定要在着色器中使用的最详细的mip级别的索引，通常从0开始，表示纹理的最高分辨率mip级别
+			ShaderResourceViewDesc.TextureCube.MipLevels = (*texturePtr)->Data->GetDesc().MipLevels; // 指定使用的mip级别的数量，用于控制纹理的细节级别，通常设置为mip级别的数量，如果设置为-1，则表示使用所有可用的mip级别。
+			ShaderResourceViewDesc.TextureCube.ResourceMinLODClamp = 0.f;	// 用于设置对纹理资源的LOD（Level of Detail）限制，指定LOD的最小允许值，用于限制着色器对纹理资源的访问范围。这可以用于控制纹理的细节级别。
+			
+			break;
+		};
+	default: break;
+	}
+}
+
+void FRenderingTextureResourcesUpdate::SetViewDimension(D3D12_SRV_DIMENSION dimension)
+{
+	ShaderResourceViewDesc.ViewDimension = dimension;	// 设置SRV的维度
 }

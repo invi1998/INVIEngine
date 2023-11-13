@@ -51,8 +51,8 @@ void FBackgroundRenderLayer::BuildShader()
 
 	// shader宏定义
 	D3D_SHADER_MACRO ShaderMacro[] = {
-		"TEXTURE2DNUM", _itoa(GeometryMap->GetDrawTextureCount(), TextureNumBuff, 10),
-		// "CUBE_MAP_NUM", _itoa(GeometryMap->GetDrawTextureCount(), TextureNumBuff, 10),
+		"TEXTURE2DNUM", _itoa(GeometryMap->GetDrawTexture2DCount(), TextureNumBuff, 10),
+		"CUBE_MAP_NUM", _itoa(GeometryMap->GetDrawCubeMapCount(), TextureNumBuff, 10),
 		NULL, NULL,
 	};
 
@@ -82,7 +82,15 @@ void FBackgroundRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
 
-	DirectXPipelineState->BuildPipelineState(Background);
+	CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;		// 天空盒不希望设置裁剪
+	DirectXPipelineState->SetRasterizerState(rasterizerDesc);
 
-	
+	CD3DX12_DEPTH_STENCIL_DESC depthStencilDesc = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 设置深度模板测试为小于等于
+	DirectXPipelineState->SetDepthStencilState(depthStencilDesc);
+
+
+	DirectXPipelineState->BuildPipelineState(Background);
 }

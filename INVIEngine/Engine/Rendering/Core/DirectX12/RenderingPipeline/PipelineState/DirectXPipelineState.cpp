@@ -135,3 +135,13 @@ void FDirectXPipelineState::SetFillModle(bool bWireframe)
 	GPSDesc.RasterizerState.FillMode = bWireframe ? D3D12_FILL_MODE_WIREFRAME : D3D12_FILL_MODE_SOLID;			// 以实体方式显示
 
 }
+
+void FDirectXPipelineState::SetRasterizerState(const CD3DX12_RASTERIZER_DESC& rasterizer)
+{
+	GPSDesc.RasterizerState = rasterizer;
+}
+
+void FDirectXPipelineState::SetDepthStencilState(const CD3DX12_DEPTH_STENCIL_DESC& depthStencilDesc)
+{
+	GPSDesc.DepthStencilState = depthStencilDesc;
+}

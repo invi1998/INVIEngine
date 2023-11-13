@@ -29,7 +29,7 @@ void FRenderingPipeline::BuildPipeline()
 	// 加载纹理贴图
 	GeometryMap.LoadTexture();
 
-	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTextureCount());	// 构建根签名
+	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
 	// 构建模型

@@ -191,7 +191,11 @@ FGeometryMap::FGeometryMap()
 {
 	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
 
-	RenderingTextureResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
+	RenderingTexture2DResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
+	RenderingTexture2DResourceViews->SetViewDimension(D3D12_SRV_DIMENSION_TEXTURE2D);
+
+	RenderingCubeMapResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
+	RenderingCubeMapResourceViews->SetViewDimension(D3D12_SRV_DIMENSION_TEXTURECUBE);
 }
 
 FGeometryMap::~FGeometryMap()
@@ -219,13 +223,18 @@ void FGeometryMap::Build()
 
 void FGeometryMap::BuildDescriptorHeap()
 {
-	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 灯光数量 + 摄像机 + 纹理贴图）
-	DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTextureCount());
+	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 灯光数量 + 摄像机 + 纹理贴图 + CubeMap）
+	DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount() + GetDrawCubeMapCount());
 }
 
-UINT FGeometryMap::GetDrawTextureCount()
+UINT FGeometryMap::GetDrawTexture2DCount() const
 {
-	return RenderingTextureResourceViews->Size();
+	return RenderingTexture2DResourceViews->Size();
+}
+
+UINT FGeometryMap::GetDrawCubeMapCount() const
+{
+	return RenderingCubeMapResourceViews->Size();
 }
 
 UINT FGeometryMap::GetDrawMeshCount()
@@ -322,7 +331,18 @@ void FGeometryMap::LoadTexture() const
 
 			wchar_t TexturePath[1024] = { 0 };
 			char_to_wchar_t(TexturePath, 1024, Paths.paths[i]);
-			RenderingTextureResourceViews->LoadTextureResource(TexturePath);
+
+			if (wfind_string(TexturePath, L"_CubeMap.")!=-1 || wfind_string(TexturePath, L"_cubemap.") != -1)
+			{
+				// cube map
+				RenderingCubeMapResourceViews->LoadTextureResource(TexturePath);
+			}
+			else
+			{
+				// 2D纹理
+				RenderingTexture2DResourceViews->LoadTextureResource(TexturePath);
+			}
+			
 		}
 	}
 }
@@ -330,7 +350,11 @@ void FGeometryMap::LoadTexture() const
 void FGeometryMap::BuildTextureConstBuffer()
 {
 	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口
-	RenderingTextureResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1);
+	RenderingTexture2DResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1);
+
+	// 构建CubeMap
+	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口 + 贴图数量
+	RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount());
 }
 
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
@@ -396,7 +420,7 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			MaterialConstantBuffer.Roughness = material->GetRoughness();
 			MaterialConstantBuffer.SpecularColor = material->GetSpecularColor();
 
-			if (auto basecolorPtr = RenderingTextureResourceViews->FindRenderingTexture(material->GetBaseColorIndexKey()))
+			if (auto basecolorPtr = FindRenderingTexture(material->GetBaseColorIndexKey()))
 			{
 				MaterialConstantBuffer.BaseColorIndex = (*basecolorPtr)->RenderingTextureID;
 				ENGINE_LOG("更新材质 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.BaseColorIndex, (*basecolorPtr)->Name.c_str());
@@ -407,7 +431,7 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			}
 
 			// 法线贴图
-			if (auto normalColor = RenderingTextureResourceViews->FindRenderingTexture(material->GetNormalIndexKey()))
+			if (auto normalColor = FindRenderingTexture(material->GetNormalIndexKey()))
 			{
 				MaterialConstantBuffer.NormalIndex = (*normalColor)->RenderingTextureID;
 				ENGINE_LOG("更新法线贴图 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.NormalIndex, (*normalColor)->Name.c_str());
@@ -418,7 +442,7 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			}
 
 			// 高光贴图
-			if (auto specularColor = RenderingTextureResourceViews->FindRenderingTexture(material->GetSpecularIndexKey()))
+			if (auto specularColor = FindRenderingTexture(material->GetSpecularIndexKey()))
 			{
 				MaterialConstantBuffer.SpecularIndex = (*specularColor)->RenderingTextureID;
 				ENGINE_LOG("更新高光贴图 材质索引 = %d, 材质名 = %ls", MaterialConstantBuffer.SpecularIndex, (*specularColor)->Name.c_str());
@@ -488,6 +512,19 @@ bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& r
 		}
 	}
 	return false;
+}
+
+std::unique_ptr<FRenderingTexture>* FGeometryMap::FindRenderingTexture(const std::string& key)
+{
+	if (auto RenderTexturePtr = RenderingTexture2DResourceViews->FindRenderingTexture(key))
+	{
+		return RenderTexturePtr;
+	}
+	else if (auto RenderCubeMapPtr = RenderingCubeMapResourceViews->FindRenderingTexture(key))
+	{
+		return RenderCubeMapPtr;
+	}
+	return nullptr;
 }
 
 void FGeometryMap::DrawViewport(float DeltaTime)

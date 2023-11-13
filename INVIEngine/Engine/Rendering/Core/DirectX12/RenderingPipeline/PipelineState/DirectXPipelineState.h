@@ -41,8 +41,10 @@ public:
 	void Draw(float DeltaTime);
 	void PostDraw(float DeltaTime);
 
-public:
 	void SetFillModle(bool bWireframe);
+
+	void SetRasterizerState(const CD3DX12_RASTERIZER_DESC& rasterizer);
+	void SetDepthStencilState(const CD3DX12_DEPTH_STENCIL_DESC& depthStencilDesc);
 
 private:			
 	std::unordered_map<UINT, ComPtr<ID3D12PipelineState>>	PSO{};		// 渲染管线状态对象
