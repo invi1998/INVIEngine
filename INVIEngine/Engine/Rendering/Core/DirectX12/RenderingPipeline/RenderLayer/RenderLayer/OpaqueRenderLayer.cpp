@@ -7,12 +7,11 @@
 FOpaqueRenderLayer::FOpaqueRenderLayer()
 {
 	RenderPriority = 2000;
-	PipelineState = EPipelineState::Wireframe;
+	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_OPAQUE;
 }
 
 void FOpaqueRenderLayer::BuildShader()
 {
-	FRenderLayer::BuildShader();
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///¹¹½¨shader HLSL
 	///
@@ -47,7 +46,7 @@ void FOpaqueRenderLayer::BuildShader()
 
 int FOpaqueRenderLayer::GetRenderLayerType() const
 {
-	return PipelineState;
+	return RenderLayerType;
 }
 
 void FOpaqueRenderLayer::BuildPSO()

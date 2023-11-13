@@ -72,7 +72,7 @@ int CDirectXRenderingEngine::PostInit()
 
 	{
 
-		//// 平行光
+		// 平行光
 		//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
 		//{
 		//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
@@ -121,6 +121,22 @@ int CDirectXRenderingEngine::PostInit()
 		//	SpotLight->SetConicalOuterCorner(20.f);
 
 		//}
+
+		if (GSphereMesh* sphere = World->CreateActorObject<GSphereMesh>())
+		{
+			sphere->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_BACKGROUND);
+
+			sphere->CreateMesh(2.f, 100, 100, true);
+			sphere->SetPosition({ 0.f, 0.f, 0.f });
+			sphere->SetScale(fvector_3d(4000.f));
+
+			if (CMaterial* material = (*sphere->GetMaterial())[0])
+			{
+				material->SetBaseColorIndexKey("EpicQuadPanorama_CC");
+				material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
+				material->SetMaterialType(BaseColor);
+			}
+		}
 
 		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{

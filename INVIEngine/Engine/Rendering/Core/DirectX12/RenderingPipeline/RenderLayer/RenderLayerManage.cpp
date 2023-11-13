@@ -2,6 +2,7 @@
 #include "RenderLayerManage.h"
 
 #include "RenderLayer/AlphaTestRenderLayer.h"
+#include "RenderLayer/BackgroundRenderLayer.h"
 #include "RenderLayer/OpaqueRenderLayer.h"
 #include "RenderLayer/TransparentRenderLayer.h"
 
@@ -11,6 +12,7 @@ FRenderLayerManage::FRenderLayerManage()
 {
 	RenderLayers.clear();
 
+	CreateRenderLayer<FBackgroundRenderLayer>();
 	CreateRenderLayer<FAlphaTestRenderLayer>();
 	CreateRenderLayer<FOpaqueRenderLayer>();
 	CreateRenderLayer<FTransparentRenderLayer>();

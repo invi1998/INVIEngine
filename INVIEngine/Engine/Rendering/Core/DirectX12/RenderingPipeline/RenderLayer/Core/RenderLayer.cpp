@@ -75,11 +75,6 @@ void FRenderLayer::Init(FGeometryMap* geometry, FDirectXPipelineState* directXPi
 	DirectXPipelineState = directXPipelineState;
 }
 
-void FRenderLayer::BuildShader()
-{
-
-}
-
 void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& ViewportInfo)
 {
 	for (auto& renderingData : RenderData)

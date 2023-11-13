@@ -79,7 +79,7 @@ private:
 	float Distance = 10.0f;
 	float FOV = XM_PIDIV4;
 	float NearPlane = 0.1f;
-	float FarPlane = 1000.0f;
+	float FarPlane = 10000.0f;
 
 	XMFLOAT2 m_InitialMousePosition = { 0.0f, 0.0f };
 

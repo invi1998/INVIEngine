@@ -8,12 +8,11 @@
 FTransparentRenderLayer::FTransparentRenderLayer()
 {
 	RenderPriority = 3000;
-	PipelineState = EPipelineState::Transparent;
+	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT;
 }
 
 void FTransparentRenderLayer::BuildShader()
 {
-	FRenderLayer::BuildShader();
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
 	///
@@ -48,7 +47,7 @@ void FTransparentRenderLayer::BuildShader()
 
 int FTransparentRenderLayer::GetRenderLayerType() const
 {
-	return PipelineState;
+	return RenderLayerType;
 }
 
 void FTransparentRenderLayer::BuildPSO()
@@ -74,13 +73,13 @@ void FTransparentRenderLayer::BuildPSO()
 	DirectXPipelineState->SetRenderTarget(0, RenderTargetBlendDesc);
 
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Transparent);
+	DirectXPipelineState->BuildPipelineState(RenderLayerType);
 }
 
 void FTransparentRenderLayer::Draw(float deltaTime)
 {
 	// 渲染之前，重置PSO
-	DirectXPipelineState->ResetPSO(PipelineState);
+	DirectXPipelineState->ResetPSO(RenderLayerType);
 
 	FRenderLayer::Draw(deltaTime);
 

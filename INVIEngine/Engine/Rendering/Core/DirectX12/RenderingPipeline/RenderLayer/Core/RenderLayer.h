@@ -1,4 +1,5 @@
 #pragma once
+#include "Component/Mesh/Core/MeshComponentType.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 #include "Shader/Core/Shader.h"
@@ -28,7 +29,7 @@ public:
 public:
 	virtual void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
 
-	virtual void BuildShader();
+	virtual void BuildShader()=0;
 
 	virtual int GetRenderLayerType() const = 0;
 
@@ -38,7 +39,7 @@ public:
 
 protected:
 	UINT RenderPriority;
-	EPipelineState PipelineState;
+	EMeshRenderLayerType RenderLayerType;
 
 	FShader VertexShader;
 	FShader PixelShader;
