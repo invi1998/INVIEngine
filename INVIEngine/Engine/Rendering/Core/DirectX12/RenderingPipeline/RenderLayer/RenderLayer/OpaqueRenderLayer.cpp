@@ -7,6 +7,7 @@
 FOpaqueRenderLayer::FOpaqueRenderLayer()
 {
 	RenderPriority = 2000;
+	PipelineState = EPipelineState::Wireframe;
 }
 
 void FOpaqueRenderLayer::BuildShader()
@@ -42,6 +43,11 @@ void FOpaqueRenderLayer::BuildShader()
 
 	// 绑定输入布局
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
+}
+
+int FOpaqueRenderLayer::GetRenderLayerType() const
+{
+	return PipelineState;
 }
 
 void FOpaqueRenderLayer::BuildPSO()

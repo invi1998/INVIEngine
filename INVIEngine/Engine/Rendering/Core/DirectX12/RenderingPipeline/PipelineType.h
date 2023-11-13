@@ -8,6 +8,7 @@ enum EPipelineState : UINT
 {
 	Transparent = 0,
 	AlphaTest,
+	Background,					// ±³¾°²ã
 	Solid	= 4,				// ÊµÌå
 	Wireframe	= 5,			// Ïß¿ò
 };

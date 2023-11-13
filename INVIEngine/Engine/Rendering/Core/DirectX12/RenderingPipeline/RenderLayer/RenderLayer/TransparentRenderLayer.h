@@ -8,7 +8,7 @@ public:
 
 	virtual void BuildShader() override;
 
-	virtual int GetRenderLayerType() const override { return 1; }
+	virtual int GetRenderLayerType() const override;
 
 	virtual void BuildPSO() override;
 

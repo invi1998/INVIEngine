@@ -8,6 +8,7 @@
 FTransparentRenderLayer::FTransparentRenderLayer()
 {
 	RenderPriority = 3000;
+	PipelineState = EPipelineState::Transparent;
 }
 
 void FTransparentRenderLayer::BuildShader()
@@ -45,6 +46,11 @@ void FTransparentRenderLayer::BuildShader()
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
 
+int FTransparentRenderLayer::GetRenderLayerType() const
+{
+	return PipelineState;
+}
+
 void FTransparentRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
@@ -74,7 +80,7 @@ void FTransparentRenderLayer::BuildPSO()
 void FTransparentRenderLayer::Draw(float deltaTime)
 {
 	// äÖÈ¾Ö®Ç°£¬ÖØÖÃPSO
-	DirectXPipelineState->ResetPSO(0);
+	DirectXPipelineState->ResetPSO(PipelineState);
 
 	FRenderLayer::Draw(deltaTime);
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "Interface/DirectXDeviceInterface.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 #include "Shader/Core/Shader.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/RenderingData.h"
 
@@ -37,6 +38,7 @@ public:
 
 protected:
 	UINT RenderPriority;
+	EPipelineState PipelineState;
 
 	FShader VertexShader;
 	FShader PixelShader;

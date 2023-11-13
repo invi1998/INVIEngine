@@ -7,6 +7,7 @@
 FAlphaTestRenderLayer::FAlphaTestRenderLayer()
 {
 	RenderPriority = 2450;
+	PipelineState = EPipelineState::AlphaTest;
 }
 
 void FAlphaTestRenderLayer::BuildShader()
@@ -14,18 +15,23 @@ void FAlphaTestRenderLayer::BuildShader()
 	FRenderLayer::BuildShader();
 }
 
+int FAlphaTestRenderLayer::GetRenderLayerType() const
+{
+	return PipelineState;
+}
+
 void FAlphaTestRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
 
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(EPipelineState::AlphaTest);
+	DirectXPipelineState->BuildPipelineState(PipelineState);
 }
 
 void FAlphaTestRenderLayer::Draw(float deltaTime)
 {
 	// 渲染之前，重置PSO
-	DirectXPipelineState->ResetPSO(1);
+	DirectXPipelineState->ResetPSO(PipelineState);
 
 	FRenderLayer::Draw(deltaTime);
 }
