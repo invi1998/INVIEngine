@@ -1,6 +1,4 @@
-#ifndef PBR
-#define PBR
-
+#pragma once
 
 // pbr äÖÈ¾º¯Êý
 
@@ -43,5 +41,3 @@ float3 GetDiffuseLambert(float3 DiffuseColor)
     float PI = 3.1415926f;
     return DiffuseColor * (1 / PI);
 }
-
-#endif

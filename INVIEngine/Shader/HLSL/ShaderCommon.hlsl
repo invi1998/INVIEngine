@@ -1,5 +1,5 @@
-#ifndef ShaderCommon
-#define ShaderCommon
+#pragma once
+
 
 #include "Light.hlsl"
 
@@ -80,5 +80,3 @@ struct MaterialConstBuffer
 };
 
 StructuredBuffer<MaterialConstBuffer> Materials : register(t0, space1);
-
-#endif

@@ -1,26 +1,25 @@
-#ifndef Light
-#define Light
+#pragma once
 
 struct Light
 {
-    float3 LightIntensity;  // 光照强度
-    float StartAttenuation; // 开始衰减
+	float3 LightIntensity; // 光照强度
+	float StartAttenuation; // 开始衰减
 
-    float3 LightDirection;  // 光照方向
-    float EndAttenuation;   // 结束衰减
+	float3 LightDirection; // 光照方向
+	float EndAttenuation; // 结束衰减
 
-    float3 LightPosition;    // 灯光位置
-    int LightType;          // 灯光类型
+	float3 LightPosition; // 灯光位置
+	int LightType; // 灯光类型
 
-    float Kc;               // 非线性衰减常数项
-    float Kl;               // 非线性衰减一次项
-    float Kq;               // 非线性衰减二次项
-    float SpotInnerCornerPhi; // 指定了聚光半径的切光角。落在这个角度之外的物体都不会被这个聚光所照亮。
+	float Kc; // 非线性衰减常数项
+	float Kl; // 非线性衰减一次项
+	float Kq; // 非线性衰减二次项
+	float SpotInnerCornerPhi; // 指定了聚光半径的切光角。落在这个角度之外的物体都不会被这个聚光所照亮。
 
-    float SpotOuterCornerTheta; // LightDir向量和SpotDir向量之间的夹角。在聚光内部的话theta值应该比phi值小
-    float xxs1;
-    float xxs2;
-    float xxs3;
+	float SpotOuterCornerTheta; // LightDir向量和SpotDir向量之间的夹角。在聚光内部的话theta值应该比phi值小
+	float xxs1;
+	float xxs2;
+	float xxs3;
 	
 };
 
@@ -110,5 +109,3 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
     }
     return float4(0.f, 0.f, 0.f, 1.f);
 }
-
-#endif

@@ -1,6 +1,4 @@
-
-#ifndef ShaderFunctionLibrary
-#define ShaderFunctionLibrary
+#pragma once
 
 /**
  * \brief ·µ»ØTBN¾ØÕó
@@ -18,5 +16,3 @@ float3x3 GetTBNMatrix(float3 unitWorldNormal, float3 worldTangent)
 
 	return float3x3(T, B, N);
 }
-
-#endif
