@@ -5,6 +5,7 @@
 #include "Actor/Light/ParallelLight.h"
 #include "Actor/Light/PointLight.h"
 #include "Actor/Light/SpotLight.h"
+#include "Actor/Sky/Fog.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/World.h"
 #include "Manage/LightManager.h"
@@ -541,6 +542,14 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// Í¸Ã÷ÇòÌå
+		if (GFog* fog = World->CreateActorObject<GFog>())
+		{
+			fog->SetFogColor(XMFLOAT4{Colors::AliceBlue});
+			fog->SetFogStart(10.f);
+			fog->SetFogRange(200.f);
+		}
+
+		// Îí
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT);
