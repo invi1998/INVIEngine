@@ -19,10 +19,10 @@ MeshVertexOut VertexShaderMain(MeshVertexIn mvIn)
 {
 	MeshVertexOut Out = (MeshVertexOut) 0;
 
-	Out.PositionL = float4(mvIn.Position, 1.f);
+	Out.PositionH = float4(mvIn.Position, 1.f);
 
 	// 世界坐标
-	float4 WorldPosition = mul(Out.PositionL, MaterialTransformationMatrix);
+	float4 WorldPosition = mul(Out.PositionH, MaterialTransformationMatrix);
 
 	// 变换到其次裁剪空间
 	Out.PositionL = mul(WorldPosition, ViewportProjectionMatrix);
@@ -35,6 +35,6 @@ MeshVertexOut VertexShaderMain(MeshVertexIn mvIn)
 // 像素着色器
 float4 PixelShaderMain(MeshVertexOut mvOut) : SV_TARGET
 {
-	// return SimpleCubeMap[0].Sample(TextureSampler, mvOut.PositionL);
-	return float4(0.3f, 0.24f, 0.12f, 1.0f);
+	return SimpleCubeMap[0].Sample(TextureSampler, mvOut.PositionH);
+	// return float4(0.3f, 0.24f, 0.12f, 1.0f);
 }

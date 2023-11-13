@@ -226,8 +226,8 @@ void FGeometryMap::BuildDescriptorHeap()
 	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 灯光数量 + 摄像机 + 纹理贴图 + CubeMap）
 	// DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount() + GetDrawCubeMapCount());
 
-	// 纹理贴图, 只需要为texture2D图片分配堆内存，因为我们将其他的(模型对象数量 + 灯光数量 + 摄像机)从常量缓冲区分离出来了
-	DescriptorHeap.Build(GetDrawTexture2DCount());
+	// 纹理贴图 + cube map, 只需要为texture2D图片分配堆内存，因为我们将其他的(模型对象数量 + 灯光数量 + 摄像机)从常量缓冲区分离出来了，只有纹理和cubemap还在继续使用描述表
+	DescriptorHeap.Build(GetDrawTexture2DCount() + GetDrawCubeMapCount());
 }
 
 UINT FGeometryMap::GetDrawTexture2DCount() const
@@ -360,7 +360,7 @@ void FGeometryMap::BuildTextureConstBuffer()
 
 	// 构建CubeMap
 	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口 + 贴图数量
-	// RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount());
+	RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawTexture2DCount());
 }
 
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
@@ -577,8 +577,18 @@ void FGeometryMap::DrawTexture(float DeltaTime)
 {
 	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+	{
+		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
-	DesHandle.Offset(0, DescriptorOffset);
-	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(4, DesHandle);
+		DesHandle.Offset(0, DescriptorOffset);
+		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(4, DesHandle);
+	}
+
+
+	{
+		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+
+		DesHandle.Offset(GetDrawTexture2DCount(), DescriptorOffset);
+		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(5, DesHandle);
+	}
 }

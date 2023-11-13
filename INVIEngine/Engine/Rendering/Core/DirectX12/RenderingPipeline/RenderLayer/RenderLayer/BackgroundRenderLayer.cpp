@@ -52,7 +52,7 @@ void FBackgroundRenderLayer::BuildShader()
 	// shaderºê¶¨Òå
 	D3D_SHADER_MACRO ShaderMacro[] = {
 		"TEXTURE2DNUM", _itoa(GeometryMap->GetDrawTexture2DCount(), TextureNumBuff, 10),
-		// "CUBE_MAP_NUM", _itoa(GeometryMap->GetDrawCubeMapCount(), TextureNumBuff, 10),
+		"CUBE_MAP_NUM", _itoa(GeometryMap->GetDrawCubeMapCount(), TextureNumBuff, 10),
 		NULL, NULL,
 	};
 

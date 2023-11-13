@@ -18,12 +18,12 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 		textureNum,							// 贴图数量
 		1);						// 基于那个着色器的寄存器（绑定寄存器（shaderRegister 和 registerSpace））
 
-	/*CD3DX12_DESCRIPTOR_RANGE DescriptorRangeCubeMapSRV;
-	DescriptorRangeCubeMapSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);*/
+	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeCubeMapSRV;
+	DescriptorRangeCubeMapSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 
 	// 创建根参数，使用上面的描述符范围
-	CD3DX12_ROOT_PARAMETER RootParam[5];
+	CD3DX12_ROOT_PARAMETER RootParam[6];
 
 	// register(t0, space1)
 	RootParam[0].InitAsConstantBufferView(0);		// Mesh对象
@@ -40,6 +40,13 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 		D3D12_SHADER_VISIBILITY_PIXEL	// 着色器可见性(该值默认为shader可见，一般不用设置）
 	);
 
+	// cube map
+	RootParam[5].InitAsDescriptorTable(
+		1,								// 描述符数量
+		&DescriptorRangeCubeMapSRV,			// 指向描述符范围数组的指针
+		D3D12_SHADER_VISIBILITY_PIXEL	// 着色器可见性(该值默认为shader可见，一般不用设置）
+	);
+
 	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)
 
 	// 设置采样方式-静态采样方式
@@ -49,7 +56,7 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
-		5,			// 参数数量
+		6,			// 参数数量
 		RootParam,	// 根签名参数
 		StaticSamplerObject.GetSize(),			// 静态采样数量
 		StaticSamplerObject.GetData(),			// 静态采样数据（传入采样数据指针）
