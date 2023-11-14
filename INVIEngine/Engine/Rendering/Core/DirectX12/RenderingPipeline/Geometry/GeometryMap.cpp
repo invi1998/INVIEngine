@@ -438,13 +438,21 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	// ¸üÐÂÎí
 	if (Fog)
 	{
-		FFogConstantBuffer fogConstbuffer;
+		if (Fog->IsDirty())
+		{
+			FFogConstantBuffer fogConstbuffer;
 
-		fogConstbuffer.FogColor = Fog->GetFogColor();
-		fogConstbuffer.FogStart = Fog->GetFogStart();
-		fogConstbuffer.FogRange = Fog->GetFogRange();
+			fogConstbuffer.FogColor = Fog->GetFogColor();
+			fogConstbuffer.FogStart = Fog->GetFogStart();
+			fogConstbuffer.FogRange = Fog->GetFogRange();
 
-		FogConstantBufferViews.Update(0, &fogConstbuffer);
+			// fogConstbuffer.FogTransparentCoefficient = Fog->GetFogTransparentCoefficient();
+
+			FogConstantBufferViews.Update(0, &fogConstbuffer);
+
+			Fog->SetDirty(false);
+		}
+		
 	}
 	
 }

@@ -1,4 +1,5 @@
 #include "ShaderCommon.hlsl"
+#include "SkyFunction.hlsl"
 
 struct MeshVertexIn
 {
@@ -37,7 +38,11 @@ float4 PixelShaderMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	// º∆À„ŒÌ
 	// mvOut.Color = GetFogValue(mvOut.Color);
+	float4 WorldPosition = mul(mvOut.PositionH, MaterialTransformationMatrix);
 	
-	return SimpleCubeMap[0].Sample(TextureSampler, mvOut.PositionH.xyz);
+	float4 Color = SimpleCubeMap[0].Sample(TextureSampler, mvOut.PositionH.xyz);
+	
+	Color = GetFogValue(Color, WorldPosition.xyz);
+	return Color;
 	// return float4(0.3f, 0.24f, 0.12f, 1.0f);
 }

@@ -31,7 +31,7 @@ public:
 public:
 	virtual void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
 
-	virtual void BuildShader()=0;
+	virtual void BuildShader() {};
 
 	virtual int GetRenderLayerType() const = 0;
 

@@ -7,7 +7,7 @@
 float4 GetFogValue(float4 InColor, float3 InPointPosition)
 {
 #if START_UP_FOG
-	float Distance = length(InPontPosition - CameraPosition.xyz);
+	float Distance = length(InPointPosition - CameraPosition.xyz);
 	
 	float AlphaValue = saturate((Distance - FogStart) / FogRange);
 	
