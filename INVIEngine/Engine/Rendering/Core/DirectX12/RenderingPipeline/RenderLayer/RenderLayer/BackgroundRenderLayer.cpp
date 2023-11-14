@@ -79,12 +79,12 @@ void FBackgroundRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
 
-	CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	CD3DX12_RASTERIZER_DESC rasterizerDesc(D3D12_DEFAULT);
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;		// 天空盒不希望设置裁剪
 	DirectXPipelineState->SetRasterizerState(rasterizerDesc);
 
-	CD3DX12_DEPTH_STENCIL_DESC depthStencilDesc = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	CD3DX12_DEPTH_STENCIL_DESC depthStencilDesc(D3D12_DEFAULT);
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 设置深度模板测试为小于等于
 	DirectXPipelineState->SetDepthStencilState(depthStencilDesc);
 

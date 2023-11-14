@@ -67,7 +67,7 @@ void FRenderLayerManage::Sort()
 
 void FRenderLayerManage::BuildShader()
 {
-	for (auto& layer : RenderLayers)
+	for (const auto& layer : RenderLayers)
 	{
 		layer->BuildShader();
 	}
@@ -75,7 +75,7 @@ void FRenderLayerManage::BuildShader()
 
 void FRenderLayerManage::BuildPSO()
 {
-	for (auto& layer : RenderLayers)
+	for (const auto& layer : RenderLayers)
 	{
 		layer->BuildPSO();
 	}
@@ -96,7 +96,7 @@ std::shared_ptr<FRenderLayer> FRenderLayerManage::FindByRenderLayer(int layer)
 
 void FRenderLayerManage::UpdateCaculations(float deltaTime, const FViewportInfo& viewportInfo)
 {
-	for (auto& layer : RenderLayers)
+	for (const auto& layer : RenderLayers)
 	{
 		layer->UpdateCaculations(deltaTime, viewportInfo);
 	}
