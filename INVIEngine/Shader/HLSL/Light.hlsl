@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __SHADER_LIGHT__
+#define __SHADER_LIGHT__
+
 
 struct Light
 {
@@ -109,3 +111,5 @@ float4 CaculateLightStrength(Light L, float3 PointNormal, float3 WorldLocation, 
     }
     return float4(0.f, 0.f, 0.f, 1.f);
 }
+
+#endif

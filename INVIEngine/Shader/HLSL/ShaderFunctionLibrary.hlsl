@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __SHADER_FUNCTION_LIB__
+#define __SHADER_FUNCTION_LIB__
 
 /**
  * \brief ·µ»ØTBN¾ØÕó
@@ -16,3 +17,5 @@ float3x3 GetTBNMatrix(float3 unitWorldNormal, float3 worldTangent)
 
 	return float3x3(T, B, N);
 }
+
+#endif

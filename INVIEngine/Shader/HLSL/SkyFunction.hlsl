@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __SKY_FUNCTION__
+#define __SKY_FUNCTION__
 
 #include "ShaderCommon.hlsl"
 
@@ -19,3 +20,5 @@ float4 GetFogValue(float4 InColor, float3 InPointPosition)
 	return InColor;
 
 }
+
+#endif

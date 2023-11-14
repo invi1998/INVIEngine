@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __SHADER_MATERIAL__
+#define __SHADER_MATERIAL__
+
 
 #include "ShaderCommon.hlsl"
 #include "ShaderFunctionLibrary.hlsl"
@@ -62,3 +64,4 @@ float4 GetMaterialSpecular(MaterialConstBuffer MatConstbuffer, float2 Texcoord)
 	return SimpleTexture2DMap[MatConstbuffer.SpecularIndex].Sample(TextureSampler, Texcoord);
 }
 
+#endif

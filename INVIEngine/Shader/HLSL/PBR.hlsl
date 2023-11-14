@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __SHADER_PBR__
+#define __SHADER_PBR__
 
 // pbr äÖÈ¾º¯Êý
 
@@ -41,3 +42,5 @@ float3 GetDiffuseLambert(float3 DiffuseColor)
     float PI = 3.1415926f;
     return DiffuseColor * (1 / PI);
 }
+
+#endif
