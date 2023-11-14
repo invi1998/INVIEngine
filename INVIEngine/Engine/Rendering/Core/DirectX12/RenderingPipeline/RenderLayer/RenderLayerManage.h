@@ -24,8 +24,6 @@ public:
 	// ≤„º∂≈≈–Ú
 	void Sort();
 
-	void BuildShader();
-
 	virtual void BuildPSO();
 
 	static std::shared_ptr<FRenderLayer> FindByRenderLayer(int layer);

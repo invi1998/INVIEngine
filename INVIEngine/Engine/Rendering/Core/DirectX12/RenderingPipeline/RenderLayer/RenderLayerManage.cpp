@@ -65,14 +65,6 @@ void FRenderLayerManage::Sort()
 	std::sort(RenderLayers.begin(), RenderLayers.end(), CmpRenderLayer);
 }
 
-void FRenderLayerManage::BuildShader()
-{
-	for (const auto& layer : RenderLayers)
-	{
-		layer->BuildShader();
-	}
-}
-
 void FRenderLayerManage::BuildPSO()
 {
 	for (const auto& layer : RenderLayers)
