@@ -542,11 +542,12 @@ int CDirectXRenderingEngine::PostInit()
 		}
 
 		// Îí
-		if (GFog* fog = World->CreateActorObject<GFog>())
+		if (const GFog* fog = World->CreateActorObject<GFog>())
 		{
 			fog->SetFogColor(XMFLOAT4{Colors::AliceBlue});
 			fog->SetFogStart(10.f);
 			fog->SetFogRange(200.f);
+			fog->SetFogHeight(10000.f);
 		}
 
 		// Í¸Ã÷ÇòÌå

@@ -11,9 +11,12 @@ float4 GetFogValue(float4 InColor, float3 InPointPosition)
 	
 	float AlphaValue = saturate((Distance - FogStart) / FogRange);
 	
-	InColor = lerp(InColor, FogColor, AlphaValue);
+	float4 Color = lerp(InColor, FogColor, AlphaValue);
 	
-	return InColor;
+	float HeightAlphaValue = saturate((InPointPosition.y - CameraPosition.y) / max(FogHeight, 1.f));
+	
+	InColor = lerp(Color, InColor, HeightAlphaValue);
+	
 
 #endif
 

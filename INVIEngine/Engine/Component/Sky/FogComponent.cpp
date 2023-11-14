@@ -1,7 +1,7 @@
 #include "EngineMinimal.h"
 #include "FogComponent.h"
 
-CFogComponent::CFogComponent(): FogColor(Colors::White), FogStart(5.f), FogRange(100.f), bDirty(false)
+CFogComponent::CFogComponent(): FogColor(Colors::White), FogStart(5.f), FogRange(100.f), FogHeight(100.f), bDirty(false)
 {
 }
 
@@ -20,6 +20,12 @@ void CFogComponent::SetFogStart(float start)
 void CFogComponent::SetFogRange(float range)
 {
 	FogRange = range;
+	SetDirty(true);
+}
+
+void CFogComponent::SetFogHeight(float height)
+{
+	FogHeight = height;
 	SetDirty(true);
 }
 

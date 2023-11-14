@@ -11,9 +11,10 @@ class GFog : public GActorObject
 public:
 	GFog();
 
-	void SetFogColor(const XMFLOAT4& color);
-	void SetFogStart(float start);
-	void SetFogRange(float range);
+	void SetFogColor(const XMFLOAT4& color) const;
+	void SetFogStart(float start) const;
+	void SetFogRange(float range) const;
+	void SetFogHeight(float height) const;
 
 };
 
