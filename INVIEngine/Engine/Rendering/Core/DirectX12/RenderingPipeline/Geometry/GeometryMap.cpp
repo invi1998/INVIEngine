@@ -529,6 +529,9 @@ void FGeometryMap::Draw(float DeltaTime)
 
 	// äÖÈ¾Ä£ĞÍ
 	// DrawMesh(DeltaTime);
+
+	// äÖÈ¾Îí
+	DrawFog(DeltaTime);
 }
 
 void FGeometryMap::PostDraw(float DeltaTime)
