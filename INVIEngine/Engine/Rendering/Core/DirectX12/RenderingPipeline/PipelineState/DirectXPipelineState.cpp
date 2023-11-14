@@ -43,7 +43,7 @@ void FDirectXPipelineState::BuildParam()
 void FDirectXPipelineState::BuildPipelineState(int psoType)
 {
 
-	if(PSO.find(psoType) == PSO.end())
+	if(!PSO.contains(psoType))
 	{
 		PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(psoType, ComPtr<ID3D12PipelineState>())); // 如果PSO里没有该pso类型，那么插入一个该类型的值
 	}
