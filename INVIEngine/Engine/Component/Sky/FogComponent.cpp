@@ -29,6 +29,12 @@ void CFogComponent::SetFogHeight(float height)
 	SetDirty(true);
 }
 
+void CFogComponent::SetFogTransparentCoefficient(float value)
+{
+	FogTransparentCoefficient = value;
+	SetDirty(true);
+}
+
 void CFogComponent::SetDirty(bool dirty)
 {
 	bDirty = dirty;

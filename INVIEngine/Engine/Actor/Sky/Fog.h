@@ -15,6 +15,7 @@ public:
 	void SetFogStart(float start) const;
 	void SetFogRange(float range) const;
 	void SetFogHeight(float height) const;
+	void SetFogTransparentCoefficient(float value) const;
 
 };
 

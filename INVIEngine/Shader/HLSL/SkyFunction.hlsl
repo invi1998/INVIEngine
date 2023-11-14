@@ -15,7 +15,7 @@ float4 GetFogValue(float4 InColor, float3 InPointPosition)
 	
 	float HeightAlphaValue = saturate((InPointPosition.y - CameraPosition.y) / max(FogHeight, 1.f));
 	
-	InColor = lerp(Color, InColor, HeightAlphaValue);
+	InColor = lerp(Color, InColor, HeightAlphaValue - FogTransparentCoefficient);
 	
 
 #endif

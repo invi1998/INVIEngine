@@ -27,3 +27,8 @@ void GFog::SetFogHeight(float height) const
 {
 	FogComponent->SetFogHeight(height);
 }
+
+void GFog::SetFogTransparentCoefficient(float value) const
+{
+	FogComponent->SetFogTransparentCoefficient(value);
+}
