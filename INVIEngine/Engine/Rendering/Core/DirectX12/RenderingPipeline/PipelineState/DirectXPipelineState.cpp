@@ -35,6 +35,8 @@ void FDirectXPipelineState::BuildParam()
 	// 设置采样
 	GPSDesc.SampleDesc.Count = GetEngine()->GetRenderingEngine()->GetDXGISampleCount();		// 采样数量
 	GPSDesc.SampleDesc.Quality = GetEngine()->GetRenderingEngine()->GetDXGISampleQuality();	// 采样质量
+
+	//RTV 和 DSV格式
 	GPSDesc.RTVFormats[0] = GetEngine()->GetRenderingEngine()->GetBackBufferFormat();			// 渲染目标视图格式（后台缓冲区格式）
 	GPSDesc.DSVFormat = GetEngine()->GetRenderingEngine()->GetDepthStencilFormat();			// 深度模板缓冲区格式
 

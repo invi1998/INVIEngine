@@ -88,7 +88,6 @@ void FGeometry::Build()
 	GPUVertexBufferPtr = ConstructDefaultBuffer.ConstructDefaultBuffer(TempVertexBufferPtr, MeshRenderingData.VertexData.data(), VertexSizeInBytes);
 	GPUIndexBufferPtr = ConstructDefaultBuffer.ConstructDefaultBuffer(TempIndexBufferPtr, MeshRenderingData.IndexData.data(), IndexSizeInBytes);
 
-	ANALYSIS_RESULT(D3DCreateBlob(IndexSizeInBytes, &CPUIndexBufferPtr));	// 创建一个二进制的缓冲区
 }
 
 UINT FGeometry::GetDrawObjectCount() const
@@ -217,7 +216,7 @@ void FGeometryMap::BuildMesh(const size_t meshHash, CMeshComponent* Mesh, const 
 
 void FGeometryMap::Build()
 {
-	for (auto & [index, Geometry] : Geometries)
+	for (auto& Geometry : Geometries | views::values)
 	{
 		Geometry.Build();
 	}
@@ -315,7 +314,7 @@ void FGeometryMap::BuildFogConstantBuffer()
 
 void FGeometryMap::BuildFog()
 {
-	for (auto & tmp : GObjects)
+	for (const auto & tmp : GObjects)
 	{
 		if (CFogComponent* fogComponent = dynamic_cast<CFogComponent*>(tmp))
 		{

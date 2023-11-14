@@ -46,9 +46,9 @@ public:
 	void SetRasterizerState(const CD3DX12_RASTERIZER_DESC& rasterizer);
 	void SetDepthStencilState(const CD3DX12_DEPTH_STENCIL_DESC& depthStencilDesc);
 
-private:			
+private:
 	std::unordered_map<UINT, ComPtr<ID3D12PipelineState>>	PSO{};		// 渲染管线状态对象
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC	GPSDesc;	// 图形渲染管线状态描述 包括顶点着色器、像素着色器、光栅化状态、混合状态、输入布局等
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC	GPSDesc{};	// 图形渲染管线状态描述 包括顶点着色器、像素着色器、光栅化状态、混合状态、输入布局等
 	EPipelineState PipelineState = EPipelineState::Solid;		// 渲染类型，默认实体模型渲染模式
 };
 

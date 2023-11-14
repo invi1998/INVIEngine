@@ -47,7 +47,7 @@ public:
 	[[nodiscard]] CWindowsEngine* GetEngine();
 
 private:
-	IDirectXDeviceInterface Interface;
+	IDirectXDeviceInterface Interface{};
 
 };
 
