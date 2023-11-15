@@ -75,6 +75,9 @@ struct MaterialConstBuffer
 
 	float3 SpecularColor;
 	int XX6;
+	
+	float3 FresnelF0;
+	float xx7;
 
 	float4x4 MaterialProjectionMatrix;
 };

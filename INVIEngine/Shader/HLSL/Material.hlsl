@@ -64,4 +64,47 @@ float4 GetMaterialSpecular(MaterialConstBuffer MatConstbuffer, float2 Texcoord)
 	return SimpleTexture2DMap[MatConstbuffer.SpecularIndex].Sample(TextureSampler, Texcoord);
 }
 
+// 获取反射（视角向量和顶点世界法线的反射向量）
+float3 GetReflect(float3 UnitWorldNormal)
+{
+	return reflect(-CameraPosition, UnitWorldNormal);
+}
+
+// 获取反射采样颜色
+float3 GetReflectionSampleColor(float3 UnitWorldNormal, float3 NewReflect)
+{
+	return SimpleCubeMap[0].Sample(TextureSampler, NewReflect).rgb;
+}
+
+// 获取反射度(决定当前反射颜色的强度）
+float GetShininess(MaterialConstBuffer MaterialBuff)
+{
+	// 1 - 材质粗糙度
+	return 1.f - MaterialBuff.MaterialRoughness;
+}
+
+// 获取菲尼尔因子
+float3 FresnelSchlickFactor(MaterialConstBuffer MaterialBuff, float3 UnitWorldNormal, float3 inReflect)
+{
+	return FresnelSchlick(MaterialBuff.FresnelF0, UnitWorldNormal, inReflect, 5);
+}
+
+// 最终获取的反射颜色
+float3 GetReflectionColor(MaterialConstBuffer MaterialBuff, float3 UnitWorldNormal)
+{
+	float3 NewReflect = GetReflect(UnitWorldNormal);
+
+	// 反射采样颜色
+	float3 ReflectSampleColor = GetReflectionSampleColor(UnitWorldNorma, NewReflect);
+
+	// 粗糙度
+	float3 shiness = GetShininess(MaterialBuff);
+
+	// 菲尼尔
+	float3 Fresnel = FresnelSchlickFactor(MaterialBuff, UnitWorldNormal, NewReflect);
+
+	return saturate(ReflectSampleColor * shiness * Fresnel);
+
+}
+
 #endif

@@ -422,6 +422,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         + material.BaseColor * Specular * LightStrength // 高光
         + material.BaseColor * AmbientLight;  // 间接光（环境光）
 	
+	float3 ReflectColor = GetReflectionColor(MatConstbuffer, ModelNormal);
+	
+	mvOut.Color = mvOut.Color + float4(ReflectColor, 1.f);
+	
 	// 计算雾
 	mvOut.Color = GetFogValue(mvOut.Color, mvOut.WorldPosition.xyz);
 
