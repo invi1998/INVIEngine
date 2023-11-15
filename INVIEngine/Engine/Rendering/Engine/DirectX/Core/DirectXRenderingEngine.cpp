@@ -123,6 +123,7 @@ int CDirectXRenderingEngine::PostInit()
 
 		//}
 
+		
 		if (GSphereMesh* sphere = World->CreateActorObject<GSphereMesh>())
 		{
 			sphere->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_BACKGROUND);
@@ -541,15 +542,6 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		// Îí
-		if (const GFog* fog = World->CreateActorObject<GFog>())
-		{
-			fog->SetFogColor(XMFLOAT4{Colors::AliceBlue});
-			fog->SetFogStart(10.f);
-			fog->SetFogRange(200.f);
-			fog->SetFogHeight(10000.f);
-			fog->SetFogTransparentCoefficient(0.06f);
-		}
 
 		// Í¸Ã÷ÇòÌå
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
@@ -564,6 +556,16 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetBaseColorIndexKey("TransparentContent");
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 			}
+		}
+
+		// Îí
+		if (const GFog* fog = World->CreateActorObject<GFog>())
+		{
+			fog->SetFogColor(XMFLOAT4{ Colors::AliceBlue });
+			fog->SetFogStart(10.f);
+			fog->SetFogRange(200.f);
+			fog->SetFogHeight(10000.f);
+			fog->SetFogTransparentCoefficient(0.06f);
 		}
 
 

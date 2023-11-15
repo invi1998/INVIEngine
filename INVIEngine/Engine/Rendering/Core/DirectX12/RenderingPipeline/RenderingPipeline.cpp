@@ -34,10 +34,10 @@ void FRenderingPipeline::BuildPipeline()
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
-	// 构建模型
+	// 构建模型几何
 	GeometryMap.Build();
 
-	// 构建描述堆
+	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
 
 	// 构建常量缓冲区

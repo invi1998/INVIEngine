@@ -81,8 +81,6 @@ void FRenderLayer::PostDraw(float deltaTime)
 
 void FRenderLayer::BuildShaderMacro(std::vector<ShaderType::FShaderMacro>& inShaderMacro)
 {
-	char TextureNumBuff[10] = { 0 };
-
 	//inShaderMacro = std::initializer_list{
 	//	{"TEXTURE2DNUM", _itoa(GeometryMap->GetDrawTexture2DCount(), TextureNumBuff, 10)},
 	//	{"CUBE_MAP_NUM", _itoa(GeometryMap->GetDrawCubeMapCount(), TextureNumBuff, 10)},
