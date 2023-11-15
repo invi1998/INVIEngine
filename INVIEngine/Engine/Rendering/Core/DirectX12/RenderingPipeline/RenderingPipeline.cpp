@@ -52,7 +52,7 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建视口常量缓冲区
 	GeometryMap.BuildViewportConstantBuffer();
 
-	// 构建shader资源视口 SRV
+	// 构建纹理贴图
 	GeometryMap.BuildTextureConstBuffer();
 
 	// 构建雾的常量缓冲区
@@ -60,6 +60,7 @@ void FRenderingPipeline::BuildPipeline()
 
 	// 让各个渲染层级构建自己的PSO
 	RenderLayerManage.BuildPSO();
+
 }
 
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)

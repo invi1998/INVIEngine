@@ -134,7 +134,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			if (CMaterial* material = (*sphere->GetMaterial())[0])
 			{
-				material->SetBaseColorIndexKey("Grass_CubeMap");
+				material->SetBaseColorIndexKey("x1_CubeMap");
 				material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
 				material->SetMaterialType(BaseColor);
 			}
