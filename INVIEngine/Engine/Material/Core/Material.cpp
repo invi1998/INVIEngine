@@ -3,8 +3,9 @@
 #include "Material.h"
 
 CMaterial::CMaterial()
-	: bDirty(true), MaterialID(-1), BaseColor(0.45f, 0.45f, 0.45f, 1.f), SpecularColor(0.0f, 0.0f, 0.0f), Roughness(0.2f),
-	  MaterialTransformation(EngineMath::IdentityMatrix4x4())
+	: bDirty(true), MaterialID(-1), BaseColor(0.45f, 0.45f, 0.45f, 1.f), SpecularColor(0.0f, 0.0f, 0.0f),
+	  Roughness(0.2f),
+	  MaterialTransformation(EngineMath::IdentityMatrix4x4()), FresnelF0({ 0.04f, 0.04f, 0.04f })
 {
 }
 
@@ -86,3 +87,10 @@ void CMaterial::SetMaterialID(const int id)
 	MaterialID = id;
 	SetDirty(true);
 }
+
+void CMaterial::SetFresnelF0(const XMFLOAT3& f0)
+{
+	FresnelF0 = f0;
+	SetDirty(true);
+}
+

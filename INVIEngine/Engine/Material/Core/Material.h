@@ -24,6 +24,7 @@ public:
 	FORCEINLINE const std::string& GetNormalIndexKey() const { return NormalIndexKey; }
 	FORCEINLINE const std::string& GetSpecularIndexKey() const { return SpecularIndexKey; }
 	FORCEINLINE int GetMaterialID() const { return MaterialID; }
+	FORCEINLINE XMFLOAT3 GetFresnelF0() const { return FresnelF0; }
 
 public:
 	void SetBaseColor(const XMFLOAT4& color);
@@ -37,6 +38,7 @@ public:
 	void SetSpecular(const XMFLOAT3& color);
 	void SetDirty(bool dirty);
 	void SetMaterialID(const int id);
+	void SetFresnelF0(const XMFLOAT3& f0);
 
 private:
 	// 材质脏标志，用于标志当前材质是否被动态修改过，如果被动态修改过，该值为true，为true，那么我们才重新提交该材质
@@ -50,6 +52,8 @@ private:
 	EMaterialType MaterialType = EMaterialType::Lambert;
 	EMaterialDisplayStatusType MaterialDisplayType = EMaterialDisplayStatusType::TriangleDisplay;
 	XMFLOAT4X4 MaterialTransformation;
+
+	XMFLOAT3 FresnelF0;				// 菲尼尔F0
 
 	std::string BaseColorIndexKey;	// 纹理贴图
 	std::string NormalIndexKey;		// 法线贴图

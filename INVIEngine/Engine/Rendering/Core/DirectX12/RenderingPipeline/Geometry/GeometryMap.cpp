@@ -471,6 +471,7 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			MaterialConstantBuffer.BaseColor = material->GetBaseColor();
 			MaterialConstantBuffer.Roughness = material->GetRoughness();
 			MaterialConstantBuffer.SpecularColor = material->GetSpecularColor();
+			MaterialConstantBuffer.FresnelF0 = material->GetFresnelF0();
 
 			if (auto basecolorPtr = FindRenderingTexture(material->GetBaseColorIndexKey()))
 			{
