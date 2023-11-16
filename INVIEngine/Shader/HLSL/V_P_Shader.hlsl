@@ -422,9 +422,21 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         + material.BaseColor * Specular * LightStrength // 高光
         + material.BaseColor * AmbientLight;  // 间接光（环境光）
 	
-	float3 ReflectColor = GetReflectionColor(MatConstbuffer, ModelNormal);
+	// 计算cube map反射
+	switch (MatConstbuffer.MaterialType)
+	{
+		case 2:
+		case 3:
+		case 9:
+		{
+			float3 ReflectColor = GetReflectionColor(MatConstbuffer, ModelNormal, mvOut.WorldPosition.xyz);
 	
-	mvOut.Color = mvOut.Color + float4(ReflectColor, 1.f);
+			mvOut.Color = mvOut.Color + float4(ReflectColor, 1.f);
+			
+			break;
+		}
+	}
+	
 	
 	// 计算雾
 	mvOut.Color = GetFogValue(mvOut.Color, mvOut.WorldPosition.xyz);

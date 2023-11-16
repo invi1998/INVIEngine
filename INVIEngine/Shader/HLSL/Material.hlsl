@@ -65,9 +65,10 @@ float4 GetMaterialSpecular(MaterialConstBuffer MatConstbuffer, float2 Texcoord)
 }
 
 // 获取反射（视角向量和顶点世界法线的反射向量）
-float3 GetReflect(float3 UnitWorldNormal)
+float3 GetReflect(float3 UnitWorldNormal, float3 WorldPosition)
 {
-	return reflect(-CameraPosition, UnitWorldNormal).xyz;
+	float3 ViewDirection = normalize(CameraPosition.xyz - WorldPosition);
+	return reflect(-ViewDirection, UnitWorldNormal).xyz;
 }
 
 // 获取反射采样颜色
@@ -90,9 +91,9 @@ float3 FresnelSchlickFactor(MaterialConstBuffer MaterialBuff, float3 UnitWorldNo
 }
 
 // 最终获取的反射颜色
-float3 GetReflectionColor(MaterialConstBuffer MaterialBuff, float3 UnitWorldNormal)
+float3 GetReflectionColor(MaterialConstBuffer MaterialBuff, float3 UnitWorldNormal, float3 WorldPosition)
 {
-	float3 NewReflect = GetReflect(UnitWorldNormal);
+	float3 NewReflect = GetReflect(UnitWorldNormal, WorldPosition);
 
 	// 反射采样颜色
 	float3 ReflectSampleColor = GetReflectionSampleColor(UnitWorldNormal, NewReflect);
