@@ -1138,7 +1138,7 @@ int CDirectXRenderingEngine::PostInit()
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
-				InMaterial->SetMaterialType(EMaterialType::Phong);
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 
 				InMaterial->SetRoughness(0.01f);
 				InMaterial->SetFresnelF0(XMFLOAT3(0.5f, 0.5f, 0.5f));
