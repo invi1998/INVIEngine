@@ -11,13 +11,17 @@
 #include "Manage/LightManager.h"
 #include "Material/Core/Material.h"
 #include "Material/Core/MaterialType.h"
+#include "Mesh/BoxMesh.h"
 #include "Mesh/ConeMesh.h"
 #include "Mesh/CustomMesh.h"
+#include "Mesh/CylinderMesh.h"
 #include "Mesh/PipeMesh.h"
 #include "Mesh/PlaneMesh.h"
 #include "Mesh/PyramidMesh.h"
 #include "Mesh/SphereMesh.h"
 #include "Mesh/TorusMesh.h"
+
+class GBoxMesh;
 
 CDirectXRenderingEngine::CDirectXRenderingEngine()
 	: CurrentFenceIndex(0),
@@ -71,114 +75,603 @@ int CDirectXRenderingEngine::PostInit()
 	// 初始化命令列表
 	ANALYSIS_RESULT(GraphicsCommandList->Reset(CommandAllocator.Get(), nullptr));
 
-	{
+	//{
 
-		// 平行光
+	//	// 平行光
+	//	//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
+	//	//{
+	//	//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
+	//	//	ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+	//	//	ParallelLight->SetLightIntensity({ 1.0f, 1.0f, 1.1f });
+
+	//	//	/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
+	//	//	{
+	//	//		InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
+	//	//		InMaterial->SetMaterialType(EMaterialType::BaseColor);
+	//	//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+
+	//	//		InMaterial->SetRoughness(1.0f);
+	//	//	}*/
+	//	//}
+
+	//	// 点光
+	//	if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
+	//	{
+	//		PointLight->SetPosition(XMFLOAT3(0.f, 2.f, 10.f));
+	//		PointLight->SetRotation(fvector_3d(0.f));
+	//		PointLight->SetLightIntensity(XMFLOAT3{ 0.9f, 0.9f, 0.9f });
+
+	//		PointLight->SetStartAttenuation(0.0f);
+	//		PointLight->SetEndAttenuation(600.f);
+
+	//		PointLight->SetKc(1.f);
+	//		PointLight->SetKl(0.007f);
+	//		PointLight->SetKq(0.0002f);
+	//	}
+
+	//	//// 聚光
+	//	//if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
+	//	//{
+	//	//	SpotLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
+	//	//	SpotLight->SetLightIntensity(XMFLOAT3{ 2.f, 2.f, 1.43f });
+
+	//	//	SpotLight->SetStartAttenuation(0.0f);
+	//	//	SpotLight->SetEndAttenuation(200.0f);
+
+	//	//	SpotLight->SetKc(1.f);
+	//	//	SpotLight->SetKl(0.022f);
+	//	//	SpotLight->SetKq(0.0019f);
+
+	//	//	SpotLight->SetConicalInnerCorner(15.f);
+	//	//	SpotLight->SetConicalOuterCorner(20.f);
+
+	//	//}
+
+	//	
+	//	if (GSphereMesh* sphere = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		sphere->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_BACKGROUND);
+
+	//		sphere->CreateMesh(2.f, 100, 100, true);
+	//		sphere->SetPosition({ 0.f, 0.f, 0.f });
+	//		sphere->SetScale(fvector_3d(4000.f));
+
+	//		if (CMaterial* material = (*sphere->GetMaterial())[0])
+	//		{
+	//			material->SetBaseColorIndexKey("x1_CubeMap");
+	//			material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	//			material->SetMaterialType(BaseColor);
+	//		}
+	//	}
+
+	//	if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())
+	//	{
+	//		PlaneMesh->CreateMesh(400.f, 400.f, 2, 2);
+	//		PlaneMesh->SetPosition(XMFLOAT3(0.f, -2.f, 0.f));
+	//		// PlaneMesh->SetScale(fvector_3d(40.f, 40.f, 40.f));
+
+	//		if (CMaterial* InMaterial = (*PlaneMesh->GetMaterial())[0])
+	//		{
+	//			// InMaterial->SetBaseColorIndexKey("Earth");
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::Gray));
+	//			InMaterial->SetMaterialType(EMaterialType::Lambert);
+
+	//			InMaterial->SetRoughness(1.0f);
+	//		}
+	//	}
+
+	//	////甜甜圈
+	//	if (GTorusMesh* InTorusMesh = World->CreateActorObject<GTorusMesh>())
+	//	{
+	//		InTorusMesh->CreateMesh(6.f, 2.f, 40.f, 40.f);
+	//		InTorusMesh->SetPosition(XMFLOAT3(-6.f, -2.f, 30.f));
+	//		InTorusMesh->SetScale(fvector_3d(1.f));
+	//		if (CMaterial* InMaterial = (*InTorusMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+	//		}
+	//	}
+
+
+	//	//三楞锥
+	//	if (GPyramidMesh* InPyramidMesh = World->CreateActorObject<GPyramidMesh>())
+	//	{
+	//		InPyramidMesh->CreateMesh(EPyramidNumberSides::Pyramid_3, 1);
+	//		InPyramidMesh->SetPosition(XMFLOAT3(-1.f, 2.f, 30.f));
+	//		InPyramidMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
+	//		InPyramidMesh->SetScale(fvector_3d(1.f));
+	//		if (CMaterial* InMaterial = (*InPyramidMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({ 4.f, 0.f, 0.f, 1.f });
+	//			InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+	//		}
+	//	}
+
+	//	//Pipe模型
+	//	if (GPipeMesh* InPipeMesh = World->CreateActorObject<GPipeMesh>())
+	//	{
+	//		InPipeMesh->CreateMesh(3.f, 3.f, 6.f, 1.f, 20.f, 20.f);
+	//		InPipeMesh->SetPosition(XMFLOAT3(-9.f, 2.f, 30.f));
+	//		if (CMaterial* InMaterial = (*InPipeMesh->GetMaterial())[0])
+	//		{
+	//			//InMaterial->SetBaseColor(fvector_4d(5.f));
+	//			//InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+	//			InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+	//		}
+	//	}
+
+	//	//锥形
+	//	if (GConeMesh* InConeMesh = World->CreateActorObject<GConeMesh>())
+	//	{
+	//		InConeMesh->CreateMesh(2.f, 3.f, 20.f, 20.f);
+
+	//		InConeMesh->SetPosition(XMFLOAT3(7.f, -2.f, 30.f));
+	//		InConeMesh->SetScale(fvector_3d(1.f, 2.f, 1.f));
+	//		if (CMaterial* InMaterial = (*InConeMesh->GetMaterial())[0])
+	//		{
+	//			//	InMaterial->SetBaseColor(fvector_4d(1.f));
+	//			InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+	//		}
+	//	}
+
+	//	//兰伯特
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 20, 20);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColorIndexKey("Earth");
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::Lambert);
+
+	//			InMaterial->SetRoughness(1.0f);
+	//		}
+	//	}
+
+	//	//半兰伯特
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColorIndexKey("Wood");
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+
+	//			InMaterial->SetRoughness(1.0f);
+	//		}
+	//	}
+
+	//	//Phong
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::Phong);
+
+	//			InMaterial->SetRoughness(0.8f);
+	//		}
+	//	}
+
+	//	//BlinnPhong
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::Phong);
+
+	//			InMaterial->SetRoughness(0.1f);
+	//		}
+	//	}
+
+	//	//Fresnel
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-9.f, 8, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::Fresnel);
+
+	//			// InMaterial->SetRoughness(1.0f);
+	//		}
+	//	}
+
+	//	// WrapLight
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-3.f, 8, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({
+	//				221.f / 255.f,
+	//				154.f / 255.f,
+	//				139.f / 255.f,1.f });
+	//			InMaterial->SetMaterialType(EMaterialType::WrapLight);
+
+	//			// InMaterial->SetRoughness(0.1f);
+	//		}
+	//	}
+
+	//	// Minnaert
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({
+	//				0.9f,
+	//				0.9f,
+	//				1.0f, 1.f });
+	//			InMaterial->SetMaterialType(EMaterialType::Minnaert);
+
+	//			InMaterial->SetRoughness(0.95f);
+	//		}
+	//	}
+
+	//	// Banded
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(9.f, 8, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({ XMFLOAT4(Colors::White) });
+	//			InMaterial->SetMaterialType(EMaterialType::Banded);
+	//		}
+	//	}
+
+	//	// GradualBanded
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-9.f, 14, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({
+	//				3.f/255.f,169.f/255.f,244.f/255.f, 1.f });
+	//			InMaterial->SetMaterialType(EMaterialType::GradualBanded);
+	//		}
+	//	}
+
+	//	// CustomBanded
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-3.f, 14, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({
+	//				255.f/255.f,87.f/255.f,34.f/255.f,1.f });
+	//			InMaterial->SetMaterialType(EMaterialType::CustomBanded);
+	//			InMaterial->SetRoughness(0.42f);
+	//		}
+	//	}
+
+	//	// Back
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(3.f, 14, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({
+	//				2.f / 255.f,
+	//				214.f / 255.f,
+	//				17.f / 255.f, 1.f});
+	//			InMaterial->SetMaterialType(EMaterialType::Back);
+	//			InMaterial->SetRoughness(0.15f);
+	//		}
+	//	}
+
+	//	// 各项异性（头发渲染）AnisotoropyKaijiyakay
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(9.f, 14, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({
+	//				2.f / 255.f,
+	//				214.f / 255.f,
+	//				17.f / 255.f, 1.f });
+	//			InMaterial->SetMaterialType(EMaterialType::AnisotoropyKaijiyakay);
+	//			InMaterial->SetRoughness(0.15f);
+	//		}
+	//	}
+
+	//	// OrenNayar 粗糙表面
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-9.f, 20, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor({
+	//				121.f/255.f,85.f/255.f,72.f/255.f, 1.f });
+	//			InMaterial->SetMaterialType(EMaterialType::OrenNayar);
+	//			InMaterial->SetRoughness(3.15f);
+	//		}
+	//	}
+	//	// OrenNayar 粗糙表面
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-3.f, 20, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::PBR);
+	//			InMaterial->SetRoughness(3.15f);
+	//		}
+	//	}
+
+	//	// 单独显示顶点颜色
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-3.f, 26, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::BaseColor);
+	//			InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+	//		}
+	//	}
+
+	//	// 单独显示顶点颜色
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(3.f, 26, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::Normal);
+	//		}
+	//	}
+
+	//	// 单独显示顶点颜色
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(9.f, 26, 0.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::WorldNormal);
+	//		}
+	//	}
+
+	//	// 平行光模型
+	//	if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
+	//	{
+	//		SphereMesh->CreateMesh("Asserts/Mesh/SunMesh.obj");
+
+	//		SphereMesh->SetPosition(XMFLOAT3(19.f, 2, 19.f));
+	//		SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
+	//			InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+	//			InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
+	//		}
+	//	}
+
+	//	// 泥土材质
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(15.f, 2, 19.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColorIndexKey("MMOARPG");
+	//			InMaterial->SetBaseColor(XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f));
+	//			InMaterial->SetNormalIndexKey("MMOARPG_NRM");
+	//			InMaterial->SetMaterialType(EMaterialType::OrenNayar);
+	//		}
+	//	}
+
+	//	// 大理石材质
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 19.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColorIndexKey("Earth");
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::Gray));
+	//			InMaterial->SetSpecular(XMFLOAT3(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+	//			InMaterial->SetRoughness(0.04f);
+	//			InMaterial->SetFresnelF0({0.04f, 0.04f, 0.04f});
+	//		}
+	//	}
+
+	//	// 木头材质
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 19.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColorIndexKey("Wood");
+	//			InMaterial->SetNormalIndexKey("Wood_NRM");
+	//			InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+	//			InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+	//		}
+	//	}
+
+	//	// 木头材质2
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 19.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			// InMaterial->SetBaseColorIndexKey("Wood2");
+	//			InMaterial->SetNormalIndexKey("Wood2_Nor");
+	//			InMaterial->SetSpecular("Wood2_SPEC");
+	//			InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+	//		}
+	//	}
+
+
+	//	// 透明球体
+	//	if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+	//	{
+	//		SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT);
+
+	//		SphereMesh->CreateMesh(2.f, 50, 50);
+
+	//		SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 19.f));
+	//		if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//		{
+	//			InMaterial->SetBaseColorIndexKey("TransparentContent");
+	//			InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+	//		}
+	//	}
+
+	//	// 雾
+	//	if (const GFog* fog = World->CreateActorObject<GFog>())
+	//	{
+	//		fog->SetFogColor(XMFLOAT4{ Colors::AliceBlue });
+	//		fog->SetFogStart(10.f);
+	//		fog->SetFogRange(200.f);
+	//		fog->SetFogHeight(10000.f);
+	//		fog->SetFogTransparentCoefficient(0.01f);
+	//	}
+
+
+	//	//// 平行光模型
+	//	//if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
+	//	//{
+	//	//	SphereMesh->CreateMesh("Asserts/Mesh/SunMesh.obj");
+
+	//	//	SphereMesh->SetPosition(XMFLOAT3(3.f, 12, 19.f));
+	//	//	SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
+	//	//	if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//	//	{
+	//	//		InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
+	//	//		InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+	//	//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
+	//	//	}
+	//	//}
+
+	//	//// 摄像机模型
+	//	//if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
+	//	//{
+	//	//	SphereMesh->CreateMesh("Asserts/Mesh/CameraMesh.obj");
+
+	//	//	SphereMesh->SetPosition(XMFLOAT3(-19.f, 2, 19.f));
+	//	//	SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
+	//	//	if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+	//	//	{
+	//	//		InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
+	//	//		InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+	//	//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
+	//	//	}
+	//	//}
+
+	//}
+
+	{
+		//构建Mesh
+		/*if (GMesh* BoxMesh = MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f))
+		{
+			BoxMesh->SetPosition(XMFLOAT3(4,3,5));
+			BoxMesh->SetRotation(fvector_3d(60.f, 1.f, 20.f));
+		}*/
+
+		////灯光生成
 		//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
 		//{
-		//	ParallelLight->SetPosition(XMFLOAT3(0.f, 10.f, -20.f));
+		//	ParallelLight->SetPosition(XMFLOAT3(10.f, -10.f, 10.f));
 		//	ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-		//	ParallelLight->SetLightIntensity({ 1.0f, 1.0f, 1.1f });
-
-		//	/*if (CMaterial* InMaterial = (*ParallelLight->GetMaterial())[0])
-		//	{
-		//		InMaterial->SetBaseColor(XMFLOAT4{ Colors::OrangeRed });
-		//		InMaterial->SetMaterialType(EMaterialType::BaseColor);
-		//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
-
-		//		InMaterial->SetRoughness(1.0f);
-		//	}*/
+		//	ParallelLight->SetScale(fvector_3d(1));
+		//	ParallelLight->SetLightIntensity(fvector_3d(1.1f,1.1f,1.1f));
 		//}
-
-		// 点光
+		//点灯光生成
 		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
 		{
-			PointLight->SetPosition(XMFLOAT3(0.f, 2.f, 10.f));
-			PointLight->SetRotation(fvector_3d(0.f));
-			PointLight->SetLightIntensity(XMFLOAT3{ 0.9f, 0.9f, 0.9f });
+			PointLight->SetPosition(XMFLOAT3(0.f, -6.f, 10.f));
+			PointLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
 
-			PointLight->SetStartAttenuation(0.0f);
-			PointLight->SetEndAttenuation(600.f);
-
-			PointLight->SetKc(1.f);
-			PointLight->SetKl(0.007f);
-			PointLight->SetKq(0.0002f);
+			PointLight->SetLightIntensity(XMFLOAT3(0.9f, 0.9f, 0.9f));
+			PointLight->SetEndAttenuation(190.f);
 		}
 
-		//// 聚光
+		//聚灯光生成
 		//if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
 		//{
-		//	SpotLight->SetPosition(XMFLOAT3(20.f, 10.f, -20.f));
-		//	SpotLight->SetLightIntensity(XMFLOAT3{ 2.f, 2.f, 1.43f });
-
-		//	SpotLight->SetStartAttenuation(0.0f);
-		//	SpotLight->SetEndAttenuation(200.0f);
-
-		//	SpotLight->SetKc(1.f);
-		//	SpotLight->SetKl(0.022f);
-		//	SpotLight->SetKq(0.0019f);
-
-		//	SpotLight->SetConicalInnerCorner(15.f);
-		//	SpotLight->SetConicalOuterCorner(20.f);
-
-		//}
-
-		
-		if (GSphereMesh* sphere = World->CreateActorObject<GSphereMesh>())
-		{
-			sphere->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_BACKGROUND);
-
-			sphere->CreateMesh(2.f, 100, 100, true);
-			sphere->SetPosition({ 0.f, 0.f, 0.f });
-			sphere->SetScale(fvector_3d(4000.f));
-
-			if (CMaterial* material = (*sphere->GetMaterial())[0])
-			{
-				material->SetBaseColorIndexKey("x1_CubeMap");
-				material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
-				material->SetMaterialType(BaseColor);
-			}
-		}
-
-		if (GPlaneMesh* PlaneMesh = World->CreateActorObject<GPlaneMesh>())
-		{
-			PlaneMesh->CreateMesh(400.f, 400.f, 2, 2);
-			PlaneMesh->SetPosition(XMFLOAT3(0.f, -2.f, 0.f));
-			// PlaneMesh->SetScale(fvector_3d(40.f, 40.f, 40.f));
-
-			if (CMaterial* InMaterial = (*PlaneMesh->GetMaterial())[0])
-			{
-				// InMaterial->SetBaseColorIndexKey("Earth");
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::Gray));
-				InMaterial->SetMaterialType(EMaterialType::Lambert);
-
-				InMaterial->SetRoughness(1.0f);
-			}
-		}
+		//	SpotLight->SetPosition(XMFLOAT3(0.f, 10.f, -10.f));
+		//	SpotLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+		//
+		//	SpotLight->SetLightIntensity(fvector_3d(1.f));
+		//	//SpotLight->SetStartAttenuation(1.f);
+		//	SpotLight->SetEndAttenuation(130.f);
+		//
+		//	SpotLight->SetConicalInnerCorner(40.f);
+		//	SpotLight->SetConicalOuterCorner(60.f);
+		//}	
 
 		////甜甜圈
 		if (GTorusMesh* InTorusMesh = World->CreateActorObject<GTorusMesh>())
 		{
 			InTorusMesh->CreateMesh(6.f, 2.f, 40.f, 40.f);
-			InTorusMesh->SetPosition(XMFLOAT3(-6.f, -2.f, 30.f));
+			InTorusMesh->SetPosition(XMFLOAT3(-22.f, -8, 20.f));
 			InTorusMesh->SetScale(fvector_3d(1.f));
 			if (CMaterial* InMaterial = (*InTorusMesh->GetMaterial())[0])
 			{
 				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+
+				InMaterial->SetBaseColorIndexKey("Zhuan");
+				InMaterial->SetNormalIndexKey("Zhuan_NRM");
 			}
 		}
-
 
 		//三楞锥
 		if (GPyramidMesh* InPyramidMesh = World->CreateActorObject<GPyramidMesh>())
 		{
 			InPyramidMesh->CreateMesh(EPyramidNumberSides::Pyramid_3, 1);
-			InPyramidMesh->SetPosition(XMFLOAT3(-1.f, 2.f, 30.f));
+			InPyramidMesh->SetPosition(XMFLOAT3(-1.f, -8, 20.f));
 			InPyramidMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
 			InPyramidMesh->SetScale(fvector_3d(1.f));
 			if (CMaterial* InMaterial = (*InPyramidMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ 4.f, 0.f, 0.f, 1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(4.f, 0.f, 0.f, 1.f));
 				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
 			}
 		}
@@ -187,12 +680,16 @@ int CDirectXRenderingEngine::PostInit()
 		if (GPipeMesh* InPipeMesh = World->CreateActorObject<GPipeMesh>())
 		{
 			InPipeMesh->CreateMesh(3.f, 3.f, 6.f, 1.f, 20.f, 20.f);
-			InPipeMesh->SetPosition(XMFLOAT3(-9.f, 2.f, 30.f));
+			InPipeMesh->SetPosition(XMFLOAT3(-9.f, -9, 20.f));
+			InPipeMesh->SetScale(fvector_3d(1.f));
 			if (CMaterial* InMaterial = (*InPipeMesh->GetMaterial())[0])
 			{
 				//InMaterial->SetBaseColor(fvector_4d(5.f));
 				//InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
 				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+
+				InMaterial->SetBaseColorIndexKey("Zhuan");
+				InMaterial->SetNormalIndexKey("Zhuan_NRM");
 			}
 		}
 
@@ -201,8 +698,8 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			InConeMesh->CreateMesh(2.f, 3.f, 20.f, 20.f);
 
-			InConeMesh->SetPosition(XMFLOAT3(7.f, -2.f, 30.f));
-			InConeMesh->SetScale(fvector_3d(1.f, 2.f, 1.f));
+			InConeMesh->SetPosition(XMFLOAT3(7.f, -11.f, 20.f));
+			InConeMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
 			if (CMaterial* InMaterial = (*InConeMesh->GetMaterial())[0])
 			{
 				//	InMaterial->SetBaseColor(fvector_4d(1.f));
@@ -210,19 +707,55 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		if (GBoxMesh* InBoxMesh = World->CreateActorObject<GBoxMesh>())
+		{
+			InBoxMesh->CreateMesh(5.f, 5.f, 5.f);
+
+			InBoxMesh->SetPosition(XMFLOAT3(22.f, -10.f, 20.f));
+			InBoxMesh->SetScale(fvector_3d(1));
+			if (CMaterial* InMaterial = (*InBoxMesh->GetMaterial())[0])
+			{
+				//	InMaterial->SetBaseColor(fvector_4d(0.5f));
+				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+			}
+		}
+
+		if (GCylinderMesh* InCylinderMesh = World->CreateActorObject<GCylinderMesh>())
+		{
+			InCylinderMesh->CreateMesh(2.f, 2.f, 5.f, 20.f, 20.f);
+
+			InCylinderMesh->SetPosition(XMFLOAT3(14.f, -10.f, 20.f));
+			InCylinderMesh->SetScale(fvector_3d(1.f));
+			if (CMaterial* InMaterial = (*InCylinderMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColorIndexKey("Zhuan");
+				InMaterial->SetNormalIndexKey("Zhuan_NRM");
+
+				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+			}
+		}
+
+		if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
+		{
+			InPlaneMesh->CreateMesh(4.f, 3.f, 20, 20);
+
+			InPlaneMesh->SetPosition(XMFLOAT3(0.f, -12.f, 0.f));
+			InPlaneMesh->SetScale(fvector_3d(50.f, 1.f, 50.f));
+			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::Lambert);
+			}
+		}
+
 		//兰伯特
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
-			SphereMesh->CreateMesh(2.f, 20, 20);
-
-			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColorIndexKey("Earth");
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::Lambert);
-
-				InMaterial->SetRoughness(1.0f);
 			}
 		}
 
@@ -230,376 +763,401 @@ int CDirectXRenderingEngine::PostInit()
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 0.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColorIndexKey("Wood");
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
-				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
-
-				InMaterial->SetRoughness(1.0f);
-			}
-		}
-
-		//Phong
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
-		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
 			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
+				InMaterial->SetBaseColor(XMFLOAT4(
+					221.f / 255.f,
+					154.f / 255.f,
+					255.f / 255.f, 1.f));
+
+				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
+			}
+		}
+
+		//phong
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				//模拟黄铜
+				InMaterial->SetBaseColor(XMFLOAT4(
+					191.f / 255.f,
+					173.f / 255.f,
+					111.f / 255.f, 1.f));
+
 				InMaterial->SetMaterialType(EMaterialType::Phong);
+				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
+
+				InMaterial->SetFresnelF0(XMFLOAT3(0.08f, 0.08f, 0.08f));
+				InMaterial->SetRoughness(0.4f);
+			}
+		}
+
+		//blinn-phong
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 7, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(
+					220.f / 255.f,
+					223.f / 255.f,
+					227.f / 255.f, 1.f));
+
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
+				InMaterial->SetRoughness(0.3f);
+
+				InMaterial->SetFresnelF0(XMFLOAT3(0.1f, 0.1f, 0.1f));
+			}
+		}
+
+		//菲尼尔
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 7, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetMaterialType(EMaterialType::Fresnel);
 
 				InMaterial->SetRoughness(0.8f);
 			}
 		}
 
-		//BlinnPhong
+		//Wrap 模拟皮肤
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 7, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
-				InMaterial->SetMaterialType(EMaterialType::Phong);
-
-				InMaterial->SetRoughness(0.1f);
-			}
-		}
-
-		//Fresnel
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
-		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-9.f, 8, 0.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
-				InMaterial->SetMaterialType(EMaterialType::Fresnel);
-
-				// InMaterial->SetRoughness(1.0f);
-			}
-		}
-
-		// WrapLight
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
-		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 8, 0.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor({
-					221.f / 255.f,
+				InMaterial->SetBaseColor(XMFLOAT4(
+					234.f / 255.f,
 					154.f / 255.f,
-					139.f / 255.f,1.f });
-				InMaterial->SetMaterialType(EMaterialType::WrapLight);
+					139.f / 255.f, 1.f));
 
-				// InMaterial->SetRoughness(0.1f);
+				InMaterial->SetMaterialType(EMaterialType::WrapLight);
 			}
 		}
 
-		// Minnaert
+		//Minnaert
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(3.f, 8, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, 7, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
+				InMaterial->SetBaseColor(XMFLOAT4(
 					0.9f,
 					0.9f,
-					1.0f, 1.f });
+					1.0f, 1.f));
+
 				InMaterial->SetMaterialType(EMaterialType::Minnaert);
 
 				InMaterial->SetRoughness(0.95f);
 			}
 		}
 
-		// Banded
+		//AnisotropyKajiyaKay
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(9.f, 8, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({ XMFLOAT4(Colors::White) });
+				InMaterial->SetBaseColorIndexKey("Hair");
+				InMaterial->SetMaterialType(EMaterialType::AnisotoropyKaijiyakay);
+			}
+		}
+
+		//OrenNayar
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, 18, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(
+					0.7f,
+					0.7f,
+					1.4f, 1.f));
+
+				InMaterial->SetMaterialType(EMaterialType::OrenNayar);
+
+				InMaterial->SetRoughness(0.7f);//如果是0 就是兰伯特
+			}
+		}
+
+		//
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, 12, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(
+					0.7f,
+					0.7f,
+					1.4f, 1.f));
+
 				InMaterial->SetMaterialType(EMaterialType::Banded);
 			}
 		}
 
-		// GradualBanded
+		//GradualBanded
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-9.f, 14, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 12, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
-					3.f/255.f,169.f/255.f,244.f/255.f, 1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(
+					247.f / 255.f,
+					150.f / 255.f,
+					85.f / 255.f, 1.f));
+
 				InMaterial->SetMaterialType(EMaterialType::GradualBanded);
 			}
 		}
 
-		// CustomBanded
+		//最终Banded
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 14, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 12, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
-					255.f/255.f,87.f/255.f,34.f/255.f,1.f });
+				InMaterial->SetBaseColor(XMFLOAT4(
+					213.f / 255.f,
+					132.f / 255.f,
+					234.f / 255.f, 1.f));
+
 				InMaterial->SetMaterialType(EMaterialType::CustomBanded);
-				InMaterial->SetRoughness(0.42f);
+				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
+				InMaterial->SetRoughness(0.6f);
 			}
 		}
 
-		// Back
+		//back
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(3.f, 14, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 12, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
+				InMaterial->SetBaseColor(XMFLOAT4(
 					2.f / 255.f,
 					214.f / 255.f,
-					17.f / 255.f, 1.f});
+					17.f / 255.f, 1.f));
+
 				InMaterial->SetMaterialType(EMaterialType::Back);
-				InMaterial->SetRoughness(0.15f);
+				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
+				InMaterial->SetRoughness(0.2f);
 			}
 		}
 
-		// 各项异性（头发渲染）AnisotoropyKaijiyakay
+		//以线框显示
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(9.f, 14, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(9.f, 18, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor({
-					2.f / 255.f,
-					214.f / 255.f,
-					17.f / 255.f, 1.f });
-				InMaterial->SetMaterialType(EMaterialType::AnisotoropyKaijiyakay);
-				InMaterial->SetRoughness(0.15f);
-			}
-		}
-
-		// OrenNayar 粗糙表面
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
-		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-9.f, 20, 0.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor({
-					121.f/255.f,85.f/255.f,72.f/255.f, 1.f });
-				InMaterial->SetMaterialType(EMaterialType::OrenNayar);
-				InMaterial->SetRoughness(3.15f);
-			}
-		}
-		// OrenNayar 粗糙表面
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
-		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 20, 0.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
-				InMaterial->SetMaterialType(EMaterialType::PBR);
-				InMaterial->SetRoughness(3.15f);
-			}
-		}
-
-		// 单独显示顶点颜色
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
-		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 26, 0.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
-				InMaterial->SetMaterialType(EMaterialType::BaseColor);
 				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::WireframeDisplay);
+				InMaterial->SetMaterialType(EMaterialType::BaseColor);
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+
 			}
 		}
 
-		// 单独显示顶点颜色
+		//以点显示
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(3.f, 26, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, 18, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
-				InMaterial->SetMaterialType(EMaterialType::Normal);
+				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::PointDisplay);
+				InMaterial->SetMaterialType(EMaterialType::BaseColor);
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
 			}
 		}
 
-		// 单独显示顶点颜色
+		//以世界法线显示
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(9.f, 26, 0.f));
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 18, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
 				InMaterial->SetMaterialType(EMaterialType::WorldNormal);
 			}
 		}
 
-		// 平行光模型
-		if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
-		{
-			SphereMesh->CreateMesh("Asserts/Mesh/SunMesh.obj");
-
-			SphereMesh->SetPosition(XMFLOAT3(19.f, 2, 19.f));
-			SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
-				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
-				InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
-			}
-		}
-
-		// 泥土材质
+		//以法线显示
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(15.f, 2, 19.f));
+			SphereMesh->SetPosition(XMFLOAT3(3.f, 24, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColorIndexKey("MMOARPG");
-				InMaterial->SetBaseColor(XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f));
+				InMaterial->SetMaterialType(EMaterialType::Normal);
+			}
+		}
+
+		//显示BaseColor贴图1
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(-9.f, -3, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, -90.f, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColorIndexKey("Wood");
+				InMaterial->SetNormalIndexKey("Wood_NRM");
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+				InMaterial->SetRoughness(4.f);
+				InMaterial->SetMaterialType(EMaterialType::OrenNayar);
+			}
+		}
+
+		//显示BaseColor贴图2
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 50, 50);
+			SphereMesh->SetPosition(XMFLOAT3(-3.f, -3, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, -90.f, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColorIndexKey("MMOARPG.dds");
+				InMaterial->SetBaseColor(XMFLOAT4(0.7f, 0.7f, 0.7f, 1.f));
 				InMaterial->SetNormalIndexKey("MMOARPG_NRM");
 				InMaterial->SetMaterialType(EMaterialType::OrenNayar);
 			}
 		}
 
-		// 大理石材质
+		////显示BaseColor贴图2
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(9.f, 2, 19.f));
+			SphereMesh->SetPosition(XMFLOAT3(3.f, -3, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, -90.f, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColorIndexKey("Earth");
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::Gray));
-				InMaterial->SetSpecular(XMFLOAT3(Colors::White));
+				InMaterial->SetBaseColorIndexKey("Texture'/Project/Texture/Earth.Earth'");
+				InMaterial->SetBaseColor(XMFLOAT4(0.7f, 0.7f, 0.7f, 1.f));
+				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+
+				InMaterial->SetFresnelF0(XMFLOAT3(0.1f, 0.1, 0.1f));
+				InMaterial->SetRoughness(0.1f);
 			}
 		}
 
-		// 木头材质
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(3.f, 2, 19.f));
+			SphereMesh->CreateMesh(2.f, 100, 100);
+			SphereMesh->SetPosition(XMFLOAT3(9.f, -3, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
-				InMaterial->SetBaseColorIndexKey("Wood");
-				InMaterial->SetNormalIndexKey("Wood_NRM");
-				InMaterial->SetBaseColor(XMFLOAT4(Colors::White));
-				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
-			}
-		}
-
-		// 木头材质2
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
-		{
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-3.f, 2, 19.f));
-			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-			{
-				// InMaterial->SetBaseColorIndexKey("Wood2");
 				InMaterial->SetNormalIndexKey("Wood2_Nor");
+				//InMaterial->SetBaseColor("Wood2");
+				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+				InMaterial->SetRoughness(0.8f);
+			}
+		}
+
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		{
+			SphereMesh->CreateMesh(2.f, 100, 100);
+			SphereMesh->SetPosition(XMFLOAT3(15.f, -3, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetNormalIndexKey("Wood2_Nor");
+				//InMaterial->SetBaseColor("Wood2");
 				InMaterial->SetSpecular("Wood2_SPEC");
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+				InMaterial->SetRoughness(0.76f);
 			}
 		}
 
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//PBR模型
+		{
+			SphereMesh->CreateMesh(2.f, 100, 100);
+			SphereMesh->SetPosition(XMFLOAT3(15.f, 2, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::PBR);
+			}
+		}
 
-		// 透明球体
-		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//透明
 		{
 			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT);
 
-			SphereMesh->CreateMesh(2.f, 50, 50);
-
-			SphereMesh->SetPosition(XMFLOAT3(-9.f, 2, 19.f));
+			SphereMesh->CreateMesh(2.f, 100, 100);
+			SphereMesh->SetPosition(XMFLOAT3(15.f, 7, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColorIndexKey("TransparentContent");
-				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
+				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
 			}
 		}
 
-		// 雾
-		if (const GFog* fog = World->CreateActorObject<GFog>())
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//反射球
 		{
-			fog->SetFogColor(XMFLOAT4{ Colors::AliceBlue });
-			fog->SetFogStart(10.f);
-			fog->SetFogRange(200.f);
-			fog->SetFogHeight(10000.f);
-			fog->SetFogTransparentCoefficient(0.01f);
+			SphereMesh->CreateMesh(2.f, 100, 100);
+			SphereMesh->SetPosition(XMFLOAT3(15.f, 12, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::Phong);
+
+				InMaterial->SetRoughness(0.01f);
+				InMaterial->SetFresnelF0(XMFLOAT3(0.5f, 0.5f, 0.5f));
+			}
 		}
 
-
-		//// 平行光模型
-		//if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
+		//if (GSky* InSky = World->CreateActorObject<GSky>())//天空
 		//{
-		//	SphereMesh->CreateMesh("Asserts/Mesh/SunMesh.obj");
-
-		//	SphereMesh->SetPosition(XMFLOAT3(3.f, 12, 19.f));
-		//	SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
-		//	if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-		//	{
-		//		InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
-		//		InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
-		//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
-		//	}
+		//	InSky->SetPosition(XMFLOAT3(0.f, 0.f, 0.f));
 		//}
 
-		//// 摄像机模型
-		//if (GCustomMesh* SphereMesh = World->CreateActorObject<GCustomMesh>())
-		//{
-		//	SphereMesh->CreateMesh("Asserts/Mesh/CameraMesh.obj");
+		//雾的实例
+		if (GFog* Fog = World->CreateActorObject<GFog>())
+		{
+			Fog->SetFogColor(XMFLOAT4(0.7f, 0.7f, 0.9f, 1.f));
+			Fog->SetFogStart(10.f);
+			Fog->SetFogRange(500.f);
 
-		//	SphereMesh->SetPosition(XMFLOAT3(-19.f, 2, 19.f));
-		//	SphereMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
-		//	if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-		//	{
-		//		InMaterial->SetBaseColor(XMFLOAT4(Colors::Bisque));
-		//		InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
-		//		InMaterial->SetMaterialDisplayStatus(EMaterialDisplayStatusType::TriangleDisplay);
-		//	}
-		//}
+			Fog->SetFogHeight(5000.f);
+			Fog->SetFogTransparentCoefficient(0.00f);
 
+		}
+
+		/*if (GMesh* CylinderMesh = MeshManage->CreateCylinderMesh(1.f, 1.f, 5.f, 20, 20))
+		{
+			CylinderMesh->SetPosition(XMFLOAT3(1, -2, -4));
+		}
+
+		if (GMesh* ConeMesh = MeshManage->CreateConeMesh(1.f, 5.f, 20, 20))
+		{
+			ConeMesh->SetPosition(XMFLOAT3(-1, 1, 9));
+			ConeMesh->SetRotation(fvector_3d(90.f, 1.f, 20.f));
+		}*/
 	}
+
 
 	MeshManage->BuildMesh();
 
