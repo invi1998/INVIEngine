@@ -2,12 +2,13 @@
 #include "CameraType.h"
 #include "Actor/Core/ActorObject.h"
 #include "Interface/DirectXDeviceInterface.h"
+#include "Viewport/ClientViewPort.h"
 #include "Viewport/ViewPort.h"
 
 class CInputComponent;
 class CTransformationComponent;
 
-class GQuaternionCamera : public GActorObject, public FViewPort, public IDirectXDeviceInterface
+class GQuaternionCamera : public FClientViewPort, public IDirectXDeviceInterface
 {
 
 public:
@@ -70,8 +71,8 @@ private:
     float Pitch = 0.0f;
     float Yaw = 0.0f;
     float Roll = 0.0f;
-    XMMATRIX ViewMatrix;
-    XMMATRIX ProjectionMatrix;
+    XMMATRIX ViewMatrix{};
+    XMMATRIX ProjectionMatrix{};
 
     int ViewportWidth = 800;
     int ViewportHeight = 600;

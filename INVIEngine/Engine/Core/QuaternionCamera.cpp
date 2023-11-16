@@ -13,7 +13,7 @@ const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f
 const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 GQuaternionCamera::GQuaternionCamera()
-    : GActorObject(),
+    : FClientViewPort(),
 	Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
     FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
     ViewportWidth(FEngineRenderConfig::GetRenderConfig()->ScreenWidth),
