@@ -19,8 +19,8 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 {
 	struct FTempViewportCapture
 	{
-		XMFLOAT3 TargetPoint[6];
-		XMFLOAT3 Up[6];
+		std::initializer_list<XMFLOAT3> TargetPoint;
+		std::initializer_list<XMFLOAT3> Up;
 	};
 	// +x, -x, +y, -y, +z, -z
 	FTempViewportCapture Capture;
