@@ -16,10 +16,10 @@ public:
 	virtual void SetRightVector(const XMFLOAT3& InRight);
 	virtual void SetUpVector(const XMFLOAT3& InUp);
 
-	XMFLOAT3 &GetPosition() { return Position; }
+	XMFLOAT3& GetPosition() { return Position; }
 	XMFLOAT3& GetRotation();
 	XMFLOAT3& GetScale() { return Scale; }
-	XMFLOAT3 &GetForwardVector()
+	XMFLOAT3& GetForwardVector()
 	{
 		return ForwardVector;
 	}
