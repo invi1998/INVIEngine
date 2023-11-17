@@ -25,6 +25,7 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 	// +x, -x, +y, -y, +z, -z
 	FTempViewportCapture Capture;
 
+	// 捕获摄像机的6个面
 	Capture.TargetPoint = std::initializer_list{
 			{ InCenterPoint.x + 1.0f, InCenterPoint.y, InCenterPoint.z},
 			{ InCenterPoint.x - 1.0f, InCenterPoint.y, InCenterPoint.z},
