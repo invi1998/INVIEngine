@@ -13,6 +13,9 @@ public:
 
 	void BuildRenderTarget();
 
+	void BuildSRVDescriptor();
+	void BuildRTVDescriptor();
+
 public:
 
 	FORCEINLINE ID3D12Resource* GetRenderTarget() const { return RenderTargetMap.Get(); }
@@ -33,5 +36,8 @@ private:
 									bottom：矩形区域下边缘的 y 坐标。*/
 
 	ComPtr<ID3D12Resource> RenderTargetMap;		// 实际的D3D渲染资源
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE CPUShaderResourceView;		// shader资源Cpu视图 SRV
+	CD3DX12_CPU_DESCRIPTOR_HANDLE CPURenderTargetView[6];		// 渲染目标视图	RTV
 };
 

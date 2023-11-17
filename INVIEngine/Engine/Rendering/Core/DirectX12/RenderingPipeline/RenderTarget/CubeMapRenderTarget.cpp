@@ -74,3 +74,52 @@ void FCubeMapRenderTarget::BuildRenderTarget()
 		IID_PPV_ARGS(RenderTargetMap.GetAddressOf())
 	));
 }
+
+void FCubeMapRenderTarget::BuildSRVDescriptor()
+{
+	D3D12_SHADER_RESOURCE_VIEW_DESC SRV_Desc{};
+
+	SRV_Desc.Format = Format;		// 设置纹理数据格式
+	SRV_Desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;	// 设置SRV的维度 CUBE_MAP
+	SRV_Desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;		// 着色器组件映射的结构体。它可以用于指定不同颜色通道之间的映射关系，
+	// D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING是DXGI_ENUM中的一个常量，它代表了默认的着色器组件映射方式。具体地，它表示将RGBA四个颜色通道分别映射到输入数据的RGBA四个颜色通道 (0, 1, 2, 3)
+
+	// 设置cube map
+	SRV_Desc.TextureCube.MipLevels = 1;
+	SRV_Desc.TextureCube.MostDetailedMip = 0;
+	SRV_Desc.TextureCube.ResourceMinLODClamp = 0.f;
+
+
+	GetD3dDevice()->CreateShaderResourceView(
+		GetRenderTarget(),
+		&SRV_Desc,
+		CPUShaderResourceView
+	);
+}
+
+void FCubeMapRenderTarget::BuildRTVDescriptor()
+{
+	for (size_t i = 0; i < 6; i++)
+	{
+		D3D12_RENDER_TARGET_VIEW_DESC RTV_Desc{};
+
+		RTV_Desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;	// 指定资源视图维度
+		RTV_Desc.Format = Format;	// 数据格式
+
+		// 设置Texture2DArray
+		RTV_Desc.Texture2DArray.MipSlice = 0;	// MIP_MAP切片(0,只有一个mip map）
+		RTV_Desc.Texture2DArray.PlaneSlice = 0;
+		// 索引mip——map资源的公式
+		// MipSlice + ArraySize * MipLevels
+		RTV_Desc.Texture2DArray.FirstArraySlice = i;
+		RTV_Desc.Texture2DArray.ArraySize = 1;		// 每一个RTV里只有一个贴图资源
+		
+
+		GetD3dDevice()->CreateRenderTargetView(
+			GetRenderTarget(),
+			&RTV_Desc,
+			CPURenderTargetView[i]
+		);
+	}
+}
+
