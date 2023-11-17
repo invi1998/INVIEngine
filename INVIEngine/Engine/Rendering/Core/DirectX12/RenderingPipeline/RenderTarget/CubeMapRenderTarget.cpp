@@ -17,6 +17,12 @@ void FCubeMapRenderTarget::Init(UINT w, UINT h, const DXGI_FORMAT& format)
 	ResetViewport();
 
 	ResetScissorRect();
+
+	BuildSRVDescriptor();
+
+	BuildRTVDescriptor();
+
+	BuildRenderTarget();
 }
 
 void FCubeMapRenderTarget::ResetViewport()

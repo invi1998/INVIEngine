@@ -8,6 +8,13 @@ public:
 
 	void Init(UINT w, UINT h, const DXGI_FORMAT& format);
 
+public:
+
+	FORCEINLINE ID3D12Resource* GetRenderTarget() const { return RenderTargetMap.Get(); }
+	FORCEINLINE D3D12_VIEWPORT GetViewport() const { return Viewport; }
+	FORCEINLINE D3D12_RECT GetScissorRect() const { return ScissorRect; }
+
+protected:
 	void ResetViewport();
 	void ResetScissorRect();
 
@@ -15,12 +22,6 @@ public:
 
 	void BuildSRVDescriptor();
 	void BuildRTVDescriptor();
-
-public:
-
-	FORCEINLINE ID3D12Resource* GetRenderTarget() const { return RenderTargetMap.Get(); }
-	FORCEINLINE D3D12_VIEWPORT GetViewport() const { return Viewport; }
-	FORCEINLINE D3D12_RECT GetScissorRect() const { return ScissorRect; }
 
 private:
 	UINT Width;		// »­²¼¿í¶È
