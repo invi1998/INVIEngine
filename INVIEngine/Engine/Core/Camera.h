@@ -3,12 +3,13 @@
 #include "ColdeReflection/CodeReflectionMacro.h"
 #include "CoreObject/CoreMinimalObject.h"
 #include "Interface/DirectXDeviceInterface.h"
+#include "Viewport/ClientViewPort.h"
 #include "Viewport/ViewPort.h"
 
 class CInputComponent;
 class CTransformationComponent;
 
-class CCamera : public CCoreMinimalObject, public FViewPort, public IDirectXDeviceInterface
+class CCamera : public GClientViewPort, public IDirectXDeviceInterface
 {
 public:
 	CCamera();
@@ -17,8 +18,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void ExecuteInput();
-
-	void BuildViewMatrix();
 
 public:
 	virtual void OnMouseMove(const XMFLOAT2& delta);
@@ -29,7 +28,6 @@ public:
 public:
 
 	FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
-	FORCEINLINE CTransformationComponent* GetTransformationComponent() const { return TransformationComponent; }
 
 protected:
 	void RotateAroundYAxis(float InRotateDegrees);		// ÈÆYÖáÐý×ª

@@ -13,11 +13,9 @@ const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f
 const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 GQuaternionCamera::GQuaternionCamera()
-    : FClientViewPort(),
+    : GClientViewPort(),
 	Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
-    FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
-    ViewportWidth(FEngineRenderConfig::GetRenderConfig()->ScreenWidth),
-    ViewportHeight(FEngineRenderConfig::GetRenderConfig()->ScreenHeight)
+    FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f))
 {
     InputComponent = CreateObject<CInputComponent>(new CInputComponent());
     InputComponent->OnMouseWheelDelegate.Bind(this, &GQuaternionCamera::OnMouseScroll);
@@ -25,7 +23,7 @@ GQuaternionCamera::GQuaternionCamera()
     InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GQuaternionCamera::ExecuteInput);
 
     UpdateViewMatrix();
-    UpdateProjectionMatrix(static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight));
+    UpdateProjectionMatrix();
 }
 
 void GQuaternionCamera::BeginInit()
@@ -35,7 +33,7 @@ void GQuaternionCamera::BeginInit()
 
 void GQuaternionCamera::Tick(float DeltaTime)
 {
-	CCoreMinimalObject::Tick(DeltaTime);
+	GClientViewPort::Tick(DeltaTime);
 }
 
 void GQuaternionCamera::ExecuteInput()
@@ -67,48 +65,39 @@ void GQuaternionCamera::OnUpdate(float ts)
             // 鼠标右键
             MouseZoom(delta.y);
         }
-
-        UpdateViewMatrix();
     }
     if (FInput::IsKeyReleased(VK_TAB))
     {
         CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
-
-        UpdateViewMatrix();
     }
     if (FInput::IsKeyReleased(Key::W))
     {
 		MoveForward(2.f);
-		UpdateViewMatrix();
     }
 	if (FInput::IsKeyReleased(Key::S))
 	{
 		MoveForward(-2.f);
-		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::A))
 	{
 		MoveRight(2.f);
-		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::D))
 	{
 		MoveRight(-2.f);
-		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::E))
 	{
 		XMFLOAT2 delta = { 2.f, 0.f};
 		MouseRotate(delta);
-		UpdateViewMatrix();
 	}
 	if (FInput::IsKeyReleased(Key::Q))
 	{
 		XMFLOAT2 delta = { -2.f, 0.f };
 		MouseRotate(delta);
-		UpdateViewMatrix();
 	}
-	
+
+	UpdateViewMatrix();
 }
 
 XMVECTOR GQuaternionCamera::GetUpDirection() const
@@ -153,13 +142,13 @@ void GQuaternionCamera::UpdateViewMatrix()
 	        XMMATRIX rotation = XMMatrixRotationQuaternion(orientation);
 	        XMMATRIX transform = XMMatrixTranslationFromVector(Position) * rotation;
 
-	        ViewMatrix = transform;
+			XMStoreFloat4x4(&ViewMatrix, transform);
 
             break;
 		}
 	case ObservationObject:
 		{
-	        XMFLOAT3 CameraPosition;
+	        XMFLOAT3 CameraPosition{};
 	        XMStoreFloat3(&CameraPosition, Position);
 	        CameraPosition.x = Radius * sinf(Phi) * cosf(Theta);
 	        CameraPosition.z = Radius * sinf(Phi) * sinf(Theta);
@@ -170,19 +159,16 @@ void GQuaternionCamera::UpdateViewMatrix()
             XMVECTOR ViewUp = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
 
             XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
-            ViewMatrix = ViewLookAt;
+
+			XMStoreFloat4x4(&ViewMatrix, ViewLookAt);
 
             Position = XMLoadFloat3(&CameraPosition);
 
             break;
 		}
 	}
-}
 
-void GQuaternionCamera::UpdateProjectionMatrix(float aspectRatio)
-{
-    // 使用透视投影创建投影矩阵，使用当前宽高比、近裁剪面和远裁剪面。
-    ProjectionMatrix = XMMatrixPerspectiveFovLH(FOV, static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight), NearPlane, FarPlane);
+	SetDirty(true);
 }
 
 XMVECTOR GQuaternionCamera::GetRotationQuaternion() const
@@ -194,27 +180,11 @@ XMVECTOR GQuaternionCamera::GetRotationQuaternion() const
     return quaternion;
 }
 
-XMFLOAT4X4 GQuaternionCamera::GetViewMatrixFx4() const
-{
-    XMFLOAT4X4 View;
-    XMStoreFloat4x4(&View, ViewMatrix);
-
-    return View;
-}
-
-XMFLOAT4X4 GQuaternionCamera::GetProjectionMatrixFx4() const
-{
-    XMFLOAT4X4 Projection;
-    XMStoreFloat4x4(&Projection, ProjectionMatrix);
-
-    return Projection;
-}
-
 void GQuaternionCamera::SetViewportSize(int width, int height)
 {
     ViewportWidth = width;
     ViewportHeight = height;
-    UpdateProjectionMatrix(static_cast<float>(width) / static_cast<float>(height));
+    UpdateProjectionMatrix();
 }
 
 void GQuaternionCamera::OnMouseScroll(int X, int Y, float InDelta)

@@ -8,7 +8,7 @@
 class CInputComponent;
 class CTransformationComponent;
 
-class GQuaternionCamera : public FClientViewPort, public IDirectXDeviceInterface
+class GQuaternionCamera : public GClientViewPort, public IDirectXDeviceInterface
 {
 
 public:
@@ -33,15 +33,11 @@ public:
     void SetPosition(const XMVECTOR& position) { Position = position; }
     void SetPosition(float x, float y, float z) { Position = XMVectorSet(x, y, z, 1.0f); }
 
-    XMMATRIX GetViewMatrix() const { return ViewMatrix; }
-    XMMATRIX GetProjectionMatrix() const { return ProjectionMatrix; }
-
-    XMFLOAT4X4 GetViewMatrixFx4() const;
-    XMFLOAT4X4 GetProjectionMatrixFx4() const;
+    // XMMATRIX GetViewMatrix() const { return ViewMatrix; }
 
 protected:
     void UpdateViewMatrix();
-    void UpdateProjectionMatrix(float aspectRatio);
+    
     XMVECTOR GetRotationQuaternion() const;
     
     void SetViewportSize(int width, int height);
@@ -71,16 +67,10 @@ private:
     float Pitch = 0.0f;
     float Yaw = 0.0f;
     float Roll = 0.0f;
-    XMMATRIX ViewMatrix{};
-    XMMATRIX ProjectionMatrix{};
-
-    int ViewportWidth = 800;
-    int ViewportHeight = 600;
+    // XMMATRIX ViewMatrix{};
+    // XMMATRIX XMProjectionMatrix{};
 
 	float Distance = 10.0f;
-	float FOV = XM_PIDIV4;
-	float NearPlane = 0.1f;
-	float FarPlane = 10000.0f;
 
 	XMFLOAT2 m_InitialMousePosition = { 0.0f, 0.0f };
 

@@ -22,7 +22,7 @@ void CCamera::BeginInit()
 
 void CCamera::Tick(float DeltaTime)
 {
-	// BuildViewMatrix();
+	GClientViewPort::Tick(DeltaTime);
 }
 
 void CCamera::ExecuteInput()
@@ -68,12 +68,6 @@ void CCamera::ExecuteInput()
 		}
 		
 	}
-}
-
-void CCamera::BuildViewMatrix()
-{
-	// ¹¹½¨viewMatrix
-	ViewMatrix = TransformationComponent->CalculateViewMatrix();
 }
 
 void CCamera::OnMouseMove(const XMFLOAT2& delta)
