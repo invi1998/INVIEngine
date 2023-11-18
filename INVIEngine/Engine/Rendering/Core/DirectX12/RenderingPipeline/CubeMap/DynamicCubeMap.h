@@ -17,7 +17,7 @@ public:
 	virtual void Draw(float DeltaTime);
 	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
-protected:
+
 	// 构建视口
 	virtual void BuildViewPort(const XMFLOAT3& CenterPoint);
 
@@ -27,6 +27,7 @@ protected:
 	virtual void BuildDepthStencilDescriptor();
 	virtual void BuildCubeMapRenderTargetDescriptor();
 
+protected:
 	virtual void BuildRenderTargetRTV();
 	virtual void BuildRenderTargetSRV();
 

@@ -165,6 +165,12 @@ void FDynamicCubeMap::BuildDepthStencilDescriptor()
 
 void FDynamicCubeMap::BuildCubeMapRenderTargetDescriptor()
 {
+	BuildRenderTargetRTV();	// 视图
+	BuildRenderTargetSRV();	// shader
+}
+
+void FDynamicCubeMap::BuildRenderTargetRTV()
+{
 	// 为CubeMap创建渲染目标视图
 	for (size_t i = 0; i < 6; i++)
 	{
@@ -176,14 +182,19 @@ void FDynamicCubeMap::BuildCubeMapRenderTargetDescriptor()
 	}
 }
 
-void FDynamicCubeMap::BuildRenderTargetRTV()
-{
-	// 创建CubeMap的渲染目标
-	CubeMapRenderTarget = std::make_unique<FCubeMapRenderTarget>();
-	CubeMapRenderTarget->Init(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM);
-}
-
 void FDynamicCubeMap::BuildRenderTargetSRV()
 {
+	// 为CubeMap创建CPU shader资源视图
+	CubeMapRenderTarget->CPUShaderResourceView = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart(),		// CPU SRV的起始地址
+		GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// 偏移量
+		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)	// SRV偏移量
+	);
 
+	// 为CubeMap创建GPU shader资源视图
+	CubeMapRenderTarget->GPUShaderResourceView = CD3DX12_GPU_DESCRIPTOR_HANDLE(
+		GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart(),		// GPU SRV的起始地址
+		GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// 偏移量
+		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)	// SRV偏移量
+	);
 }
