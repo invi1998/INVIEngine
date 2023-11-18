@@ -24,6 +24,12 @@ protected:
 	// 构建深度模板
 	virtual void BuildDepthStencil();
 
+	virtual void BuildDepthStencilDescriptor();
+	virtual void BuildCubeMapRenderTargetDescriptor();
+
+	virtual void BuildRenderTargetRTV();
+	virtual void BuildRenderTargetSRV();
+
 protected:
 	std::unique_ptr<FCubeMapRenderTarget> CubeMapRenderTarget{};	// renderTarget 渲染目标
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DSVCubeMapCPUDesc;			// BSV描述 深度模板描述

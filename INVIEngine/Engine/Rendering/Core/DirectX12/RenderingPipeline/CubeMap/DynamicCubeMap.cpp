@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "DynamicCubeMap.h"
 
+#include "Config/EngineRenderConfig.h"
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
 #include "Core/Viewport/ViewportInfo.h"
@@ -151,4 +152,38 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 
 void FDynamicCubeMap::BuildDepthStencil()
 {
+}
+
+void FDynamicCubeMap::BuildDepthStencilDescriptor()
+{
+	DSVCubeMapCPUDesc = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(),	// DSV的起始地址
+		1,	// 偏移1 第一个是给主渲染目标用的(场景）后面的才是给cubeMap用的
+		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV)	// DSV偏移量
+	);
+}
+
+void FDynamicCubeMap::BuildCubeMapRenderTargetDescriptor()
+{
+	// 为CubeMap创建渲染目标视图
+	for (size_t i = 0; i < 6; i++)
+	{
+		CubeMapRenderTarget->CPURenderTargetView[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			GetRTVHeap()->GetCPUDescriptorHandleForHeapStart(),		// RTV的起始地址
+			FEngineRenderConfig::GetRenderConfig()->SwapChainCount + i,	// 交换链 前面的是给主渲染目标用的(场景）后面的才是给cubeMap用的
+			GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)	// RTV偏移量
+		);
+	}
+}
+
+void FDynamicCubeMap::BuildRenderTargetRTV()
+{
+	// 创建CubeMap的渲染目标
+	CubeMapRenderTarget = std::make_unique<FCubeMapRenderTarget>();
+	CubeMapRenderTarget->Init(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM);
+}
+
+void FDynamicCubeMap::BuildRenderTargetSRV()
+{
+
 }
