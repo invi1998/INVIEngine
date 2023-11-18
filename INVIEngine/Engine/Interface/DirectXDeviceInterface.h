@@ -9,6 +9,7 @@ class CWindowsEngine;
 class IDirectXDeviceInterface
 {
 public:
+	virtual ~IDirectXDeviceInterface() = default;
 	ComPtr<ID3D12Fence> GetFence();
 	ComPtr<ID3D12Device> GetD3dDevice();
 	CMeshManager* GetMeshManage();
@@ -18,6 +19,9 @@ public:
 	ComPtr<ID3D12GraphicsCommandList> GetD3dGraphicsCommandList();
 	ComPtr<ID3D12CommandAllocator> GetCommandAllocator();
 	ComPtr<ID3D12CommandQueue> GetCommandQueue();
+
+	ID3D12DescriptorHeap* GetRTVHeap();
+	ID3D12DescriptorHeap* GetDSVHeap();
 
 	UINT64 GetCurrentFenceIndex();
 

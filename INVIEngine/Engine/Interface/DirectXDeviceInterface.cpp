@@ -98,6 +98,30 @@ ComPtr<ID3D12CommandQueue> IDirectXDeviceInterface::GetCommandQueue()
 	return nullptr;
 }
 
+ID3D12DescriptorHeap* IDirectXDeviceInterface::GetRTVHeap()
+{
+	if (CWindowsEngine* inEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (inEngine->GetRenderingEngine())
+		{
+			return inEngine->GetRenderingEngine()->RTVHeap.Get();
+		}
+	}
+	return nullptr;
+}
+
+ID3D12DescriptorHeap* IDirectXDeviceInterface::GetDSVHeap()
+{
+	if (CWindowsEngine* inEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (inEngine->GetRenderingEngine())
+		{
+			return inEngine->GetRenderingEngine()->DSVHeap.Get();
+		}
+	}
+	return nullptr;
+}
+
 UINT64 IDirectXDeviceInterface::GetCurrentFenceIndex()
 {
 	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
