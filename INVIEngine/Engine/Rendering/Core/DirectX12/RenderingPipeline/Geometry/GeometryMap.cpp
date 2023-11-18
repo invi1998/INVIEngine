@@ -525,9 +525,6 @@ void FGeometryMap::PreDraw(float DeltaTime)
 
 void FGeometryMap::Draw(float DeltaTime)
 {
-	// ‰÷»æ ”ø⁄
-	DrawViewport(DeltaTime);
-
 	// ‰÷»æµ∆π‚
 	DrawLight(DeltaTime);
 

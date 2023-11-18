@@ -1,6 +1,7 @@
 #pragma once
 #include "Interface/DirectXDeviceInterface.h"
 
+class FRenderLayerManage;
 struct FDirectXPipelineState;
 struct FGeometryMap;
 class GClientViewPort;
@@ -11,7 +12,8 @@ class FDynamicCubeMap : public IDirectXDeviceInterface
 {
 public:
 	FDynamicCubeMap();
-	virtual void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState);
+	virtual void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer);
+	virtual void Draw(float DeltaTime);
 
 protected:
 	// 构建视口
@@ -28,5 +30,10 @@ protected:
 
 	FGeometryMap* GeometryMap = nullptr;	// 几何
 	FDirectXPipelineState* DirectXPipelineState = nullptr;	// 渲染管线状态对象
-};
 
+	FRenderLayerManage* RenderLayers = nullptr;	// 渲染层
+
+	ComPtr<ID3D12Resource> DepthStencilBufferPtr;		// 深度模板缓冲区
+	UINT Width = 0;										// 宽度
+	UINT Height = 0;									// 高度
+};

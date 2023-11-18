@@ -81,6 +81,9 @@ void FRenderingPipeline::Draw(float DeltaTime)
 
 	DirectXRootSignature.PreDraw(DeltaTime);
 
+	// Джх╬йс©з
+	GeometryMap.DrawViewport(DeltaTime);
+
 	GeometryMap.Draw(DeltaTime);
 	RenderLayerManage.Draw(DeltaTime);
 

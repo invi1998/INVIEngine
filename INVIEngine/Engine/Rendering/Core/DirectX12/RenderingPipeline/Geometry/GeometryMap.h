@@ -98,6 +98,9 @@ public:
 	// 构建视口buffer
 	void BuildViewportConstantBuffer();
 
+	// 渲染视口
+	void DrawViewport(float DeltaTime);
+
 	// 读取贴图
 	void LoadTexture() const;
 
@@ -119,8 +122,6 @@ public:
 	std::unique_ptr<FRenderingTexture>* FindRenderingTexture(const std::string& key);
 
 private:
-	// 渲染视口
-	void DrawViewport(float DeltaTime);
 
 	// 渲染模型
 	void DrawMesh(float DeltaTime);
