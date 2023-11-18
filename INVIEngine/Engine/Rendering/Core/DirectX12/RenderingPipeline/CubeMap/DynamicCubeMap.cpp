@@ -3,6 +3,7 @@
 
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/CubeMapRenderTarget.h"
 
 
 FDynamicCubeMap::FDynamicCubeMap()
@@ -19,30 +20,27 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 {
 	struct FTempViewportCapture
 	{
-		std::initializer_list<XMFLOAT3> TargetPoint;
-		std::initializer_list<XMFLOAT3> Up;
+		XMFLOAT3 TargetPoint[6];
+		XMFLOAT3 Up[6];
 	};
 	// +x, -x, +y, -y, +z, -z
-	FTempViewportCapture Capture;
+	FTempViewportCapture Capture{};
 
 	// 捕获摄像机的6个面
-	Capture.TargetPoint = std::initializer_list{
-			{ InCenterPoint.x + 1.0f, InCenterPoint.y, InCenterPoint.z},
-			{ InCenterPoint.x - 1.0f, InCenterPoint.y, InCenterPoint.z},
-			{ InCenterPoint.x, InCenterPoint.y + 1.0f, InCenterPoint.z},
-			{ InCenterPoint.x, InCenterPoint.y - 1.0f, InCenterPoint.z},
-			{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z + 1.0f},
-			{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z - 1.0f},
-	};
+	Capture.TargetPoint[0] = XMFLOAT3{ InCenterPoint.x + 1.0f, InCenterPoint.y, InCenterPoint.z};
+	Capture.TargetPoint[1] = XMFLOAT3{ InCenterPoint.x - 1.0f, InCenterPoint.y, InCenterPoint.z};
+	Capture.TargetPoint[2] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y + 1.0f, InCenterPoint.z};
+	Capture.TargetPoint[3] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y - 1.0f, InCenterPoint.z};
+	Capture.TargetPoint[4] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z + 1.0f};
+	Capture.TargetPoint[5] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z - 1.0f };
 
-	Capture.Up = std::initializer_list{
-			{ 0.f, 1.f, 0.f},
-			{ 0.f, 1.f, 0.f},
-			{ 0.f, 0.f, -1.f},
-			{ 0.f, 0.f, 1.f},
-			{ 0.f, 1.f, 0.f},
-			{ 0.f, 1.f, 0.f},
-	};
+	
+	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f};
+	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f};
+	Capture.Up[0] = XMFLOAT3{ 0.f, 0.f, -1.f};
+	Capture.Up[0] = XMFLOAT3{ 0.f, 0.f, 1.f};
+	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f};
+	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f };
 
 	for (size_t i = 0; i < 6; i++)
 	{
