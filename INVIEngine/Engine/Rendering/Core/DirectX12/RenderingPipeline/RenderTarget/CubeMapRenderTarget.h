@@ -42,6 +42,6 @@ private:
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE CPUShaderResourceView;		// shader资源Cpu视图 SRV
 	CD3DX12_GPU_DESCRIPTOR_HANDLE GPUShaderResourceView;		// shader资源Gpu视图 SRV
-	CD3DX12_CPU_DESCRIPTOR_HANDLE CPURenderTargetView[6];		// 渲染目标视图	RTV
+	std::vector<CD3DX12_CPU_DESCRIPTOR_HANDLE> CPURenderTargetView{};		// 渲染目标视图	RTV
 };
 

@@ -12,6 +12,7 @@
 
 FDynamicCubeMap::FDynamicCubeMap()
 {
+	CubeMapRenderTarget = std::make_unique<FCubeMapRenderTarget>();
 }
 
 void FDynamicCubeMap::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer)
@@ -210,8 +211,12 @@ void FDynamicCubeMap::BuildDepthStencilDescriptor()
 
 void FDynamicCubeMap::BuildCubeMapRenderTargetDescriptor()
 {
+
 	BuildRenderTargetRTV();	// йсм╪
 	BuildRenderTargetSRV();	// shader
+
+	CubeMapRenderTarget->Init(Width, Height, DXGI_FORMAT_R8G8B8A8_UNORM);
+	
 }
 
 void FDynamicCubeMap::BuildRenderTargetRTV()

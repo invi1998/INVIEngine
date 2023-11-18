@@ -34,9 +34,6 @@ void FRenderingPipeline::BuildPipeline()
 	// 初始化动态cubeMap
 	DynamicCubeMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
-	// 构建CubeMap
-	DynamicCubeMap.Build(XMFLOAT3{15.f, 12.f, 0.f});
-
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
@@ -45,6 +42,9 @@ void FRenderingPipeline::BuildPipeline()
 
 	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
+
+	// 构建CubeMap
+	DynamicCubeMap.Build(XMFLOAT3{ 15.f, 12.f, 0.f });
 
 	// 构建常量缓冲区
 	GeometryMap.BuildMeshConstantBuffer();

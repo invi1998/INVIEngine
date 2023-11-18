@@ -3,6 +3,8 @@
 
 FCubeMapRenderTarget::FCubeMapRenderTarget(): Width(256), Height(256), Format(DXGI_FORMAT_R8G8B8A8_UNORM)
 {
+	CPURenderTargetView.resize(6);
+
 	ResetViewport();
 
 	ResetScissorRect();
@@ -18,11 +20,13 @@ void FCubeMapRenderTarget::Init(UINT w, UINT h, const DXGI_FORMAT& format)
 
 	ResetScissorRect();
 
+	BuildRenderTarget();
+
 	BuildSRVDescriptor();
 
 	BuildRTVDescriptor();
 
-	BuildRenderTarget();
+	
 }
 
 void FCubeMapRenderTarget::ResetViewport()
