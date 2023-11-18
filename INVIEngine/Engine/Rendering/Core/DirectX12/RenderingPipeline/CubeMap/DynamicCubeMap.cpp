@@ -3,6 +3,7 @@
 
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
+#include "Core/Viewport/ViewportInfo.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
@@ -90,6 +91,25 @@ void FDynamicCubeMap::Draw(float DeltaTime)
 		&ResourceBarrierRenderTarget
 	);
 
+}
+
+void FDynamicCubeMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
+{
+	if (CubeMapViewPorts.size() == 6)
+	{
+		// 更新视口
+		for (size_t i = 0; i < 6; i++)
+		{
+			FViewportInfo tempViewport{};
+			XMFLOAT3 position = CubeMapViewPorts[i]->GetPosition();
+			tempViewport.CameraPosition = XMFLOAT4{ position.x, position.y, position.z, 1.f};
+			tempViewport.ViewMatrix = CubeMapViewPorts[i]->GetViewMatrix();
+			tempViewport.ProjectionMatrix = CubeMapViewPorts[i]->GetProjectionMatrix();
+
+			GeometryMap->UpdateCalculationViewport(tempViewport, i+1);
+		}
+	}
+	
 }
 
 void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)

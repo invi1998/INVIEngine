@@ -107,6 +107,8 @@ public:
 	// 构建贴图视图 SRV shader资源视图
 	void BuildTextureConstBuffer();
 
+	void UpdateCalculationViewport(const FViewportInfo& viewport_info, UINT constBufferOffset);
+
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 	void UpdateMaterialShaderResourceView(float delta_time, const FViewportInfo& viewport_info);

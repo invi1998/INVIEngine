@@ -1,6 +1,7 @@
 #pragma once
 #include "Interface/DirectXDeviceInterface.h"
 
+struct FViewportInfo;
 class FRenderLayerManage;
 struct FDirectXPipelineState;
 struct FGeometryMap;
@@ -14,6 +15,7 @@ public:
 	FDynamicCubeMap();
 	virtual void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer);
 	virtual void Draw(float DeltaTime);
+	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 protected:
 	// 构建视口

@@ -387,17 +387,25 @@ void FGeometryMap::BuildTextureConstBuffer()
 	RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawTexture2DCount());
 }
 
+void FGeometryMap::UpdateCalculationViewport(const FViewportInfo& viewport_info, UINT constBufferOffset)
+{
+	XMMATRIX ProjectionMatrix = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);	// 投影矩阵
+	XMMATRIX ViewMatrix = XMLoadFloat4x4(&viewport_info.ViewMatrix);				// 视口矩阵
+
+	// 更新视口
+	XMMATRIX ViewProjection = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
+	FViewportTransformation ViewportTransformation;
+	ViewportTransformation.CameraPosition = viewport_info.CameraPosition;
+	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
+
+	ViewportConstantBufferViews.Update(constBufferOffset, &ViewportTransformation);
+}
+
 void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
 
 	// 更新材质
 	UpdateMaterialShaderResourceView(delta_time, viewport_info);
-
-	XMMATRIX ProjectionMatrix = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);	// 投影矩阵
-	XMMATRIX ViewMatrix = XMLoadFloat4x4(&viewport_info.ViewMatrix);				// 视口矩阵
-	
-
-	
 
 	// 更新灯光
 	FLightConstantBuffer LightConstantBuffer;
@@ -428,12 +436,7 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	LightConstantBufferViews.Update(0, &LightConstantBuffer);
 
 	// 更新视口
-	XMMATRIX ViewProjection = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
-	FViewportTransformation ViewportTransformation;
-	ViewportTransformation.CameraPosition = viewport_info.CameraPosition;
-	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
-
-	ViewportConstantBufferViews.Update(0, &ViewportTransformation);
+	UpdateCalculationViewport(viewport_info, 0);
 
 	// 更新雾
 	if (Fog)
