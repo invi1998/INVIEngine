@@ -31,6 +31,12 @@ void FRenderingPipeline::BuildPipeline()
 
 	GeometryMap.BuildFog();
 
+	// 初始化动态cubeMap
+	DynamicCubeMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
+
+	// 构建CubeMap
+	DynamicCubeMap.Build(XMFLOAT3{15.f, 12.f, 0.f});
+
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
@@ -65,6 +71,7 @@ void FRenderingPipeline::BuildPipeline()
 
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
+	DynamicCubeMap.UpdateCalculations(delta_time, viewport_info);
 	GeometryMap.UpdateCalculations(delta_time, viewport_info);
 	RenderLayerManage.UpdateCaculations(delta_time, viewport_info);
 }
@@ -76,6 +83,9 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 	GeometryMap.PreDraw(DeltaTime);
 
 	DirectXRootSignature.PreDraw(DeltaTime);
+
+	// 渲染动态CubeMap （预先渲染CubeMap，然后将预渲染好的CubeMap提交给shader做反射使用）
+	DynamicCubeMap.PreDraw(DeltaTime);
 
 	RenderLayerManage.PreDraw(DeltaTime);
 

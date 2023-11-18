@@ -53,6 +53,7 @@ protected:
 struct FGeometryMap : IDirectXDeviceInterface_Struct
 {
 	friend class FRenderLayer;
+	friend class FDynamicCubeMap;
 public:
 	FGeometryMap();
 	~FGeometryMap();

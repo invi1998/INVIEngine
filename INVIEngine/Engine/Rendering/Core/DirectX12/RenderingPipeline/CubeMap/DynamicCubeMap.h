@@ -1,12 +1,12 @@
 #pragma once
 #include "Interface/DirectXDeviceInterface.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/CubeMapRenderTarget.h"
 
 struct FViewportInfo;
 class FRenderLayerManage;
 struct FDirectXPipelineState;
 struct FGeometryMap;
 class GClientViewPort;
-class FCubeMapRenderTarget;
 
 // 动态CubeMap
 class FDynamicCubeMap : public IDirectXDeviceInterface
@@ -14,10 +14,11 @@ class FDynamicCubeMap : public IDirectXDeviceInterface
 public:
 	FDynamicCubeMap();
 	virtual void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer);
-	virtual void Draw(float DeltaTime);
+	virtual void PreDraw(float DeltaTime);
 	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
+	virtual void Build(const XMFLOAT3& center);
 
-
+protected:
 	// 构建视口
 	virtual void BuildViewPort(const XMFLOAT3& CenterPoint);
 
@@ -27,7 +28,6 @@ public:
 	virtual void BuildDepthStencilDescriptor();
 	virtual void BuildCubeMapRenderTargetDescriptor();
 
-protected:
 	virtual void BuildRenderTargetRTV();
 	virtual void BuildRenderTargetSRV();
 
@@ -42,7 +42,7 @@ protected:
 
 	FRenderLayerManage* RenderLayers = nullptr;	// 渲染层
 
-	ComPtr<ID3D12Resource> DepthStencilBufferPtr;		// 深度模板缓冲区
+	ComPtr<ID3D12Resource> DepthStencilBuffer;		// 深度模板缓冲区
 	UINT Width = 0;										// 宽度
 	UINT Height = 0;									// 高度
 };

@@ -8,7 +8,6 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
-#include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/CubeMapRenderTarget.h"
 
 
 FDynamicCubeMap::FDynamicCubeMap()
@@ -22,7 +21,7 @@ void FDynamicCubeMap::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* i
 	RenderLayers = inRenderLayer;
 }
 
-void FDynamicCubeMap::Draw(float DeltaTime)
+void FDynamicCubeMap::PreDraw(float DeltaTime)
 {
 	// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
 	CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -41,6 +40,8 @@ void FDynamicCubeMap::Draw(float DeltaTime)
 	// 重置（更新）视口信息，裁剪矩阵信息
 	GetD3dGraphicsCommandList()->RSSetViewports(1, &Viewport);
 	GetD3dGraphicsCommandList()->RSSetScissorRects(1, &Rect);
+
+	const UINT CBVOffsetSize = GeometryMap->ViewportConstantBufferViews.GetConstantBufferByteSize();
 
 	for (size_t i = 0; i < 6; i++)
 	{
@@ -71,7 +72,10 @@ void FDynamicCubeMap::Draw(float DeltaTime)
 			&DSVCubeMapCPUDesc		// 传入深度
 		);
 
-		// 渲染
+		// 更新并且绑定6个视口
+		auto ViewportAddress = GeometryMap->ViewportConstantBufferViews.GetBuffer()->GetGPUVirtualAddress();
+		ViewportAddress += (i + 1) * CBVOffsetSize;
+		GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(1, ViewportAddress);
 
 		// 渲染灯光，材质，贴图
 		GeometryMap->Draw(DeltaTime);
@@ -113,6 +117,14 @@ void FDynamicCubeMap::UpdateCalculations(float delta_time, const FViewportInfo& 
 	
 }
 
+void FDynamicCubeMap::Build(const XMFLOAT3& center)
+{
+	BuildViewPort(center);		// 构建视口
+	BuildDepthStencilDescriptor();		// 构建深度模板描述
+	BuildCubeMapRenderTargetDescriptor();		// 构建CubeMap渲染目标描述
+	BuildDepthStencil();		// 构建深度模板
+}
+
 void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 {
 	struct FTempViewportCapture
@@ -152,6 +164,39 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 
 void FDynamicCubeMap::BuildDepthStencil()
 {
+	D3D12_RESOURCE_DESC ResourceDesc;
+	ResourceDesc.Width = Width;
+	ResourceDesc.Height = Height;
+	ResourceDesc.Alignment = 0;
+	ResourceDesc.MipLevels = 1;
+	ResourceDesc.DepthOrArraySize = 1;
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+
+	ResourceDesc.SampleDesc.Count = 1;
+	ResourceDesc.SampleDesc.Quality = 0;
+	ResourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	ResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+
+	D3D12_CLEAR_VALUE ClearValue;
+	ClearValue.DepthStencil.Depth = 1.f;
+	ClearValue.DepthStencil.Stencil = 0;
+	ClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	CD3DX12_HEAP_PROPERTIES Properties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	GetD3dDevice()->CreateCommittedResource(
+		&Properties,
+		D3D12_HEAP_FLAG_NONE, &ResourceDesc,
+		D3D12_RESOURCE_STATE_COMMON, &ClearValue,
+		IID_PPV_ARGS(DepthStencilBuffer.GetAddressOf()));
+
+	GetD3dDevice()->CreateDepthStencilView(DepthStencilBuffer.Get(), nullptr, DSVCubeMapCPUDesc);
+
+	CD3DX12_RESOURCE_BARRIER Barrier = CD3DX12_RESOURCE_BARRIER::Transition(DepthStencilBuffer.Get(),
+		D3D12_RESOURCE_STATE_COMMON,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE);
+
+	GetD3dGraphicsCommandList()->ResourceBarrier(1, &Barrier);
 }
 
 void FDynamicCubeMap::BuildDepthStencilDescriptor()

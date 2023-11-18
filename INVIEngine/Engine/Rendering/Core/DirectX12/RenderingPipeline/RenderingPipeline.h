@@ -1,11 +1,11 @@
 #pragma once
 
+#include "CubeMap/DynamicCubeMap.h"
 #include "Geometry/GeometryMap.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "PipelineState/DirectXPipelineState.h"
 #include "RenderLayer/RenderLayerManage.h"
 #include "RootSignature/DirectXRootSignature.h"
-#include "Shader/Core/Shader.h"
 
 class CMeshComponent;
 struct FViewportInfo;
@@ -33,5 +33,7 @@ protected:
 
 	FDirectXPipelineState DirectXPipelineState;		// 管线状态 pso
 	FDirectXRootSignature DirectXRootSignature;		// 根签名
+
+	FDynamicCubeMap DynamicCubeMap;		// 动态CubeMap
 };
 
