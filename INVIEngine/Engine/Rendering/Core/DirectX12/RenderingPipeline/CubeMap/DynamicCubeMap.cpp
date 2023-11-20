@@ -121,8 +121,11 @@ void FDynamicCubeMap::UpdateCalculations(float delta_time, const FViewportInfo& 
 void FDynamicCubeMap::Build(const XMFLOAT3& center)
 {
 	BuildViewPort(center);		// 构建视口
-	BuildDepthStencilDescriptor();		// 构建深度模板描述
+
 	BuildCubeMapRenderTargetDescriptor();		// 构建CubeMap渲染目标描述
+
+	BuildDepthStencilDescriptor();		// 构建深度模板描述
+	
 	BuildDepthStencil();		// 构建深度模板
 }
 
@@ -146,17 +149,18 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 
 	
 	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f};
-	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f};
-	Capture.Up[0] = XMFLOAT3{ 0.f, 0.f, -1.f};
-	Capture.Up[0] = XMFLOAT3{ 0.f, 0.f, 1.f};
-	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f};
-	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f };
+	Capture.Up[1] = XMFLOAT3{ 0.f, 1.f, 0.f};
+	Capture.Up[2] = XMFLOAT3{ 0.f, 0.f, -1.f};
+	Capture.Up[3] = XMFLOAT3{ 0.f, 0.f, 1.f};
+	Capture.Up[4] = XMFLOAT3{ 0.f, 1.f, 0.f};
+	Capture.Up[5] = XMFLOAT3{ 0.f, 1.f, 0.f };
 
 	for (size_t i = 0; i < 6; i++)
 	{
 		CubeMapViewPorts.push_back(CreateObject<GClientViewPort>(new GClientViewPort()));
 		GClientViewPort* viewport = CubeMapViewPorts[CubeMapViewPorts.size() - 1];
 
+		viewport->SetPosition(InCenterPoint);
 		viewport->FaceTarget(InCenterPoint, Capture.TargetPoint[i], Capture.Up[i]);
 		viewport->SetFrustum(XM_PIDIV2, 1, 1, 0.1f, 10000.f);
 		viewport->BuildViewMatrix();
