@@ -225,30 +225,37 @@ void FDynamicCubeMap::BuildCubeMapRenderTargetDescriptor()
 
 void FDynamicCubeMap::BuildRenderTargetRTV()
 {
+	UINT RTVSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	auto RTVStart = GetRTVHeap()->GetCPUDescriptorHandleForHeapStart();
 	// 为CubeMap创建渲染目标视图
 	for (size_t i = 0; i < 6; i++)
 	{
 		CubeMapRenderTarget->CPURenderTargetView[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-			GetRTVHeap()->GetCPUDescriptorHandleForHeapStart(),		// RTV的起始地址
+			RTVStart,		// RTV的起始地址
 			FEngineRenderConfig::GetRenderConfig()->SwapChainCount + i,	// 交换链 前面的是给主渲染目标用的(场景）后面的才是给cubeMap用的
-			GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)	// RTV偏移量
+			RTVSize	// RTV偏移量
 		);
 	}
 }
 
 void FDynamicCubeMap::BuildRenderTargetSRV()
 {
+	UINT CBVDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();
+	auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();
+
 	// 为CubeMap创建CPU shader资源视图
 	CubeMapRenderTarget->CPUShaderResourceView = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart(),		// CPU SRV的起始地址
+		CPUSRVDesHeapStart,		// CPU SRV的起始地址
 		GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// 偏移量
-		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)	// SRV偏移量
+		CBVDescriptorSize	// SRV偏移量
 	);
 
 	// 为CubeMap创建GPU shader资源视图
 	CubeMapRenderTarget->GPUShaderResourceView = CD3DX12_GPU_DESCRIPTOR_HANDLE(
-		GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart(),		// GPU SRV的起始地址
+		GPUSRVDesHeapStart,		// GPU SRV的起始地址
 		GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// 偏移量
-		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)	// SRV偏移量
+		CBVDescriptorSize	// SRV偏移量
 	);
 }
