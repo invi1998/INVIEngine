@@ -14,11 +14,6 @@ FBackgroundRenderLayer::~FBackgroundRenderLayer()
 {
 }
 
-int FBackgroundRenderLayer::GetRenderLayerType() const
-{
-	return RenderLayerType;
-}
-
 void FBackgroundRenderLayer::PreDraw(float deltaTime)
 {
 	FRenderLayer::PreDraw(deltaTime);

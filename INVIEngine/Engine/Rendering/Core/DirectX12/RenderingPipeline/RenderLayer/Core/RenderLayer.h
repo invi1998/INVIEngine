@@ -33,7 +33,7 @@ public:
 
 	virtual void BuildShader() {};
 
-	virtual int GetRenderLayerType() const = 0;
+	virtual int GetRenderLayerType() const { return RenderLayerType; };
 
 	virtual void UpdateCaculations(float DeltaTime, const FViewportInfo& ViewportInfo);
 

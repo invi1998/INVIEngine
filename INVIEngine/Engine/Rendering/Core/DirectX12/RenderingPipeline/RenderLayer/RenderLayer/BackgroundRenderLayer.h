@@ -6,8 +6,6 @@ class FBackgroundRenderLayer : public FRenderLayer
 public:
 	FBackgroundRenderLayer();
 	~FBackgroundRenderLayer() override;
-
-	int GetRenderLayerType() const override;
 	
 	void PreDraw(float deltaTime) override;
 	void Draw(float deltaTime) override;

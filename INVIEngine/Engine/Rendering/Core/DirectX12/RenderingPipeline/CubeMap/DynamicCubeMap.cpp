@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "DynamicCubeMap.h"
 
+#include "Component/Mesh/Core/MeshComponentType.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
@@ -81,7 +82,9 @@ void FDynamicCubeMap::PreDraw(float DeltaTime)
 		// 渲染灯光，材质，贴图
 		GeometryMap->Draw(DeltaTime);
 		// 渲染层级，对象模型
-		RenderLayers->Draw(DeltaTime);
+		RenderLayers->Draw(RENDER_LAYER_BACKGROUND, DeltaTime);
+		RenderLayers->Draw(RENDER_LAYER_OPAQUE, DeltaTime);
+		RenderLayers->Draw(RENDER_LAYER_TRANSPARENT, DeltaTime);
 	}
 
 	

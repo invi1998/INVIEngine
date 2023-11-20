@@ -21,6 +21,9 @@ public:
 	virtual void Draw(float deltaTime);
 	virtual void PostDraw(float deltaTime);
 
+	// 通过指定渲染层ID来定向指定渲染层级
+	virtual void Draw(int inLayer, float deltaTime);
+
 	// 层级排序
 	void Sort();
 

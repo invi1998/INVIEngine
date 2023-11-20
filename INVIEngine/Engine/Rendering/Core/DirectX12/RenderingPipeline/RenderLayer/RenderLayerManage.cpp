@@ -3,6 +3,7 @@
 
 #include "RenderLayer/AlphaTestRenderLayer.h"
 #include "RenderLayer/BackgroundRenderLayer.h"
+#include "RenderLayer/OpaqueReflectorRenderLayer.h"
 #include "RenderLayer/OpaqueRenderLayer.h"
 #include "RenderLayer/TransparentRenderLayer.h"
 
@@ -16,6 +17,7 @@ FRenderLayerManage::FRenderLayerManage()
 	// CreateRenderLayer<FAlphaTestRenderLayer>();
 	CreateRenderLayer<FOpaqueRenderLayer>();
 	CreateRenderLayer<FTransparentRenderLayer>();
+	CreateRenderLayer<FOpaqueReflectorRenderLayer>();
 }
 
 FRenderLayerManage::~FRenderLayerManage()
@@ -52,6 +54,18 @@ void FRenderLayerManage::PostDraw(float deltaTime)
 	for (const auto& layer : RenderLayers)
 	{
 		layer->PostDraw(deltaTime);
+	}
+}
+
+void FRenderLayerManage::Draw(int inLayer, float deltaTime)
+{
+	for (const auto& layer : RenderLayers)
+	{
+		if (layer->GetRenderLayerType() == inLayer)
+		{
+			layer->Draw(deltaTime);
+			break;
+		}
 	}
 }
 

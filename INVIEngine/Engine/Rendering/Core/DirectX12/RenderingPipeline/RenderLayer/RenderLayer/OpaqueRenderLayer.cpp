@@ -42,11 +42,6 @@ void FOpaqueRenderLayer::BuildShader()
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
 
-int FOpaqueRenderLayer::GetRenderLayerType() const
-{
-	return RenderLayerType;
-}
-
 void FOpaqueRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();

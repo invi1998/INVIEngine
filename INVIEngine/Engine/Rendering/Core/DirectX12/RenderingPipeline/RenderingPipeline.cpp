@@ -97,7 +97,10 @@ void FRenderingPipeline::Draw(float DeltaTime)
 	GeometryMap.DrawViewport(DeltaTime);
 
 	GeometryMap.Draw(DeltaTime);
-	RenderLayerManage.Draw(DeltaTime);
+
+	RenderLayerManage.Draw(RENDER_LAYER_BACKGROUND, DeltaTime);
+	RenderLayerManage.Draw(RENDER_LAYER_OPAQUE, DeltaTime);
+	RenderLayerManage.Draw(RENDER_LAYER_TRANSPARENT, DeltaTime);
 
 	DirectXPipelineState.Draw(DeltaTime);
 	

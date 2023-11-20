@@ -43,11 +43,6 @@ void FAlphaTestRenderLayer::BuildShader()
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
 
-int FAlphaTestRenderLayer::GetRenderLayerType() const
-{
-	return RenderLayerType;
-}
-
 void FAlphaTestRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
