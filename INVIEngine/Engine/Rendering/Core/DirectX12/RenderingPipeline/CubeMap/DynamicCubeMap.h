@@ -17,6 +17,7 @@ public:
 	virtual void PreDraw(float DeltaTime);
 	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 	virtual void Build(const XMFLOAT3& center);
+	virtual void Draw(float deltaTime);
 
 protected:
 	// 构建视口

@@ -532,13 +532,13 @@ void FGeometryMap::Draw(float DeltaTime)
 	DrawLight(DeltaTime);
 
 	// 渲染贴图
-	DrawTexture(DeltaTime);
+	DrawTexture2D(DeltaTime);
+
+	// 渲染CubeMap (立方体贴图）
+	DrawCubeMapTexture(DeltaTime);
 
 	// 渲染材质
 	DrawMaterial(DeltaTime);
-
-	// 渲染模型
-	// DrawMesh(DeltaTime);
 
 	// 渲染雾
 	DrawFog(DeltaTime);
@@ -623,24 +623,27 @@ void FGeometryMap::DrawLight(float DeltaTime)
 	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(2, LightConstantBufferViews.GetBuffer()->GetGPUVirtualAddress());
 }
 
-void FGeometryMap::DrawTexture(float DeltaTime)
+void FGeometryMap::DrawTexture2D(float DeltaTime)
 {
 	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
 	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	{
-		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
-		DesHandle.Offset(0, DescriptorOffset);
-		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(5, DesHandle);
-	}
+	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
 
+	DesHandle.Offset(0, DescriptorOffset);
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(5, DesHandle);
 
-	{
-		CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+}
 
-		DesHandle.Offset(GetDrawTexture2DCount(), DescriptorOffset);
-		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(6, DesHandle);
-	}
+void FGeometryMap::DrawCubeMapTexture(float DeltaTime)
+{
+	// 通过驱动拿到当前描述符D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV的偏移
+	UINT DescriptorOffset = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	CD3DX12_GPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(GetHeap()->GetGPUDescriptorHandleForHeapStart());
+
+	DesHandle.Offset(static_cast<int>(GetDrawTexture2DCount()), DescriptorOffset);
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(6, DesHandle);
 }
 
 void FGeometryMap::DrawFog(float DeltaTime)

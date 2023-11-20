@@ -93,8 +93,11 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 void FRenderingPipeline::Draw(float DeltaTime)
 {
-	// 渲染视口
+	// 渲染主视口
 	GeometryMap.DrawViewport(DeltaTime);
+
+	// 渲染动态CubeMap
+	DynamicCubeMap.Draw(DeltaTime);
 
 	GeometryMap.Draw(DeltaTime);
 

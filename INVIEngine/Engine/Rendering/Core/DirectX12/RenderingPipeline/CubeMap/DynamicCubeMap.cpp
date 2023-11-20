@@ -25,6 +25,9 @@ void FDynamicCubeMap::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* i
 
 void FDynamicCubeMap::PreDraw(float DeltaTime)
 {
+	// 渲染灯光，材质，贴图
+	GeometryMap->Draw(DeltaTime);
+
 	// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
 	CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
 		CubeMapRenderTarget->GetRenderTarget(),				// 当前buffer缓冲区
@@ -79,8 +82,6 @@ void FDynamicCubeMap::PreDraw(float DeltaTime)
 		ViewportAddress += (i + 1) * CBVOffsetSize;
 		GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(1, ViewportAddress);
 
-		// 渲染灯光，材质，贴图
-		GeometryMap->Draw(DeltaTime);
 		// 渲染层级，对象模型
 		RenderLayers->Draw(RENDER_LAYER_BACKGROUND, DeltaTime);
 		RenderLayers->Draw(RENDER_LAYER_OPAQUE, DeltaTime);
@@ -130,6 +131,12 @@ void FDynamicCubeMap::Build(const XMFLOAT3& center)
 	BuildDepthStencilDescriptor();		// 构建深度模板描述
 	
 	BuildDepthStencil();		// 构建深度模板
+}
+
+void FDynamicCubeMap::Draw(float deltaTime)
+{
+	// 更新CubeMap
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(6, CubeMapRenderTarget->GPUShaderResourceView);
 }
 
 void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)

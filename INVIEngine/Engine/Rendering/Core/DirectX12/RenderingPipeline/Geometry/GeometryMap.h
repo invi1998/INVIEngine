@@ -136,7 +136,10 @@ private:
 	void DrawLight(float DeltaTime);
 
 	// äÖÈ¾ÎÆÀí
-	void DrawTexture(float DeltaTime);
+	void DrawTexture2D(float DeltaTime);
+
+	// äÖÈ¾CubeMap
+	void DrawCubeMapTexture(float DeltaTime);
 
 	// äÖÈ¾Îí
 	void DrawFog(float DeltaTime);
