@@ -69,7 +69,7 @@ protected:
 	ComPtr<ID3D12DescriptorHeap> RTVHeap;		// 渲染目标视图
 	ComPtr<ID3D12DescriptorHeap> DSVHeap;		// 深度模板视图
 
-	std::vector<ComPtr<ID3D12Resource>> SwapChainBuffer;		// 交换链Buffer（包括两个缓冲区，一个前台缓冲区，一个后台缓冲区）
+	std::vector<ComPtr<ID3D12Resource>> SwapChainBuffer{};		// 交换链Buffer（包括两个缓冲区，一个前台缓冲区，一个后台缓冲区）
 	ComPtr<ID3D12Resource> DepthStencilBuffer;					// 深度模板缓冲区
 
 	// 和屏幕视口相关

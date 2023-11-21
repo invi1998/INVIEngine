@@ -25,13 +25,12 @@ class GBoxMesh;
 
 CDirectXRenderingEngine::CDirectXRenderingEngine()
 	: CurrentFenceIndex(0),
-	CurrentSwapBufferIndex(0),
-	M4XNumQualityLevels(0),
-	bMSAA4XEnabled(false),
-	BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
-	DepthStencilFormat(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT)
+	  CurrentSwapBufferIndex(0), ViewPortInfo(), ViewPortRect(),
+	  M4XNumQualityLevels(0),
+	  bMSAA4XEnabled(false),
+	  BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
+	  DepthStencilFormat(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT), RTVDescriptorSize(0), World(nullptr)
 {
-
 	for (UINT i = 0; i < FEngineRenderConfig::GetRenderConfig()->SwapChainCount; i++)
 	{
 		SwapChainBuffer.push_back(ComPtr<ID3D12Resource>());
@@ -41,7 +40,6 @@ CDirectXRenderingEngine::CDirectXRenderingEngine()
 
 	MeshManage = CreateObject<CMeshManager>(new CMeshManager);
 	LightManager = CreateObject<CLightManager>(new CLightManager());
-
 }
 
 CDirectXRenderingEngine::~CDirectXRenderingEngine()
