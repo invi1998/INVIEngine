@@ -44,7 +44,15 @@ void FRenderingPipeline::BuildPipeline()
 	GeometryMap.BuildDescriptorHeap();
 
 	// 构建CubeMap
-	DynamicCubeMap.Build(XMFLOAT3{ 15.f, 12.f, 0.f });
+	// DynamicCubeMap.Build(XMFLOAT3{ 15.f, 12.f, 0.f });
+
+	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
+
+	DynamicCubeMap.BuildDepthStencilDescriptor();
+
+	DynamicCubeMap.BuildDepthStencil();
+
+	DynamicCubeMap.BuildCubeMapRenderTargetDescriptor();
 
 	// 构建常量缓冲区
 	GeometryMap.BuildMeshConstantBuffer();

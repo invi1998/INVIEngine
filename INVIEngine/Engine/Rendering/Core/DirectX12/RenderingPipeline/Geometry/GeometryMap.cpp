@@ -332,7 +332,7 @@ bool FGeometryMap::IsStartUpFog()
 void FGeometryMap::BuildViewportConstantBuffer()
 {
 	// 创建常量缓冲区
-	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1);
+	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + 6);
 
 	//// 描述堆句柄
 	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
