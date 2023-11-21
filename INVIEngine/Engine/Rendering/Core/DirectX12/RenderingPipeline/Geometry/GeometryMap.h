@@ -118,6 +118,9 @@ public:
 	void Draw(float DeltaTime);
 	void PostDraw(float DeltaTime);
 
+	// äÖÈ¾CubeMap
+	void DrawCubeMapTexture(float DeltaTime);
+
 	ID3D12DescriptorHeap* GetHeap() const { return DescriptorHeap.GetHeap(); }
 	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data);
 	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer = -1);
@@ -137,9 +140,6 @@ private:
 
 	// äÖÈ¾ÎÆÀí
 	void DrawTexture2D(float DeltaTime);
-
-	// äÖÈ¾CubeMap
-	void DrawCubeMapTexture(float DeltaTime);
 
 	// äÖÈ¾Îí
 	void DrawFog(float DeltaTime);
