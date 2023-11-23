@@ -94,3 +94,10 @@ void CMaterial::SetFresnelF0(const XMFLOAT3& f0)
 	SetDirty(true);
 }
 
+void CMaterial::SetTransparency(float x)
+{
+	Transparency = x;
+
+	SetDirty(true);
+}
+

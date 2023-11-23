@@ -22,7 +22,7 @@ struct FMaterialConstantBuffer
 	int XX6;
 
 	XMFLOAT3 FresnelF0;				// ·ÆÄá¶ûF0
-	float xx7;
+	float Transparency;				// Í¸Ã÷¶È
 
 	XMFLOAT4X4 Transformation;	// 64×Ö½Ú
 

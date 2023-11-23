@@ -612,6 +612,23 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//透明的珠子
+		{
+			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT);
+			SphereMesh->CreateMesh(2.f, 100, 100);
+			SphereMesh->SetPosition(XMFLOAT3(15.f, 17, 0.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.0f, 1.0f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::Transparency);
+
+				InMaterial->SetRoughness(0.01f);
+				InMaterial->SetFresnelF0(XMFLOAT3(0.5f, 0.5f, 0.5f));
+				InMaterial->SetTransparency(0.2f);
+			}
+		}
+
 		//if (GSky* InSky = World->CreateActorObject<GSky>())//天空
 		//{
 		//	InSky->SetPosition(XMFLOAT3(0.f, 0.f, 0.f));

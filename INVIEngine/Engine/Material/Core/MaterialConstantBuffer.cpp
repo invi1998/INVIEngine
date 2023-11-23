@@ -6,7 +6,7 @@ FMaterialConstantBuffer::FMaterialConstantBuffer()
 	: MaterialType(0),
 	  BaseColor(XMFLOAT4(Colors::Gray)),
 	  SpecularColor(),
-	  XX6(0), FresnelF0({0.04f, 0.04f, 0.04f}), xx7(0),
+	  XX6(0), FresnelF0({0.04f, 0.04f, 0.04f}), Transparency(0),
 	  Roughness(0.2f),
 	  BaseColorIndex(-1),
 	  NormalIndex(-1),

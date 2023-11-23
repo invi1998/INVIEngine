@@ -23,6 +23,8 @@ enum EMaterialType : UINT
 	Normal,							// 单独显示顶点法线（局部法线）
 	WorldNormal,					// 单独显示世界法线
 
+	Transparency = 15,				//透明
+
 	PBR = 20,						// PBR 基于真实物理的渲染
 
 	Fresnel = 100,					// 菲涅尔

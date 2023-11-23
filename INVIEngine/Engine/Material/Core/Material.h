@@ -25,6 +25,7 @@ public:
 	FORCEINLINE const std::string& GetSpecularIndexKey() const { return SpecularIndexKey; }
 	FORCEINLINE int GetMaterialID() const { return MaterialID; }
 	FORCEINLINE XMFLOAT3 GetFresnelF0() const { return FresnelF0; }
+	FORCEINLINE float GetTransparency() const { return Transparency; }
 
 public:
 	void SetBaseColor(const XMFLOAT4& color);
@@ -39,6 +40,7 @@ public:
 	void SetDirty(bool dirty);
 	void SetMaterialID(const int id);
 	void SetFresnelF0(const XMFLOAT3& f0);
+	void SetTransparency(float x);
 
 private:
 	// 材质脏标志，用于标志当前材质是否被动态修改过，如果被动态修改过，该值为true，为true，那么我们才重新提交该材质
@@ -59,5 +61,6 @@ private:
 	std::string NormalIndexKey;		// 法线贴图
 	std::string SpecularIndexKey;	// 高光贴图
 
+	float Transparency;				// 透明度
 };
 

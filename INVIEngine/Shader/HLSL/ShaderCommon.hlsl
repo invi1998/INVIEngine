@@ -77,7 +77,7 @@ struct MaterialConstBuffer
 	int XX6;
 	
 	float3 FresnelF0;
-	float xx7;
+	float Transparency;
 
 	float4x4 MaterialProjectionMatrix;
 };

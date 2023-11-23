@@ -438,6 +438,16 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	}
 	
 	
+	if (MatConstbuffer.MaterialType == 15)
+	{
+		//Í¸Ã÷µÄ
+		mvOut.Color.a = MatConstbuffer.Transparency;
+	}
+	else
+	{
+		mvOut.Color.a = material.BaseColor.a;
+	}
+	
 	// ¼ÆËãÎí
 	mvOut.Color = GetFogValue(mvOut.Color, mvOut.WorldPosition.xyz);
 
