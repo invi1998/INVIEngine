@@ -216,10 +216,12 @@ void FDynamicCubeMap::BuildDepthStencil()
 
 void FDynamicCubeMap::BuildDepthStencilDescriptor()
 {
+	UINT DescriptorHandleIncrementSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+
 	DSVCubeMapCPUDesc = CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(),	// DSV的起始地址
 		1,	// 偏移1 第一个是给主渲染目标用的(场景）后面的才是给cubeMap用的
-		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV)	// DSV偏移量
+		DescriptorHandleIncrementSize	// DSV偏移量
 	);
 }
 

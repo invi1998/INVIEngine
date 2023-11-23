@@ -6,6 +6,7 @@
 #include "Actor/Light/PointLight.h"
 #include "Actor/Light/SpotLight.h"
 #include "Actor/Sky/Fog.h"
+#include "Actor/Sky/Sky.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/World.h"
 #include "Manage/LightManager.h"
@@ -629,10 +630,10 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		//if (GSky* InSky = World->CreateActorObject<GSky>())//天空
-		//{
-		//	InSky->SetPosition(XMFLOAT3(0.f, 0.f, 0.f));
-		//}
+		if (GSky* InSky = World->CreateActorObject<GSky>())//天空
+		{
+			InSky->SetPosition(XMFLOAT3(0.f, 0.f, 0.f));
+		}
 
 		//雾的实例
 		if (GFog* Fog = World->CreateActorObject<GFog>())
