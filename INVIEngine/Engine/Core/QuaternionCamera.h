@@ -23,15 +23,15 @@ public:
 
     FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
 
-    XMVECTOR GetPosition() const { return Position; }
+    // XMVECTOR GetPosition() const { return Position; }
 
     // 将默认的前向、上方和右方向量旋转为当前朝向。
     XMVECTOR GetUpDirection() const;
     XMVECTOR GetRightDirection() const;
     XMVECTOR GetForwardDirection() const;
 
-    void SetPosition(const XMVECTOR& position) { Position = position; }
-    void SetPosition(float x, float y, float z) { Position = XMVectorSet(x, y, z, 1.0f); }
+    // void SetPosition(const XMVECTOR& position) { Position = position; }
+    // void SetPosition(float x, float y, float z) { Position = XMVectorSet(x, y, z, 1.0f); }
 
     // XMMATRIX GetViewMatrix() const { return ViewMatrix; }
 
@@ -62,7 +62,7 @@ private:
     static const XMVECTOR DefaultUp;
     static const XMVECTOR DefaultRight;
 
-    XMVECTOR Position;
+    // XMVECTOR Position;
     XMVECTOR FocalPoint;
     float Pitch = 0.0f;
     float Yaw = 0.0f;

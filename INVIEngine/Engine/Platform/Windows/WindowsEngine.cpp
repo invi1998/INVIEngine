@@ -93,7 +93,8 @@ void CWindowsEngine::Tick(float DeltaTime)
 
 			viewPortInfo.ViewMatrix = World->GetQuaternionCamera()->GetViewMatrix();
 			viewPortInfo.ProjectionMatrix = World->GetQuaternionCamera()->GetProjectionMatrix();
-			XMStoreFloat4(&viewPortInfo.CameraPosition, World->GetQuaternionCamera()->GetPosition());
+			const XMFLOAT3 position = World->GetQuaternionCamera()->GetPosition();
+			XMStoreFloat4(&viewPortInfo.CameraPosition, { position.x, position.y, position.z, 1.f});
 
 			RenderingEngine->UpdateCalculations(DeltaTime, viewPortInfo);
 

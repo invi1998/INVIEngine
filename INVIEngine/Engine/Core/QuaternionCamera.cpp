@@ -14,7 +14,7 @@ const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0
 
 GQuaternionCamera::GQuaternionCamera()
     : GClientViewPort(),
-	Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
+	// Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
     FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f))
 {
     InputComponent = CreateObject<CInputComponent>(new CInputComponent());
@@ -131,7 +131,10 @@ XMVECTOR GQuaternionCamera::CalculatePosition() const
 
 void GQuaternionCamera::UpdateViewMatrix()
 {
-    Position = CalculatePosition();
+	XMVECTOR Position = CalculatePosition();
+	XMFLOAT4 position{};
+	XMStoreFloat4(&position, CalculatePosition());
+	SetPosition({ position.x, position.y, position.z });
 
 	switch (CameraType)
 	{

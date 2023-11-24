@@ -71,6 +71,12 @@ float3 GetReflect(float3 UnitWorldNormal, float3 WorldPosition)
 	return reflect(-ViewDirection, UnitWorldNormal).xyz;
 }
 
+float3 GetRefract(float3 InUnitWorldNormal, float3 WorldPosition, float InRefractiveIndex)
+{
+	float3 ViewDirection = normalize(CameraPosition.xyz - WorldPosition);
+	return refract(-ViewDirection, InUnitWorldNormal, InRefractiveIndex);
+}
+
 // 获取反射采样颜色
 float3 GetReflectionSampleColor(float3 UnitWorldNormal, float3 NewReflect)
 {
@@ -106,6 +112,17 @@ float3 GetReflectionColor(MaterialConstBuffer MaterialBuff, float3 UnitWorldNorm
 
 	return saturate(ReflectSampleColor * shiness * Fresnel);
 
+}
+
+//获取折射的颜色 
+float3 GetRefractColor(MaterialConstBuffer MatConstBuffer, float InRefractiveIndex, float3 InUnitWorldNormal, float3 WorldPosition)
+{
+	float3 NewRefract = GetRefract(InUnitWorldNormal, WorldPosition, InRefractiveIndex);
+	float3 SampleReflectionColor = GetReflectionSampleColor(InUnitWorldNormal, NewRefract);
+	float Shininess = GetShininess(MatConstBuffer);
+	float3 FresnelFactor = FresnelSchlickFactor(MatConstBuffer, InUnitWorldNormal, NewRefract);
+
+	return SampleReflectionColor * FresnelFactor * Shininess;
 }
 
 #endif
