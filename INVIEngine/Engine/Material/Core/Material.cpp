@@ -101,3 +101,9 @@ void CMaterial::SetTransparency(float x)
 	SetDirty(true);
 }
 
+void CMaterial::SetDynamicReflection(bool bValue)
+{
+	bDynamicReflection = bValue;
+	SetDirty(true);
+}
+

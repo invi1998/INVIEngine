@@ -387,6 +387,20 @@ void FGeometryMap::BuildTextureConstBuffer()
 	RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawTexture2DCount());
 }
 
+void FGeometryMap::BuildDynamicReflectionMeshComponent()
+{
+	for (const auto& tmp : GObjects)
+	{
+		if (CMeshComponent* component = dynamic_cast<CMeshComponent*>(tmp))
+		{
+			if (component->IsDynamicReflection())
+			{
+				DynamicReflectionMeshComponents.push_back(component);
+			}
+		}
+	}
+}
+
 void FGeometryMap::UpdateCalculationViewport(const FViewportInfo& viewport_info, UINT constBufferOffset)
 {
 	XMMATRIX ProjectionMatrix = XMLoadFloat4x4(&viewport_info.ProjectionMatrix);	// Õ∂”∞æÿ’Û

@@ -41,3 +41,13 @@ void CMeshComponent::SetRenderLayerType(EMeshRenderLayerType type)
 {
 	MeshRenderLayerType = type;
 }
+
+bool CMeshComponent::IsDynamicReflection() const
+{
+	if (Materials.size() > 0)
+	{
+		return Materials[0]->IsDynamicReflection() && MeshRenderLayerType == EMeshRenderLayerType::RENDER_LAYER_OPAQUE_REFLECT;
+	}
+
+	return false;
+}

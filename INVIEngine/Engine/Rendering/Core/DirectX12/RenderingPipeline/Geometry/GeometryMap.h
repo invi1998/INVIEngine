@@ -108,6 +108,9 @@ public:
 	// 构建贴图视图 SRV shader资源视图
 	void BuildTextureConstBuffer();
 
+	// 构建动态反射组件(收集组件里那些是动态反射组件）
+	void BuildDynamicReflectionMeshComponent();
+
 	void UpdateCalculationViewport(const FViewportInfo& viewport_info, UINT constBufferOffset);
 
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
@@ -156,6 +159,8 @@ protected:
 	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTexture2DResourceViews;		// shader纹理资源视图
 	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingCubeMapResourceViews;		// shader cube map资源视图
 	std::vector<CMaterial*> MaterialsSRV{};
+
+	std::vector<CMeshComponent*> DynamicReflectionMeshComponents{};		// 动态反射组件
 
 	CFogComponent* Fog;
 };

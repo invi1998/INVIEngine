@@ -44,6 +44,6 @@ protected:
 	FRenderLayerManage* RenderLayers = nullptr;	// 渲染层
 
 	ComPtr<ID3D12Resource> DepthStencilBuffer;		// 深度模板缓冲区
-	UINT Width = 512;										// 宽度
-	UINT Height = 512;										// 高度
+	UINT Width = 256;										// 宽度
+	UINT Height = 256;										// 高度
 };

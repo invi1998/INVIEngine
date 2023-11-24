@@ -2,6 +2,7 @@
 
 #include "MeshComponentType.h"
 #include "Component/TransformationComponent.h"
+#include "Material/Core/MaterialType.h"
 
 struct FMeshRenderingData;
 class CMaterial;
@@ -28,6 +29,9 @@ public:
 	[[nodiscard]] EMeshRenderLayerType GetRenderLayerType() const { return MeshRenderLayerType; }
 
 	void SetRenderLayerType(EMeshRenderLayerType type);
+
+	bool IsDynamicReflection() const;
+
 
 public:
 

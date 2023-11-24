@@ -26,6 +26,7 @@ public:
 	FORCEINLINE int GetMaterialID() const { return MaterialID; }
 	FORCEINLINE XMFLOAT3 GetFresnelF0() const { return FresnelF0; }
 	FORCEINLINE float GetTransparency() const { return Transparency; }
+	FORCEINLINE bool IsDynamicReflection() const { return bDynamicReflection && (MaterialType == EMaterialType::BlinnPhong || MaterialType == EMaterialType::PBR || MaterialType == EMaterialType::Phong || MaterialType == EMaterialType::Back); }
 
 public:
 	void SetBaseColor(const XMFLOAT4& color);
@@ -41,6 +42,7 @@ public:
 	void SetMaterialID(const int id);
 	void SetFresnelF0(const XMFLOAT3& f0);
 	void SetTransparency(float x);
+	void SetDynamicReflection(bool bValue);
 
 private:
 	// 材质脏标志，用于标志当前材质是否被动态修改过，如果被动态修改过，该值为true，为true，那么我们才重新提交该材质
@@ -62,5 +64,7 @@ private:
 	std::string SpecularIndexKey;	// 高光贴图
 
 	float Transparency;				// 透明度
+
+	bool bDynamicReflection = false;		// 是否是动态反射材质
 };
 
