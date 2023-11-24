@@ -11,6 +11,17 @@ class GClientViewPort;
 // ¶¯Ì¬CubeMap
 class FDynamicCubeMap : public IDirectXDeviceInterface
 {
+
+	struct FTempViewportCapture
+	{
+		FTempViewportCapture(const XMFLOAT3& InCenterPoint);
+
+		XMFLOAT3 TargetPoint[6];
+		XMFLOAT3 Up[6];
+
+		void BuildViewportCapture(const XMFLOAT3& InCenterPoint);
+	};
+
 public:
 	FDynamicCubeMap();
 	virtual void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer);
@@ -27,6 +38,8 @@ public:
 
 	virtual void BuildDepthStencilDescriptor();
 	virtual void BuildCubeMapRenderTargetDescriptor();
+
+	void SetCubeMapViewportPosition(const XMFLOAT3& position);
 
 protected:
 	virtual void BuildRenderTargetRTV();

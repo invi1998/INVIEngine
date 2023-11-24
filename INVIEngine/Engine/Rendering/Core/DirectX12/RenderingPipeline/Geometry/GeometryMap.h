@@ -79,6 +79,9 @@ public:
 	// 灯光的绘制数量
 	UINT GetDrawLightCount();
 
+	// 获取动态CubeMap(动态反射）摄像机数量
+	UINT GetDynamicViewportNum();
+
 	// 构建对象模型的buff缓冲区
 	void BuildMeshConstantBuffer();
 
@@ -96,8 +99,8 @@ public:
 	// 是否开启雾
 	bool IsStartUpFog();
 
-	// 构建视口buffer
-	void BuildViewportConstantBuffer();
+	// 构建视口常量缓冲区视图(传入视口偏移）
+	void BuildViewportConstantBuffer(UINT viewPortOffset = 0);
 
 	// 渲染视口
 	void DrawViewport(float DeltaTime);

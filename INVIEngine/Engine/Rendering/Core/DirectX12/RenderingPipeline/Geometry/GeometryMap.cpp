@@ -257,6 +257,11 @@ UINT FGeometryMap::GetDrawLightCount()
 	return 1;
 }
 
+UINT FGeometryMap::GetDynamicViewportNum()
+{
+	return DynamicReflectionMeshComponents.size() * 6;
+}
+
 void FGeometryMap::BuildMeshConstantBuffer()
 {
 	// 创建常量缓冲区
@@ -329,10 +334,10 @@ bool FGeometryMap::IsStartUpFog()
 	return Fog != nullptr;
 }
 
-void FGeometryMap::BuildViewportConstantBuffer()
+void FGeometryMap::BuildViewportConstantBuffer(UINT viewPortOffset)
 {
 	// 创建常量缓冲区
-	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + 6);
+	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + GetDynamicViewportNum() + viewPortOffset);
 
 	//// 描述堆句柄
 	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());

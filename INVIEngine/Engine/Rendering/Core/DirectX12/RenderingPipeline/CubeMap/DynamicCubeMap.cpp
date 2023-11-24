@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "DynamicCubeMap.h"
 
+#include "Component/Mesh/Core/MeshComponent.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/Construction/ObjectConstruction.h"
@@ -10,6 +11,31 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 
+
+FDynamicCubeMap::FTempViewportCapture::FTempViewportCapture(const XMFLOAT3& InCenterPoint)
+{
+	BuildViewportCapture(InCenterPoint);
+}
+
+void FDynamicCubeMap::FTempViewportCapture::BuildViewportCapture(const XMFLOAT3& InCenterPoint)
+{
+	// +x, -x, +y, -y, +z, -z
+	// 捕获摄像机的6个面
+	TargetPoint[0] = XMFLOAT3{ InCenterPoint.x + 1.0f, InCenterPoint.y, InCenterPoint.z };
+	TargetPoint[1] = XMFLOAT3{ InCenterPoint.x - 1.0f, InCenterPoint.y, InCenterPoint.z };
+	TargetPoint[2] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y + 1.0f, InCenterPoint.z };
+	TargetPoint[3] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y - 1.0f, InCenterPoint.z };
+	TargetPoint[4] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z + 1.0f };
+	TargetPoint[5] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z - 1.0f };
+
+
+	Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f };
+	Up[1] = XMFLOAT3{ 0.f, 1.f, 0.f };
+	Up[2] = XMFLOAT3{ 0.f, 0.f, -1.f };
+	Up[3] = XMFLOAT3{ 0.f, 0.f, 1.f };
+	Up[4] = XMFLOAT3{ 0.f, 1.f, 0.f };
+	Up[5] = XMFLOAT3{ 0.f, 1.f, 0.f };
+}
 
 FDynamicCubeMap::FDynamicCubeMap()
 {
@@ -105,19 +131,30 @@ void FDynamicCubeMap::PreDraw(float DeltaTime)
 
 void FDynamicCubeMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
+
 	if (CubeMapViewPorts.size() == 6)
 	{
-		// 更新视口
-		for (size_t i = 0; i < 6; i++)
+		for (int k = 0; k < GeometryMap->DynamicReflectionMeshComponents.size(); k++)
 		{
-			FViewportInfo tempViewport{};
-			XMFLOAT3 position = CubeMapViewPorts[i]->GetPosition();
-			tempViewport.CameraPosition = XMFLOAT4{ position.x, position.y, position.z, 1.f};
-			tempViewport.ViewMatrix = CubeMapViewPorts[i]->GetViewMatrix();
-			tempViewport.ProjectionMatrix = CubeMapViewPorts[i]->GetProjectionMatrix();
+			auto meshComponent = GeometryMap->DynamicReflectionMeshComponents[k];
+			XMFLOAT3 position = meshComponent->GetPosition();
 
-			GeometryMap->UpdateCalculationViewport(tempViewport, i+1);
+			SetCubeMapViewportPosition(position);
+			// 更新视口
+			for (size_t i = 0; i < 6; i++)
+			{
+				FViewportInfo tempViewport{};
+				XMFLOAT3 position = CubeMapViewPorts[i]->GetPosition();
+				tempViewport.CameraPosition = XMFLOAT4{ position.x, position.y, position.z, 1.f};
+				tempViewport.ViewMatrix = CubeMapViewPorts[i]->GetViewMatrix();
+				tempViewport.ProjectionMatrix = CubeMapViewPorts[i]->GetProjectionMatrix();
+
+				GeometryMap->UpdateCalculationViewport(tempViewport, 
+					i + k*6	// 动态反射的6个摄像机
+					+1);
+			}
 		}
+		
 	}
 	
 }
@@ -141,29 +178,8 @@ void FDynamicCubeMap::Draw(float deltaTime)
 
 void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 {
-	struct FTempViewportCapture
-	{
-		XMFLOAT3 TargetPoint[6];
-		XMFLOAT3 Up[6];
-	};
-	// +x, -x, +y, -y, +z, -z
-	FTempViewportCapture Capture{};
-
-	// 捕获摄像机的6个面
-	Capture.TargetPoint[0] = XMFLOAT3{ InCenterPoint.x + 1.0f, InCenterPoint.y, InCenterPoint.z};
-	Capture.TargetPoint[1] = XMFLOAT3{ InCenterPoint.x - 1.0f, InCenterPoint.y, InCenterPoint.z};
-	Capture.TargetPoint[2] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y + 1.0f, InCenterPoint.z};
-	Capture.TargetPoint[3] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y - 1.0f, InCenterPoint.z};
-	Capture.TargetPoint[4] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z + 1.0f};
-	Capture.TargetPoint[5] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y, InCenterPoint.z - 1.0f };
-
+	FTempViewportCapture capture{ InCenterPoint };
 	
-	Capture.Up[0] = XMFLOAT3{ 0.f, 1.f, 0.f};
-	Capture.Up[1] = XMFLOAT3{ 0.f, 1.f, 0.f};
-	Capture.Up[2] = XMFLOAT3{ 0.f, 0.f, -1.f};
-	Capture.Up[3] = XMFLOAT3{ 0.f, 0.f, 1.f};
-	Capture.Up[4] = XMFLOAT3{ 0.f, 1.f, 0.f};
-	Capture.Up[5] = XMFLOAT3{ 0.f, 1.f, 0.f };
 
 	for (size_t i = 0; i < 6; i++)
 	{
@@ -171,7 +187,7 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& InCenterPoint)
 		GClientViewPort* viewport = CubeMapViewPorts[CubeMapViewPorts.size() - 1];
 
 		viewport->SetPosition(InCenterPoint);
-		viewport->FaceTarget(InCenterPoint, Capture.TargetPoint[i], Capture.Up[i]);
+		viewport->FaceTarget(InCenterPoint, capture.TargetPoint[i], capture.Up[i]);
 		viewport->SetFrustum(XM_PIDIV2, 1, 1, 0.1f, 10000.f);
 		viewport->BuildViewMatrix();
 	}
@@ -233,6 +249,19 @@ void FDynamicCubeMap::BuildCubeMapRenderTargetDescriptor()
 
 	CubeMapRenderTarget->Init(Width, Height, DXGI_FORMAT_R8G8B8A8_UNORM);
 	
+}
+
+void FDynamicCubeMap::SetCubeMapViewportPosition(const XMFLOAT3& position)
+{
+	
+	FTempViewportCapture capture{ position };
+
+	for (size_t i = 0; i < 6; i++)
+	{
+		CubeMapViewPorts[i]->SetPosition(position);
+		CubeMapViewPorts[i]->FaceTarget(position, capture.TargetPoint[i], capture.Up[i]);
+		CubeMapViewPorts[i]->BuildViewMatrix();
+	}
 }
 
 void FDynamicCubeMap::BuildRenderTargetRTV()
