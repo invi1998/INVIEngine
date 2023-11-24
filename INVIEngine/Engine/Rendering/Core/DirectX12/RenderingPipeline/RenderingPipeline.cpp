@@ -105,10 +105,10 @@ void FRenderingPipeline::Draw(float DeltaTime)
 	GeometryMap.DrawViewport(DeltaTime);
 
 	// 渲染动态CubeMap
-	DynamicCubeMap.Draw(DeltaTime);
+	// DynamicCubeMap.Draw(DeltaTime);
 
 	// 绘制不透明反射层
-	RenderLayerManage.Draw(RENDER_LAYER_OPAQUE_REFLECT, DeltaTime);
+	// RenderLayerManage.Draw(RENDER_LAYER_OPAQUE_REFLECT, DeltaTime);
 
 	// CubeMap 覆盖原先被修改的CubeMap
 	GeometryMap.DrawCubeMapTexture(DeltaTime);

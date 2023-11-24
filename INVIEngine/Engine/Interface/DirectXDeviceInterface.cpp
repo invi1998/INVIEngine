@@ -5,6 +5,21 @@
 #include "Platform/Windows/WindowsEngine.h"
 #include "Rendering/Engine/DirectX/Core/DirectXRenderingEngine.h"
 
+void IDirectXDeviceInterface::StartSetMainViewportRenderTarget()
+{
+	GetEngine()->GetRenderingEngine()->StartSetMainViewportRenderTarget();
+}
+
+void IDirectXDeviceInterface::EndSetMainViewportRenderTarget()
+{
+	GetEngine()->GetRenderingEngine()->EndSetMainViewportRenderTarget();
+}
+
+void IDirectXDeviceInterface::ClearMainSwapChainCanvas()
+{
+	GetEngine()->GetRenderingEngine()->ClearMainSwapChainCanvas();
+}
+
 ComPtr<ID3D12Fence> IDirectXDeviceInterface::GetFence()
 {
 	if (CWindowsEngine* InEngine = dynamic_cast<CWindowsEngine*>(Engine))
@@ -153,7 +168,38 @@ CWindowsEngine* IDirectXDeviceInterface::GetEngine()
 	return dynamic_cast<CWindowsEngine*>(Engine);
 }
 
+void IDirectXDeviceInterface_Struct::StartSetMainViewportRenderTarget()
+{
+	if (CWindowsEngine* inEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (inEngine->GetRenderingEngine())
+		{
+			return inEngine->GetRenderingEngine()->StartSetMainViewportRenderTarget();
+		}
+	}
+}
 
+void IDirectXDeviceInterface_Struct::EndSetMainViewportRenderTarget()
+{
+	if (CWindowsEngine* inEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (inEngine->GetRenderingEngine())
+		{
+			return inEngine->GetRenderingEngine()->EndSetMainViewportRenderTarget();
+		}
+	}
+}
+
+void IDirectXDeviceInterface_Struct::ClearMainSwapChainCanvas()
+{
+	if (CWindowsEngine* inEngine = dynamic_cast<CWindowsEngine*>(Engine))
+	{
+		if (inEngine->GetRenderingEngine())
+		{
+			return inEngine->GetRenderingEngine()->ClearMainSwapChainCanvas();
+		}
+	}
+}
 
 
 /**

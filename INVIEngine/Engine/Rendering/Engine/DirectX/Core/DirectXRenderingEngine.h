@@ -28,6 +28,15 @@ public:
 	virtual int Exit() override;
 	virtual int PostExit() override;
 
+	// 开始 设置主视口的rendertarget
+	void StartSetMainViewportRenderTarget();
+
+	// 结束 设置主视口的rendertarget
+	void EndSetMainViewportRenderTarget();
+
+	// 清除主视口的交换链
+	void ClearMainSwapChainCanvas();
+
 public:
 
 	ID3D12Resource* GetCurrentSwapBuffer() const;	// 获取当前交换链buff缓冲区

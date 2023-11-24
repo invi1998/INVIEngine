@@ -9,6 +9,16 @@ class CWindowsEngine;
 class IDirectXDeviceInterface
 {
 public:
+	// 开始 设置主视口的rendertarget
+	void StartSetMainViewportRenderTarget();
+
+	// 结束 设置主视口的rendertarget
+	void EndSetMainViewportRenderTarget();
+
+	// 清除主视口的交换链
+	void ClearMainSwapChainCanvas();
+
+public:
 	virtual ~IDirectXDeviceInterface() = default;
 	ComPtr<ID3D12Fence> GetFence();
 	ComPtr<ID3D12Device> GetD3dDevice();
@@ -33,6 +43,15 @@ public:
 
 struct IDirectXDeviceInterface_Struct
 {
+public:
+	// 开始 设置主视口的rendertarget
+	void StartSetMainViewportRenderTarget();
+
+	// 结束 设置主视口的rendertarget
+	void EndSetMainViewportRenderTarget();
+
+	// 清除主视口的交换链
+	void ClearMainSwapChainCanvas();
 public:
 	ComPtr<ID3D12Fence> GetFence();
 	ComPtr<ID3D12Device> GetD3dDevice();

@@ -683,68 +683,19 @@ void CDirectXRenderingEngine::Tick(float DeltaTime)
 {
 	// 重新录制相关内存，为下一帧绘制做准备
 	ANALYSIS_RESULT(CommandAllocator->Reset());
+
+	// StartSetMainViewportRenderTarget();
+
 	// 预渲染
 	MeshManage->PreDraw(DeltaTime);
 
-	// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
-	CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
-		GetCurrentSwapBuffer(),				// 当前buffer缓冲区
-		D3D12_RESOURCE_STATE_PRESENT,		// 当前状态 表示资源即将被用作呈现目标
-		D3D12_RESOURCE_STATE_RENDER_TARGET	// 目标状态 这将使资源可以用作渲染目标，并允许您对该资源执行呈现操作（写入状态）
-	);
-	GraphicsCommandList->ResourceBarrier(
-		1,
-		&ResourceBarrierPresent
-	);
-
-	// 重置（更新）视口信息，裁剪矩阵信息
-	GraphicsCommandList->RSSetViewports(1, &ViewPortInfo);
-	GraphicsCommandList->RSSetScissorRects(1, &ViewPortRect);
-
-
-	// 清除画布
-	constexpr float ColorBG[] = { 0.1f, 0.105f, 0.11f, 1.0f };
-	GraphicsCommandList->ClearRenderTargetView(
-		GetCurrentSwapBufferView(),		// 要清除的渲染目标视图
-		ColorBG,		// 画布颜色
-		0,		// 后面这两个参数是和视口相关的，这里不在这里设置，后面会有专门的设置方法
-		nullptr
-	);
-
-	// 清除深度和模板缓冲区
-	GraphicsCommandList->ClearDepthStencilView(
-		GetCurrentDepthStencilView(),	// 传入CPU内存（要清除的深度模板缓冲区内存）
-		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,		// 清除深度和模板缓冲区
-		1.f,	// 用1来清除我们的深度缓冲区（将深度缓冲区设置为1
-		0,		// 用0来清除我们的模板缓冲区（模板缓冲区设置为0
-		0,
-		nullptr
-	);
-
-	// 指定渲染缓冲区（输出合并阶段）设置渲染目标视图
-	D3D12_CPU_DESCRIPTOR_HANDLE SwapBufferView = GetCurrentSwapBufferView();
-	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView = GetCurrentDepthStencilView();
-	GraphicsCommandList->OMSetRenderTargets(
-		1,									// 指定渲染目标数 1
-		&SwapBufferView,		// 指定渲染目标
-		true,								// true表明我们传入的句柄是一个内存连续的描述符指针
-		&DepthStencilView		// 传入深度
-	);
+	// ClearMainSwapChainCanvas();
 
 	// 渲染
 	MeshManage->Draw(DeltaTime);
 	MeshManage->PostDraw(DeltaTime);
 
-	// 设置当前交换链buffer状态
-	CD3DX12_RESOURCE_BARRIER ResourceBarrierRenderTarget = CD3DX12_RESOURCE_BARRIER::Transition(
-		GetCurrentSwapBuffer(),
-		D3D12_RESOURCE_STATE_RENDER_TARGET,
-		D3D12_RESOURCE_STATE_PRESENT
-	);
-	GraphicsCommandList->ResourceBarrier(
-		1,
-		&ResourceBarrierRenderTarget
-	);
+	EndSetMainViewportRenderTarget();
 
 	// 自此，缓冲区录入完成（记得关闭命令列表），可以提交命令了
 	ANALYSIS_RESULT(GraphicsCommandList->Close());
@@ -776,6 +727,70 @@ int CDirectXRenderingEngine::Exit()
 int CDirectXRenderingEngine::PostExit()
 {
 	return 0;
+}
+
+void CDirectXRenderingEngine::StartSetMainViewportRenderTarget()
+{
+	// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
+	CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
+		GetCurrentSwapBuffer(),				// 当前buffer缓冲区
+		D3D12_RESOURCE_STATE_PRESENT,		// 当前状态 表示资源即将被用作呈现目标
+		D3D12_RESOURCE_STATE_RENDER_TARGET	// 目标状态 这将使资源可以用作渲染目标，并允许您对该资源执行呈现操作（写入状态）
+	);
+	GraphicsCommandList->ResourceBarrier(
+		1,
+		&ResourceBarrierPresent
+	);
+
+	// 重置（更新）视口信息，裁剪矩阵信息
+	GraphicsCommandList->RSSetViewports(1, &ViewPortInfo);
+	GraphicsCommandList->RSSetScissorRects(1, &ViewPortRect);
+
+	// 指定渲染缓冲区（输出合并阶段）设置渲染目标视图
+	D3D12_CPU_DESCRIPTOR_HANDLE SwapBufferView = GetCurrentSwapBufferView();
+	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView = GetCurrentDepthStencilView();
+	GraphicsCommandList->OMSetRenderTargets(
+		1,									// 指定渲染目标数 1
+		&SwapBufferView,		// 指定渲染目标
+		true,								// true表明我们传入的句柄是一个内存连续的描述符指针
+		&DepthStencilView		// 传入深度
+	);
+}
+
+void CDirectXRenderingEngine::EndSetMainViewportRenderTarget()
+{
+	// 设置当前交换链buffer状态
+	CD3DX12_RESOURCE_BARRIER ResourceBarrierRenderTarget = CD3DX12_RESOURCE_BARRIER::Transition(
+		GetCurrentSwapBuffer(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		D3D12_RESOURCE_STATE_PRESENT
+	);
+	GraphicsCommandList->ResourceBarrier(
+		1,
+		&ResourceBarrierRenderTarget
+	);
+}
+
+void CDirectXRenderingEngine::ClearMainSwapChainCanvas()
+{
+	// 清除画布
+	constexpr float ColorBG[] = { 0.1f, 0.105f, 0.11f, 1.0f };
+	GraphicsCommandList->ClearRenderTargetView(
+		GetCurrentSwapBufferView(),		// 要清除的渲染目标视图
+		ColorBG,		// 画布颜色
+		0,		// 后面这两个参数是和视口相关的，这里不在这里设置，后面会有专门的设置方法
+		nullptr
+	);
+
+	// 清除深度和模板缓冲区
+	GraphicsCommandList->ClearDepthStencilView(
+		GetCurrentDepthStencilView(),	// 传入CPU内存（要清除的深度模板缓冲区内存）
+		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,		// 清除深度和模板缓冲区
+		1.f,	// 用1来清除我们的深度缓冲区（将深度缓冲区设置为1
+		0,		// 用0来清除我们的模板缓冲区（模板缓冲区设置为0
+		0,
+		nullptr
+	);
 }
 
 ID3D12Resource* CDirectXRenderingEngine::GetCurrentSwapBuffer() const
