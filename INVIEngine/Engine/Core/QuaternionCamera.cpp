@@ -8,14 +8,14 @@
 
 FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 
-const XMVECTOR GQuaternionCamera::DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+//const XMVECTOR GQuaternionCamera::DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+//const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+//const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 GQuaternionCamera::GQuaternionCamera()
-    : GClientViewPort(),
+    : GClientViewPort()
 	// Position(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)),
-    FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f))
+    // FocalPoint(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f))
 {
     InputComponent = CreateObject<CInputComponent>(new CInputComponent());
     InputComponent->OnMouseWheelDelegate.Bind(this, &GQuaternionCamera::OnMouseScroll);
@@ -100,33 +100,33 @@ void GQuaternionCamera::OnUpdate(float ts)
 	UpdateViewMatrix();
 }
 
-XMVECTOR GQuaternionCamera::GetUpDirection() const
+XMVECTOR GQuaternionCamera::GetUpDirection()
 {
-    XMVECTOR up = XMVector3Rotate(DefaultUp, GetRotationQuaternion());
+    XMVECTOR up = XMVector3Rotate(XMLoadFloat3(&GetUpVector()), GetRotationQuaternion());
     // 对上向量进行归一化。
     up = XMVector3Normalize(up);
     return up;
 }
 
-XMVECTOR GQuaternionCamera::GetRightDirection() const
+XMVECTOR GQuaternionCamera::GetRightDirection()
 {
-    XMVECTOR right = XMVector3Rotate(DefaultRight, GetRotationQuaternion());
+    XMVECTOR right = XMVector3Rotate(XMLoadFloat3(&GetRightVector()), GetRotationQuaternion());
     // 对右向量进行归一化。
 	right = XMVector3Normalize(right);
     return right;
 }
 
-XMVECTOR GQuaternionCamera::GetForwardDirection() const
+XMVECTOR GQuaternionCamera::GetForwardDirection()
 {
-    XMVECTOR forward = XMVector3Rotate(DefaultForward, GetRotationQuaternion());
+    XMVECTOR forward = XMVector3Rotate(XMLoadFloat3(&GetForwardVector()), GetRotationQuaternion());
     // 对前向量进行归一化。
     forward = XMVector3Normalize(forward);
     return forward;
 }
 
-XMVECTOR GQuaternionCamera::CalculatePosition() const
+XMVECTOR GQuaternionCamera::CalculatePosition()
 {
-    return FocalPoint + GetForwardDirection() * Distance;
+    return GetForwardDirection() * Distance;
 }
 
 void GQuaternionCamera::UpdateViewMatrix()
@@ -201,27 +201,30 @@ void GQuaternionCamera::OnMouseScroll(int X, int Y, float InDelta)
 
 void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 {
+	float XRadians = XMConvertToRadians(delta.x * 10.f);
+	float YRadians = XMConvertToRadians(delta.y * 10.f);
+
 	switch (CameraType) {
 		case CameraRoaming:
 			{
-	            XMFLOAT3 up{};
-	            XMStoreFloat3(&up, GetUpDirection());
+				XMFLOAT3 up = GetUpVector();
 				ENGINE_LOG_ERROR("UP DIRECTION = %f, %f, %f", up.x, up.y, up.z);
 	            const float yawSign = up.y < 0 ? -1.0f : 1.0f;
-	            Yaw += yawSign * delta.x * RotationSpeed();
-	            Pitch += delta.y * RotationSpeed();
+	            Yaw += yawSign * XRadians * RotationSpeed();
+	            Pitch += YRadians * RotationSpeed();
 				MousePanEdit(delta);
+
+				RotateAroundXAxis(YRadians);
+				RotateAroundYAxis(XRadians);
 
                 break;
 			}
 	case ObservationObject:
 			{
-				float XRadians = XMConvertToRadians(delta.x * 10.f);
-				float YRadians = XMConvertToRadians(delta.y * 10.f);
 				
                 Theta += -XRadians;
                 Phi += YRadians;
-
+				
                 break;
 			}
 	}
@@ -231,15 +234,15 @@ void GQuaternionCamera::MouseRotate(const XMFLOAT2& delta)
 void GQuaternionCamera::MousePan(const XMFLOAT2& delta)
 {
     auto [xSpeed, ySpeed] = PanSpeed();
-    FocalPoint += -GetRightDirection() * delta.x * xSpeed * Distance;
-    FocalPoint += GetUpDirection() * delta.y * ySpeed * Distance;
+    /*FocalPoint += -GetRightDirection() * delta.x * xSpeed * Distance;
+    FocalPoint += GetUpDirection() * delta.y * ySpeed * Distance;*/
 }
 
 void GQuaternionCamera::MousePanEdit(const XMFLOAT2& delta)
 {
 	auto [xSpeed, ySpeed] = PanSpeed();
-	FocalPoint += GetRightDirection() * delta.x * xSpeed * Distance;
-	FocalPoint += -GetUpDirection() * delta.y * ySpeed * Distance;
+	//FocalPoint += GetRightDirection() * delta.x * xSpeed * Distance;
+	//FocalPoint += -GetUpDirection() * delta.y * ySpeed * Distance;
 }
 
 void GQuaternionCamera::MouseZoom(float delta)
@@ -269,7 +272,7 @@ void GQuaternionCamera::MoveRight(float delta)
 	if (CameraType == ECameraType::CameraRoaming)
 	{
 		// FocalPoint += -GetRightDirection() * delta.x * xSpeed * Distance;
-		FocalPoint += GetRightDirection() * delta;
+		// FocalPoint += GetRightDirection() * delta;
 	}
 }
 
@@ -297,3 +300,42 @@ float GQuaternionCamera::ZoomSpeed() const
 	speed = min(speed, 50.0f); // max speed = 100
 	return speed;
 }
+
+void GQuaternionCamera::RotateAroundXAxis(float rotateDegrees)
+{
+	XMMATRIX RotationY = XMMatrixRotationAxis(XMLoadFloat3(&GetRightVector()), rotateDegrees);
+
+	// 计算各个方向和按照z轴旋转后的最终效果
+	XMVECTOR upVector = XMVector3TransformNormal(XMLoadFloat3(&GetUpVector()), RotationY);
+	XMFLOAT3 up = {};
+	XMStoreFloat3(&up, upVector);
+	SetUpVector(up);
+
+	XMVECTOR forwardVector = XMVector3TransformNormal(XMLoadFloat3(&GetForwardVector()), RotationY);
+	XMFLOAT3 forward = {};
+	XMStoreFloat3(&forward, forwardVector);
+	SetForwardVector(forward);
+}
+
+void GQuaternionCamera::RotateAroundYAxis(float rotateDegrees)
+{
+	XMMATRIX RotationZ = XMMatrixRotationY(rotateDegrees);
+
+	// 计算各个方向和按照z轴旋转后的最终效果
+	XMVECTOR rightVector = XMVector3TransformNormal(XMLoadFloat3(&GetRightVector()), RotationZ);
+	XMFLOAT3 right = {};
+	XMStoreFloat3(&right, rightVector);
+	SetUpVector(right);
+
+	XMVECTOR upVector = XMVector3TransformNormal(XMLoadFloat3(&GetUpVector()), RotationZ);
+	XMFLOAT3 up = {};
+	XMStoreFloat3(&up, upVector);
+	SetUpVector(up);
+
+	XMVECTOR forwardVector = XMVector3TransformNormal(XMLoadFloat3(&GetForwardVector()), RotationZ);
+	XMFLOAT3 forward = {};
+	XMStoreFloat3(&forward, forwardVector);
+	SetForwardVector(forward);
+}
+
+

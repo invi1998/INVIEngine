@@ -26,9 +26,9 @@ public:
     // XMVECTOR GetPosition() const { return Position; }
 
     // 将默认的前向、上方和右方向量旋转为当前朝向。
-    XMVECTOR GetUpDirection() const;
-    XMVECTOR GetRightDirection() const;
-    XMVECTOR GetForwardDirection() const;
+    XMVECTOR GetUpDirection();
+    XMVECTOR GetRightDirection();
+    XMVECTOR GetForwardDirection();
 
     // void SetPosition(const XMVECTOR& position) { Position = position; }
     // void SetPosition(float x, float y, float z) { Position = XMVectorSet(x, y, z, 1.0f); }
@@ -55,15 +55,18 @@ protected:
     float RotationSpeed() const;
     float ZoomSpeed() const;
 
-    XMVECTOR CalculatePosition() const;
+	void RotateAroundXAxis(float rotateDegrees);
+	void RotateAroundYAxis(float rotateDegrees);
+
+    XMVECTOR CalculatePosition();
 
 private:
-    static const XMVECTOR DefaultForward;
+    /*static const XMVECTOR DefaultForward;
     static const XMVECTOR DefaultUp;
-    static const XMVECTOR DefaultRight;
+    static const XMVECTOR DefaultRight;*/
 
     // XMVECTOR Position;
-    XMVECTOR FocalPoint;
+    // XMVECTOR FocalPoint;
     float Pitch = 0.0f;
     float Yaw = 0.0f;
     float Roll = 0.0f;
