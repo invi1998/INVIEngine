@@ -98,8 +98,15 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 	// 渲染光照，材质贴图
 	GeometryMap.Draw(DeltaTime);
 
-	// 渲染动态CubeMap （预先渲染CubeMap，然后将预渲染好的CubeMap提交给shader做反射使用）
-	DynamicCubeMap.PreDraw(DeltaTime);
+	// 清除主视口
+	ClearMainSwapChainCanvas();
+
+	// 判断是否存在动态反射组件
+	if (DynamicCubeMap.IsExitDynamicReflectionMesh())
+	{
+		// 渲染动态CubeMap （预先渲染CubeMap，然后将预渲染好的CubeMap提交给shader做反射使用）
+		DynamicCubeMap.PreDraw(DeltaTime);
+	}
 
 	RenderLayerManage.PreDraw(DeltaTime);
 

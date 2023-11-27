@@ -689,16 +689,16 @@ void CDirectXRenderingEngine::Tick(float DeltaTime)
 	// 重新录制相关内存，为下一帧绘制做准备
 	ANALYSIS_RESULT(CommandAllocator->Reset());
 
-	// StartSetMainViewportRenderTarget();
-
 	// 预渲染
 	MeshManage->PreDraw(DeltaTime);
 
-	// ClearMainSwapChainCanvas();
+	StartSetMainViewportRenderTarget();
 
 	// 渲染
 	MeshManage->Draw(DeltaTime);
 	MeshManage->PostDraw(DeltaTime);
+
+	EndSetMainViewportRenderTarget();
 
 	EndSetMainViewportRenderTarget();
 

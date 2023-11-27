@@ -41,6 +41,9 @@ public:
 
 	void SetCubeMapViewportPosition(const XMFLOAT3& position);
 
+	// 判断场景中是否存在动态反射
+	bool IsExitDynamicReflectionMesh();
+
 protected:
 	virtual void BuildRenderTargetRTV();
 	virtual void BuildRenderTargetSRV();

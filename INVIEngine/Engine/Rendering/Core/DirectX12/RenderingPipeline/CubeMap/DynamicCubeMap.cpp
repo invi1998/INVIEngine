@@ -51,12 +51,6 @@ void FDynamicCubeMap::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* i
 
 void FDynamicCubeMap::PreDraw(float DeltaTime)
 {
-	// 渲染灯光，材质，贴图
-	GeometryMap->Draw(DeltaTime);
-
-	// 清除主视口
-	ClearMainSwapChainCanvas();
-
 	for (int j = 0; j < GeometryMap->DynamicReflectionMeshComponents.size(); j++)
 	{
 		// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
@@ -286,6 +280,11 @@ void FDynamicCubeMap::SetCubeMapViewportPosition(const XMFLOAT3& position)
 		CubeMapViewPorts[i]->FaceTarget(position, capture.TargetPoint[i], capture.Up[i]);
 		CubeMapViewPorts[i]->BuildViewMatrix();
 	}
+}
+
+bool FDynamicCubeMap::IsExitDynamicReflectionMesh()
+{
+	return GeometryMap->GetDynamicViewportNum() > 0;
 }
 
 void FDynamicCubeMap::BuildRenderTargetRTV()
