@@ -1,4 +1,5 @@
 #pragma once
+class CMeshComponent;
 struct FViewportInfo;
 struct FGeometryMap;
 struct FDirectXPipelineState;
@@ -23,6 +24,9 @@ public:
 
 	// 通过指定渲染层ID来定向指定渲染层级
 	virtual void Draw(int inLayer, float deltaTime);
+
+	// 根据传入的key，然后在指定层级中查找模型，针对该模型进行渲染
+	virtual void FindObjectDraw(float DeltaTime, int layer, const CMeshComponent* key);
 
 	// 层级排序
 	void Sort();

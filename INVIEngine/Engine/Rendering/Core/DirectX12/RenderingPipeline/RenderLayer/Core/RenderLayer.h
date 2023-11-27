@@ -31,7 +31,10 @@ public:
 public:
 	virtual void Init(FGeometryMap* geometry, FDirectXPipelineState* directXPipelineState);
 
-	virtual void BuildShader() {};
+	virtual void BuildShader() {}
+
+	virtual void DrawObject(float deltaTime, const FRenderingData& renderDate);
+	virtual void FindObjectDraw(float delta_time, const CMeshComponent* key);
 
 	virtual int GetRenderLayerType() const { return RenderLayerType; };
 

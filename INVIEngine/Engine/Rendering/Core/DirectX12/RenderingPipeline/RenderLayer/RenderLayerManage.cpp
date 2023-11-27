@@ -69,6 +69,18 @@ void FRenderLayerManage::Draw(int inLayer, float deltaTime)
 	}
 }
 
+void FRenderLayerManage::FindObjectDraw(float DeltaTime, int layer, const CMeshComponent* key)
+{
+	for (auto& tmpLayer:RenderLayers)
+	{
+		if (tmpLayer->GetRenderLayerType() == layer)
+		{
+			tmpLayer->FindObjectDraw(DeltaTime, key);
+			break;
+		}
+	}
+}
+
 void FRenderLayerManage::Sort()
 {
 	auto CmpRenderLayer = [&](const std::shared_ptr<FRenderLayer>& layerA, const std::shared_ptr<FRenderLayer>& layerB)

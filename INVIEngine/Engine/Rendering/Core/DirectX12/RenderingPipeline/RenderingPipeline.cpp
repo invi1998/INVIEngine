@@ -34,20 +34,23 @@ void FRenderingPipeline::BuildPipeline()
 	// 初始化动态cubeMap
 	DynamicCubeMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
-	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
-
-	DynamicCubeMap.BuildDepthStencilDescriptor();
-
-	DynamicCubeMap.BuildDepthStencil();
-
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
 	// 构建模型几何
 	GeometryMap.Build();
 
+	// 构建动态反射组件
+	GeometryMap.BuildDynamicReflectionMeshComponent();
+
 	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
+
+	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
+
+	DynamicCubeMap.BuildDepthStencilDescriptor();
+
+	DynamicCubeMap.BuildDepthStencil();
 
 	// 构建CubeMap
 	// DynamicCubeMap.Build(XMFLOAT3{ 15.f, 12.f, 0.f });
@@ -92,6 +95,9 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 	DirectXRootSignature.PreDraw(DeltaTime);
 
+	// 渲染光照，材质贴图
+	GeometryMap.Draw(DeltaTime);
+
 	// 渲染动态CubeMap （预先渲染CubeMap，然后将预渲染好的CubeMap提交给shader做反射使用）
 	DynamicCubeMap.PreDraw(DeltaTime);
 
@@ -103,12 +109,6 @@ void FRenderingPipeline::Draw(float DeltaTime)
 {
 	// 渲染主视口
 	GeometryMap.DrawViewport(DeltaTime);
-
-	// 渲染动态CubeMap
-	// DynamicCubeMap.Draw(DeltaTime);
-
-	// 绘制不透明反射层
-	// RenderLayerManage.Draw(RENDER_LAYER_OPAQUE_REFLECT, DeltaTime);
 
 	// CubeMap 覆盖原先被修改的CubeMap
 	GeometryMap.DrawCubeMapTexture(DeltaTime);

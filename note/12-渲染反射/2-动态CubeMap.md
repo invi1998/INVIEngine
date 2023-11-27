@@ -4,6 +4,89 @@
 
 
 
+## OpenGL实现动态反射渲染
+
+动态反射渲染（Dynamic Reflection）是一种实现高质量镜面反射的技术。在 OpenGL 中，可以通过使用帧缓冲对象（Framebuffer Object，FBO）和纹理（Texture）来实现动态反射渲染。
+
+具体实现方法如下：
+
+1. 创建一个 FBO 对象，并将其绑定到当前上下文中：
+
+   ```cpp
+   GLuint fbo;
+   glGenFramebuffers(1, &fbo);
+   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+   ```
+
+2. 创建一个 2D 纹理对象，用于保存反射信息，并将其附加到 FBO 上：
+
+   ```cpp
+   GLuint reflection_texture;
+   glGenTextures(1, &reflection_texture);
+   glBindTexture(GL_TEXTURE_2D, reflection_texture);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glBindTexture(GL_TEXTURE_2D, 0);
+
+   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, reflection_texture, 0);
+   ```
+
+3. 渲染场景，并将反射信息渲染到纹理中。过程如下：
+
+   a. 首先，设置 FBO 为当前渲染目标：
+
+      ```cpp
+      glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+      ```
+
+   b. 接着，渲染场景到反射纹理中。需要将摄像机的位置设置成当前物体的位置加上偏移量，以便在反射纹理中正确地渲染场景。
+
+      ```cpp
+      // 计算反射矩阵
+      glm::mat4 reflect_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, -1.0f, 1.0f));
+      reflect_matrix = glm::translate(reflect_matrix, glm::vec3(0.0f, 0.0f, -height));
+
+      // 更新视图矩阵
+      glm::mat4 view_matrix = glm::lookAt(camera_pos + offset, camera_target + offset, camera_up);
+
+      // 设置变换矩阵
+      glm::mat4 model_matrix = ...;
+      glm::mat4 projection_matrix = ...;
+
+      // 渲染场景
+      glUniformMatrix4fv(..., 1, GL_FALSE, glm::value_ptr(reflect_matrix * model_matrix));
+      glUniformMatrix4fv(..., 1, GL_FALSE, glm::value_ptr(view_matrix));
+      glUniformMatrix4fv(..., 1, GL_FALSE, glm::value_ptr(projection_matrix));
+
+      glBindVertexArray(...);
+      glDrawArrays(...);
+      ```
+
+   c. 最后，解绑 FBO 并恢复默认的渲染目标：
+
+      ```cpp
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+      ```
+
+4. 使用反射纹理进行渲染。与普通纹理相似，可以使用纹理坐标来访问反射纹理中的像素值，并将其用于渲染。需要注意的是，在计算纹理坐标时，需要将法线向量投影到反射平面上，以便正确地计算漫反射和高光反射效果。
+
+   ```cpp
+   // 计算反射平面的法线向量
+   glm::vec3 reflect_normal = glm::normalize(glm::vec3(...));
+   glm::vec3 reflect_point = glm::vec3(...);
+   
+   // 计算反射点在反射平面上的投影点
+   glm::vec3 reflect_proj = reflect_point - glm::dot(reflect_point, reflect_normal) * reflect_normal;
+   
+   // 计算反射纹理坐标
+   glm::vec2 reflection_texcoord = glm::vec2(reflect_proj.x / width, reflect_proj.y / height);
+   
+   // 使用反射纹理进行渲染
+   glUniform2fv(..., 1, glm::value
+
+
+
 一道题：
 
 

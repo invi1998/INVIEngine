@@ -527,11 +527,15 @@ int CDirectXRenderingEngine::PostInit()
 		////显示BaseColor贴图2
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
+			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPAQUE_REFLECT);
+
 			SphereMesh->CreateMesh(2.f, 50, 50);
 			SphereMesh->SetPosition(XMFLOAT3(3.f, -3, 0.f));
 			SphereMesh->SetRotation(fvector_3d(0.f, -90.f, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
+				InMaterial->SetDynamicReflection(true);
+
 				InMaterial->SetBaseColorIndexKey("Texture'/Project/Texture/Earth.Earth'");
 				InMaterial->SetBaseColor(XMFLOAT4(0.7f, 0.7f, 0.7f, 1.f));
 				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
@@ -605,6 +609,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
+				InMaterial->SetDynamicReflection(true);		// 开启动态反射
 				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);
 
