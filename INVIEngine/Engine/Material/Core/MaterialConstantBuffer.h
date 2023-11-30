@@ -19,7 +19,7 @@ struct FMaterialConstantBuffer
 	XMFLOAT4 BaseColor;				// 16字节
 
 	XMFLOAT3 SpecularColor;			// 高光贴图颜色
-	int XX6;
+	float RefractiveValue;			// 折射率
 
 	XMFLOAT3 FresnelF0;				// 菲尼尔F0
 	float Transparency;				// 透明度

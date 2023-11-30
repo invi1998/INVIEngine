@@ -115,8 +115,9 @@ float3 GetReflectionColor(MaterialConstBuffer MaterialBuff, float3 UnitWorldNorm
 }
 
 //获取折射的颜色 
-float3 GetRefractColor(MaterialConstBuffer MatConstBuffer, float InRefractiveIndex, float3 InUnitWorldNormal, float3 WorldPosition)
+float3 GetRefractColor(MaterialConstBuffer MatConstBuffer, float3 InUnitWorldNormal, float3 WorldPosition)
 {
+	float InRefractiveIndex = MatConstBuffer.RefractiveValue;
 	float3 NewRefract = GetRefract(InUnitWorldNormal, WorldPosition, InRefractiveIndex);
 	float3 SampleReflectionColor = GetReflectionSampleColor(InUnitWorldNormal, NewRefract);
 	float Shininess = GetShininess(MatConstBuffer);

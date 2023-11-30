@@ -429,9 +429,18 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 		case 3:
 		case 9:
 		{
+			// 计算反射
 			float3 ReflectColor = GetReflectionColor(MatConstbuffer, ModelNormal, mvOut.WorldPosition.xyz);
 	
 			mvOut.Color = mvOut.Color + float4(ReflectColor, 1.f);
+			
+			break;
+		}
+		case 15:
+		{
+			// 先计算折射
+			float3 RefractColor = GetRefractColor(MatConstbuffer, ModelNormal, mvOut.WorldPosition.xyz);
+			mvOut.Color = mvOut.Color + float4(RefractColor, 1.f);
 			
 			break;
 		}

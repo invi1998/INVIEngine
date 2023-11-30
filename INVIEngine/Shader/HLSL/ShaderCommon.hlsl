@@ -74,7 +74,7 @@ struct MaterialConstBuffer
 	float4 BaseColor; // 材质基础颜色
 
 	float3 SpecularColor;
-	int XX6;
+	float RefractiveValue;	// 折射率
 	
 	float3 FresnelF0;
 	float Transparency;
