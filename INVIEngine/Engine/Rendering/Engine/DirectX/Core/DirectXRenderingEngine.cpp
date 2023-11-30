@@ -639,7 +639,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPAQUE_REFLECT);
 			SphereMesh->CreateMesh(2.f, 100, 100);
-			SphereMesh->SetPosition(XMFLOAT3(15.f, 17, 10.f));
+			SphereMesh->SetPosition(XMFLOAT3(15.f, 17, 20.f));
 			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
