@@ -436,29 +436,29 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			
 			break;
 		}
-		case 15:
+		case 15: // 15
 		{
 			// 先计算折射
-			float3 RefractColor = GetRefractColor(MatConstbuffer, ModelNormal, mvOut.WorldPosition.xyz);
-			float3 SampleRefractColor = GetReflectionSampleColor(ModelNormal, RefractColor);
+				float3 RefractColor = GetRefractColor(MatConstbuffer, ModelNormal, mvOut.WorldPosition.xyz);
+				float3 SampleRefractColor = GetReflectionSampleColor(ModelNormal, RefractColor);
 			
 			// 计算反射
-			float ReflectValue = GetReflectionColor(MatConstbuffer, ModelNormal, mvOut.WorldPosition.xyz);
-			float3 SampleReflectionColor = GetReflectionSampleColor(ModelNormal, ReflectValue);
+				float ReflectValue = GetReflectionColor(MatConstbuffer, ModelNormal, mvOut.WorldPosition.xyz);
+				float3 SampleReflectionColor = GetReflectionSampleColor(ModelNormal, ReflectValue);
 			
 			
 			// 计算Alpha混合通道
-			float3 v = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-			float Shininess = GetShininess(MatConstbuffer);
-			float3 FresnelFactor = FresnelSchlickFactor(MatConstbuffer, ModelNormal, v);
+				float3 v = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+				float Shininess = GetShininess(MatConstbuffer);
+				float3 FresnelFactor = FresnelSchlickFactor(MatConstbuffer, ModelNormal, v);
 			
 			// 通过alpha通道决定混合比例，越接近1，越倾向于反射，越接近0，越倾向于折射
-			float3 Color = lerp(SampleRefractColor, SampleReflectionColor, pow(Shininess * FresnelFactor, 2));
+				float3 Color = lerp(SampleRefractColor, SampleReflectionColor, pow(Shininess * FresnelFactor, 2));
 			
 			
-			mvOut.Color.rgb += Color;
+				mvOut.Color.rgb += Color;
 			
-			break;
+				break;
 		}
 	}
 	
