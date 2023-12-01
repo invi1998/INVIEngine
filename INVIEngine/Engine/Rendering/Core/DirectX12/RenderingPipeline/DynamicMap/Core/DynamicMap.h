@@ -1,11 +1,17 @@
 #pragma once
 #include "Interface/DirectXDeviceInterface.h"
 
+class FRenderLayerManage;
+struct FDirectXPipelineState;
+struct FGeometryMap;
+struct FViewportInfo;
+
 class FDynamicMap : public IDirectXDeviceInterface
 {
 public:
-		FDynamicMap();
-		~FDynamicMap() override = default;
+	FDynamicMap();
+	~FDynamicMap() override = default;
+	
 
 };
 
