@@ -82,23 +82,24 @@ int CDirectXRenderingEngine::PostInit()
 			BoxMesh->SetRotation(fvector_3d(60.f, 1.f, 20.f));
 		}*/
 
-		////灯光生成
-		//if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
-		//{
-		//	ParallelLight->SetPosition(XMFLOAT3(10.f, -10.f, 10.f));
-		//	ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-		//	ParallelLight->SetScale(fvector_3d(1));
-		//	ParallelLight->SetLightIntensity(fvector_3d(1.1f,1.1f,1.1f));
-		//}
-		//点灯光生成
-		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
+		//灯光生成
+		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
 		{
-			PointLight->SetPosition(XMFLOAT3(0.f, -6.f, 10.f));
-			PointLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-
-			PointLight->SetLightIntensity(XMFLOAT3(0.9f, 0.9f, 0.9f));
-			PointLight->SetEndAttenuation(190.f);
+			ParallelLight->SetPosition(XMFLOAT3(10.f, -10.f, 10.f));
+			ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			ParallelLight->SetScale(fvector_3d(1));
+			ParallelLight->SetLightIntensity(XMFLOAT3(1.1f,1.1f,1.1f));
 		}
+
+		////点灯光生成
+		//if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
+		//{
+		//	PointLight->SetPosition(XMFLOAT3(0.f, -6.f, 10.f));
+		//	PointLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+
+		//	PointLight->SetLightIntensity(XMFLOAT3(0.9f, 0.9f, 0.9f));
+		//	PointLight->SetEndAttenuation(190.f);
+		//}
 
 		//聚灯光生成
 		//if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
@@ -106,7 +107,7 @@ int CDirectXRenderingEngine::PostInit()
 		//	SpotLight->SetPosition(XMFLOAT3(0.f, 10.f, -10.f));
 		//	SpotLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
 		//
-		//	SpotLight->SetLightIntensity(fvector_3d(1.f));
+		//	SpotLight->SetLightIntensity(XMFLOAT3(1.9f, 0.9f, 0.9f));
 		//	//SpotLight->SetStartAttenuation(1.f);
 		//	SpotLight->SetEndAttenuation(130.f);
 		//
