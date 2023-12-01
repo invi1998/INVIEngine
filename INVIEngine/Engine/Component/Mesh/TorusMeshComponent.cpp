@@ -14,7 +14,7 @@ void CTorusMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadiu
 	float ThetaValue = XM_2PI / (float)InHeightSubdivision;
 	for (size_t i = 0; i <= InAxialSubdivision; ++i)
 	{
-		float BetaRadian = i* BetaValue;
+		float BetaRadian = i * BetaValue;
 
 		//InRadius
 		fvector_3d Center(
@@ -38,9 +38,9 @@ void CTorusMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadiu
 
 			MeshData.VertexData.push_back(
 				FVertex(EngineMath::ToFloat3(PointPosition),
-				XMFLOAT4(Colors::White)));
+					XMFLOAT4(Colors::White)));
 
-			FVertex &InVertex = MeshData.VertexData[MeshData.VertexData.size() - 1];
+			FVertex& InVertex = MeshData.VertexData[MeshData.VertexData.size() - 1];
 
 			//求法线
 			fvector_3d Normal = PointPosition - Center;
@@ -48,12 +48,19 @@ void CTorusMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadiu
 
 			//法线赋值
 			InVertex.Normal = EngineMath::ToFloat3(Normal);
+
+			//展UV
+			InVertex.TexCoord.x = (float)j / (float)InHeightSubdivision;
+			InVertex.TexCoord.y = (float)i / (float)InAxialSubdivision;
+
+			//InVertex.UTangent.x = tan(BetaRadian) * InRadius;
+			//InVertex.UTangent.y = tan(ThetaRadian) * InSectionRadius;
 		}
 	}
 
-	for (size_t i = 0; i <= InAxialSubdivision ; ++i)
+	for (size_t i = 0; i <= InAxialSubdivision; ++i)
 	{
-		for (size_t j = 0; j <InHeightSubdivision; ++j)
+		for (size_t j = 0; j < InHeightSubdivision; ++j)
 		{
 			//绘制外圈两个三角形
 			DrawQuadrilateral(
@@ -63,14 +70,16 @@ void CTorusMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InRadiu
 	}
 }
 
-void CTorusMeshComponent::BuildKey(size_t& meshKey, float InRadius, float InSectionRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
+void CTorusMeshComponent::BuildKey(size_t& OutHashKey, float InRadius, float InSectionRadius, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
 {
-	constexpr std::hash<float> floatHash;
+	std::hash<float> FloatHash;
+	std::hash<int> IntHash;
 
-	meshKey = 9;
-	meshKey += floatHash(InRadius);
-	meshKey += floatHash(InSectionRadius);
+	OutHashKey = 9;
+	OutHashKey += FloatHash(InRadius);
+	OutHashKey += FloatHash(InSectionRadius);
 
-	meshKey += std::hash<int>::_Do_hash(InAxialSubdivision);
-	meshKey += std::hash<int>::_Do_hash(InHeightSubdivision);
+	OutHashKey += IntHash._Do_hash(InAxialSubdivision);
+	OutHashKey += IntHash._Do_hash(InHeightSubdivision);
 }
+
