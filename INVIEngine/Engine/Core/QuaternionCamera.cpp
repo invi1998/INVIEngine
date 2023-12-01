@@ -71,11 +71,11 @@ void GQuaternionCamera::OnUpdate(float ts)
     }
     if (FInput::IsKeyReleased(Key::W))
     {
-		MoveForward(2.f);
+		MoveForward(5.f);
     }
 	if (FInput::IsKeyReleased(Key::S))
 	{
-		MoveForward(-2.f);
+		MoveForward(-5.f);
 	}
 	if (FInput::IsKeyReleased(Key::A))
 	{
