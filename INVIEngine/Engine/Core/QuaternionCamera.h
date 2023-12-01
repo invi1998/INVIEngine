@@ -23,29 +23,14 @@ public:
 
     FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
 
-    // XMVECTOR GetPosition() const { return Position; }
-
-    // 将默认的前向、上方和右方向量旋转为当前朝向。
-    XMVECTOR GetUpDirection();
-    XMVECTOR GetRightDirection();
-    XMVECTOR GetForwardDirection();
-
-    // void SetPosition(const XMVECTOR& position) { Position = position; }
-    // void SetPosition(float x, float y, float z) { Position = XMVectorSet(x, y, z, 1.0f); }
-
-    // XMMATRIX GetViewMatrix() const { return ViewMatrix; }
-
 protected:
-    void UpdateViewMatrix();
-    
-    XMVECTOR GetRotationQuaternion() const;
+    // void UpdateViewMatrix();
     
     void SetViewportSize(int width, int height);
     void OnMouseScroll(int X, int Y, float InDelta);
 
     void MouseRotate(const XMFLOAT2& delta);
     void MousePan(const XMFLOAT2& delta);
-    void MousePanEdit(const XMFLOAT2& delta);
     void MouseZoom(float delta);
 
 	void MoveForward(float delta);
@@ -58,22 +43,10 @@ protected:
 	void RotateAroundXAxis(float rotateDegrees);
 	void RotateAroundYAxis(float rotateDegrees);
 
-    XMVECTOR CalculatePosition();
-
 private:
-    /*static const XMVECTOR DefaultForward;
-    static const XMVECTOR DefaultUp;
-    static const XMVECTOR DefaultRight;*/
-
-    // XMVECTOR Position;
-    // XMVECTOR FocalPoint;
     float Pitch = 0.0f;
     float Yaw = 0.0f;
     float Roll = 0.0f;
-    // XMMATRIX ViewMatrix{};
-    // XMMATRIX XMProjectionMatrix{};
-
-	float Distance = 10.0f;
 
 	XMFLOAT2 m_InitialMousePosition = { 0.0f, 0.0f };
 
