@@ -1,5 +1,6 @@
 #pragma once
-#include "Interface/DirectXDeviceInterface.h"
+
+#include "Rendering/Core/DirectX12/RenderingPipeline/DynamicMap/Core/DynamicMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/CubeMapRenderTarget.h"
 
 struct FViewportInfo;
@@ -9,15 +10,15 @@ struct FGeometryMap;
 class GClientViewPort;
 
 // ¶¯Ì¬CubeMap
-class FDynamicCubeMap : public IDirectXDeviceInterface
+class FDynamicCubeMap : public FDynamicMap
 {
 
 	struct FTempViewportCapture
 	{
 		FTempViewportCapture(const XMFLOAT3& InCenterPoint);
 
-		XMFLOAT3 TargetPoint[6];
-		XMFLOAT3 Up[6];
+		XMFLOAT3 TargetPoint[6]{};
+		XMFLOAT3 Up[6]{};
 
 		void BuildViewportCapture(const XMFLOAT3& InCenterPoint);
 	};

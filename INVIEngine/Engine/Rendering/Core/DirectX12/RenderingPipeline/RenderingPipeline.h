@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CubeMap/DynamicCubeMap.h"
+#include "DynamicMap/CubeMap/DynamicCubeMap.h"
 #include "Geometry/GeometryMap.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "PipelineState/DirectXPipelineState.h"
