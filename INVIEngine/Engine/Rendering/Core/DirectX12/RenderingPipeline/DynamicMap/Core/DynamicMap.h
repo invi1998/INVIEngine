@@ -5,7 +5,7 @@ class FDynamicMap : public IDirectXDeviceInterface
 {
 public:
 		FDynamicMap();
-		virtual ~FDynamicMap();
+		~FDynamicMap() override = default;
 
 };
 
