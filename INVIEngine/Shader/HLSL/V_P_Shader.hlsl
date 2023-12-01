@@ -452,10 +452,11 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			float Shininess = GetShininess(MatConstbuffer);
 			float3 FresnelFactor = FresnelSchlickFactor(MatConstbuffer, ModelNormal, v);
 			
+			// 通过alpha通道决定混合比例，越接近1，越倾向于反射，越接近0，越倾向于折射
 			float3 Color = lerp(SampleRefractColor, SampleReflectionColor, pow(Shininess * FresnelFactor, 2));
 			
 			
-			mvOut.Color.xyz += Color;
+			mvOut.Color.rgb += Color;
 			
 			break;
 		}
