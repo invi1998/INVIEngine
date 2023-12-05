@@ -51,6 +51,24 @@ void FShadowMapRenderTarget::BuildRenderTarget()
 
 void FShadowMapRenderTarget::BuildSRVDescriptor()
 {
+	D3D12_SHADER_RESOURCE_VIEW_DESC SRV_Desc{};
+
+	SRV_Desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;		// 设置纹理数据格式
+	SRV_Desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;		// 设置SRV的维度 Texture2D
+	SRV_Desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;		// 着色器组件映射的结构体。它可以用于指定不同颜色通道之间的映射关系，
+	// D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING是DXGI_ENUM中的一个常量，它代表了默认的着色器组件映射方式。具体地，它表示将RGBA四个颜色通道分别映射到输入数据的RGBA四个颜色通道 (0, 1, 2, 3)
+
+	// 设置Texture2D
+	SRV_Desc.Texture2D.MipLevels = 1;		// mipmap
+	SRV_Desc.Texture2D.MostDetailedMip = 0;	// 最详细的mipmap
+	SRV_Desc.Texture2D.PlaneSlice = 0;		// 平面切片
+
+
+	GetD3dDevice()->CreateShaderResourceView(
+		GetRenderTarget(),
+		&SRV_Desc,
+		CPUShaderResourceView
+	);
 }
 
 void FShadowMapRenderTarget::BuildRTVDescriptor()
