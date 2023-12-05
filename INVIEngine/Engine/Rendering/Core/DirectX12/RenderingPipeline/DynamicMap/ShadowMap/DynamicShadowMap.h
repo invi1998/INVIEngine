@@ -4,5 +4,7 @@
 
 class FDynamicShadowMap:public FDynamicMap
 {
+public:
+	FDynamicShadowMap();
 };
 

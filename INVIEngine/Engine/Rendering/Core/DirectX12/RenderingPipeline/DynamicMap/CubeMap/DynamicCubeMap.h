@@ -25,11 +25,11 @@ class FDynamicCubeMap : public FDynamicMap
 
 public:
 	FDynamicCubeMap();
-	virtual void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer);
-	virtual void PreDraw(float DeltaTime);
-	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
-	virtual void Build(const XMFLOAT3& center);
-	virtual void Draw(float deltaTime);
+	void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer) override;
+	void PreDraw(float DeltaTime) override;
+	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info) override;
+	void Build(const XMFLOAT3& center) override;
+	void Draw(float deltaTime) override;
 
 	// 构建视口
 	virtual void BuildViewPort(const XMFLOAT3& CenterPoint);
@@ -50,17 +50,11 @@ protected:
 	virtual void BuildRenderTargetSRV();
 
 protected:
-	std::unique_ptr<FCubeMapRenderTarget> CubeMapRenderTarget{};	// renderTarget 渲染目标
+	
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DSVCubeMapCPUDesc;			// BSV描述 深度模板描述
 
 	std::vector<GClientViewPort*> CubeMapViewPorts{};		// CubeMap视口 6个
 
-	FGeometryMap* GeometryMap = nullptr;	// 几何
-	FDirectXPipelineState* DirectXPipelineState = nullptr;	// 渲染管线状态对象
-
-	FRenderLayerManage* RenderLayers = nullptr;	// 渲染层
-
 	ComPtr<ID3D12Resource> DepthStencilBuffer;		// 深度模板缓冲区
-	UINT Width = 256;										// 宽度
-	UINT Height = 256;										// 高度
+
 };
