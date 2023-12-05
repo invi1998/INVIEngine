@@ -157,11 +157,11 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 // 获取摄像机到像素点的向量
                 float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
                 // 获取光线和摄像机视角的半程向量
-                float3 HalfDirection = normalize(NormalizeLightDirection + ViewDirection);
+				float3 HalfDirection = normalize(ViewDirection + NormalizeLightDirection);
     
                 // 计算出Blinn-phong值
 				// 先半兰博特化 再减去0.2f曝光的，再平方，变得更柔和
-                DotDiffValue = pow(max(0.0f, dot(ModelNormal, HalfDirection) * 0.5f + 0.5f)-0.2f, 2.f);
+				DotDiffValue = pow(max(0.0f, dot(ModelNormal, NormalizeLightDirection) * 0.5f + 0.5f) - 0.2f, 2.f);
         
 				float MaterialShiniess = 1.f - saturate(MatConstbuffer.MaterialRoughness);
                 float M = MaterialShiniess * 100.f;
