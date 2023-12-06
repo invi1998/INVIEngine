@@ -18,7 +18,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	
 	MeshVertexOut Out = (MeshVertexOut) 0;
 	
-	float4 PositionWorld = mul(float4(mv.Position, 1.f), MaterialTransformationMatrix);
+	float4 PositionWorld = mul(float4(mv.Position, 1.f), WorldMatrix);
 
 }
 

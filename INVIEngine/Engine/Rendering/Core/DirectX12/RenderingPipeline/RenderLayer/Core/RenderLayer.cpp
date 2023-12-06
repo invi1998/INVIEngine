@@ -149,14 +149,14 @@ void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& Viewp
 		XMFLOAT3 ForwardVector = renderingData.Mesh->GetForwardVector();
 
 		// 构造模型world
-		renderingData.MaterialTransformationMatrix = {
+		renderingData.WorldMatrix = {
 			RightVector.x * Scale.x,	UpVector.x,				ForwardVector.x,			0.f,
 			RightVector.y,				UpVector.y * Scale.y,	ForwardVector.y,			0.f,
 			RightVector.z,				UpVector.z,				ForwardVector.z * Scale.z,	0.f,
 			Position.x,					Position.y,				Position.z,					1.f
 		};
 
-		XMMATRIX ATRTIXMatrixWorld = XMLoadFloat4x4(&renderingData.MaterialTransformationMatrix);
+		XMMATRIX ATRTIXMatrixWorld = XMLoadFloat4x4(&renderingData.WorldMatrix);
 		XMMATRIX ATRTIXTextureWorld = XMLoadFloat4x4(&renderingData.TextureTransformationMatrix);
 
 		FObjectTransformation OBJTransformation;

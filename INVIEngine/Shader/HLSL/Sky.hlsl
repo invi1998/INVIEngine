@@ -23,7 +23,7 @@ MeshVertexOut VertexShaderMain(MeshVertexIn mvIn)
 	Out.PositionH = float4(mvIn.Position, 1.f);
 
 	// 世界坐标
-	float4 WorldPosition = mul(Out.PositionH, MaterialTransformationMatrix);
+	float4 WorldPosition = mul(Out.PositionH, WorldMatrix);
 
 	// 变换到其次裁剪空间
 	Out.PositionL = mul(WorldPosition, ViewportProjectionMatrix);
@@ -38,7 +38,7 @@ float4 PixelShaderMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	// 计算雾
 	// mvOut.Color = GetFogValue(mvOut.Color);
-	float4 WorldPosition = mul(mvOut.PositionH, MaterialTransformationMatrix);
+	float4 WorldPosition = mul(mvOut.PositionH, WorldMatrix);
 	
 	float4 Color = SimpleCubeMap[0].Sample(TextureSampler, mvOut.PositionH.xyz);
 	
