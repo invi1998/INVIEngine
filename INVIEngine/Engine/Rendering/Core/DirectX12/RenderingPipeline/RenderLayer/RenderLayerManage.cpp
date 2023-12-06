@@ -61,25 +61,17 @@ void FRenderLayerManage::PostDraw(float deltaTime)
 
 void FRenderLayerManage::Draw(int inLayer, float deltaTime)
 {
-	for (const auto& layer : RenderLayers)
+	if (const auto layer = FindByRenderLayer(inLayer))
 	{
-		if (layer->GetRenderLayerType() == inLayer)
-		{
-			layer->Draw(deltaTime);
-			break;
-		}
+		layer->Draw(deltaTime);
 	}
 }
 
 void FRenderLayerManage::FindObjectDraw(float DeltaTime, int layer, const CMeshComponent* key)
 {
-	for (auto& tmpLayer:RenderLayers)
+	if (const auto innerLayer = FindByRenderLayer(layer))
 	{
-		if (tmpLayer->GetRenderLayerType() == layer)
-		{
-			tmpLayer->FindObjectDraw(DeltaTime, key);
-			break;
-		}
+		innerLayer->FindObjectDraw(DeltaTime, key);
 	}
 }
 
@@ -124,7 +116,7 @@ void FRenderLayerManage::UpdateCaculations(float deltaTime, const FViewportInfo&
 
 void FRenderLayerManage::ResetPSO(int layer)
 {
-	if (auto innerLayer = FindByRenderLayer(layer))
+	if (const auto innerLayer = FindByRenderLayer(layer))
 	{
 		innerLayer->ResetPSO();
 	}
@@ -132,7 +124,7 @@ void FRenderLayerManage::ResetPSO(int layer)
 
 void FRenderLayerManage::DrawMesh(float DeltaTime, int layer)
 {
-	if (auto innerLayer = FindByRenderLayer(layer))
+	if (const auto innerLayer = FindByRenderLayer(layer))
 	{
 		innerLayer->DrawMesh(DeltaTime);
 	}
