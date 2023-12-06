@@ -11,10 +11,10 @@ public:
 
 	void BuildRenderTarget() override;
 	void BuildSRVDescriptor() override;
-	void BuildRTVDescriptor() override;
+	void BuildDSVDescriptor() override;
 
 private:
-	
+	D3D12_CPU_DESCRIPTOR_HANDLE CPUDepthStencilView;		// 深度模板视图	DSV
 
 };
 

@@ -62,7 +62,7 @@ void FShadowMapRenderTarget::BuildSRVDescriptor()
 	SRV_Desc.Texture2D.MipLevels = 1;		// mipmap
 	SRV_Desc.Texture2D.MostDetailedMip = 0;	// 最详细的mipmap
 	SRV_Desc.Texture2D.PlaneSlice = 0;		// 平面切片
-
+	SRV_Desc.Texture2D.ResourceMinLODClamp = 0;		// 
 
 	GetD3dDevice()->CreateShaderResourceView(
 		GetRenderTarget(),
@@ -71,6 +71,18 @@ void FShadowMapRenderTarget::BuildSRVDescriptor()
 	);
 }
 
-void FShadowMapRenderTarget::BuildRTVDescriptor()
+void FShadowMapRenderTarget::BuildDSVDescriptor()
 {
+	D3D12_DEPTH_STENCIL_VIEW_DESC DSV_Desc{};
+
+	DSV_Desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;		// 深度模板数据格式
+	DSV_Desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;		// 深度模板视图维度
+	DSV_Desc.Flags = D3D12_DSV_FLAG_NONE;		// 深度模板视图标记
+	DSV_Desc.Texture2D.MipSlice = 0;		// mipmap
+
+	GetD3dDevice()->CreateDepthStencilView(
+		GetRenderTarget(),
+		&DSV_Desc,
+		CPUDepthStencilView
+	);
 }

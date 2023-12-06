@@ -13,7 +13,9 @@ public:
 
 	virtual void BuildRenderTarget() = 0;
 	virtual void BuildSRVDescriptor() = 0;
-	virtual void BuildRTVDescriptor() = 0;
+
+	virtual void BuildRTVDescriptor() {};
+	virtual void BuildDSVDescriptor() {};
 
 public:
 
