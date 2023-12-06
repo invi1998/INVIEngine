@@ -66,12 +66,19 @@ void FOpaqueShadowRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
 
+	
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC& GPSDesc = DirectXPipelineState->GetGPSDesc();
 
-	// b = DepthBias * d + SlopeScaledDepthBias * MaxDepthSlope
+	// 偏移补偿 为了解决阴影失真问题
+	// d = 1 / pow(2, 24);  2^24
+	// b（偏移量） = DepthBias（固定偏移量） * d + SlopeScaledDepthBias（缩放因子） * MaxDepthSlope（最大深度）
 	GPSDesc.RasterizerState.DepthBias = 100000;				// 斜率 固定偏移量
 	GPSDesc.RasterizerState.DepthBiasClamp = 0.0f;			// 缩放	偏移量的限制，偏移量上限，最大偏移量
-	GPSDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;	// 偏移量 根据多边形斜率来控制缩放的一个因子
+	GPSDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;	// 偏移量 根据多边形斜率来控制的一个缩放因子
+
+	// 关闭RenderTarget（将格式设置为位置，然后renderTarget数量设置为0）
+	GPSDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
+	GPSDesc.NumRenderTargets = 0;
 
 	DirectXPipelineState->BuildPipelineState(EPipelineState::Shadow);
 	
