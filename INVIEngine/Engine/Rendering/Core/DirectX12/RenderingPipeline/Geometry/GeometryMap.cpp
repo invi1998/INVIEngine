@@ -224,11 +224,11 @@ void FGeometryMap::Build()
 
 void FGeometryMap::BuildDescriptorHeap()
 {
-	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 灯光数量 + 摄像机 + 纹理贴图 + CubeMap）
+	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 灯光数量 + 摄像机 + 纹理贴图 + CubeMap + ShadowMap）
 	// DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount() + GetDrawCubeMapCount());
 
 	// 纹理贴图 + cube map(静态cubeMap), 只需要为texture2D图片分配堆内存，因为我们将其他的(模型对象数量 + 灯光数量 + 摄像机)从常量缓冲区分离出来了，只有纹理和cubemap还在继续使用描述表
-	DescriptorHeap.Build(GetDrawTexture2DCount() + GetDrawCubeMapCount() + 1);
+	DescriptorHeap.Build(GetDrawTexture2DCount() + GetDrawCubeMapCount() + 1 + 1);
 }
 
 UINT FGeometryMap::GetDrawTexture2DCount() const

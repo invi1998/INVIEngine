@@ -18,5 +18,10 @@ public:
 
 	// 构建深度模板描述
 	void BuildDepthStencilViewDesc();
+	void BuildShadowMapRenderTargetDescriptor();
+
+protected:
+	void BuildRenderTargetSRV();
+
 };
 

@@ -26,3 +26,9 @@ void FDynamicMap::Build(const XMFLOAT3& center)
 void FDynamicMap::Draw(float deltaTime)
 {
 }
+
+void FDynamicMap::ResetView(int wid, int hei)
+{
+	Width = wid;
+	Height = hei;
+}
