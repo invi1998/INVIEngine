@@ -13,5 +13,10 @@ public:
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info) override;
 	void Build(const XMFLOAT3& center) override;
 	void Draw(float deltaTime) override;
+
+public:
+
+	// 构建深度模板描述
+	void BuildDepthStencilViewDesc();
 };
 
