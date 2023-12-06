@@ -1,6 +1,8 @@
 #include "EngineMinimal.h"
 #include "DynamicShadowMap.h"
 
+#include "Core/Construction/ObjectConstruction.h"
+#include "Core/Viewport/ClientViewPort.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/ShadowMapRenderTarget.h"
 
@@ -37,6 +39,32 @@ void FDynamicShadowMap::Build(const XMFLOAT3& center)
 void FDynamicShadowMap::Draw(float deltaTime)
 {
 	FDynamicMap::Draw(deltaTime);
+}
+
+void FDynamicShadowMap::SetViewportPosition(const XMFLOAT3& position)
+{
+	ShadowViewPort->SetPosition(position);
+	BuildViewMatrix();
+}
+
+void FDynamicShadowMap::SetViewportRotation(const XMFLOAT3& rotation)
+{
+	ShadowViewPort->SetRotation(fvector_3d(rotation.x, rotation.y, rotation.z));
+	BuildViewMatrix();
+}
+
+void FDynamicShadowMap::BuildViewPort(const XMFLOAT3& position)
+{
+	ShadowViewPort = CreateObject<GClientViewPort>(new GClientViewPort());
+	ShadowViewPort->SetPosition(position);
+	ShadowViewPort->FaceTarget(position, { 10.f, 0.f, 0.f });
+	ShadowViewPort->SetFrustum(XM_PIDIV2, 1.f, 1.f, 0.1f, 10000.f);
+	BuildViewMatrix();
+}
+
+void FDynamicShadowMap::BuildViewMatrix()
+{
+	ShadowViewPort->BuildViewMatrix();
 }
 
 void FDynamicShadowMap::BuildDepthStencilViewDesc()

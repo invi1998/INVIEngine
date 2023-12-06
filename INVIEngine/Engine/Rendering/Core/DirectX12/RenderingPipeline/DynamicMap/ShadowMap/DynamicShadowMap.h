@@ -2,6 +2,8 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/DynamicMap/Core/DynamicMap.h"
 
 
+class GClientViewPort;
+
 class FDynamicShadowMap:public FDynamicMap
 {
 public:
@@ -15,6 +17,10 @@ public:
 	void Draw(float deltaTime) override;
 
 public:
+	void SetViewportPosition(const XMFLOAT3& position);
+	void SetViewportRotation(const XMFLOAT3& rotation);
+	void BuildViewPort(const XMFLOAT3& position);
+	void BuildViewMatrix();
 
 	// 构建深度模板描述
 	void BuildDepthStencilViewDesc();
@@ -22,6 +28,9 @@ public:
 
 protected:
 	void BuildRenderTargetSRV();
+
+protected:
+	GClientViewPort* ShadowViewPort = nullptr;		// ShadowMap视口
 
 };
 

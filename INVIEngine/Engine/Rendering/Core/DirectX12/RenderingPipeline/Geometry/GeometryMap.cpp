@@ -336,8 +336,8 @@ bool FGeometryMap::IsStartUpFog()
 
 void FGeometryMap::BuildViewportConstantBuffer(UINT viewPortOffset)
 {
-	// 创建常量缓冲区
-	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + GetDynamicViewportNum() + viewPortOffset);
+	// 创建常量缓冲区 (主视口 + 动态反射视口 + shadow摄像机视口）
+	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + GetDynamicViewportNum() + 1 + viewPortOffset);
 
 	//// 描述堆句柄
 	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());

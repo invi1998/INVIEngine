@@ -40,7 +40,7 @@ public:
 	virtual void BuildDepthStencilDescriptor();
 	virtual void BuildCubeMapRenderTargetDescriptor();
 
-	void SetCubeMapViewportPosition(const XMFLOAT3& position);
+	void SetViewportPosition(const XMFLOAT3& position);
 
 	// 判断场景中是否存在动态反射
 	bool IsExitDynamicReflectionMesh();
