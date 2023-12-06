@@ -489,13 +489,14 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 	{
 		if (material->IsDirty())
 		{
-			MaterialConstantBuffer.MaterialType = material->GetMaterialType();
-			MaterialConstantBuffer.BaseColor = material->GetBaseColor();
-			MaterialConstantBuffer.Roughness = material->GetRoughness();
-			MaterialConstantBuffer.SpecularColor = material->GetSpecularColor();
-			MaterialConstantBuffer.FresnelF0 = material->GetFresnelF0();
-			MaterialConstantBuffer.Transparency = material->GetTransparency();
-			MaterialConstantBuffer.RefractiveValue = material->GetRefractiveValue();
+			MaterialConstantBuffer.MaterialType = material->GetMaterialType();	// 材质类型
+			MaterialConstantBuffer.BaseColor = material->GetBaseColor();	// 基础颜色
+			MaterialConstantBuffer.Roughness = material->GetRoughness();	// 粗糙度
+			MaterialConstantBuffer.SpecularColor = material->GetSpecularColor();	// 高光颜色
+			MaterialConstantBuffer.FresnelF0 = material->GetFresnelF0();		// 菲涅尔F0
+			MaterialConstantBuffer.Transparency = material->GetTransparency();		// 透明度
+			MaterialConstantBuffer.RefractiveValue = material->GetRefractiveValue();	// 折射率
+			MaterialConstantBuffer.Metallicity = material->GetMetallicity();		// 金属度
 
 			if (auto basecolorPtr = FindRenderingTexture(material->GetBaseColorIndexKey()))
 			{

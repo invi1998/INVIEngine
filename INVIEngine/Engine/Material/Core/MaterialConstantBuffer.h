@@ -26,4 +26,7 @@ struct FMaterialConstantBuffer
 
 	XMFLOAT4X4 Transformation;	// 64×Ö½Ú
 
+	XMFLOAT3 Metallicity;	// 12×Ö½Ú
+	float xx4;
+
 };

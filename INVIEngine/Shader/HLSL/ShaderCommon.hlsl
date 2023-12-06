@@ -80,6 +80,9 @@ struct MaterialConstBuffer
 	float Transparency;
 
 	float4x4 MaterialProjectionMatrix;
+	
+	float3 Metallicity;		// ½ğÊô¶È
+	float XX4;
 };
 
 StructuredBuffer<MaterialConstBuffer> Materials : register(t0, space1);

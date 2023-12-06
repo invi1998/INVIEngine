@@ -5,7 +5,9 @@
 CMaterial::CMaterial()
 	: bDirty(true), MaterialID(-1), BaseColor(0.45f, 0.45f, 0.45f, 1.f), SpecularColor(0.0f, 0.0f, 0.0f),
 	  Roughness(0.2f),
-	  MaterialTransformation(EngineMath::IdentityMatrix4x4()), FresnelF0({ 0.04f, 0.04f, 0.04f })
+	  MaterialTransformation(EngineMath::IdentityMatrix4x4()), FresnelF0({0.04f, 0.04f, 0.04f}), Transparency(0),
+	  RefractiveValue(0),
+	  Metallicity(0.2f, 0.2f, 0.2f)
 {
 }
 
@@ -110,6 +112,13 @@ void CMaterial::SetDynamicReflection(bool bValue)
 void CMaterial::SetRefractiveValue(float x)
 {
 	RefractiveValue = x;
+	SetDirty(true);
+}
+
+void CMaterial::SetMetallicity(float x)
+{
+	Metallicity = {x, x, x};
+
 	SetDirty(true);
 }
 

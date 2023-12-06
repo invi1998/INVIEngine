@@ -28,6 +28,7 @@ public:
 	FORCEINLINE float GetTransparency() const { return Transparency; }
 	FORCEINLINE bool IsDynamicReflection() const { return bDynamicReflection && (MaterialType == EMaterialType::BlinnPhong || MaterialType == EMaterialType::PBR || MaterialType == EMaterialType::Phong || MaterialType == EMaterialType::Back); }
 	FORCEINLINE float GetRefractiveValue() const { return RefractiveValue; }
+	FORCEINLINE XMFLOAT3 GetMetallicity() const { return Metallicity; }
 
 public:
 	void SetBaseColor(const XMFLOAT4& color);
@@ -45,6 +46,7 @@ public:
 	void SetTransparency(float x);
 	void SetDynamicReflection(bool bValue);
 	void SetRefractiveValue(float x);
+	void SetMetallicity(float x);
 
 private:
 	// 材质脏标志，用于标志当前材质是否被动态修改过，如果被动态修改过，该值为true，为true，那么我们才重新提交该材质
@@ -70,5 +72,9 @@ private:
 	bool bDynamicReflection = false;		// 是否是动态反射材质
 
 	float RefractiveValue;			// 折射率
+
+	//金属度
+	XMFLOAT3 Metallicity;
+
 };
 

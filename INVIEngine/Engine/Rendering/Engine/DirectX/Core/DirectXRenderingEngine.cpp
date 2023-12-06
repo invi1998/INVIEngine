@@ -656,6 +656,50 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		//PBR模型组
+		{
+			//自由设定
+			if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//PBR模型
+			{
+				SphereMesh->CreateMesh(2.f, 30, 30);
+				SphereMesh->SetPosition(XMFLOAT3(15.f, 2, 0.f));
+				SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+				if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+				{
+					InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+					InMaterial->SetMaterialType(EMaterialType::PBR);
+				}
+			}
+
+			int Colum = 6;
+			for (int i = 0; i < Colum; i++)
+			{
+				int Row = 6;
+				for (int j = 0; j < Row; j++)
+				{
+					fvector_3d PBRPosition(25.f, -3.f, 5.f);
+					PBRPosition.y += i * 5.f;
+					PBRPosition.z += j * 5.f;
+
+					if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//PBR模型
+					{
+						SphereMesh->CreateMesh(2.f, 30, 30);
+						SphereMesh->SetPosition(XMFLOAT3(PBRPosition.x, PBRPosition.y, PBRPosition.z));
+						SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+						if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+						{
+							InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+							InMaterial->SetMaterialType(EMaterialType::PBR);
+
+							InMaterial->SetRoughness((static_cast<float>(j) + 1.f) / static_cast<float>(Row));
+							InMaterial->SetMetallicity((static_cast<float>(i) + 1.f) / static_cast<float>(Colum));
+						}
+					}
+				}
+			}
+		}
+
+
 		if (GSky* InSky = World->CreateActorObject<GSky>())//天空
 		{
 			InSky->SetPosition(XMFLOAT3(0.f, 0.f, 0.f));

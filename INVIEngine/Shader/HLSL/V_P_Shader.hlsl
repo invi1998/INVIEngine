@@ -362,7 +362,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float PI = 3.1415926f;
         
                 float Roughness = 0.02f; // 粗糙度
-                float3 Matallic = 0.2f; // 金属度
+                float3 Matallic = MatConstbuffer.Metallicity; // 金属度
         
                 // D 项 D_GGX
                 float4 D = GetDistributionGGX(N, H, Roughness);
