@@ -2,11 +2,12 @@
 
 enum EMeshRenderLayerType : int
 {
-	RENDER_LAYER_OPAQUE = 0,		// 不透明层
+	RENDER_LAYER_OPAQUE = 0,			// 不透明层
 	RENDER_LAYER_TRANSPARENT = 1,		// 透明层
 	RENDER_LAYER_ALPHA_TEST = 2,		// alpha测试层
 	RENDER_LAYER_BACKGROUND = 3,		// 背景层
 	RENDER_LAYER_OPAQUE_REFLECT = 4,	// 不透明反射层
+	RENDER_LAYER_OPAQUE_SHADOW = 5,			// 不透明阴影层
 };
 
 

@@ -54,7 +54,12 @@ void FAlphaTestRenderLayer::BuildPSO()
 void FAlphaTestRenderLayer::Draw(float deltaTime)
 {
 	// äÖÈ¾Ö®Ç°£¬ÖØÖÃPSO
-	DirectXPipelineState->ResetPSO(AlphaTest);
+	ResetPSO();
 
 	FRenderLayer::Draw(deltaTime);
+}
+
+void FAlphaTestRenderLayer::ResetPSO()
+{
+	DirectXPipelineState->ResetPSO(AlphaTest);
 }

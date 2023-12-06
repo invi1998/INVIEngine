@@ -5,6 +5,7 @@
 #include "RenderLayer/BackgroundRenderLayer.h"
 #include "RenderLayer/OpaqueReflectorRenderLayer.h"
 #include "RenderLayer/OpaqueRenderLayer.h"
+#include "RenderLayer/OpaqueShadowRenderLayer.h"
 #include "RenderLayer/TransparentRenderLayer.h"
 
 std::vector<std::shared_ptr<FRenderLayer>> FRenderLayerManage::RenderLayers;
@@ -18,6 +19,7 @@ FRenderLayerManage::FRenderLayerManage()
 	CreateRenderLayer<FOpaqueRenderLayer>();
 	CreateRenderLayer<FTransparentRenderLayer>();
 	CreateRenderLayer<FOpaqueReflectorRenderLayer>();
+	CreateRenderLayer<FOpaqueShadowRenderLayer>();
 }
 
 FRenderLayerManage::~FRenderLayerManage()
@@ -119,3 +121,20 @@ void FRenderLayerManage::UpdateCaculations(float deltaTime, const FViewportInfo&
 		layer->UpdateCaculations(deltaTime, viewportInfo);
 	}
 }
+
+void FRenderLayerManage::ResetPSO(int layer)
+{
+	if (auto innerLayer = FindByRenderLayer(layer))
+	{
+		innerLayer->ResetPSO();
+	}
+}
+
+void FRenderLayerManage::DrawMesh(float DeltaTime, int layer)
+{
+	if (auto innerLayer = FindByRenderLayer(layer))
+	{
+		innerLayer->DrawMesh(DeltaTime);
+	}
+}
+

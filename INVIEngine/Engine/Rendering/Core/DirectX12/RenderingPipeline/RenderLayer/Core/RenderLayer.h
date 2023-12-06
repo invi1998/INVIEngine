@@ -42,6 +42,12 @@ public:
 
 	virtual void BuildPSO();
 
+	// 单独设置管线状态对象 PSO
+	virtual void ResetPSO();
+
+	// 渲染，不包括设置管线状态对象 PSO
+	virtual void DrawMesh(float DeltaTime);
+
 protected:
 	UINT RenderPriority;
 	EMeshRenderLayerType RenderLayerType;

@@ -1,16 +1,36 @@
 #include "EngineMinimal.h"
-#include "OpaqueRenderLayer.h"
+#include "OpaqueShadowRenderLayer.h"
 
-#include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 
-FOpaqueRenderLayer::FOpaqueRenderLayer()
+FOpaqueShadowRenderLayer::FOpaqueShadowRenderLayer()
 {
-	RenderPriority = 2000;
-	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_OPAQUE;
+	RenderPriority = 1280;
+	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_OPAQUE_SHADOW;
 }
 
-void FOpaqueRenderLayer::BuildShader()
+FOpaqueShadowRenderLayer::~FOpaqueShadowRenderLayer()
+{
+}
+
+void FOpaqueShadowRenderLayer::PreDraw(float deltaTime)
+{
+	FRenderLayer::PreDraw(deltaTime);
+}
+
+void FOpaqueShadowRenderLayer::Draw(float deltaTime)
+{
+	ResetPSO();
+
+	FRenderLayer::Draw(deltaTime);
+}
+
+void FOpaqueShadowRenderLayer::PostDraw(float deltaTime)
+{
+	FRenderLayer::PostDraw(deltaTime);
+}
+
+void FOpaqueShadowRenderLayer::BuildShader()
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
@@ -42,26 +62,20 @@ void FOpaqueRenderLayer::BuildShader()
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
 
-void FOpaqueRenderLayer::BuildPSO()
+void FOpaqueShadowRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
 
-	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Solid);
-
-	DirectXPipelineState->SetFillModle(true);
-
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Wireframe);
+	DirectXPipelineState->BuildPipelineState(EPipelineState::Shadow);
+	
 }
 
-void FOpaqueRenderLayer::Draw(float deltaTime)
+void FOpaqueShadowRenderLayer::ResetPSO()
 {
-	ResetPSO();
-
-	FRenderLayer::Draw(deltaTime);
+	DirectXPipelineState->ResetPSO(Shadow);
 }
 
-void FOpaqueRenderLayer::ResetPSO()
+void FOpaqueShadowRenderLayer::DrawMesh(float DeltaTime)
 {
-	DirectXPipelineState->ResetPSO();
+	FRenderLayer::DrawMesh(DeltaTime);
 }

@@ -11,5 +11,7 @@ public:
 	virtual void BuildPSO() override;
 
 	virtual void Draw(float deltaTime) override;
+
+	void ResetPSO() override;
 };
 

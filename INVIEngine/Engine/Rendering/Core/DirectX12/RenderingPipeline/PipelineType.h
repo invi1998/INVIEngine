@@ -12,5 +12,6 @@ enum EPipelineState : UINT
 	Reflector = 3,					// 反射层
 	Solid	= 4,				// 实体
 	Wireframe	= 5,			// 线框
+	Shadow = 6,					// 阴影
 };
 

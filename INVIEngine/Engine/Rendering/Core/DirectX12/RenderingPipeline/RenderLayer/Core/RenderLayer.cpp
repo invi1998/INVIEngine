@@ -24,10 +24,7 @@ void FRenderLayer::PreDraw(float deltaTime)
 
 void FRenderLayer::Draw(float deltaTime)
 {
-	for (auto& innerRenderData : RenderData)
-	{
-		DrawObject(deltaTime, innerRenderData);
-	}
+	DrawMesh(deltaTime);
 }
 
 void FRenderLayer::PostDraw(float deltaTime)
@@ -184,6 +181,18 @@ void FRenderLayer::BuildPSO()
 
 	// 构建PSO参数
 	DirectXPipelineState->BuildParam();
+}
+
+void FRenderLayer::ResetPSO()
+{
+}
+
+void FRenderLayer::DrawMesh(float DeltaTime)
+{
+	for (auto& innerRenderData : RenderData)
+	{
+		DrawObject(DeltaTime, innerRenderData);
+	}
 }
 
 

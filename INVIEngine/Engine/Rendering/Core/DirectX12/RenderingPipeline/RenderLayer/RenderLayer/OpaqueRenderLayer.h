@@ -13,5 +13,7 @@ public:
 
 	virtual void Draw(float deltaTime) override;
 
+	void ResetPSO() override;
+
 };
 

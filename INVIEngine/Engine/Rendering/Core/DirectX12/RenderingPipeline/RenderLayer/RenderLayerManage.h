@@ -37,6 +37,12 @@ public:
 
 	virtual void UpdateCaculations(float deltaTime, const FViewportInfo& viewportInfo);
 
+	// 指定你要渲染的层级
+	void ResetPSO(int layer);
+
+	// 指定你要那个层级里面的模型进行渲染
+	void DrawMesh(float DeltaTime, int layer);
+
 protected:
 	static std::vector<std::shared_ptr<FRenderLayer>> RenderLayers;
 };
