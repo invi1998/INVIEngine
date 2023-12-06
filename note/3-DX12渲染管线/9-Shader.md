@@ -13,7 +13,7 @@ HLSL 程序通常由两个部分组成：输入和输出。输入部分定义了
 
 例如，下面是一个简单的 HLSL 顶点着色器示例：
 
-```hlsl
+```c++
 struct VertexInput
 {
     float3 position : POSITION;
@@ -42,7 +42,18 @@ VertexOutput main(VertexInput input)
 
 总之，HLSL 是一种用于编写 GPU 着色器代码的高级着色器语言，具有独立于硬件、易于使用、功能丰富和调试支持等优势。在 Direct3D 应用程序开发中，HLSL 能够帮助开发者快速实现各种类型的着色器，并获得更好的性能和效果。
 
+## SV_POSITION 和 POSITION
 
+SV_ _POSITION: SV_ 前缀的变量代表system value,在DX10以后的语义绑定中被使用代表特殊的意义，和POSITION用法并无不同。唯一区别是SV_ POSTION-旦被作为vertex shader的输出语义，那么这个最终的顶点位置就被固定了(不能tensellate,不能再被后续改变它的空间位置? ), 已经成为了转换裁剪世界的坐标，可以直接用来进入光栅化处理的坐标，如果作为fragment shader的输入语义那么和POSITION是一样的，代表着每个像素点在屏幕上的位置(这 个说法其实并不准确，事实是fragment 在view space空间中的位置,但直观的感受是如括号之前所述一般)
+
+其次：在DX10版本之前没有引入SV_的预定义语义，POSITION被用作vertex shader的输入，输出, fragment shader的输入参数。但DX10之后就推荐使用SV_ POSITION作为vertex shader的输出和fragment shader的输入了,注意vertex shader的输入还是使用POSITION!切记。但是DX10以后的代码依旧兼容POSITION作为全程表达
+
+总结
+
+两个的用法大致相同,都是存储坐标信息,但是一个是转换前的， -个是转换后的。
+POSITION:用来存储，模型在本地坐标下，模型空间中(objcet space)的顶点坐标,转换为剪裁空间坐标前的坐标，unity告诉我们的模型顶点坐标，没经过转换的。可作定色器(vertex shader)的输入、输出;片段着色器(frag) 的输入。
+
+SV_ POSITION:来存储，模型在剪裁空间，投影空间中的位置信息,即把模型空间的定点坐标，转化为剪裁空间的坐标，可作顶点着色器(vertex shader)的输出;片段着色器(frag) 的输入。.
 
 ## D3D12_INPUT_ELEMENT_DESC
 
