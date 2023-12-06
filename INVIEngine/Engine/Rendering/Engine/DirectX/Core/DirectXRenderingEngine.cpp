@@ -636,25 +636,25 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		//if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//玻璃珠子
-		//{
-		//	SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPAQUE_REFLECT);
-		//	SphereMesh->CreateMesh(2.f, 100, 100);
-		//	SphereMesh->SetPosition(XMFLOAT3(15.f, 17, 20.f));
-		//	SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-		//	if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
-		//	{
-		//		InMaterial->SetDynamicReflection(true);		// 开启动态反射
-		//		InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.0f, 1.0f, 1.f));
-		//		InMaterial->SetMaterialType(EMaterialType::Transparency);
+		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())//玻璃珠子
+		{
+			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPAQUE_REFLECT);
+			SphereMesh->CreateMesh(2.f, 100, 100);
+			SphereMesh->SetPosition(XMFLOAT3(15.f, 17, 20.f));
+			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
+			{
+				InMaterial->SetDynamicReflection(true);		// 开启动态反射
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.0f, 1.0f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::Transparency);
 
-		//		InMaterial->SetRoughness(0.01f);
-		//		InMaterial->SetFresnelF0(XMFLOAT3(0.5f, 0.5f, 0.5f));
-		//		InMaterial->SetTransparency(1.0f);
+				InMaterial->SetRoughness(0.01f);
+				InMaterial->SetFresnelF0(XMFLOAT3(0.5f, 0.5f, 0.5f));
+				InMaterial->SetTransparency(1.0f);
 
-		//		InMaterial->SetRefractiveValue(1.11f);		// 设置折射率
-		//	}
-		//}
+				InMaterial->SetRefractiveValue(1.11f);		// 设置折射率
+			}
+		}
 
 		if (GSky* InSky = World->CreateActorObject<GSky>())//天空
 		{

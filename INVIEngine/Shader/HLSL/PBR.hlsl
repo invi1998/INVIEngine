@@ -8,7 +8,7 @@ float4 GetDistributionGGX(float3 N, float H, float Roughness)
 {
     float PI = 3.1415926f;
     
-    float a2 = pow(Roughness, 4);
+    float a2 = pow(Roughness, 2);
     
     float NoH = saturate(dot(N, H));
     
