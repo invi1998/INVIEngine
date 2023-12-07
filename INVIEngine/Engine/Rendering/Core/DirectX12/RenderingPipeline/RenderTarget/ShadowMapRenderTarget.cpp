@@ -8,6 +8,8 @@ FShadowMapRenderTarget::FShadowMapRenderTarget() : FRenderTarget()
 void FShadowMapRenderTarget::Init(UINT w, UINT h, const DXGI_FORMAT& format)
 {
 	FRenderTarget::Init(w, h, format);
+
+	BuildDSVDescriptor();
 }
 
 void FShadowMapRenderTarget::BuildRenderTarget()

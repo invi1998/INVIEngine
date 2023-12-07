@@ -56,7 +56,7 @@ struct FGeometryMap : IDirectXDeviceInterface_Struct
 	friend class FRenderLayer;
 	friend class FDynamicCubeMap;
 	friend class FRenderingPipeline;
-	friend class FDynamicShaowMap;
+	friend class FDynamicShadowMap;
 
 public:
 	FGeometryMap();
