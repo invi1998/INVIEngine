@@ -80,7 +80,7 @@ float3 GetRefract(float3 InUnitWorldNormal, float3 WorldPosition, float InRefrac
 // 获取反射采样颜色
 float3 GetReflectionSampleColor(float3 UnitWorldNormal, float3 NewReflect)
 {
-	return SimpleCubeMap[0].Sample(TextureSampler, NewReflect).rgb;
+	return SimpleCubeMap.Sample(TextureSampler, NewReflect).rgb;
 }
 
 // 获取反射度(决定当前反射颜色的强度）

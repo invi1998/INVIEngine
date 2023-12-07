@@ -115,7 +115,7 @@ int CDirectXRenderingEngine::PostInit()
 		//	SpotLight->SetConicalOuterCorner(60.f);
 		//}
 
-		if (GSphereMesh* sphere = World->CreateActorObject<GSphereMesh>())
+		/*if (GSphereMesh* sphere = World->CreateActorObject<GSphereMesh>())
 		{
 			sphere->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_BACKGROUND);
 
@@ -129,7 +129,7 @@ int CDirectXRenderingEngine::PostInit()
 				material->SetSpecular(XMFLOAT3(1.0f, 1.0f, 1.0f));
 				material->SetMaterialType(BaseColor);
 			}
-		}
+		}*/
 
 		////ÌðÌðÈ¦
 		if (GTorusMesh* InTorusMesh = World->CreateActorObject<GTorusMesh>())
