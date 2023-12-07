@@ -5,6 +5,7 @@
 #include "Mesh/Core/MeshType.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/DynamicMap/ShadowMap/DynamicShadowMap.h"
 
 class CFogComponent;
 struct FRenderingTexture;
@@ -54,6 +55,9 @@ struct FGeometryMap : IDirectXDeviceInterface_Struct
 {
 	friend class FRenderLayer;
 	friend class FDynamicCubeMap;
+	friend class FRenderingPipeline;
+	friend class FDynamicShaowMap;
+
 public:
 	FGeometryMap();
 	~FGeometryMap();
@@ -96,6 +100,8 @@ public:
 
 	void BuildFog();
 
+	void BuildShadow();
+
 	// 是否开启雾
 	bool IsStartUpFog();
 
@@ -119,6 +125,9 @@ public:
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 
 	void UpdateMaterialShaderResourceView(float delta_time, const FViewportInfo& viewport_info);
+	void UpdateLight(float delta_time, const FViewportInfo& viewport_info);
+	void UpdateShadow(float delta_time, const FViewportInfo& viewport_info);
+	void UpdateFog(float delta_time, const FViewportInfo& viewport_info);
 
 	void PreDraw(float DeltaTime);
 	void Draw(float DeltaTime);
@@ -133,7 +142,7 @@ public:
 
 	std::unique_ptr<FRenderingTexture>* FindRenderingTexture(const std::string& key);
 
-private:
+public:
 
 	// 渲染模型
 	void DrawMesh(float DeltaTime);
@@ -143,6 +152,9 @@ private:
 
 	// 渲染灯光
 	void DrawLight(float DeltaTime);
+
+	// 渲染阴影
+	void DrawShadow(float DeltaTime);
 
 	// 渲染纹理
 	void DrawTexture2D(float DeltaTime);
@@ -166,6 +178,8 @@ protected:
 	std::vector<CMeshComponent*> DynamicReflectionMeshComponents{};		// 动态反射组件
 
 	CFogComponent* Fog;
+
+	FDynamicShadowMap DynamicShadowMap;		// 动态阴影贴图
 };
 
 

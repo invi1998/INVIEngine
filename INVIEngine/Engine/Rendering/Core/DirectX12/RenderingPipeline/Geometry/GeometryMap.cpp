@@ -329,6 +329,13 @@ void FGeometryMap::BuildFog()
 	}
 }
 
+void FGeometryMap::BuildShadow()
+{
+	DynamicShadowMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
+	DynamicShadowMap.BuildDepthStencilViewDesc();
+	DynamicShadowMap.BuildShadowMapRenderTargetDescriptor();
+}
+
 bool FGeometryMap::IsStartUpFog()
 {
 	return Fog != nullptr;
@@ -427,57 +434,16 @@ void FGeometryMap::UpdateCalculations(float delta_time, const FViewportInfo& vie
 	UpdateMaterialShaderResourceView(delta_time, viewport_info);
 
 	// 更新灯光
-	FLightConstantBuffer LightConstantBuffer;
-	for (size_t i = 0; i < GetLightManger()->Lights.size(); i++)
-	{
-		if (CLightComponent* lightComponent = GetLightManger()->Lights[i])
-		{
-			LightConstantBuffer.SceneLights[i].LightDirection = lightComponent->GetForwardVector();
-			LightConstantBuffer.SceneLights[i].LightIntensity = lightComponent->GetLightIntensity();
-			LightConstantBuffer.SceneLights[i].LightType = static_cast<int>(lightComponent->GetLightType());
-			LightConstantBuffer.SceneLights[i].LightPosition = lightComponent->GetPosition();
-
-			if (auto rangeLightComponent = dynamic_cast<CRangeLightComponent*>(lightComponent))
-			{
-				LightConstantBuffer.SceneLights[i].StartAttenuation = rangeLightComponent->GetStartAttenuation();
-				LightConstantBuffer.SceneLights[i].EndAttenuation = rangeLightComponent->GetEndAttenuation();
-				LightConstantBuffer.SceneLights[i].Kc = rangeLightComponent->GetKc();
-				LightConstantBuffer.SceneLights[i].Kl = rangeLightComponent->GetKl();
-				LightConstantBuffer.SceneLights[i].Kq = rangeLightComponent->GetKq();
-			}
-			if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
-			{
-				LightConstantBuffer.SceneLights[i].SpotInnerCornerPhi = math_utils::angle_to_radian(spotLightComponent->GetSpotInnerCornerPhi());
-				LightConstantBuffer.SceneLights[i].SpotOuterCornerTheta = math_utils::angle_to_radian(spotLightComponent->GetSpotOuterCornerTheta());
-			}
-		}
-	}
-	LightConstantBufferViews.Update(0, &LightConstantBuffer);
+	UpdateLight(delta_time, viewport_info);
 
 	// 更新视口
 	UpdateCalculationViewport(viewport_info, 0);
 
 	// 更新雾
-	if (Fog)
-	{
-		if (Fog->IsDirty())
-		{
-			FFogConstantBuffer fogConstbuffer;
+	UpdateFog(delta_time, viewport_info);
 
-			fogConstbuffer.FogColor = Fog->GetFogColor();
-			fogConstbuffer.FogStart = Fog->GetFogStart();
-			fogConstbuffer.FogRange = Fog->GetFogRange();
-			fogConstbuffer.FogHeight = Fog->GetFogHeight();
-			fogConstbuffer.FogTransparentCoefficient = Fog->GetFogTransparentCoefficient();
-
-			// fogConstbuffer.FogTransparentCoefficient = Fog->GetFogTransparentCoefficient();
-
-			FogConstantBufferViews.Update(0, &fogConstbuffer);
-
-			Fog->SetDirty(false);
-		}
-		
-	}
+	// 更新阴影
+	UpdateShadow(delta_time, viewport_info);
 	
 }
 
@@ -541,6 +507,68 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 		}
 	}
 	
+}
+
+void FGeometryMap::UpdateLight(float delta_time, const FViewportInfo& viewport_info)
+{
+	// 更新灯光
+	FLightConstantBuffer LightConstantBuffer;
+	for (size_t i = 0; i < GetLightManger()->Lights.size(); i++)
+	{
+		if (CLightComponent* lightComponent = GetLightManger()->Lights[i])
+		{
+			LightConstantBuffer.SceneLights[i].LightDirection = lightComponent->GetForwardVector();
+			LightConstantBuffer.SceneLights[i].LightIntensity = lightComponent->GetLightIntensity();
+			LightConstantBuffer.SceneLights[i].LightType = static_cast<int>(lightComponent->GetLightType());
+			LightConstantBuffer.SceneLights[i].LightPosition = lightComponent->GetPosition();
+
+			if (auto rangeLightComponent = dynamic_cast<CRangeLightComponent*>(lightComponent))
+			{
+				LightConstantBuffer.SceneLights[i].StartAttenuation = rangeLightComponent->GetStartAttenuation();
+				LightConstantBuffer.SceneLights[i].EndAttenuation = rangeLightComponent->GetEndAttenuation();
+				LightConstantBuffer.SceneLights[i].Kc = rangeLightComponent->GetKc();
+				LightConstantBuffer.SceneLights[i].Kl = rangeLightComponent->GetKl();
+				LightConstantBuffer.SceneLights[i].Kq = rangeLightComponent->GetKq();
+			}
+			if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
+			{
+				LightConstantBuffer.SceneLights[i].SpotInnerCornerPhi = math_utils::angle_to_radian(spotLightComponent->GetSpotInnerCornerPhi());
+				LightConstantBuffer.SceneLights[i].SpotOuterCornerTheta = math_utils::angle_to_radian(spotLightComponent->GetSpotOuterCornerTheta());
+			}
+		}
+	}
+	LightConstantBufferViews.Update(0, &LightConstantBuffer);
+}
+
+void FGeometryMap::UpdateShadow(float delta_time, const FViewportInfo& viewport_info)
+{
+	// 更新阴影
+	DynamicShadowMap.UpdateCalculations(delta_time, viewport_info);
+}
+
+void FGeometryMap::UpdateFog(float delta_time, const FViewportInfo& viewport_info)
+{
+	// 更新雾
+	if (Fog)
+	{
+		if (Fog->IsDirty())
+		{
+			FFogConstantBuffer fogConstbuffer;
+
+			fogConstbuffer.FogColor = Fog->GetFogColor();
+			fogConstbuffer.FogStart = Fog->GetFogStart();
+			fogConstbuffer.FogRange = Fog->GetFogRange();
+			fogConstbuffer.FogHeight = Fog->GetFogHeight();
+			fogConstbuffer.FogTransparentCoefficient = Fog->GetFogTransparentCoefficient();
+
+			// fogConstbuffer.FogTransparentCoefficient = Fog->GetFogTransparentCoefficient();
+
+			FogConstantBufferViews.Update(0, &fogConstbuffer);
+
+			Fog->SetDirty(false);
+		}
+
+	}
 }
 
 void FGeometryMap::PreDraw(float DeltaTime)
@@ -643,6 +671,11 @@ void FGeometryMap::DrawLight(float DeltaTime)
 	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(2, DesHandle);		// 更新b1寄存器 (视口是后渲染，所以放在寄存器1中）
 
 	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(2, LightConstantBufferViews.GetBuffer()->GetGPUVirtualAddress());
+}
+
+void FGeometryMap::DrawShadow(float DeltaTime)
+{
+	DynamicShadowMap.Draw(DeltaTime);
 }
 
 void FGeometryMap::DrawTexture2D(float DeltaTime)
