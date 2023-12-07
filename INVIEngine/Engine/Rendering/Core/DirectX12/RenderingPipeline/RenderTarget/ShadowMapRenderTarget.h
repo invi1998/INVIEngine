@@ -17,7 +17,7 @@ protected:
 	void BuildShadowConstantBuffer();
 
 private:
-	D3D12_CPU_DESCRIPTOR_HANDLE CPUDepthStencilView;		// 深度模板视图	DSV
+	D3D12_CPU_DESCRIPTOR_HANDLE CPUDepthStencilView{};		// 深度模板视图	DSV
 
 };
 
