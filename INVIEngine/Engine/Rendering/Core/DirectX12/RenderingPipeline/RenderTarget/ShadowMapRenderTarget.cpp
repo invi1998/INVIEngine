@@ -51,6 +51,28 @@ void FShadowMapRenderTarget::BuildRenderTarget()
 
 void FShadowMapRenderTarget::BuildSRVDescriptor()
 {
+	// 构建常量缓冲区
+	BuildShadowConstantBuffer();
+}
+
+void FShadowMapRenderTarget::BuildDSVDescriptor()
+{
+	D3D12_DEPTH_STENCIL_VIEW_DESC DSV_Desc{};
+
+	DSV_Desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;		// 深度模板数据格式
+	DSV_Desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;		// 深度模板视图维度
+	DSV_Desc.Flags = D3D12_DSV_FLAG_NONE;		// 深度模板视图标记
+	DSV_Desc.Texture2D.MipSlice = 0;		// mipmap
+
+	GetD3dDevice()->CreateDepthStencilView(
+		GetRenderTarget(),
+		&DSV_Desc,
+		CPUDepthStencilView
+	);
+}
+
+void FShadowMapRenderTarget::BuildShadowConstantBuffer()
+{
 	D3D12_SHADER_RESOURCE_VIEW_DESC SRV_Desc{};
 
 	SRV_Desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;		// 设置纹理数据格式
@@ -68,21 +90,5 @@ void FShadowMapRenderTarget::BuildSRVDescriptor()
 		GetRenderTarget(),
 		&SRV_Desc,
 		CPUShaderResourceView
-	);
-}
-
-void FShadowMapRenderTarget::BuildDSVDescriptor()
-{
-	D3D12_DEPTH_STENCIL_VIEW_DESC DSV_Desc{};
-
-	DSV_Desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;		// 深度模板数据格式
-	DSV_Desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;		// 深度模板视图维度
-	DSV_Desc.Flags = D3D12_DSV_FLAG_NONE;		// 深度模板视图标记
-	DSV_Desc.Texture2D.MipSlice = 0;		// mipmap
-
-	GetD3dDevice()->CreateDepthStencilView(
-		GetRenderTarget(),
-		&DSV_Desc,
-		CPUDepthStencilView
 	);
 }

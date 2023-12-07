@@ -26,6 +26,8 @@ public:
 	void BuildDepthStencilViewDesc();
 	void BuildShadowMapRenderTargetDescriptor();
 
+	void DrawShadowMapTexture(float DeltaTime);
+
 protected:
 	void BuildRenderTargetSRV();
 

@@ -13,6 +13,9 @@ public:
 	void BuildSRVDescriptor() override;
 	void BuildDSVDescriptor() override;
 
+protected:
+	void BuildShadowConstantBuffer();
+
 private:
 	D3D12_CPU_DESCRIPTOR_HANDLE CPUDepthStencilView;		// 深度模板视图	DSV
 

@@ -88,6 +88,14 @@ void FDynamicShadowMap::BuildShadowMapRenderTargetDescriptor()
 	RenderTarget->Init(Width, Height, DXGI_FORMAT_D24_UNORM_S8_UINT);
 }
 
+void FDynamicShadowMap::DrawShadowMapTexture(float DeltaTime)
+{
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+			7,	// 根参数的起始索引
+			RenderTarget->GetGPUShaderResourceView()	// GPU资源视图
+		);
+}
+
 void FDynamicShadowMap::BuildRenderTargetSRV()
 {
 	if (FShadowMapRenderTarget* inRenderTarget = dynamic_cast<FShadowMapRenderTarget*>(this->RenderTarget.get()))
@@ -97,14 +105,14 @@ void FDynamicShadowMap::BuildRenderTargetSRV()
 		auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();
 		auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();
 
-		// 为CubeMap创建CPU shader资源视图
+		// 为CubeMap创建CPU shader资源视图 主要是创建Shadow常量缓冲区
 		inRenderTarget->CPUShaderResourceView = CD3DX12_CPU_DESCRIPTOR_HANDLE(
 			CPUSRVDesHeapStart,		// CPU SRV的起始地址
 			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount() + 1,	// 偏移量 Texture2D + CubeMap + DynamicCubeMap
 			CBVDescriptorSize	// SRV偏移量
 		);
 
-		// 为CubeMap创建GPU shader资源视图
+		// 为CubeMap创建GPU shader资源视图 后期我们渲染阴影贴图的时候，需要将这个资源视图绑定到着色器上
 		inRenderTarget->GPUShaderResourceView = CD3DX12_GPU_DESCRIPTOR_HANDLE(
 			GPUSRVDesHeapStart,		// GPU SRV的起始地址
 			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount() + 1,	// 偏移量
