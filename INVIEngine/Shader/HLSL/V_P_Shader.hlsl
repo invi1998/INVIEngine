@@ -75,11 +75,14 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	MaterialConstBuffer MatConstbuffer = Materials[MaterialID];
-	
-	return float4(SimpleShadowMap.Sample(TextureSampler, mvOut.Texcoord).rrr, 1.0f);
+
+	if (MatConstbuffer.MaterialType == 101)
+	{
+		// ‰÷»æ“ı”∞Ã˘Õº
+		return float4(SimpleShadowMap.Sample(TextureSampler, mvOut.Texcoord).rrr, 1.0f);
+	}
 	
     FMaterial material;
-	
 	
 	material.BaseColor = GetMaterialBaseColor(MatConstbuffer, mvOut.Texcoord);
    

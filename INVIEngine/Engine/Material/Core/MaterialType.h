@@ -29,6 +29,8 @@ enum EMaterialType : UINT
 
 	Fresnel = 100,					// ·ÆÄù¶û
 
+	ShadowTexture = 101,				// ÒõÓ°ÌùÍ¼
+
 	Max,							// Ä¬ÈÏ²ÄÖÊ
 };
 

@@ -717,6 +717,17 @@ int CDirectXRenderingEngine::PostInit()
 
 		}
 
+		if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
+		{
+			InPlaneMesh->CreateMesh(7.f, 7.f, 2, 2);
+			InPlaneMesh->SetPosition(XMFLOAT3(0.f, 0.f, 40.f));
+			InPlaneMesh->SetRotation(fvector_3d(90.f, 0.f, 0.f));
+			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
+			{
+				InMaterial->SetMaterialType(ShadowTexture);
+			}
+		}
+
 		/*if (GMesh* CylinderMesh = MeshManage->CreateCylinderMesh(1.f, 1.f, 5.f, 20, 20))
 		{
 			CylinderMesh->SetPosition(XMFLOAT3(1, -2, -4));
