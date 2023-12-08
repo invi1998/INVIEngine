@@ -539,7 +539,7 @@ void FGeometryMap::UpdateLight(float delta_time, const FViewportInfo& viewport_i
 					XMMATRIX ShadowViewMatrix = XMLoadFloat4x4(&ViewMatrix);
 					XMMATRIX ShadowProjectionMatrix = XMLoadFloat4x4(&ProjectionMatrix);
 
-					// 装备一个变换矩阵 该矩阵可以将我们NDC空间里的[-1, 1]转换到[0, 1]
+					// 准备一个变换矩阵 该矩阵可以将我们NDC空间里的[-1, 1]转换到[0, 1]
 					XMMATRIX Transform = {
 						0.5f, 0.0f, 0.0f, 0.0f,
 						0.0f, -0.5f, 0.0f, 0.0f,
