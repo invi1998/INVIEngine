@@ -20,7 +20,18 @@ public:
 	void SetViewportPosition(const XMFLOAT3& position);
 	void SetViewportRotation(const XMFLOAT3& rotation);
 	void BuildViewPort(const XMFLOAT3& position);
+
+	XMFLOAT4X4 GetViewMatrix();
+
+	XMFLOAT4X4 GetProjectionMatrix();
+
 	void BuildViewMatrix();
+
+	// 构建投影矩阵
+	void BuildProjectionMatrix();
+
+	// 构建正交投影矩阵（平行光）目标位置 方向 半径
+	void BuildOrthoProjectionMatrix(const XMFLOAT3& targetPosition, const XMFLOAT3& direction, float radius);
 
 	// 构建深度模板描述
 	void BuildDepthStencilViewDesc();

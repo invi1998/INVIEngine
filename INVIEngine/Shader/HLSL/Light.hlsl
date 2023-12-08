@@ -23,6 +23,8 @@ struct Light
 	float xxs2;
 	float xxs3;
 	
+	float4x4 ShadowTransform;	// 灯光视角阴影变换矩阵
+	
 };
 
 float3 GetLightDirection(Light L, float3 WorldLocation)

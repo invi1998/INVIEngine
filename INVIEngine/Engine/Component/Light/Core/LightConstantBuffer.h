@@ -23,6 +23,8 @@ struct FLight
     float xxs1;
     float xxs2;
     float xxs3;
+
+	XMFLOAT4X4 ShadowTransform;	// 灯光视角阴影变换矩阵
 };
 
 // 灯光常量缓冲区

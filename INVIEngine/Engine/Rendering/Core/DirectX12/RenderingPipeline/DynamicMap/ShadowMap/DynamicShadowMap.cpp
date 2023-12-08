@@ -123,9 +123,28 @@ void FDynamicShadowMap::BuildViewPort(const XMFLOAT3& position)
 	BuildViewMatrix();
 }
 
+XMFLOAT4X4 FDynamicShadowMap::GetViewMatrix()
+{
+	return ShadowViewPort->GetViewMatrix();
+}
+
+XMFLOAT4X4 FDynamicShadowMap::GetProjectionMatrix()
+{
+	return ShadowViewPort->GetProjectionMatrix();
+}
+
 void FDynamicShadowMap::BuildViewMatrix()
 {
 	ShadowViewPort->BuildViewMatrix();
+}
+
+void FDynamicShadowMap::BuildProjectionMatrix()
+{
+}
+
+void FDynamicShadowMap::BuildOrthoProjectionMatrix(const XMFLOAT3& targetPosition, const XMFLOAT3& direction,
+	float radius)
+{
 }
 
 void FDynamicShadowMap::BuildDepthStencilViewDesc()

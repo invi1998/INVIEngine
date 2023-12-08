@@ -10,6 +10,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	// 构建视口矩阵
 	void BuildViewMatrix();
 
 	// 计算面朝向

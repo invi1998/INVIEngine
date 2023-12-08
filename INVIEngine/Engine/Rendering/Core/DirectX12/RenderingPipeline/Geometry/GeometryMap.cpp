@@ -522,19 +522,60 @@ void FGeometryMap::UpdateLight(float delta_time, const FViewportInfo& viewport_i
 			LightConstantBuffer.SceneLights[i].LightType = static_cast<int>(lightComponent->GetLightType());
 			LightConstantBuffer.SceneLights[i].LightPosition = lightComponent->GetPosition();
 
-			if (auto rangeLightComponent = dynamic_cast<CRangeLightComponent*>(lightComponent))
+			switch (lightComponent->GetLightType())
 			{
-				LightConstantBuffer.SceneLights[i].StartAttenuation = rangeLightComponent->GetStartAttenuation();
-				LightConstantBuffer.SceneLights[i].EndAttenuation = rangeLightComponent->GetEndAttenuation();
-				LightConstantBuffer.SceneLights[i].Kc = rangeLightComponent->GetKc();
-				LightConstantBuffer.SceneLights[i].Kl = rangeLightComponent->GetKl();
-				LightConstantBuffer.SceneLights[i].Kq = rangeLightComponent->GetKq();
+			case DirectionalLight:
+				{
+					// 平行光 这里构建的是正交矩阵
+
+					DynamicShadowMap.BuildOrthoProjectionMatrix(lightComponent->GetForwardVector(), { 0, 0, 0 }, 200.f);
+
+					// 获取ViewMatrix
+					XMFLOAT4X4 ViewMatrix = DynamicShadowMap.GetViewMatrix();
+
+					// 获取ProjectionMatrix
+					XMFLOAT4X4 ProjectionMatrix = DynamicShadowMap.GetProjectionMatrix();
+
+					XMMATRIX ShadowViewMatrix = XMLoadFloat4x4(&ViewMatrix);
+					XMMATRIX ShadowProjectionMatrix = XMLoadFloat4x4(&ProjectionMatrix);
+
+					// 装备一个变换矩阵 该矩阵可以将我们NDC空间里的[-1, 1]转换到[0, 1]
+					XMMATRIX Transform = {
+						0.5f, 0.0f, 0.0f, 0.0f,
+						0.0f, -0.5f, 0.0f, 0.0f,
+						0.0f, 0.0f, 1.0f, 0.0f,
+						0.5f, 0.5f, 0.0f, 1.0f
+					};
+
+					// NDC [-1, 1] ==> [0, 1]
+					XMMATRIX ShadowViewProjectionMatrix = ShadowViewMatrix * ShadowProjectionMatrix * Transform;
+
+					// 存储Shadow变化矩阵 (记得要先对矩阵进行转置)
+					XMStoreFloat4x4(&LightConstantBuffer.SceneLights[i].ShadowTransform, XMMatrixTranspose(ShadowViewProjectionMatrix));
+					break;
+				};
+			case PointLight: break;
+			case SpotLight:
+				{
+					if (auto rangeLightComponent = dynamic_cast<CRangeLightComponent*>(lightComponent))
+					{
+						LightConstantBuffer.SceneLights[i].StartAttenuation = rangeLightComponent->GetStartAttenuation();
+						LightConstantBuffer.SceneLights[i].EndAttenuation = rangeLightComponent->GetEndAttenuation();
+						LightConstantBuffer.SceneLights[i].Kc = rangeLightComponent->GetKc();
+						LightConstantBuffer.SceneLights[i].Kl = rangeLightComponent->GetKl();
+						LightConstantBuffer.SceneLights[i].Kq = rangeLightComponent->GetKq();
+					}
+					if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
+					{
+						LightConstantBuffer.SceneLights[i].SpotInnerCornerPhi = math_utils::angle_to_radian(spotLightComponent->GetSpotInnerCornerPhi());
+						LightConstantBuffer.SceneLights[i].SpotOuterCornerTheta = math_utils::angle_to_radian(spotLightComponent->GetSpotOuterCornerTheta());
+					}
+					break;
+				};
+			default: break;;
 			}
-			if (auto spotLightComponent = dynamic_cast<CSpotLightComponent*>(lightComponent))
-			{
-				LightConstantBuffer.SceneLights[i].SpotInnerCornerPhi = math_utils::angle_to_radian(spotLightComponent->GetSpotInnerCornerPhi());
-				LightConstantBuffer.SceneLights[i].SpotOuterCornerTheta = math_utils::angle_to_radian(spotLightComponent->GetSpotOuterCornerTheta());
-			}
+
+			
 		}
 	}
 	LightConstantBufferViews.Update(0, &LightConstantBuffer);
