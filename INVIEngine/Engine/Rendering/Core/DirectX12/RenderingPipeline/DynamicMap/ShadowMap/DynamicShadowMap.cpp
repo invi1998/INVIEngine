@@ -4,6 +4,7 @@
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
+#include "Core/Viewport/ViewportInfo.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/ShadowMapRenderTarget.h"
@@ -31,6 +32,17 @@ void FDynamicShadowMap::PreDraw(float DeltaTime)
 void FDynamicShadowMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
 	FDynamicMap::UpdateCalculations(delta_time, viewport_info);
+
+	if (ShadowViewPort)
+	{
+		FViewportInfo ShadowViewInfo;
+		ShadowViewInfo.ViewMatrix = GetViewMatrix();
+		ShadowViewInfo.ProjectionMatrix = GetProjectionMatrix();
+		XMFLOAT3 pos = ShadowViewPort->GetPosition();
+		ShadowViewInfo.CameraPosition = XMFLOAT4(pos.x, pos.y, pos.z, 1.0f);
+		// 更新视口，偏移量为动态反射的摄像机数+主视口的摄像机
+		GeometryMap->UpdateCalculationViewport(ShadowViewInfo, GeometryMap->GetDynamicViewportNum() + 1);
+	}
 }
 
 void FDynamicShadowMap::Build(const XMFLOAT3& center)
