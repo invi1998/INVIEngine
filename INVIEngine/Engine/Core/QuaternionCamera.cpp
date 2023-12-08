@@ -21,7 +21,7 @@ GQuaternionCamera::GQuaternionCamera()
     InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GQuaternionCamera::ExecuteInput);
 
     // UpdateViewMatrix();
-    GActorObject::SetPosition({ 0.f, 0.f, 10.f });
+    GActorObject::SetPosition(XMFLOAT3{ 0.f, 0.f, 10.f });
 	GActorObject::SetRotation({ 0.f, 180.f, 0.f });
     UpdateProjectionMatrix();
 	BuildViewMatrix();

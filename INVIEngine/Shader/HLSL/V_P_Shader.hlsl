@@ -76,6 +76,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	MaterialConstBuffer MatConstbuffer = Materials[MaterialID];
 	
+	return float4(SimpleShadowMap.Sample(TextureSampler, mvOut.Texcoord).rrr, 1.0f);
+	
     FMaterial material;
 	
 	
