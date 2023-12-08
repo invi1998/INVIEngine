@@ -13,6 +13,9 @@ public:
 	// 构建视口矩阵
 	void BuildViewMatrix();
 
+	// 构建正交投影矩阵
+	void BuildOrthographicOffCenterProjectionMatrixLH(float radius, const XMFLOAT3& centerPos);
+
 	// 计算面朝向
 	void FaceTarget(const XMFLOAT3& position, const XMFLOAT3& targetPosition, const XMFLOAT3& upDirection = {0, 1.f, 0});
 

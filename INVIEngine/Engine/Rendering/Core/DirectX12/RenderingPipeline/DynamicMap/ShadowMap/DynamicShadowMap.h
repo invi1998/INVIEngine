@@ -27,6 +27,8 @@ public:
 
 	void BuildViewMatrix();
 
+	void BuildOrthographicOffCenterProjectionMatrixLH(float radius, const XMFLOAT3& centerPos);
+
 	// 构建投影矩阵
 	void BuildProjectionMatrix();
 

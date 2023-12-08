@@ -23,6 +23,29 @@ void GClientViewPort::BuildViewMatrix()
 	ViewMatrix = GetTransformationComponent()->CalculateViewMatrix();
 }
 
+void GClientViewPort::BuildOrthographicOffCenterProjectionMatrixLH(float radius, const XMFLOAT3& centerPos)
+{
+	XMVECTOR centerPosVEC = XMLoadFloat3(&centerPos);
+
+	XMMATRIX viewMatrixMTX = XMLoadFloat4x4(&ViewMatrix);
+
+	// 将目标位置转为光源空间的坐标
+	XMFLOAT3 ViewCenter{};
+	XMStoreFloat3(&ViewCenter, XMVector3TransformCoord(centerPosVEC, viewMatrixMTX));
+
+	float ViewLeft = ViewCenter.x - radius;
+	float ViewRight = ViewCenter.x + radius;
+	float ViewBottom = ViewCenter.y - radius;
+	float ViewTop = ViewCenter.y + radius;
+	float NearZ = ViewCenter.z - radius;
+	float FarZ = ViewCenter.z + radius;
+
+	// 构建正交矩阵
+	XMMATRIX projectionMatrixMTX = XMMatrixOrthographicOffCenterLH(ViewLeft, ViewRight, ViewBottom, ViewTop, NearZ, FarZ);
+
+	XMStoreFloat4x4(&ProjectionMatrix, projectionMatrixMTX);
+}
+
 void GClientViewPort::FaceTarget(const XMFLOAT3& position, const XMFLOAT3& targetPosition, const XMFLOAT3& upDirection)
 {
 	XMFLOAT3 TempFaceVector{};
