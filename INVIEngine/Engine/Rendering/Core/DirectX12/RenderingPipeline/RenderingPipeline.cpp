@@ -101,11 +101,14 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 	DirectXRootSignature.PreDraw(DeltaTime);
 
+	// 清除主视口
+	ClearMainSwapChainCanvas();
+
 	// 渲染光照，材质贴图
 	GeometryMap.Draw(DeltaTime);
 
-	// 清除主视口
-	ClearMainSwapChainCanvas();
+	// 渲染阴影
+	GeometryMap.DrawShadow(DeltaTime);
 
 	// 判断是否存在动态反射组件
 	if (DynamicCubeMap.IsExitDynamicReflectionMesh())

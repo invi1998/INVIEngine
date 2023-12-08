@@ -331,6 +331,7 @@ void FGeometryMap::BuildFog()
 
 void FGeometryMap::BuildShadow()
 {
+	DynamicShadowMap.ResetView(2048, 2048);
 	DynamicShadowMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
 	DynamicShadowMap.BuildDepthStencilViewDesc();
 	DynamicShadowMap.BuildShadowMapRenderTargetDescriptor();
