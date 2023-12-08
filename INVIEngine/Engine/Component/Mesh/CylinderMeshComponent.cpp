@@ -8,134 +8,151 @@ CCylinderMeshComponent::CCylinderMeshComponent()
 {
 }
 
-void CCylinderMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, float InBottomRadius,
-	float InHeight, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
+void CCylinderMeshComponent::CreateMesh(FMeshRenderingData& MeshData, float InTopRadius, float InBottomRadius, float InHeight, uint32_t InAxialSubdivision, uint32_t InHeightSubdivision)
 {
-	// 半径间隔
-	float RadiusInterval = (InTopRadius - InBottomRadius) / static_cast<float>(InHeightSubdivision);
+	//半径间隔
+	float RadiusInterval = (InTopRadius - InBottomRadius) / InHeightSubdivision;
+	//高度间隔
+	float HeightInterval = InHeight / InHeightSubdivision;
 
-	// 高度间隔
-	float HeightInterval = InHeight / static_cast<float>(InHeightSubdivision);
+	float BetaValue = XM_2PI / (float)InAxialSubdivision;
 
-	// 弧度
-	float BetaValue = XM_2PI / static_cast<float>(InAxialSubdivision);
-
-	// 腰部顶点
-	for (uint32_t i = 0; i <= InHeightSubdivision; ++i)
+	for (uint32_t i = 0; i < InHeightSubdivision + 1; ++i)
 	{
-		float Y = (0.5f * InHeight) - HeightInterval * i;
+		float Y = 0.5f * InHeight - HeightInterval * i;
 		float Radius = InTopRadius + i * RadiusInterval;
-		for (uint32_t j = 0; j <= InAxialSubdivision; ++j)
+		for (size_t j = 0; j <= InAxialSubdivision; ++j)
 		{
+			float BetaValueCos = cosf(j * BetaValue);
+			float BetaValueSin = sinf(j * BetaValue);
 			MeshData.VertexData.push_back(FVertex(
 				XMFLOAT3(
-					Radius * cosf(j * BetaValue),	// x
-					Y,							// Y
-					Radius * sinf(j * BetaValue)	// z
-				),
-				XMFLOAT4(Colors::White)
-			));
+					Radius * BetaValueCos,//x
+					Y,//y
+					Radius * BetaValueSin), //z
+				XMFLOAT4(Colors::White)));
+
+			FVertex& MyVertex = MeshData.VertexData[MeshData.VertexData.size() - 1];
+
+			MyVertex.UTangent = XMFLOAT3(-BetaValueSin, 0.0f, BetaValueCos);
+
+			float dr = InBottomRadius - InTopRadius;
+			XMFLOAT3 Bitangent(dr * BetaValueCos, -InHeight, dr * BetaValueSin);
+
+			XMVECTOR T = XMLoadFloat3(&MyVertex.UTangent);
+			XMVECTOR B = XMLoadFloat3(&Bitangent);
+			XMVECTOR N = XMVector3Normalize(XMVector3Cross(T, B));
+			XMStoreFloat3(&MyVertex.Normal, N);
+
+			//展UV
+			MyVertex.TexCoord.x = (float)j / (float)InHeightSubdivision;
+			MyVertex.TexCoord.y = (float)i / (float)InAxialSubdivision;
 		}
 	}
 
-	// 绘制圆柱腰围 index
-	uint32_t VertexCircleNum = InAxialSubdivision + 1;
-	for (uint32_t i = 0; i <= InHeightSubdivision; ++i)
+	float VertexCircleNum = InAxialSubdivision;
+
+	//绘制腰围
+	for (uint32_t i = 0; i < InHeightSubdivision + 1; ++i)
 	{
-		for (uint32_t j = 0; j <= InAxialSubdivision; ++j)
+		for (uint32_t j = 0; j < InAxialSubdivision; ++j)
 		{
-			// 南北极中间绘制的面是四边形(而一个四边形又是由两个三角形组成的
-
+			//我们绘制的是四边形
+			// 
 			// 法线远离摄像机
-			// 三角形1
-			// MeshData.IndexData.push_back(i * VertexCircleNum + j);
-			// MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j);
-			// MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
-			// // 三角形2
-			// MeshData.IndexData.push_back(i * VertexCircleNum + j);
-			// MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
-			// MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);
+			//三角形1
+			//MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			//MeshData.IndexData.push_back((i + 1 )* VertexCircleNum + j);
+			//MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j+1);
 
-			 // 法线朝向自己
-			 // 三角形1
-			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j);
-			MeshData.IndexData.push_back(i * VertexCircleNum + j);
-			// 三角形2
-			MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
-			MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			////三角形2
+			//MeshData.IndexData.push_back(i * VertexCircleNum + j);
+			//MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);
+			//MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);
+
+			// 法线朝向自己
+			//三角形1
+			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);//C
+			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j);//B
+			MeshData.IndexData.push_back(i * VertexCircleNum + j);//A
+
+			//三角形2
+			MeshData.IndexData.push_back(i * VertexCircleNum + j + 1);//D
+			MeshData.IndexData.push_back((i + 1) * VertexCircleNum + j + 1);//C
+			MeshData.IndexData.push_back(i * VertexCircleNum + j);//A
 		}
 	}
 
-	// 构建顶部
+	//构建顶部
+	if (1)
 	{
 		uint32_t Index = MeshData.VertexData.size();
+
 		float Y = 0.5f * InHeight;
 		for (uint32_t i = 0; i <= InAxialSubdivision; ++i)
 		{
+			float RCos = cosf(i * BetaValue);
+			float RSin = sinf(i * BetaValue);
+
 			MeshData.VertexData.push_back(FVertex(
 				XMFLOAT3(
-					InTopRadius * cosf(i * BetaValue),	// x
-					Y,							// Y
-					InTopRadius * sinf(i * BetaValue)	// z
-				),
-				XMFLOAT4(Colors::White)
-			));
+					InTopRadius * RCos,//x
+					Y,//y
+					InTopRadius * RSin), //z
+				XMFLOAT4(Colors::White), XMFLOAT3(0.f, 1.f, 0.f)));
+
+			FVertex& MyVertex = MeshData.VertexData[MeshData.VertexData.size() - 1];
+
+			//展UV
+			MyVertex.TexCoord.x = RCos;
+			MyVertex.TexCoord.y = RSin;
 		}
 
-		MeshData.VertexData.push_back(FVertex(
-			XMFLOAT3(
-				0.f,	// x
-				Y,	// Y
-				0.f	// z
-			),
-			XMFLOAT4(Colors::White)
-		));
+		//添加中点
+		MeshData.VertexData.push_back(FVertex(XMFLOAT3(0.f, Y, 0.f), XMFLOAT4(Colors::White), XMFLOAT3(0.f, 1.f, 0.f)));
 
-		// index
+		//绘制index模型
 		float CenterPoint = MeshData.VertexData.size() - 1;
 		for (uint32_t i = 0; i < InAxialSubdivision; ++i)
 		{
-			// 因为DX是左手螺旋定则，所以需要逆时针绘制顶点，法线才能朝外
 			MeshData.IndexData.push_back(CenterPoint);
 			MeshData.IndexData.push_back(Index + i + 1);
 			MeshData.IndexData.push_back(Index + i);
 		}
-
 	}
 
-	// 构建底部
+	//构建底部
+	if (1)
 	{
 		uint32_t Index = MeshData.VertexData.size();
-		float Y = -0.5f * InHeight;
 
+		float Y = -0.5f * InHeight;
 		for (uint32_t i = 0; i <= InAxialSubdivision; ++i)
 		{
+			float RCos = cosf(i * BetaValue);
+			float RSin = sinf(i * BetaValue);
+
 			MeshData.VertexData.push_back(FVertex(
 				XMFLOAT3(
-					InTopRadius * cosf(i * BetaValue),	// x
-					Y,							// Y
-					InTopRadius * sinf(i * BetaValue)	// z
-				),
-				XMFLOAT4(Colors::White)
-			));
+					InBottomRadius * RCos,//x
+					Y,//y
+					InBottomRadius * RSin), //z
+				XMFLOAT4(Colors::White), XMFLOAT3(0.f, -1.f, 0.f)));
+
+			FVertex& MyVertex = MeshData.VertexData[MeshData.VertexData.size() - 1];
+
+			//展UV
+			MyVertex.TexCoord.x = RCos;
+			MyVertex.TexCoord.y = RSin;
 		}
 
-		MeshData.VertexData.push_back(FVertex(
-			XMFLOAT3(
-				0.f,	// x
-				Y,	// Y
-				0.f	// z
-			),
-			XMFLOAT4(Colors::White)
-		));
+		//添加中点
+		MeshData.VertexData.push_back(FVertex(XMFLOAT3(0.f, Y, 0.f), XMFLOAT4(Colors::White), XMFLOAT3(0.f, -1.f, 0.f)));
 
-		// index
+		//绘制index模型
 		float CenterPoint = MeshData.VertexData.size() - 1;
 		for (uint32_t i = 0; i < InAxialSubdivision; ++i)
 		{
-			// 因为DX是左手螺旋定则，所以需要逆时针绘制顶点，法线才能朝外
 			MeshData.IndexData.push_back(CenterPoint);
 			MeshData.IndexData.push_back(Index + i);
 			MeshData.IndexData.push_back(Index + i + 1);
