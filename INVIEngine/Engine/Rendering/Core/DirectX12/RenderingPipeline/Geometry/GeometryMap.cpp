@@ -192,11 +192,11 @@ FGeometryMap::FGeometryMap() : IDirectXDeviceInterface_Struct(), Fog(nullptr)
 {
 	Geometries.insert(pair<int, FGeometry>(0, FGeometry()));
 
-	RenderingTexture2DResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
-	RenderingTexture2DResourceViews->SetViewDimension(D3D12_SRV_DIMENSION_TEXTURE2D);
+	RenderingTexture2DResources = std::make_shared<FRenderingTextureResourcesUpdate>();
+	RenderingTexture2DResources->SetViewDimension(D3D12_SRV_DIMENSION_TEXTURE2D);
 
-	RenderingCubeMapResourceViews = std::make_shared<FRenderingTextureResourcesUpdate>();
-	RenderingCubeMapResourceViews->SetViewDimension(D3D12_SRV_DIMENSION_TEXTURECUBE);
+	RenderingCubeMapResources = std::make_shared<FRenderingTextureResourcesUpdate>();
+	RenderingCubeMapResources->SetViewDimension(D3D12_SRV_DIMENSION_TEXTURECUBE);
 }
 
 FGeometryMap::~FGeometryMap()
@@ -233,12 +233,12 @@ void FGeometryMap::BuildDescriptorHeap()
 
 UINT FGeometryMap::GetDrawTexture2DCount() const
 {
-	return RenderingTexture2DResourceViews->Size();
+	return RenderingTexture2DResources->Size();
 }
 
 UINT FGeometryMap::GetDrawCubeMapCount() const
 {
-	return RenderingCubeMapResourceViews->Size();
+	return RenderingCubeMapResources->Size();
 }
 
 UINT FGeometryMap::GetDrawMeshCount()
@@ -375,12 +375,12 @@ void FGeometryMap::LoadTexture() const
 			if (wfind_string(TexturePath, L"_CubeMap.")!=-1 || wfind_string(TexturePath, L"_cubemap.") != -1)
 			{
 				// cube map
-				RenderingCubeMapResourceViews->LoadTextureResource(TexturePath);
+				RenderingCubeMapResources->LoadTextureResource(TexturePath);
 			}
 			else
 			{
 				// 2D纹理
-				RenderingTexture2DResourceViews->LoadTextureResource(TexturePath);
+				RenderingTexture2DResources->LoadTextureResource(TexturePath);
 			}
 			
 		}
@@ -390,14 +390,14 @@ void FGeometryMap::LoadTexture() const
 void FGeometryMap::BuildTextureConstBuffer()
 {
 	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口
-	// RenderingTexture2DResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1);
+	// RenderingTexture2DResources->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawMeshCount() + GetDrawLightCount() + 1);
 
 	// 因为将模型，灯光，视口都从常量缓冲区分离出来了，所以这里偏移直接给0就行
-	RenderingTexture2DResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), 0);
+	RenderingTexture2DResources->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), 0);
 
 	// 构建CubeMap
 	// 偏移 = 模型渲染数 + 灯光渲染数 + 材质渲染数 + 视口 + 贴图数量
-	RenderingCubeMapResourceViews->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawTexture2DCount());
+	RenderingCubeMapResources->BuildTextureConstantBuffer(DescriptorHeap.GetHeap(), GetDrawTexture2DCount());
 }
 
 void FGeometryMap::BuildDynamicReflectionMeshComponent()
@@ -664,11 +664,11 @@ bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& r
 
 std::unique_ptr<FRenderingTexture>* FGeometryMap::FindRenderingTexture(const std::string& key)
 {
-	if (auto RenderTexturePtr = RenderingTexture2DResourceViews->FindRenderingTexture(key))
+	if (auto RenderTexturePtr = RenderingTexture2DResources->FindRenderingTexture(key))
 	{
 		return RenderTexturePtr;
 	}
-	else if (auto RenderCubeMapPtr = RenderingCubeMapResourceViews->FindRenderingTexture(key))
+	else if (auto RenderCubeMapPtr = RenderingCubeMapResources->FindRenderingTexture(key))
 	{
 		return RenderCubeMapPtr;
 	}

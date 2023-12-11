@@ -171,8 +171,8 @@ protected:
 	FConstantBufferViews ViewportConstantBufferViews;		// 摄像机常量缓冲区
 	FConstantBufferViews FogConstantBufferViews;			// 雾常量缓冲区
 
-	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTexture2DResourceViews;		// shader纹理资源视图
-	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingCubeMapResourceViews;		// shader cube map资源视图
+	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingTexture2DResources;		// shader纹理资源视图
+	std::shared_ptr<FRenderingTextureResourcesUpdate> RenderingCubeMapResources;		// shader cube map资源视图
 	std::vector<CMaterial*> MaterialsSRV{};
 
 	std::vector<CMeshComponent*> DynamicReflectionMeshComponents{};		// 动态反射组件
