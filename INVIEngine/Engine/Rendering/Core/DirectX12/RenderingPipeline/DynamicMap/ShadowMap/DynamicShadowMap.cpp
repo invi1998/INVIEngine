@@ -103,6 +103,8 @@ void FDynamicShadowMap::Draw(float deltaTime)
 		RenderLayers->ResetPSO(RENDER_LAYER_OPAQUE_SHADOW);
 
 		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE);
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_TRANSPARENT);
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE_REFLECT);
 
 		// 将资源状态由可写转换为可读
 		CD3DX12_RESOURCE_BARRIER ResourceBarrier2 = CD3DX12_RESOURCE_BARRIER::Transition(

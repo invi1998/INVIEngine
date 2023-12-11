@@ -17,7 +17,7 @@ SamplerState AnisotropicSampler : register(s1);
 // 贴图 (这里寄存器的编号对应你在根签名那里设置的纹理的CBV描述表的寄存器编号
 Texture2D SimpleShadowMap : register(t1);
 Texture2D SimpleTexture2DMap[TEXTURE2D_MAP_NUM] : register(t2);
-TextureCube SimpleCubeMap : register(t0);	// 天空盒
+TextureCube SimpleCubeMap : register(t0); // 天空盒
 
 cbuffer MeshConstBuffer : register(b0)
 {
