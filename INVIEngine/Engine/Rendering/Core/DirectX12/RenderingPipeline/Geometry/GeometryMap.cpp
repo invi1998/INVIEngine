@@ -529,7 +529,7 @@ void FGeometryMap::UpdateLight(float delta_time, const FViewportInfo& viewport_i
 				{
 					// 平行光 这里构建的是正交矩阵
 
-					DynamicShadowMap.BuildOrthoProjectionMatrix(lightComponent->GetForwardVector(), { 0, 0, 0 }, 200.f);
+					DynamicShadowMap.BuildOrthoProjectionMatrix(lightComponent->GetForwardVector(), { 0, 0, 0 }, 70.f);
 
 					// 获取ViewMatrix
 					XMFLOAT4X4 ViewMatrix = DynamicShadowMap.GetViewMatrix();
