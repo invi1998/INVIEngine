@@ -537,7 +537,7 @@ int CDirectXRenderingEngine::PostInit()
 			{
 				InMaterial->SetDynamicReflection(true);
 
-				InMaterial->SetBaseColorIndexKey("Texture'/Project/Texture/Earth.Earth'");
+				InMaterial->SetBaseColorIndexKey("Earth");
 				InMaterial->SetBaseColor(XMFLOAT4(0.7f, 0.7f, 0.7f, 1.f));
 				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
 				InMaterial->SetMaterialType(EMaterialType::BlinnPhong);

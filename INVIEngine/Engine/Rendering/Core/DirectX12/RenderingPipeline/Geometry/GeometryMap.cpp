@@ -452,7 +452,7 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 {
 	FMaterialConstantBuffer MaterialConstantBuffer = {};
 	// ¸üÐÂ²ÄÖÊ
-	for (auto& material :MaterialsSRV)
+	for (auto& material : MaterialsSRV)
 	{
 		if (material->IsDirty())
 		{

@@ -21,6 +21,8 @@ void FBackgroundRenderLayer::PreDraw(float deltaTime)
 
 void FBackgroundRenderLayer::Draw(float deltaTime)
 {
+	ResetPSO();
+
 	FRenderLayer::Draw(deltaTime);
 }
 
