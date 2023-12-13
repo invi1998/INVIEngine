@@ -83,9 +83,6 @@ void FOpaqueShadowRenderLayer::BuildPSO()
 
 void FOpaqueShadowRenderLayer::ResetPSO()
 {
-
-
-
 	DirectXPipelineState->ResetPSO(Shadow);
 }
 
