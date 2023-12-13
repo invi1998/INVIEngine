@@ -20,7 +20,7 @@ void FOpaqueShadowRenderLayer::PreDraw(float deltaTime)
 
 void FOpaqueShadowRenderLayer::Draw(float deltaTime)
 {
-	ResetPSO();
+	DirectXPipelineState->ResetPSO();
 
 	FRenderLayer::Draw(deltaTime);
 }

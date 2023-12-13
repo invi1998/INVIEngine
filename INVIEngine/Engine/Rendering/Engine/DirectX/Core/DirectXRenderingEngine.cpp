@@ -777,8 +777,6 @@ void CDirectXRenderingEngine::Tick(float DeltaTime)
 
 	EndSetMainViewportRenderTarget();
 
-	EndSetMainViewportRenderTarget();
-
 	// 自此，缓冲区录入完成（记得关闭命令列表），可以提交命令了
 	ANALYSIS_RESULT(GraphicsCommandList->Close());
 
