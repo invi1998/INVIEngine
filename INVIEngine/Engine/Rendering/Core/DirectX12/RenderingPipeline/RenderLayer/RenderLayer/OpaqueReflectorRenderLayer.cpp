@@ -53,6 +53,8 @@ void FOpaqueReflectorRenderLayer::BuildPSO()
 
 void FOpaqueReflectorRenderLayer::Draw(float deltaTime)
 {
+	ResetPSO();
+
 	FRenderLayer::Draw(deltaTime);
 }
 

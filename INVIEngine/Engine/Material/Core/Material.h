@@ -26,7 +26,7 @@ public:
 	FORCEINLINE int GetMaterialID() const { return MaterialID; }
 	FORCEINLINE XMFLOAT3 GetFresnelF0() const { return FresnelF0; }
 	FORCEINLINE float GetTransparency() const { return Transparency; }
-	FORCEINLINE bool IsDynamicReflection() const { return bDynamicReflection && (MaterialType == EMaterialType::BlinnPhong || MaterialType == EMaterialType::PBR || MaterialType == EMaterialType::Phong || MaterialType == EMaterialType::Back); }
+	FORCEINLINE bool IsDynamicReflection() const { return bDynamicReflection && (MaterialType == EMaterialType::BlinnPhong || MaterialType == EMaterialType::PBR || MaterialType == EMaterialType::Phong || MaterialType == EMaterialType::Back || MaterialType == EMaterialType::Transparency); }
 	FORCEINLINE float GetRefractiveValue() const { return RefractiveValue; }
 	FORCEINLINE XMFLOAT3 GetMetallicity() const { return Metallicity; }
 
