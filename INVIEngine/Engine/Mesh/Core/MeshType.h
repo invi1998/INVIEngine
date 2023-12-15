@@ -5,6 +5,7 @@
 // ¶¥µãÊý¾Ý
 struct FVertex
 {
+	FVertex() = default;
 	FVertex(const DirectX::XMFLOAT3 &InPos, const DirectX::XMFLOAT4 &InColor);
 	FVertex(const DirectX::XMFLOAT3 &InPos, const DirectX::XMFLOAT4 &InColor, const DirectX::XMFLOAT3& InNormal, const XMFLOAT2& InTexcoord = XMFLOAT2(0.f, 0.f));
 

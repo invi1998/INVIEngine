@@ -26,7 +26,7 @@ void CCustomMeshComponent::CreateMesh(FMeshRenderingData& MeshData, const std::s
 
 	}
 
-	delete Buff;
+	delete []Buff;
 }
 
 bool CCustomMeshComponent::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData)
@@ -36,6 +36,11 @@ bool CCustomMeshComponent::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSi
 		stringstream BuffStream(InBuffer);
 		char TmpLine[256] = { 0 };
 		string MidTmpTag;
+
+		std::vector<XMFLOAT3> Position{};
+		std::vector<XMFLOAT3> Normal{};
+		std::vector<XMFLOAT3> UTangent{};
+		std::vector<XMFLOAT2> TexCoord{};//纹理坐标
 
 		for (; !BuffStream.eof();)
 		{
@@ -52,21 +57,28 @@ bool CCustomMeshComponent::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSi
 
 					if (TmpLine[1] == 'n')
 					{
-						//以后再写
+						//拿到位置
+						Normal.push_back(XMFLOAT3());
+						XMFLOAT3& Float3InNormal = Normal[Normal.size() - 1];
+
+						//解析了位置
+						LineStream >> Float3InNormal.x;
+						LineStream >> Float3InNormal.y;
+						LineStream >> Float3InNormal.z;
 					}
 					else if (TmpLine[1] == 't')
 					{
-						//以后再写
+						TexCoord.push_back(XMFLOAT2());
+						XMFLOAT2& Float2InTexCoord = TexCoord[TexCoord.size() - 1];
+
+						LineStream >> Float2InTexCoord.x;
+						LineStream >> Float2InTexCoord.y;
 					}
 					else
 					{
-						//先添加一个
-						MeshData.VertexData.push_back(FVertex(
-							XMFLOAT3(), XMFLOAT4(Colors::White)));
-
-						//拿到添加后的位置
-						int TopIndex = MeshData.VertexData.size() - 1;
-						XMFLOAT3& Float3InPos = MeshData.VertexData[TopIndex].Position;
+						//拿到位置
+						Position.push_back(XMFLOAT3());
+						XMFLOAT3& Float3InPos = Position[Position.size() - 1];
 
 						//解析了位置
 						LineStream >> Float3InPos.x;
@@ -107,6 +119,31 @@ bool CCustomMeshComponent::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSi
 					}
 				}
 			}
+		}
+
+		MeshData.VertexData.resize(static_cast<int>(Position.size()));
+		for (size_t i = 0; i < Position.size(); i++)
+		{
+			MeshData.VertexData[i].Position = Position[i];
+			MeshData.VertexData[i].Normal = Normal[i];
+			MeshData.VertexData[i].TexCoord = TexCoord[i];
+			MeshData.VertexData[i].Color = XMFLOAT4(Colors::White);
+
+			//if (i > 1)
+			//{
+			//	XMFLOAT3 LastPos = Position[i - 1];
+			//	XMFLOAT3 Pos = Position[i];
+			//
+			//	fvector_3d LastPos3D = EngineMath::ToVector3d(LastPos);
+			//	fvector_3d PosVector3D = EngineMath::ToVector3d(Pos);
+			//
+			//	fvector_3d NewDir = LastPos3D - PosVector3D;
+			//	MeshData.VertexData[i].UTangent = XMFLOAT3(NewDir.x, NewDir.y, NewDir.z);
+			//}
+			//else
+			//{
+			//	MeshData.VertexData[i].UTangent = XMFLOAT3(0.f, 1.f, 0.f);
+			//}
 		}
 
 		return true;

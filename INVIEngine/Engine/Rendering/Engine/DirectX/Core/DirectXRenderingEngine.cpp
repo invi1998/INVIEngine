@@ -86,7 +86,7 @@ int CDirectXRenderingEngine::PostInit()
 		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
 		{
 			ParallelLight->SetPosition(XMFLOAT3(10.f, -10.f, 10.f));
-			ParallelLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			ParallelLight->SetRotation(fvector_3d(30.f, 0.f, 0.f));
 			ParallelLight->SetScale(fvector_3d(1));
 			ParallelLight->SetLightIntensity(XMFLOAT3(1.1f,1.1f,1.1f));
 		}
