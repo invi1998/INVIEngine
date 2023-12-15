@@ -423,7 +423,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			
 			// º∆À„“ı”∞
 			// float ShadowFactor = GetShadowFactor(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
-			float ShadowFactor = GetShadowFactor_PCF(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			// float ShadowFactor = GetShadowFactor_PCF(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			// float ShadowFactor = GetShadowFactor_PCF_Sample4(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			float ShadowFactor = GetShadowFactor_PCF_Sample9(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			
 			
 			FinalColor += ShadowFactor * (saturate((Diffuse + Specular) * LightStrength * DotDiffValue));
 			
