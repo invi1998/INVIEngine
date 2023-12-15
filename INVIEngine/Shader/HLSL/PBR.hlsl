@@ -14,25 +14,24 @@ float4 GetDistributionGGX(float3 N, float H, float Roughness)
     
     float d = (NoH * NoH * (a2 - 1) + 1);
     
-    return a2 / max((d * d * PI), 0.0001f);
+    return a2 / max((d * d * PI), 0.001f);
     
 }
 
 // G 项 几何方程
-float SchlickGGX(float NoV, float Roughness)
+float SchlickGGX(float Dot, float K_Dir)
 {
-    float K_Dir = pow(Roughness, 2) / 0.8f;
-    
-    return NoV / max(K_Dir + ((1 - K_Dir) * NoV), 0.0001f);
-    
+	return Dot / max(K_Dir + ((1 - K_Dir) * Dot), 0.001);
 }
 
 float GSmith(float3 N, float3 V, float3 L, float Roughness)
 {
+	float K_Dir = pow(Roughness, 2) / 8.f;
+
     float NoV = saturate(dot(N, V));
     float NoL = saturate(dot(N, L));
     
-    return SchlickGGX(NoV, Roughness) * SchlickGGX(NoL, Roughness);
+	return SchlickGGX(NoV, K_Dir) * SchlickGGX(NoL, K_Dir);
     
 }
 

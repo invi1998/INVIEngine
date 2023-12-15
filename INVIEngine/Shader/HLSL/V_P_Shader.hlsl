@@ -375,7 +375,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float4 D = GetDistributionGGX(N, H, Roughness);
         
                 float3 F0 = 0.04f;
-                F0 = lerp(F0, material.BaseColor.rgb, Matallic);
+				F0 = lerp(F0, MatConstbuffer.BaseColor.rgb, Matallic);
         
                 // 菲尼尔项 F项
                 float4 F = float4(FresnelSchlick(F0, N, V, 5), 1.0f);
@@ -388,33 +388,38 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 				float NoL = saturate(dot(N, L));
 				
 				float3 FIndirect = GetIndirectLight(LoH, F0, Roughness);
-				float3 FDirect = GetDirectLight(NoV, F0, Roughness);
+				float3 IndirKS = GetDirectLight(NoV, F0, Roughness);
         
                 // 获取兰伯特项
 				float4 Kd = 1 - float4(FIndirect, 1.f); // 就是菲尼尔取反
-				Kd *= (1 - float4(FDirect, 1.f)) * (1 - float4(Matallic, 1.f));
+				
+				Kd *= (1 - float4(IndirKS, 1.f)) * (1 - float4(Matallic, 1.f));
         
-                float3 Diffuse = Kd.xyz * GetDiffuseLambert(material.BaseColor.xyz);
+				float3 Diffuse = Kd.xyz * GetDiffuseLambert(MatConstbuffer.BaseColor.xyz);
         
                 float4 Value = (D * F * G) / (4 * (NoV * NoL));
         
-                Specular = float4(Value.rgb, 1.f);
+				Specular = float4(Value.rgb, 1.f);
         
                 float3 Radiance = LightStrength.xyz;
                 // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）
-                float3 PBRColor = (Diffuse.xyz + Specular.xyz) * NoL * Radiance;
+				float3 PBRColor = (Diffuse + Specular.xyz) * NoL * Radiance;
         
                 return float4(PBRColor, 1.f);
 
             }
 			else if (MatConstbuffer.MaterialType == 100)
             {
-                // 菲尼尔
-                float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+                //// 菲尼尔
+                //float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
         
-                float3 f0 = { 0.02f, 0.02f, 0.02f };
-                Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
-            }
+                //float3 f0 = { 0.02f, 0.02f, 0.02f };
+                //Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
+				
+				//另一种菲尼尔方法
+				float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
+				DotDiffValue = pow(1.f - max(dot(ModelNormal, ViewDirection), 0.0), 2.f);
+			}
 			
 			float4 Diffuse = material.BaseColor;
 
