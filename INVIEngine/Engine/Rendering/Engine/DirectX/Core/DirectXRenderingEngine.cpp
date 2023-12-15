@@ -232,6 +232,19 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		//if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
+		//{
+		//	InPlaneMesh->CreateMesh(4.f, 3.f, 20, 20);
+
+		//	InPlaneMesh->SetPosition(XMFLOAT3(0.f, 22.f, 0.f));
+		//	InPlaneMesh->SetScale(fvector_3d(50.f, 1.f, 50.f));
+		//	if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
+		//	{
+		//		InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+		//		InMaterial->SetMaterialType(EMaterialType::Lambert);
+		//	}
+		//}
+
 		//À¼²®ÌØ
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
 		{
