@@ -13,7 +13,7 @@ public:
 	void BuildStaticSampler();
 
 private:
-	std::vector<CD3DX12_STATIC_SAMPLER_DESC> SamplerDescriptors;
+	std::vector<CD3DX12_STATIC_SAMPLER_DESC> SamplerDescriptors{};
 
 };
 
