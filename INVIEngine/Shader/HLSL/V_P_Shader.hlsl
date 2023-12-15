@@ -1,6 +1,7 @@
 #include "Material.hlsl"
 #include "PBR.hlsl"
 #include "SkyFunction.hlsl"
+#include "ShadowFunction.hlsl"
 
 struct MeshVertexIn
 {
@@ -111,7 +112,6 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     float DotDiffValue = 0.f;
     
 	float4 Specular = GetMaterialSpecular(MatConstbuffer, mvOut.Texcoord);
-    float4 LightStrength = { 0.f, 0.f, 0.f, 1.f };
 	
 	// 获取法线，如果设置了法线贴图，则绘制法线贴图
 	ModelNormal = GetMaterialNormal(MatConstbuffer, mvOut.Texcoord, ModelNormal, mvOut.UTangent);
@@ -120,6 +120,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	// return MatConstbuffer.BaseColor;
 	
 	// return MatConstbuffer.BaseColor * (SceneLights[1].LightIntensity, 1.0f);
+	
+	float4 FinalColor = { 0.f, 0.f, 0.f, 1.f };
     
     for (int i = 0; i < 16; i++)
     {
@@ -128,7 +130,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			
             float3 NormalizeLightDirection = normalize(GetLightDirection(SceneLights[i], mvOut.WorldPosition.xyz));
             
-            float4 LightStrengthTemp = CaculateLightStrength(SceneLights[i], ModelNormal, mvOut.WorldPosition.xyz, NormalizeLightDirection);
+			float4 LightStrength = CaculateLightStrength(SceneLights[i], ModelNormal, mvOut.WorldPosition.xyz, NormalizeLightDirection);
 
 			if (MatConstbuffer.MaterialType == 0)
             {
@@ -394,7 +396,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 Specular *= float4(Value.rgb, 1.f);
         
-                float3 Radiance = SceneLights[i].LightIntensity.xyz;
+                float3 Radiance = LightStrength.xyz;
                 // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）
                 float3 PBRColor = (Diffuse.xyz + Specular.xyz) * NoL * Radiance;
         
@@ -409,22 +411,23 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
                 float3 f0 = { 0.02f, 0.02f, 0.02f };
                 Specular.xyz = FresnelSchlick(f0, ModelNormal, ViewDirection, 2);
             }
-
-            LightStrength += saturate(LightStrengthTemp * DotDiffValue * float4(SceneLights[i].LightIntensity.xyz, 1.f));
-            LightStrength.w = 1.f;
+			
+			float4 Diffuse = material.BaseColor;
 
 			// 将数值限制为【0-1】
-			LightStrength = saturate(LightStrength);
 			Specular = saturate(Specular);
-			material.BaseColor = saturate(material.BaseColor);
+			
+			// 计算阴影
+			float ShadowFactor = GetShadowFactor(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			
+			FinalColor += ShadowFactor * (saturate((Diffuse + Specular) * LightStrength * DotDiffValue));
 			
 		}
     }
 
     // 最终颜色贡献
 	// material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    mvOut.Color = material.BaseColor * LightStrength // 漫反射
-        + material.BaseColor * Specular * LightStrength // 高光
+    mvOut.Color = FinalColor
         + material.BaseColor * AmbientLight;  // 间接光（环境光）
 	
 	// 计算cube map反射
