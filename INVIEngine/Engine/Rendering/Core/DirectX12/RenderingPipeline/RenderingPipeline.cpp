@@ -37,6 +37,7 @@ void FRenderingPipeline::BuildPipeline()
 	// shadowMap 初始化
 	GeometryMap.DynamicShadowMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
+	// 初始化根签名
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
 
@@ -49,16 +50,20 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
 
-	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
+	// 初始化CubeMap摄像机
+	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 0.f, 0.f, 0.f });
 
+	// 构建深度模板描述符
 	DynamicCubeMap.BuildDepthStencilDescriptor();
-
-	DynamicCubeMap.BuildDepthStencil();
 
 	// 构建CubeMap
 	// DynamicCubeMap.Build(XMFLOAT3{ 15.f, 12.f, 0.f });
 
+	// 构建CubeMap渲染目标 RTVDesc
 	DynamicCubeMap.BuildCubeMapRenderTargetDescriptor();
+
+	// 构建深度模板
+	DynamicCubeMap.BuildDepthStencil();
 
 	// 构建阴影
 	GeometryMap.BuildShadow();
