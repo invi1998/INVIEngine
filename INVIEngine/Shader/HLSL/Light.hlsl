@@ -32,7 +32,7 @@ float3 GetLightDirection(Light L, float3 WorldLocation)
     if (L.LightType == 0)
     {
 		// Æ½ÐÐ¹â
-        return L.LightDirection;
+        return -L.LightDirection;
     }
     else if (L.LightType == 1)
     {
