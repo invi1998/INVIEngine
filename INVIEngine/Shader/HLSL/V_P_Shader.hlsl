@@ -368,7 +368,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 float PI = 3.1415926f;
         
-                float Roughness = 0.02f; // 粗糙度
+                float Roughness = MatConstbuffer.MaterialRoughness; // 粗糙度
                 float3 Matallic = MatConstbuffer.Metallicity; // 金属度
         
                 // D 项 D_GGX
@@ -382,15 +382,19 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 // G 项 几何函数项
                 float4 G = GSmith(N, V, L, Roughness);
+				
+				float LoH = saturate(dot(L, H));
+				float NoV = saturate(dot(N, V));
+				float NoL = saturate(dot(N, L));
+				
+				float3 FIndirect = GetIndirectLight(LoH, F0, Roughness);
+				float3 FDirect = GetDirectLight(NoV, F0, Roughness);
         
                 // 获取兰伯特项
-                float4 Kd = 1 - F; // 就是菲尼尔取反
-				Kd *= 1 - float4(Matallic, 1.f);
+				float4 Kd = 1 - float4(FIndirect, 1.f); // 就是菲尼尔取反
+				Kd *= (1 - float4(FDirect, 1.f)) * (1 - float4(Matallic, 1.f));
         
                 float3 Diffuse = Kd.xyz * GetDiffuseLambert(material.BaseColor.xyz);
-        
-                float NoV = saturate(dot(N, V));
-                float NoL = saturate(dot(N, L));
         
                 float4 Value = (D * F * G) / (4 * (NoV * NoL));
         
@@ -418,7 +422,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			Specular = saturate(Specular);
 			
 			// 计算阴影
-			float ShadowFactor = GetShadowFactor(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			// float ShadowFactor = GetShadowFactor(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			float ShadowFactor = GetShadowFactor_PCF(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
 			
 			FinalColor += ShadowFactor * (saturate((Diffuse + Specular) * LightStrength * DotDiffValue));
 			

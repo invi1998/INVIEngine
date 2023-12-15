@@ -43,4 +43,18 @@ float3 GetDiffuseLambert(float3 DiffuseColor)
     return DiffuseColor * (1 / PI);
 }
 
+//间接光
+float3 GetDirectLight(float HoL, float3 F0, float Roughness)
+{
+	float F = exp2((-5.55473 * HoL - 6.98316) * HoL);
+	return lerp(F, 1, F0);
+}
+
+//直接光
+float3 GetIndirectLight(float NoV, float3 F0, float Roughness)
+{
+	float F = exp2((-5.55473 * NoV - 6.98316) * NoV);
+	return F0 + F * saturate(1 - Roughness - F0);
+}
+
 #endif

@@ -27,11 +27,11 @@ void GClientViewPort::BuildOrthographicOffCenterProjectionMatrixLH(float radius,
 {
 	XMVECTOR centerPosVEC = XMLoadFloat3(&centerPos);
 
-	XMMATRIX viewMatrixMTX = XMLoadFloat4x4(&ViewMatrix);
+	XMMATRIX ShadowViewMatrixMTX = XMLoadFloat4x4(&ViewMatrix);
 
 	// 将目标位置转为光源空间的坐标
 	XMFLOAT3 ViewCenter{};
-	XMStoreFloat3(&ViewCenter, XMVector3TransformCoord(centerPosVEC, viewMatrixMTX));
+	XMStoreFloat3(&ViewCenter, XMVector3TransformCoord(centerPosVEC, ShadowViewMatrixMTX));
 
 	float ViewLeft = ViewCenter.x - radius;
 	float ViewRight = ViewCenter.x + radius;

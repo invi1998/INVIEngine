@@ -35,7 +35,7 @@ void FDynamicShadowMap::UpdateCalculations(float delta_time, const FViewportInfo
 
 	if (ShadowViewPort)
 	{
-		FViewportInfo ShadowViewInfo;
+		FViewportInfo ShadowViewInfo{};
 		ShadowViewInfo.ViewMatrix = GetViewMatrix();
 		ShadowViewInfo.ProjectionMatrix = GetProjectionMatrix();
 		XMFLOAT3 pos = ShadowViewPort->GetPosition();
@@ -173,7 +173,7 @@ void FDynamicShadowMap::BuildOrthoProjectionMatrix(const XMFLOAT3& targetPositio
 	XMFLOAT3 viewPosition{};
 	XMStoreFloat3(&viewPosition, viewPositionVEC);
 
-	ShadowViewPort->FaceTarget(viewPosition, direction, { 0.f, 1.f, 0.f });
+	ShadowViewPort->FaceTarget(viewPosition, targetPosition, { 0.f, 1.f, 0.f });
 
 	BuildViewMatrix();
 
