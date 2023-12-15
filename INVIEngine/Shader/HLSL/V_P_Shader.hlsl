@@ -398,7 +398,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
         
                 float4 Value = (D * F * G) / (4 * (NoV * NoL));
         
-                Specular *= float4(Value.rgb, 1.f);
+                Specular = float4(Value.rgb, 1.f);
         
                 float3 Radiance = LightStrength.xyz;
                 // 漫反射 * 高光 * NOL(朗博余弦）* 辐射度（这里暂时用灯光强度代替）
