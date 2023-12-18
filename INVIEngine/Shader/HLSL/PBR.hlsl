@@ -4,7 +4,7 @@
 // pbr 渲染函数
 
 // D 项 法线分布函数
-float4 GetDistributionGGX(float3 N, float H, float Roughness)
+float4 GetDistributionGGX(float3 N, float3 H, float Roughness)
 {
     float PI = 3.1415926f;
     
