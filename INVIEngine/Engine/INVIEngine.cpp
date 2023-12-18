@@ -97,6 +97,7 @@ CEngine* Engine = nullptr;
  */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCMD)
 {
+	FbxManager *fbxm = FbxManager::Create();
 
 	int ReturnValue = 0;
 

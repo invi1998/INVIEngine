@@ -28,6 +28,7 @@ project "INVIEngine"
 	{
 		"Engine",
         "%{IncludeDir.simple_library}",
+		"%{IncludeDir.FBX_SDK}",
 	}
 
 	links
@@ -35,7 +36,10 @@ project "INVIEngine"
 		"d3dcompiler.lib",
 		"D3D12.lib",
 		"dxgi.lib",
-		"simple_library"
+		"simple_library",
+		"%{Library.FBX_SDK}",
+		"%{Library.FBX_SDK_MD}",
+		"%{Library.FBX_SDK_MT}",
 	}
 
 	filter "system:windows"

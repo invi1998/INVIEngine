@@ -15,6 +15,8 @@
 
 // #include "pix3.h"
 
+#include <fbxsdk.h>
+
 #include "Rendering/DirectX12/d3dx12.h"
 #include "Rendering/DirectX12/DDSTextureLoader.h"
 #include "Debug/EngineDebug.h"
