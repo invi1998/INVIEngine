@@ -2,7 +2,7 @@ project "INVIEngine"
 	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "off"
+	staticruntime "on"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
@@ -63,15 +63,36 @@ project "INVIEngine"
 		runtime "Debug"
 		symbols "on"
 
+		postbuildcommands 
+		{
+			'{COPY} "%{Binaries.FBX_SDK_Debug}" "%{cfg.targetdir}"',
+		}
+		
+		-- staticruntime "On"
+
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
 		runtime "Release"
 		optimize "on"
 
+		postbuildcommands 
+		{
+			'{COPY} "%{Binaries.FBX_SDK_Release}" "%{cfg.targetdir}"',
+		}
+
+		-- staticruntime "On"
+
 	filter "configurations:Dist"
 		defines "HZ_DIST"
 		runtime "Release"
 		optimize "on"
+
+		postbuildcommands 
+		{
+			'{COPY} "%{Binaries.FBX_SDK_Release}" "%{cfg.targetdir}"',
+		}
+
+		-- staticruntime "On"
 
 	filter "action:vs*"
 		buildoptions "/F 16000000"
