@@ -186,9 +186,6 @@ void FDynamicCubeMap::Build(const XMFLOAT3& center)
 
 	BuildDepthStencilDescriptor();		// 构建深度模板描述
 
-	BuildCubeMapRenderTargetDescriptor();		// 构建CubeMap渲染目标描述
-	BuildDepthStencilDescriptor();		// 构建深度模板描述
-
 	BuildDepthStencil();		// 构建深度模板
 }
 
