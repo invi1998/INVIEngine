@@ -178,9 +178,13 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 			// 拿到点的位置
 			const FbxVector4 coordinates = controlPoints[controlPointIndex];
 
-			triangle.Vertexs[j].Position.x = coordinates.mData[0];
-			triangle.Vertexs[j].Position.y = coordinates.mData[1];
-			triangle.Vertexs[j].Position.z = coordinates.mData[2];
+			// 缩放信息
+			FbxDouble3 scale = mesh->GetNode()->LclScaling;
+
+
+			triangle.Vertexs[j].Position.x = coordinates.mData[0] * scale.mData[0];
+			triangle.Vertexs[j].Position.y = coordinates.mData[1] * scale.mData[1];
+			triangle.Vertexs[j].Position.z = -coordinates.mData[2] * scale.mData[2];
 
 			// uv
 			for (int l = 0; l < mesh->GetElementUVCount(); ++l)
