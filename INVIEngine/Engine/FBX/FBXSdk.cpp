@@ -190,26 +190,60 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 				// 对于UV来说，他的类型也很多，有控制点的，有polygon顶点的
 				auto modeType = textureUV->GetMappingMode();
 
+				// 通过这个UV再去拿到引用类型
+				auto referenceMode = textureUV->GetReferenceMode();
+
 				// 这里我们只关心polygon顶点的uv
 				if (modeType == FbxLayerElement::eByPolygonVertex)
+				{
+					// 为什么这里需要判断类型呢？学过图形学的都知道，对于fbx格式，它一个点存储的东西是很多，一个点是可以被多个图元共用的，比如法线信息，一个点可能就会存储多个法线信息
+
+					// 判断当前uv的引用类型是否是eDirect
+					if (referenceMode == FbxLayerElement::eDirect)
+					{
+						// 获取UV
+						const FbxVector2 UV = textureUV->GetDirectArray().GetAt(controlPointIndex);
+
+						triangle.Vertexs[j].UV.x = UV.mData[0];
+						triangle.Vertexs[j].UV.y = 1.0f - UV.mData[1];	// V是反的，和 OpenGL不一样 （坐标系问题）
+					}
+					else if (referenceMode == FbxLayerElement::eIndexToDirect)
+					{
+						int id = textureUV->GetIndexArray().GetAt(controlPointIndex);
+						const FbxVector2 UV = textureUV->GetDirectArray().GetAt(id);
+
+						triangle.Vertexs[j].UV.x = UV.mData[0];
+						triangle.Vertexs[j].UV.y = 1.0f - UV.mData[1];	// V是反的，和 OpenGL不一样 （坐标系问题）
+					}
+				}
+				// 如果是polygon类型
+				else if (modeType == FbxLayerElement::eByPolygonVertex)
 				{
 					// 拿到贴图UV
 					int textureUVIndex = mesh->GetTextureUVIndex(i, j);
 
-					// 通过这个UV再去拿到引用类型
-					auto referenceMode = textureUV->GetReferenceMode();
-
-					// 为什么这里需要判断类型呢？学过图形学的都知道，对于fbx格式，它一个点存储的东西是很多，一个点是可以被多个图元共用的，比如法线信息，一个点可能就会存储多个法线信息
-
-					// 判断当前uv的引用类型是否是index
-					if (referenceMode == FbxLayerElement::eIndex)
+					switch (referenceMode)
 					{
-						// 获取UV
-						FbxVector2 UV = textureUV->GetDirectArray().GetAt(textureUVIndex);
-					}
-					else if (referenceMode == FbxLayerElement::eIndexToDirect)
-					{
-						
+					case FbxLayerElement::eDirect:
+						{
+							// 获取UV
+							const FbxVector2 UV = textureUV->GetDirectArray().GetAt(textureUVIndex);
+
+							triangle.Vertexs[j].UV.x = UV.mData[0];
+							triangle.Vertexs[j].UV.y = 1.0f - UV.mData[1];	// V是反的，和 OpenGL不一样 （坐标系问题）
+							break;
+						};
+					case FbxLayerElement::eIndex: break;
+					case FbxLayerElement::eIndexToDirect:
+						{
+							int id = textureUV->GetIndexArray().GetAt(textureUVIndex);
+							const FbxVector2 UV = textureUV->GetDirectArray().GetAt(id);
+
+							triangle.Vertexs[j].UV.x = UV.mData[0];
+							triangle.Vertexs[j].UV.y = 1.0f - UV.mData[1];	// V是反的，和 OpenGL不一样 （坐标系问题）
+							break;
+						};
+					default: break;
 					}
 				}
 			}
