@@ -38,6 +38,9 @@ protected:
 	// 使用递归的方式读取fbx模型节点数据
 	void RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData);
 
+	// 获取mesh数据
+	void GetMesh(FbxNode* node, FFBXRenderData& outData);
+
 private:
 	FbxManager* fbxManager = nullptr;
 	FbxScene* fbxScene = nullptr;

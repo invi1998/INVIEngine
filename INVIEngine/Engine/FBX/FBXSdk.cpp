@@ -107,6 +107,25 @@ void CFBXAssetImport::LoadScene(FbxDocument* scene, const char* fileName)
 
 void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData)
 {
+	// XML
+	if (node->GetNodeAttribute() == nullptr)
+	{
+		// 空节点
+	}
+	else
+	{
+		// 获取属性类型（标志，骨骼，模型，相机，灯光，样条等等。。）
+		FbxNodeAttribute::EType attributeType = node->GetNodeAttribute()->GetAttributeType();
 
+		// 现在只关心mesh
+		if (attributeType == FbxNodeAttribute::eMesh)
+		{
+			// Mesh数据
+		}
+	}
+}
+
+void CFBXAssetImport::GetMesh(FbxNode* node, FFBXRenderData& outData)
+{
 }
 
