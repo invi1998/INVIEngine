@@ -2,6 +2,10 @@
 #include "FBXSdk.h"
 
 
+auto FFBXVersion::operator<=>(const FFBXVersion& fbxVersion) const
+{
+}
+
 CFBXAssetImport::CFBXAssetImport()
 {
 	InitializeSDKObjects();
@@ -15,7 +19,10 @@ CFBXAssetImport::~CFBXAssetImport()
 
 void CFBXAssetImport::LoadMeshData(const std::string& path, FFBXRenderData& outData)
 {
-	
+	// FbxString fbxPath(path.c_str());
+	// LoadScene(fbxScene, fbxPath.Buffer());
+
+	LoadScene(fbxScene, path.c_str());
 }
 
 void CFBXAssetImport::InitializeSDKObjects()
@@ -33,4 +40,26 @@ void CFBXAssetImport::InitializeSDKObjects()
 
 	// 创建场景
 	fbxScene = FbxScene::Create(fbxManager, "INVI_FBX_SCENE");
+}
+
+void CFBXAssetImport::LoadScene(FbxDocument* scene, const char* fileName)
+{
+	// SDK版本信息
+	FFBXVersion SDKVersion{};
+	FbxManager::GetFileFormatVersion(SDKVersion.Major, SDKVersion.Minor, SDKVersion.Revision);
+
+	// 创建导入器
+	FbxImporter* fbxImporter = FbxImporter::Create(fbxManager, "INVI_FBX_IMPORTER");
+	// 导入器初始化
+	if (fbxImporter->Initialize(fileName, -1, fbxManager->GetIOSettings()))
+	{
+		FFBXVersion FbxAssetsVersion{};
+		fbxImporter->GetFileVersion(FbxAssetsVersion.Major, FbxAssetsVersion.Minor, FbxAssetsVersion.Revision);
+
+		// FBX资源和SDK版本进行比对
+		if (SDKVersion < FbxAssetsVersion)
+		{
+			return;
+		}
+	}
 }

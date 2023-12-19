@@ -12,6 +12,15 @@ struct FFBXRenderData
 	// UV
 };
 
+// FBX∞Ê±æ–≈œ¢
+struct FFBXVersion
+{
+	int Major;
+	int Minor;
+	int Revision;
+	auto operator<=>(const FFBXVersion& fbxVersion) const;
+};
+
 class CFBXAssetImport
 {
 public:
@@ -20,9 +29,12 @@ public:
 
 	void LoadMeshData(const std::string& path, FFBXRenderData& outData);
 
-private:
+protected:
 	void InitializeSDKObjects();
 
+	void LoadScene(FbxDocument* scene, const char* fileName);
+
+private:
 	FbxManager* fbxManager = nullptr;
 	FbxScene* fbxScene = nullptr;
 };
