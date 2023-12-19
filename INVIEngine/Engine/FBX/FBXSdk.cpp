@@ -18,6 +18,16 @@ void CFBXAssetImport::LoadMeshData(const std::string& path, FFBXRenderData& outD
 	// LoadScene(fbxScene, fbxPath.Buffer());
 
 	LoadScene(fbxScene, path.c_str());
+
+	// XML
+	if (FbxNode* Node = fbxScene->GetRootNode())
+	{
+		// 拿到场景，然后从场景的根节点开始遍历
+		for (int i = 0; i < Node->GetChildCount(); i++)
+		{
+			RecursiveLoadMesh(Node->GetChild(i), outData);
+		}
+	}
 }
 
 void CFBXAssetImport::InitializeSDKObjects()
@@ -94,3 +104,9 @@ void CFBXAssetImport::LoadScene(FbxDocument* scene, const char* fileName)
 
 	}
 }
+
+void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData)
+{
+
+}
+
