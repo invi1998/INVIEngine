@@ -199,35 +199,23 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 					// 为什么这里需要判断类型呢？学过图形学的都知道，对于fbx格式，它一个点存储的东西是很多，一个点是可以被多个图元共用的，比如法线信息，一个点可能就会存储多个法线信息
 
 					// 判断当前uv的引用类型是否是eDirect
-					if (referenceMode == FbxLayerElement::eDirect)
+					if (referenceMode == FbxLayerElement::eIndexToDirect)
 					{
-						// 获取UV
 						const FbxVector2 UV = textureUV->GetDirectArray().GetAt(controlPointIndex);
 
 						triangle.Vertexs[j].UV.x = UV.mData[0];
 						triangle.Vertexs[j].UV.y = 1.0f - UV.mData[1];	// V是反的，和 OpenGL不一样 （坐标系问题）
 					}
-					else if (referenceMode == FbxLayerElement::eIndexToDirect)
-					{
-						int id = textureUV->GetIndexArray().GetAt(controlPointIndex);
-						const FbxVector2 UV = textureUV->GetDirectArray().GetAt(id);
-
-						triangle.Vertexs[j].UV.x = UV.mData[0];
-						triangle.Vertexs[j].UV.y = 1.0f - UV.mData[1];	// V是反的，和 OpenGL不一样 （坐标系问题）
-					}
 				}
-				// 如果是polygon类型
-				else if (modeType == FbxLayerElement::eByPolygonVertex)
+				// 如果是控制点类型
+				else if (modeType == FbxLayerElement::eByControlPoint)
 				{
-					// 拿到贴图UV
-					int textureUVIndex = mesh->GetTextureUVIndex(i, j);
-
 					switch (referenceMode)
 					{
 					case FbxLayerElement::eDirect:
 						{
 							// 获取UV
-							const FbxVector2 UV = textureUV->GetDirectArray().GetAt(textureUVIndex);
+							const FbxVector2 UV = textureUV->GetDirectArray().GetAt(controlPointIndex);
 
 							triangle.Vertexs[j].UV.x = UV.mData[0];
 							triangle.Vertexs[j].UV.y = 1.0f - UV.mData[1];	// V是反的，和 OpenGL不一样 （坐标系问题）
@@ -236,7 +224,7 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 					case FbxLayerElement::eIndex: break;
 					case FbxLayerElement::eIndexToDirect:
 						{
-							int id = textureUV->GetIndexArray().GetAt(textureUVIndex);
+							int id = textureUV->GetIndexArray().GetAt(controlPointIndex);
 							const FbxVector2 UV = textureUV->GetDirectArray().GetAt(id);
 
 							triangle.Vertexs[j].UV.x = UV.mData[0];
@@ -264,11 +252,52 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 						case FbxLayerElement::eDirect:
 						{
 							FbxVector4 directNormal = normal->GetDirectArray().GetAt(vertexId);
+
+							triangle.Vertexs[j].Normal.x = directNormal.mData[0];
+							triangle.Vertexs[j].Normal.y = directNormal.mData[1];
+							triangle.Vertexs[j].Normal.z = directNormal.mData[2];
 							break;
 						};
 						case FbxLayerElement::eIndex: break;
-						case FbxLayerElement::eIndexToDirect: break;
+						case FbxLayerElement::eIndexToDirect:
+						{
+							int id = normal->GetIndexArray().GetAt(vertexId);
+							FbxVector4 directNormal = normal->GetDirectArray().GetAt(id);
+
+							triangle.Vertexs[j].Normal.x = directNormal.mData[0];
+							triangle.Vertexs[j].Normal.y = directNormal.mData[1];
+							triangle.Vertexs[j].Normal.z = directNormal.mData[2];
+							break;
+						};
 						default: break;
+					}
+				}
+				else if (normal->GetMappingMode() == FbxGeometryElement::eByControlPoint)
+				{
+					// 判断引用关系
+					switch (normal->GetReferenceMode())
+					{
+					case FbxLayerElement::eDirect:
+					{
+						FbxVector4 directNormal = normal->GetDirectArray().GetAt(controlPointIndex);
+
+						triangle.Vertexs[j].Normal.x = directNormal.mData[0];
+						triangle.Vertexs[j].Normal.y = directNormal.mData[1];
+						triangle.Vertexs[j].Normal.z = directNormal.mData[2];
+						break;
+					};
+					case FbxLayerElement::eIndex: break;
+					case FbxLayerElement::eIndexToDirect:
+					{
+						int id = normal->GetIndexArray().GetAt(controlPointIndex);
+						FbxVector4 directNormal = normal->GetDirectArray().GetAt(id);
+
+						triangle.Vertexs[j].Normal.x = directNormal.mData[0];
+						triangle.Vertexs[j].Normal.y = directNormal.mData[1];
+						triangle.Vertexs[j].Normal.z = directNormal.mData[2];
+						break;
+					};
+					default: break;
 					}
 				}
 
@@ -291,10 +320,24 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 						{
 							const int id = tangent->GetIndexArray().GetAt(vertexId);
 							FbxVector4 directTangent = tangent->GetDirectArray().GetAt(id);
+
+							triangle.Vertexs[j].Tangent.x = directTangent.mData[0];
+							triangle.Vertexs[j].Tangent.y = directTangent.mData[1];
+							triangle.Vertexs[j].Tangent.z = directTangent.mData[2];
 							break;
 						};
 						case FbxLayerElement::eIndex: break;
-						case FbxLayerElement::eIndexToDirect: break;
+						case FbxLayerElement::eIndexToDirect:
+							{
+								int id = tangent->GetIndexArray().GetAt(vertexId);
+								FbxVector4 directTangent = tangent->GetDirectArray().GetAt(id);
+
+								triangle.Vertexs[j].Tangent.x = directTangent.mData[0];
+								triangle.Vertexs[j].Tangent.y = directTangent.mData[1];
+								triangle.Vertexs[j].Tangent.z = directTangent.mData[2];
+
+								break;
+							};
 						default: break;
 					}
 				}
