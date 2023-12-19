@@ -164,6 +164,10 @@ void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& MeshData)
 			// Mesh数据
 			GetMesh(node, MeshData.ModelData[MeshData.ModelData.size() - 1]);
 		}
+		else if (attributeType == FbxNodeAttribute::eSkeleton)
+		{
+			ENGINE_LOG_WARNING("暂不支持骨骼模型导入");
+		}
 	}
 }
 

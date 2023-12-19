@@ -130,7 +130,7 @@ int CDirectXRenderingEngine::PostInit()
 				material->SetMaterialType(BaseColor);
 			}
 		}*/
-
+		
 		////甜甜圈
 		if (GTorusMesh* InTorusMesh = World->CreateActorObject<GTorusMesh>())
 		{
@@ -739,6 +739,44 @@ int CDirectXRenderingEngine::PostInit()
 			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
 			{
 				InMaterial->SetMaterialType(ShadowTexture);
+			}
+		}
+
+		// FBX 格式的 衣服模型 SK_Mannequin.FBX 骨骼
+		if (GCustomMesh* customMesh = World->CreateActorObject<GCustomMesh>())
+		{
+			customMesh->CreateMesh("Asserts/Mesh/SK_Mannequin.FBX");
+			customMesh->SetPosition(XMFLOAT3{ 20.f, 20.f, 20.f });
+
+			if (CMaterial* InMaterial = (*customMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(
+					2.f / 255.f,
+					214.f / 255.f,
+					17.f / 255.f, 1.f));
+
+				InMaterial->SetMaterialType(EMaterialType::Back);
+				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
+				InMaterial->SetRoughness(0.2f);
+			}
+		}
+
+		// Heart.fbx
+		if (GCustomMesh* customMesh = World->CreateActorObject<GCustomMesh>())
+		{
+			customMesh->CreateMesh("Asserts/Mesh/Heart.fbx");
+			customMesh->SetPosition(XMFLOAT3{ -20.f, 0.f, 10.f });
+
+			if (CMaterial* InMaterial = (*customMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(
+					2.f / 255.f,
+					214.f / 255.f,
+					17.f / 255.f, 1.f));
+
+				InMaterial->SetMaterialType(EMaterialType::Back);
+				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
+				InMaterial->SetRoughness(0.2f);
 			}
 		}
 
