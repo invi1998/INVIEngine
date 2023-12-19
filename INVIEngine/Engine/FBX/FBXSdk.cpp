@@ -1,11 +1,6 @@
 #include "EngineMinimal.h"
 #include "FBXSdk.h"
 
-
-auto FFBXVersion::operator<=>(const FFBXVersion& fbxVersion) const
-{
-}
-
 CFBXAssetImport::CFBXAssetImport()
 {
 	InitializeSDKObjects();
@@ -56,10 +51,46 @@ void CFBXAssetImport::LoadScene(FbxDocument* scene, const char* fileName)
 		FFBXVersion FbxAssetsVersion{};
 		fbxImporter->GetFileVersion(FbxAssetsVersion.Major, FbxAssetsVersion.Minor, FbxAssetsVersion.Revision);
 
+		// 判断是不是fbx资源
+		if (!fbxImporter->IsFBX())
+		{
+			ENGINE_LOG_ERROR("当前资源不是fbx资源。%s", fbxImporter->GetFileName().Buffer());
+			return;
+		}
+
 		// FBX资源和SDK版本进行比对
 		if (SDKVersion < FbxAssetsVersion)
 		{
+			ENGINE_LOG_ERROR("SDK版本低于FBX资源版本，请更换SDK或者使用低版本fbx资源。SDK = %d-%d-%d, fbx = %d-%d-%d", SDKVersion.Major, SDKVersion.Minor, SDKVersion.Revision, FbxAssetsVersion.Major, FbxAssetsVersion.Minor, FbxAssetsVersion.Revision);
 			return;
 		}
+
+		// ------------------------头文件信息读取完毕-------------------------------------------------
+
+		// ------------------------fbx实体数据信息读取开始-------------------------------------------------
+
+		// 将数据导出到场景中
+		if (fbxImporter->Import(scene))
+		{
+			// 判断状态
+			if (fbxImporter->GetStatus().GetCode() == FbxStatus::ePasswordError)
+			{
+				ENGINE_LOG_ERROR("数据导入场景失败，密码错误。%s", fbxImporter->GetFileName().Buffer());
+				// TODO 针对加密文件，可以另行开发让用户重新输入密码的功能
+				return;
+			}
+
+			// 自此，资源已经成功导入到场景中，导入器可以销毁了
+			ENGINE_LOG_SUCCESS("FBX资源导入成功: %s", fbxImporter->GetFileName().Buffer());
+			fbxImporter->Destroy();
+			
+		}
+		else
+		{
+			ENGINE_LOG_ERROR("数据导入场景失败。%s", fbxImporter->GetFileName().Buffer());
+			return;
+		}
+
+
 	}
 }
