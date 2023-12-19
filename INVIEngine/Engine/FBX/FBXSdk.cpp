@@ -131,6 +131,7 @@ void CFBXAssetImport::GetMesh(FbxNode* node, FMeshRenderingData& MeshData)
 
 	FbxMesh* nodeMesh = static_cast<FbxMesh*>(node->GetNodeAttribute());
 
+	// 我们这里只关心多边形信息
 	GetPolygons(nodeMesh, MeshData);
 }
 

@@ -2,6 +2,7 @@
 
 #include "CustomMeshComponent.h"
 
+#include "FBX/FBXSdk.h"
 #include "Mesh/Core/MeshType.h"
 
 CCustomMeshComponent::CCustomMeshComponent()
@@ -10,23 +11,36 @@ CCustomMeshComponent::CCustomMeshComponent()
 
 void CCustomMeshComponent::CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath)
 {
-	//拿到文件大小
-	unsigned int FileSize = get_file_size_by_filename(InPath.c_str());
 
-	//根据文件大小创建buff
-	char* Buff = new char[FileSize + 1];
-	//必须要初始化
-	memset(Buff, 0, FileSize + 1);
+	char buff[1024] = { 0 };
+	get_path_clean_filename(buff, InPath.c_str());
 
-	//提取buff
-	get_file_buf(InPath.c_str(), Buff);
-
-	if (!LoadObjFromBuffer(Buff, FileSize, MeshData))
+	if (find_string(buff, ".obj", 0) != -1 || find_string(buff, ".OBJ", 0) != -1)
 	{
+		//拿到文件大小
+		unsigned int FileSize = get_file_size_by_filename(InPath.c_str());
 
+		//根据文件大小创建buff
+		char* Buff = new char[FileSize + 1];
+		//必须要初始化
+		memset(Buff, 0, FileSize + 1);
+
+		//提取buff
+		get_file_buf(InPath.c_str(), Buff);
+
+		if (!LoadObjFromBuffer(Buff, FileSize, MeshData))
+		{
+			ENGINE_LOG_ERROR("obj 模型读取失败！%s", InPath);
+		}
+
+		delete []Buff;
+	}
+	else if (find_string(buff, ".fbx", 0) != -1 || find_string(buff, ".FBX", 0) != -1)
+	{
+		LoadFbxFromBuffer(InPath, MeshData);
 	}
 
-	delete []Buff;
+	
 }
 
 bool CCustomMeshComponent::LoadObjFromBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData)
@@ -154,7 +168,9 @@ bool CCustomMeshComponent::LoadObjFromBuffer(char* InBuffer, uint32_t InBufferSi
 
 bool CCustomMeshComponent::LoadFbxFromBuffer(const std::string& InPath, FMeshRenderingData& MeshData)
 {
+	CFBXAssetImport fbxAssetImporter{};
 
+	fbxAssetImporter.LoadMeshData(InPath, MeshData);
 }
 
 void CCustomMeshComponent::BuildKey(size_t& meshKey, const std::string& InPath)

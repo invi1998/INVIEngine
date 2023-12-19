@@ -2,6 +2,13 @@
 
 #include "Core/ShellMeshComponent.h"
 
+// 资源类型
+enum EMeshAssetsType
+{
+	OBJ,
+	FBX,
+};
+
 class CCustomMeshComponent : public CShellMeshComponent
 {
 public:
