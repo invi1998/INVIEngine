@@ -10,7 +10,7 @@ CFBXAssetImport::~CFBXAssetImport()
 {
 }
 
-void CFBXAssetImport::LoadMeshData(const std::string& path, FFBXRenderData& outData)
+void CFBXAssetImport::LoadMeshData(const std::string& path, FMeshRenderingData& MeshData)
 {
 	// FbxString fbxPath(path.c_str());
 	// LoadScene(fbxScene, fbxPath.Buffer());
@@ -23,7 +23,7 @@ void CFBXAssetImport::LoadMeshData(const std::string& path, FFBXRenderData& outD
 		// 拿到场景，然后从场景的根节点开始遍历
 		for (int i = 0; i < Node->GetChildCount(); i++)
 		{
-			RecursiveLoadMesh(Node->GetChild(i), outData);
+			RecursiveLoadMesh(Node->GetChild(i), MeshData);
 		}
 	}
 }
@@ -103,7 +103,7 @@ void CFBXAssetImport::LoadScene(FbxDocument* scene, const char* fileName)
 	}
 }
 
-void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData)
+void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FMeshRenderingData& MeshData)
 {
 	// XML
 	if (node->GetNodeAttribute() == nullptr)
@@ -120,21 +120,21 @@ void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData)
 		if (attributeType == FbxNodeAttribute::eMesh)
 		{
 			// Mesh数据
-			GetMesh(node, outData);
+			GetMesh(node, MeshData);
 		}
 	}
 }
 
-void CFBXAssetImport::GetMesh(FbxNode* node, FFBXRenderData& outData)
+void CFBXAssetImport::GetMesh(FbxNode* node, FMeshRenderingData& MeshData)
 {
 	// 一个网格里会有很多信息，材质，颜色，贴图等等
 
 	FbxMesh* nodeMesh = static_cast<FbxMesh*>(node->GetNodeAttribute());
 
-	GetPolygons(nodeMesh, outData);
+	GetPolygons(nodeMesh, MeshData);
 }
 
-void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXRenderData& outData)
+void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FMeshRenderingData& MeshData)
 {
 	// 获取图元数量（这个图元可以是三角形，四边形，五边形等等，目前引擎只支持3角形）
 	int polygonCount = mesh->GetPolygonCount();

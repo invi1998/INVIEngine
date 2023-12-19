@@ -1,16 +1,6 @@
 #pragma once
 
-struct FFBXRenderData
-{
-	// 点
-	
-
-	// 法线
-
-	// 切线
-
-	// UV
-};
+struct FMeshRenderingData;
 
 // FBX版本信息
 struct FFBXVersion
@@ -28,7 +18,7 @@ public:
 	CFBXAssetImport();
 	~CFBXAssetImport();
 
-	void LoadMeshData(const std::string& path, FFBXRenderData& outData);
+	void LoadMeshData(const std::string& path, FMeshRenderingData& MeshData);
 
 protected:
 	void InitializeSDKObjects();
@@ -36,12 +26,12 @@ protected:
 	void LoadScene(FbxDocument* scene, const char* fileName);
 
 	// 使用递归的方式读取fbx模型节点数据
-	void RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData);
+	void RecursiveLoadMesh(FbxNode* node, FMeshRenderingData& MeshData);
 
 	// 获取mesh数据
-	void GetMesh(FbxNode* node, FFBXRenderData& outData);
+	void GetMesh(FbxNode* node, FMeshRenderingData& MeshData);
 
-	void GetPolygons(FbxMesh* mesh, FFBXRenderData& outData);
+	void GetPolygons(FbxMesh* mesh, FMeshRenderingData& MeshData);
 
 private:
 	FbxManager* fbxManager = nullptr;

@@ -9,7 +9,10 @@ public:
 
 	void CreateMesh(FMeshRenderingData& MeshData, const std::string& InPath);
 
-	static bool LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData);
+	// OBJ 格式
+	static bool LoadObjFromBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData);
+	// FBX 格式
+	static bool LoadFbxFromBuffer(const std::string& InPath, FMeshRenderingData& MeshData);
 
 	void BuildKey(size_t& meshKey, const std::string& InPath);
 };

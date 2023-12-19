@@ -21,7 +21,7 @@ void CCustomMeshComponent::CreateMesh(FMeshRenderingData& MeshData, const std::s
 	//ÌáÈ¡buff
 	get_file_buf(InPath.c_str(), Buff);
 
-	if (!LoadObjFormBuffer(Buff, FileSize, MeshData))
+	if (!LoadObjFromBuffer(Buff, FileSize, MeshData))
 	{
 
 	}
@@ -29,7 +29,7 @@ void CCustomMeshComponent::CreateMesh(FMeshRenderingData& MeshData, const std::s
 	delete []Buff;
 }
 
-bool CCustomMeshComponent::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData)
+bool CCustomMeshComponent::LoadObjFromBuffer(char* InBuffer, uint32_t InBufferSize, FMeshRenderingData& MeshData)
 {
 	if (InBufferSize > 0)
 	{
@@ -150,6 +150,11 @@ bool CCustomMeshComponent::LoadObjFormBuffer(char* InBuffer, uint32_t InBufferSi
 	}
 
 	return false;
+}
+
+bool CCustomMeshComponent::LoadFbxFromBuffer(const std::string& InPath, FMeshRenderingData& MeshData)
+{
+
 }
 
 void CCustomMeshComponent::BuildKey(size_t& meshKey, const std::string& InPath)
