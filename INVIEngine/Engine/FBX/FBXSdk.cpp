@@ -111,6 +111,7 @@ void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData)
 	if (node->GetNodeAttribute() == nullptr)
 	{
 		// 空节点
+		return;
 	}
 	else
 	{
@@ -121,11 +122,137 @@ void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& outData)
 		if (attributeType == FbxNodeAttribute::eMesh)
 		{
 			// Mesh数据
+			GetMesh(node, outData);
 		}
 	}
 }
 
 void CFBXAssetImport::GetMesh(FbxNode* node, FFBXRenderData& outData)
 {
+	// 一个网格里会有很多信息，材质，颜色，贴图等等
+
+	FbxMesh* nodeMesh = static_cast<FbxMesh*>(node->GetNodeAttribute());
+
+	GetPolygons(nodeMesh, outData);
 }
+
+void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXRenderData& outData)
+{
+	// 获取图元数量（这个图元可以是三角形，四边形，五边形等等，目前引擎只支持3角形）
+	int polygonCount = mesh->GetPolygonCount();
+
+	// 拿到控制点（实际图元顶点）
+	FbxVector4* controlPoints = mesh->GetControlPoints();
+
+	// 记录点的数量
+	int vertexId = 0;
+
+	// 遍历每个图元
+	for (int i = 0; i < polygonCount; i++)
+	{
+		// 当前图元是几边形
+		int polygonSize = mesh->GetPolygonSize(i);
+		// 遍历点的类型
+		for (int j = 0; j < polygonSize; j++)
+		{
+			// 拿到控制点索引
+			int controlPointIndex = mesh->GetPolygonVertex(i, j);
+
+			// 拿到点的位置
+			FbxVector4 coordinates = controlPoints[controlPointIndex];
+
+			// uv
+			for (int l = 0; l < mesh->GetElementUVCount(); ++l)
+			{
+				FbxGeometryElementUV* textureUV = mesh->GetElementUV(l);
+
+				// 对于UV来说，他的类型也很多，有控制点的，有polygon顶点的
+				auto modeType = textureUV->GetMappingMode();
+
+				// 这里我们只关心polygon顶点的uv
+				if (modeType == FbxLayerElement::eByPolygonVertex)
+				{
+					// 拿到贴图UV
+					int textureUVIndex = mesh->GetTextureUVIndex(i, j);
+
+					// 通过这个UV再去拿到引用类型
+					auto referenceMode = textureUV->GetReferenceMode();
+
+					// 为什么这里需要判断类型呢？学过图形学的都知道，对于fbx格式，它一个点存储的东西是很多，一个点是可以被多个图元共用的，比如法线信息，一个点可能就会存储多个法线信息
+
+					// 判断当前uv的引用类型是否是index
+					if (referenceMode == FbxLayerElement::eIndex)
+					{
+						// 获取UV
+						FbxVector2 UV = textureUV->GetDirectArray().GetAt(textureUVIndex);
+					}
+				}
+			}
+
+			// 法线
+			// 遍历当前点的法线数量
+			for (int k = 0; k < mesh->GetElementNormalCount(); ++k)
+			{
+				// 拿到当前k索引的法线
+				FbxGeometryElementNormal* normal = mesh->GetElementNormal(k);
+
+				// 同理，法线的类型也很多，但是这里我们只关注polygon顶点法线
+				if (normal->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
+				{
+					// 判断引用关系
+					switch (normal->GetReferenceMode())
+					{
+						case FbxLayerElement::eDirect:
+						{
+							FbxVector4 directNormal = normal->GetDirectArray().GetAt(vertexId);
+							break;
+						};
+						case FbxLayerElement::eIndex: break;
+						case FbxLayerElement::eIndexToDirect: break;
+						default: break;
+					}
+				}
+
+			}
+
+
+			// 切线 T
+			// 遍历当前点的切线数量
+			for (int k = 0; k < mesh->GetElementTangentCount(); ++k)
+			{
+				// 更具切线索引k拿到切线
+				FbxGeometryElementTangent* tangent = mesh->GetElementTangent(k);
+
+				// 同理，切线的类型也很多，但是这里我们只关注polygon顶点切线
+				if (tangent->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
+				{
+					switch (tangent->GetReferenceMode())
+					{
+						case FbxLayerElement::eDirect:
+						{
+							const int id = tangent->GetIndexArray().GetAt(vertexId);
+							FbxVector4 directTangent = tangent->GetDirectArray().GetAt(id);
+							break;
+						};
+						case FbxLayerElement::eIndex: break;
+						case FbxLayerElement::eIndexToDirect: break;
+						default: break;
+					}
+				}
+
+			}
+
+			// 切线B （fbx里已经有计算好的切线B，但是我引擎里，切线B是自己在shader中计算的，所以这里不读也可以）
+			/*for (int k = 0; k < mesh->GetElementBinormalCount(); ++k)
+			{
+				
+			}*/
+
+
+			vertexId++;
+		}
+	}
+
+}
+
 

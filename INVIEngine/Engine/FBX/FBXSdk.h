@@ -41,6 +41,8 @@ protected:
 	// 获取mesh数据
 	void GetMesh(FbxNode* node, FFBXRenderData& outData);
 
+	void GetPolygons(FbxMesh* mesh, FFBXRenderData& outData);
+
 private:
 	FbxManager* fbxManager = nullptr;
 	FbxScene* fbxScene = nullptr;
