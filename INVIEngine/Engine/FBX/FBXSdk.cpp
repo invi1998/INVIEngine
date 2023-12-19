@@ -8,8 +8,6 @@ CFBXAssetImport::CFBXAssetImport()
 
 CFBXAssetImport::~CFBXAssetImport()
 {
-	delete fbxScene;
-	delete fbxManager;
 }
 
 void CFBXAssetImport::LoadMeshData(const std::string& path, FFBXRenderData& outData)
