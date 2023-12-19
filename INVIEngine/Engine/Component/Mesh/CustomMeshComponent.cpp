@@ -171,6 +171,8 @@ bool CCustomMeshComponent::LoadFbxFromBuffer(const std::string& InPath, FMeshRen
 	CFBXAssetImport fbxAssetImporter{};
 
 	fbxAssetImporter.LoadMeshData(InPath, MeshData);
+
+	return true;
 }
 
 void CCustomMeshComponent::BuildKey(size_t& meshKey, const std::string& InPath)

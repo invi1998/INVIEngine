@@ -8,6 +8,10 @@ CFBXAssetImport::CFBXAssetImport()
 
 CFBXAssetImport::~CFBXAssetImport()
 {
+	if (fbxManager)
+	{
+		fbxManager->Destroy();
+	}
 }
 
 void CFBXAssetImport::LoadMeshData(const std::string& path, FMeshRenderingData& MeshData)
@@ -103,7 +107,7 @@ void CFBXAssetImport::LoadScene(FbxDocument* scene, const char* fileName)
 	}
 }
 
-void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FMeshRenderingData& MeshData)
+void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& MeshData)
 {
 	// XML
 	if (node->GetNodeAttribute() == nullptr)
@@ -119,23 +123,28 @@ void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FMeshRenderingData& MeshD
 		// 现在只关心mesh
 		if (attributeType == FbxNodeAttribute::eMesh)
 		{
+			MeshData.ModelData.push_back(FFBXModel());
+			
 			// Mesh数据
-			GetMesh(node, MeshData);
+			GetMesh(node, MeshData.ModelData[MeshData.ModelData.size() - 1]);
 		}
 	}
 }
 
-void CFBXAssetImport::GetMesh(FbxNode* node, FMeshRenderingData& MeshData)
+void CFBXAssetImport::GetMesh(FbxNode* node, FFBXModel& ModelData)
 {
 	// 一个网格里会有很多信息，材质，颜色，贴图等等
 
 	FbxMesh* nodeMesh = static_cast<FbxMesh*>(node->GetNodeAttribute());
 
+	ModelData.MeshData.push_back(FFBXMesh());
+	
+
 	// 我们这里只关心多边形信息
-	GetPolygons(nodeMesh, MeshData);
+	GetPolygons(nodeMesh, ModelData.MeshData[ModelData.MeshData.size() - 1]);
 }
 
-void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FMeshRenderingData& MeshData)
+void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 {
 	// 获取图元数量（这个图元可以是三角形，四边形，五边形等等，目前引擎只支持3角形）
 	int polygonCount = mesh->GetPolygonCount();
@@ -146,9 +155,18 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FMeshRenderingData& MeshData)
 	// 记录点的数量
 	int vertexId = 0;
 
+	std::vector<XMFLOAT3> Position{};	// 顶点坐标
+	std::vector<XMFLOAT3> Normal{};		// 顶点法线
+	std::vector<XMFLOAT3> UTangent{};	// 顶点切线
+	std::vector<XMFLOAT2> TexCoord{};	// 纹理坐标
+
 	// 遍历每个图元
 	for (int i = 0; i < polygonCount; i++)
 	{
+
+		MeshData.VertexData.push_back(FFBXTrianglePolygon());
+		FFBXTrianglePolygon& triangle = MeshData.VertexData[MeshData.VertexData.size() - 1];
+
 		// 当前图元是几边形
 		int polygonSize = mesh->GetPolygonSize(i);
 		// 遍历点的类型
@@ -158,7 +176,11 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FMeshRenderingData& MeshData)
 			int controlPointIndex = mesh->GetPolygonVertex(i, j);
 
 			// 拿到点的位置
-			FbxVector4 coordinates = controlPoints[controlPointIndex];
+			const FbxVector4 coordinates = controlPoints[controlPointIndex];
+
+			triangle.Vertexs[j].Position.x = coordinates.mData[0];
+			triangle.Vertexs[j].Position.y = coordinates.mData[1];
+			triangle.Vertexs[j].Position.z = coordinates.mData[2];
 
 			// uv
 			for (int l = 0; l < mesh->GetElementUVCount(); ++l)
@@ -184,6 +206,10 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FMeshRenderingData& MeshData)
 					{
 						// 获取UV
 						FbxVector2 UV = textureUV->GetDirectArray().GetAt(textureUVIndex);
+					}
+					else if (referenceMode == FbxLayerElement::eIndexToDirect)
+					{
+						
 					}
 				}
 			}
@@ -269,6 +295,10 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FMeshRenderingData& MeshData)
 		}
 	}
 
+}
+
+void CFBXAssetImport::GetMaterial()
+{
 }
 
 
