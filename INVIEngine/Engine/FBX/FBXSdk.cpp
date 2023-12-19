@@ -255,8 +255,7 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXRenderData& outData)
 					{
 					case FbxLayerElement::eDirect:
 					{
-						const int id = binormal->GetIndexArray().GetAt(vertexId);
-						FbxVector4 directBinormal = binormal->GetDirectArray().GetAt(id);
+						FbxVector4 directBinormal = binormal->GetDirectArray().GetAt(vertexId);
 						break;
 					};
 					case FbxLayerElement::eIndex: break;
