@@ -242,11 +242,29 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXRenderData& outData)
 
 			}
 
-			// 切线B （fbx里已经有计算好的切线B，但是我引擎里，切线B是自己在shader中计算的，所以这里不读也可以）
-			/*for (int k = 0; k < mesh->GetElementBinormalCount(); ++k)
+			// 切线B （fbx里已经有计算好的切线B，但是我引擎里，切线B是自己在shader中计算的(法线和切线T做叉乘)，所以这里不读也可以）
+			for (int k = 0; k < mesh->GetElementBinormalCount(); ++k)
 			{
-				
-			}*/
+				// 更具切线索引k拿到切线
+				FbxGeometryElementBinormal* binormal = mesh->GetElementBinormal(k);
+
+				// 同理，切线的类型也很多，但是这里我们只关注polygon顶点切线
+				if (binormal->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
+				{
+					switch (binormal->GetReferenceMode())
+					{
+					case FbxLayerElement::eDirect:
+					{
+						const int id = binormal->GetIndexArray().GetAt(vertexId);
+						FbxVector4 directBinormal = binormal->GetDirectArray().GetAt(id);
+						break;
+					};
+					case FbxLayerElement::eIndex: break;
+					case FbxLayerElement::eIndexToDirect: break;
+					default: break;
+					}
+				}
+			}
 
 
 			vertexId++;
