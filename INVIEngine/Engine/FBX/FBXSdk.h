@@ -15,11 +15,15 @@ struct FFBXRenderData
 class CFBXAssetImport
 {
 public:
-	CFBXAssetImport() = default;
+	CFBXAssetImport();
+	~CFBXAssetImport();
 
 	void LoadMeshData(const std::string& path, FFBXRenderData& outData);
 
 private:
-	void InitializeSDKObjects(FbxManager*& manager, FbxScene*& scene);
+	void InitializeSDKObjects();
+
+	FbxManager* fbxManager = nullptr;
+	FbxScene* fbxScene = nullptr;
 };
 
