@@ -142,6 +142,9 @@ void CFBXAssetImport::GetMesh(FbxNode* node, FFBXModel& ModelData)
 
 	// 我们这里只关心多边形信息
 	GetPolygons(nodeMesh, ModelData.MeshData[ModelData.MeshData.size() - 1]);
+
+	// index
+	GetIndex(ModelData.MeshData[ModelData.MeshData.size() - 1]);
 }
 
 void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
@@ -380,6 +383,17 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 
 void CFBXAssetImport::GetMaterial()
 {
+}
+
+void CFBXAssetImport::GetIndex(FFBXMesh& mesh)
+{
+	uint16_t length = mesh.VertexData.size() * 3;
+	mesh.IndexData.resize(length);
+
+	for (uint16_t i = 0; i < length; i++)
+	{
+		mesh.IndexData[i] = i;
+	}
 }
 
 

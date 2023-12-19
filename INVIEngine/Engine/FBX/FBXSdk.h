@@ -102,6 +102,9 @@ protected:
 	// 获取材质
 	void GetMaterial();
 
+	// 获取顶点索引
+	void GetIndex(FFBXMesh& mesh);
+
 private:
 	FbxManager* fbxManager = nullptr;
 	FbxScene* fbxScene = nullptr;
