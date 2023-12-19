@@ -226,8 +226,8 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 
 
 			triangle.Vertexs[j].Position.x = coordinates.mData[0] * scale.mData[0];
-			triangle.Vertexs[j].Position.y = coordinates.mData[1] * scale.mData[1];
-			triangle.Vertexs[j].Position.z = -coordinates.mData[2] * scale.mData[2];
+			triangle.Vertexs[j].Position.y = coordinates.mData[2] * scale.mData[2];
+			triangle.Vertexs[j].Position.z = -coordinates.mData[1] * scale.mData[1];
 
 			// uv
 			for (int l = 0; l < mesh->GetElementUVCount(); ++l)
@@ -301,8 +301,8 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 							FbxVector4 directNormal = normal->GetDirectArray().GetAt(vertexId);
 
 							triangle.Vertexs[j].Normal.x = directNormal.mData[0];
-							triangle.Vertexs[j].Normal.y = directNormal.mData[1];
-							triangle.Vertexs[j].Normal.z = directNormal.mData[2];
+							triangle.Vertexs[j].Normal.y = directNormal.mData[2];
+							triangle.Vertexs[j].Normal.z = directNormal.mData[1];
 							break;
 						};
 						case FbxLayerElement::eIndex: break;
@@ -312,8 +312,8 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 							FbxVector4 directNormal = normal->GetDirectArray().GetAt(id);
 
 							triangle.Vertexs[j].Normal.x = directNormal.mData[0];
-							triangle.Vertexs[j].Normal.y = directNormal.mData[1];
-							triangle.Vertexs[j].Normal.z = directNormal.mData[2];
+							triangle.Vertexs[j].Normal.y = directNormal.mData[2];
+							triangle.Vertexs[j].Normal.z = directNormal.mData[1];
 							break;
 						};
 						default: break;
@@ -329,8 +329,8 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 						FbxVector4 directNormal = normal->GetDirectArray().GetAt(controlPointIndex);
 
 						triangle.Vertexs[j].Normal.x = directNormal.mData[0];
-						triangle.Vertexs[j].Normal.y = directNormal.mData[1];
-						triangle.Vertexs[j].Normal.z = directNormal.mData[2];
+						triangle.Vertexs[j].Normal.y = directNormal.mData[2];
+						triangle.Vertexs[j].Normal.z = directNormal.mData[1];
 						break;
 					};
 					case FbxLayerElement::eIndex: break;
@@ -340,8 +340,8 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 						FbxVector4 directNormal = normal->GetDirectArray().GetAt(id);
 
 						triangle.Vertexs[j].Normal.x = directNormal.mData[0];
-						triangle.Vertexs[j].Normal.y = directNormal.mData[1];
-						triangle.Vertexs[j].Normal.z = directNormal.mData[2];
+						triangle.Vertexs[j].Normal.y = directNormal.mData[2];
+						triangle.Vertexs[j].Normal.z = directNormal.mData[1];
 						break;
 					};
 					default: break;
@@ -369,8 +369,8 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 							FbxVector4 directTangent = tangent->GetDirectArray().GetAt(id);
 
 							triangle.Vertexs[j].Tangent.x = directTangent.mData[0];
-							triangle.Vertexs[j].Tangent.y = directTangent.mData[1];
-							triangle.Vertexs[j].Tangent.z = directTangent.mData[2];
+							triangle.Vertexs[j].Tangent.y = directTangent.mData[2];
+							triangle.Vertexs[j].Tangent.z = directTangent.mData[1];
 							break;
 						};
 						case FbxLayerElement::eIndex: break;
@@ -380,8 +380,8 @@ void CFBXAssetImport::GetPolygons(FbxMesh* mesh, FFBXMesh& MeshData)
 								FbxVector4 directTangent = tangent->GetDirectArray().GetAt(id);
 
 								triangle.Vertexs[j].Tangent.x = directTangent.mData[0];
-								triangle.Vertexs[j].Tangent.y = directTangent.mData[1];
-								triangle.Vertexs[j].Tangent.z = directTangent.mData[2];
+								triangle.Vertexs[j].Tangent.y = directTangent.mData[2];
+								triangle.Vertexs[j].Tangent.z = directTangent.mData[1];
 
 								break;
 							};
