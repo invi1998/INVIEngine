@@ -19,7 +19,7 @@ struct FFBXVersion
 	int Minor;
 	int Revision;
 
-	auto operator<=>(const FFBXVersion& ffbx_version) const = default;
+	auto operator<=>(const FFBXVersion& fbxVersion) const = default;
 };
 
 class CFBXAssetImport
