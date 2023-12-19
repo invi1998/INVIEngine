@@ -1,6 +1,8 @@
 #include "EngineMinimal.h"
 #include "FBXSdk.h"
 
+#include "Mesh/Core/MeshType.h"
+
 CFBXAssetImport::CFBXAssetImport()
 {
 	InitializeSDKObjects();
@@ -24,10 +26,44 @@ void CFBXAssetImport::LoadMeshData(const std::string& path, FMeshRenderingData& 
 	// XML
 	if (FbxNode* Node = fbxScene->GetRootNode())
 	{
+		FFBXRenderData renderData{};
+
 		// 拿到场景，然后从场景的根节点开始遍历
 		for (int i = 0; i < Node->GetChildCount(); i++)
 		{
-			RecursiveLoadMesh(Node->GetChild(i), MeshData);
+			RecursiveLoadMesh(Node->GetChild(i), renderData);
+		}
+
+		for (auto &model : renderData.ModelData)
+		{
+			for (auto& mesh : model.MeshData)
+			{
+				for (auto& vertexData : mesh.VertexData)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						MeshData.VertexData.push_back(FVertex());
+						FVertex& ve = MeshData.VertexData[MeshData.VertexData.size() - 1];
+
+						ve.Position.x = vertexData.Vertexs[i].Position.x;
+						ve.Position.y = vertexData.Vertexs[i].Position.y;
+						ve.Position.z = vertexData.Vertexs[i].Position.z;
+
+						ve.Normal.x = vertexData.Vertexs[i].Normal.x;
+						ve.Normal.y = vertexData.Vertexs[i].Normal.y;
+						ve.Normal.z = vertexData.Vertexs[i].Normal.z;
+
+						ve.UTangent.x = vertexData.Vertexs[i].Tangent.x;
+						ve.UTangent.y = vertexData.Vertexs[i].Tangent.y;
+						ve.UTangent.z = vertexData.Vertexs[i].Tangent.z;
+
+						ve.TexCoord.x = vertexData.Vertexs[i].UV.z;
+						ve.TexCoord.y = vertexData.Vertexs[i].UV.y;
+					}
+				}
+
+				MeshData.IndexData = mesh.IndexData;
+			}
 		}
 	}
 }
