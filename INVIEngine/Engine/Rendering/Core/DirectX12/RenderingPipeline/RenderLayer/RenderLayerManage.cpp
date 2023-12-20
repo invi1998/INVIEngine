@@ -122,11 +122,11 @@ void FRenderLayerManage::ResetPSO(int layer)
 	}
 }
 
-void FRenderLayerManage::DrawMesh(float DeltaTime, int layer)
+void FRenderLayerManage::DrawMesh(float DeltaTime, int layer, ERenderCondition rc)
 {
 	if (const auto innerLayer = FindByRenderLayer(layer))
 	{
-		innerLayer->DrawMesh(DeltaTime);
+		innerLayer->DrawMesh(DeltaTime, rc);
 	}
 }
 

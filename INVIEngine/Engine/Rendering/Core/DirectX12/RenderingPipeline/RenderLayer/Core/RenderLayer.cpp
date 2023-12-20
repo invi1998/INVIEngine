@@ -31,8 +31,28 @@ void FRenderLayer::PostDraw(float deltaTime)
 {
 }
 
-void FRenderLayer::DrawObject(float deltaTime, const FRenderingData& renderDate)
+void FRenderLayer::DrawObject(float deltaTime, const FRenderingData& renderDate, ERenderCondition rc)
 {
+	// 获取当前渲染对象的渲染条件
+	auto GetRenderCondition = [&]() -> bool
+	{
+		switch (rc)
+		{
+		case RC_Always:
+			return true;
+		case RC_Shadow:
+			return renderDate.Mesh->IsCastShadow();
+		default:
+			return false;
+		}
+	};
+
+	if (!GetRenderCondition())
+	{
+		// 不满足渲染条件，不渲染
+		return;
+	}
+
 	UINT MeshOffset = GeometryMap->MeshConstantBufferViews.GetConstantBufferByteSize();
 
 	// 获取顶点/索引缓冲区视图
@@ -187,11 +207,11 @@ void FRenderLayer::ResetPSO()
 {
 }
 
-void FRenderLayer::DrawMesh(float DeltaTime)
+void FRenderLayer::DrawMesh(float DeltaTime, ERenderCondition rc)
 {
 	for (auto& innerRenderData : RenderData)
 	{
-		DrawObject(DeltaTime, innerRenderData);
+		DrawObject(DeltaTime, innerRenderData, rc);
 	}
 }
 

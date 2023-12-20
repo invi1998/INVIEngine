@@ -5,6 +5,7 @@
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
 #include "Core/Viewport/ViewportInfo.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/ShadowMapRenderTarget.h"
@@ -102,9 +103,9 @@ void FDynamicShadowMap::Draw(float deltaTime)
 
 		RenderLayers->ResetPSO(RENDER_LAYER_OPAQUE_SHADOW);
 
-		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE);
-		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_TRANSPARENT);
-		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE_REFLECT);
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE, ERenderCondition::RC_Shadow);
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_TRANSPARENT, ERenderCondition::RC_Shadow);
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE_REFLECT, ERenderCondition::RC_Shadow);
 
 		// 将资源状态由可写转换为可读
 		CD3DX12_RESOURCE_BARRIER ResourceBarrier2 = CD3DX12_RESOURCE_BARRIER::Transition(

@@ -15,3 +15,10 @@ enum EPipelineState : UINT
 	Shadow = 6,					// 阴影
 };
 
+
+// 渲染条件枚举类型
+enum ERenderCondition : UINT
+{
+	RC_Always = 0,		// 总是绘制
+	RC_Shadow = 1,		// 绘制阴影
+};

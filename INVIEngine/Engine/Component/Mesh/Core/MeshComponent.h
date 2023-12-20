@@ -30,11 +30,19 @@ public:
 
 	void SetRenderLayerType(EMeshRenderLayerType type);
 
+	// 是否是动态反射组件
 	bool IsDynamicReflection() const;
 
+	// 是否开启投射阴影 (也就是该组件的阴影是否会投射到地面或者其他物体上，否则的话就是一些自己组件的背光阴影)
+	bool IsCastShadow() const;
+
+	void SetCastShadow(bool bCastShadow) { CastShadow = bCastShadow; }
 
 public:
 
 	EMeshRenderLayerType MeshRenderLayerType;
+
+protected:
+	bool CastShadow = true;
 };
 

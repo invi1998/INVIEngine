@@ -1,4 +1,5 @@
 #pragma once
+#include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 class CMeshComponent;
 struct FViewportInfo;
 struct FGeometryMap;
@@ -41,7 +42,7 @@ public:
 	void ResetPSO(int layer);
 
 	// 指定你要那个层级里面的模型进行渲染
-	void DrawMesh(float DeltaTime, int layer);
+	void DrawMesh(float DeltaTime, int layer, ERenderCondition rc = RC_Always);
 
 protected:
 	static std::vector<std::shared_ptr<FRenderLayer>> RenderLayers;

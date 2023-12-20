@@ -33,7 +33,7 @@ public:
 
 	virtual void BuildShader() {}
 
-	virtual void DrawObject(float deltaTime, const FRenderingData& renderDate);
+	virtual void DrawObject(float deltaTime, const FRenderingData& renderDate, ERenderCondition rc=RC_Always);
 	virtual void FindObjectDraw(float delta_time, const CMeshComponent* key);
 
 	virtual int GetRenderLayerType() const { return RenderLayerType; };
@@ -46,7 +46,7 @@ public:
 	virtual void ResetPSO();
 
 	// 渲染，不包括设置管线状态对象 PSO
-	virtual void DrawMesh(float DeltaTime);
+	virtual void DrawMesh(float DeltaTime, ERenderCondition rc = RC_Always);
 
 protected:
 	UINT RenderPriority;
