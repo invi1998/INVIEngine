@@ -1176,7 +1176,9 @@ bool CDirectXRenderingEngine::InitDirect3D()
 	// DSV
 	D3D12_DESCRIPTOR_HEAP_DESC DSVDescriptorHeapDesc; // 描述描述符堆（Descriptor Heap）的属性和配置信息 DSV
 	// 配置描述符属性
-	DSVDescriptorHeapDesc.NumDescriptors = 1 + 1 + 1;					// 描述符数量，深度缓冲区只需要一个就够了，深度缓冲信息是可以复用的（这里额外加一个，表示CubeMap的深度信息）+ 阴影贴图的深度信息
+	DSVDescriptorHeapDesc.NumDescriptors = 1 + 1 + 1 + 1;					// 描述符数量，深度缓冲区只需要一个就够了，深度缓冲信息是可以复用的（这里额外加一个，表示CubeMap的深度信息）+ 阴影贴图的深度信息 + 万向阴影贴图DSV
+	// 对于万向阴影贴图，因为我们不需要像反射CubeMap一样渲染出图，所以我们不需要RenderTarget,所以只用在这里添加DSV就可，RTV不用
+
 	DSVDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;	// 指定描述符类型-深度模板视图
 	DSVDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;	// 指定描述符默认用法
 	DSVDescriptorHeapDesc.NodeMask = 0;								// 指定描述符堆的节点掩码，用于多个GPU节点之间的通信与同步 (0表示不设置，使用默认GPU节点）

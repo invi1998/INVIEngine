@@ -227,8 +227,8 @@ void FGeometryMap::BuildDescriptorHeap()
 	// +1 表示摄像机的常量缓冲区 (模型对象数量 + 灯光数量 + 摄像机 + 纹理贴图 + CubeMap + ShadowMap）
 	// DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount() + GetDrawCubeMapCount());
 
-	// 纹理贴图 + cube map(静态cubeMap), 只需要为texture2D图片分配堆内存，因为我们将其他的(模型对象数量 + 灯光数量 + 摄像机)从常量缓冲区分离出来了，只有纹理和cubemap还在继续使用描述表
-	DescriptorHeap.Build(GetDrawTexture2DCount() + GetDrawCubeMapCount() + 1 + 1);
+	// 纹理贴图 + cube map(静态cubeMap) + CubeMapShadow, 只需要为texture2D图片分配堆内存，因为我们将其他的(模型对象数量 + 灯光数量 + 摄像机)从常量缓冲区分离出来了，只有纹理和cubemap还在继续使用描述表
+	DescriptorHeap.Build(GetDrawTexture2DCount() + GetDrawCubeMapCount() + 1 + 1 + 1);
 }
 
 UINT FGeometryMap::GetDrawTexture2DCount() const
@@ -344,8 +344,8 @@ bool FGeometryMap::IsStartUpFog()
 
 void FGeometryMap::BuildViewportConstantBuffer(UINT viewPortOffset)
 {
-	// 创建常量缓冲区 (主视口 + 动态反射视口 + shadow摄像机视口）
-	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + GetDynamicViewportNum() + 1 + viewPortOffset);
+	// 创建常量缓冲区 (主视口 + 动态反射视口 + shadow摄像机视口 + 点光源CubeMapShadow视口）
+	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + GetDynamicViewportNum() + 1 + 6 + viewPortOffset);
 
 	//// 描述堆句柄
 	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());
