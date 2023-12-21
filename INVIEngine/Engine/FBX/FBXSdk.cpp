@@ -169,6 +169,11 @@ void CFBXAssetImport::RecursiveLoadMesh(FbxNode* node, FFBXRenderData& MeshData)
 			ENGINE_LOG_WARNING("暂不支持骨骼模型导入");
 		}
 	}
+
+	for (int i = 0; i < node->GetChildCount(); i++)
+	{
+		RecursiveLoadMesh(node->GetChild(i), MeshData);
+	}
 }
 
 void CFBXAssetImport::GetMesh(FbxNode* node, FFBXModel& ModelData)

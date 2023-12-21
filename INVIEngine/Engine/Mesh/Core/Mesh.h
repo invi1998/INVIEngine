@@ -35,6 +35,10 @@ public:
 
 	virtual CMeshComponent* GetMeshComponent() { return MeshComponent; }
 
+	void SetCastShadow(bool castShadow);
+
+	bool IsCastShadow() const;
+
 	template<typename T>
 	T* GetMeshComponent()
 	{

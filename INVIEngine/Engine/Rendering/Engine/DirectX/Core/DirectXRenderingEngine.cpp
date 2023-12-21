@@ -742,20 +742,20 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		// FBX 格式的 衣服模型 SK_Mannequin.FBX 骨骼
+		// FBX 格式的 衣服模型 SK_Mannequin.FBX
 		if (GCustomMesh* customMesh = World->CreateActorObject<GCustomMesh>())
 		{
 			customMesh->CreateMesh("Asserts/Mesh/SK_Mannequin.FBX");
-			customMesh->SetPosition(XMFLOAT3{ 20.f, 20.f, 20.f });
+			customMesh->SetPosition(XMFLOAT3{ 20.f, 0.f, 20.f });
 
 			if (CMaterial* InMaterial = (*customMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(
-					2.f / 255.f,
+					123.f / 255.f,
 					214.f / 255.f,
-					17.f / 255.f, 1.f));
+					117.f / 255.f, 1.f));
 
-				InMaterial->SetMaterialType(EMaterialType::Back);
+				InMaterial->SetMaterialType(EMaterialType::Lambert);
 				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
 				InMaterial->SetRoughness(0.2f);
 			}
@@ -766,6 +766,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			customMesh->CreateMesh("Asserts/Mesh/Heart.fbx");
 			customMesh->SetPosition(XMFLOAT3{ -20.f, 0.f, 10.f });
+			customMesh->SetCastShadow(false);	// 不渲染阴影
 
 			if (CMaterial* InMaterial = (*customMesh->GetMaterial())[0])
 			{
@@ -774,7 +775,7 @@ int CDirectXRenderingEngine::PostInit()
 					214.f / 255.f,
 					17.f / 255.f, 1.f));
 
-				InMaterial->SetMaterialType(EMaterialType::Back);
+				InMaterial->SetMaterialType(EMaterialType::PBR);
 				InMaterial->SetSpecular(XMFLOAT3(1.f, 1.f, 1.f));
 				InMaterial->SetRoughness(0.2f);
 			}

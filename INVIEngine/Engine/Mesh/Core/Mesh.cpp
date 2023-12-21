@@ -45,6 +45,23 @@ std::vector<CMaterial*>* GMesh::GetMaterial()
 	return MeshComponent->GetMaterial();
 }
 
+void GMesh::SetCastShadow(bool castShadow)
+{
+	if (MeshComponent)
+	{
+		MeshComponent->SetCastShadow(castShadow);
+	}
+}
+
+bool GMesh::IsCastShadow() const
+{
+	if (MeshComponent)
+	{
+		return MeshComponent->IsCastShadow();
+	}
+	return false;
+}
+
 void GMesh::SetPosition(const XMFLOAT3& InNewPosition)
 {
 	GActorObject::SetPosition(InNewPosition);

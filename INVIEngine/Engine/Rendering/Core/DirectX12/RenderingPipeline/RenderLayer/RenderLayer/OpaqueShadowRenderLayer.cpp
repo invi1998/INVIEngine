@@ -86,7 +86,7 @@ void FOpaqueShadowRenderLayer::ResetPSO()
 	DirectXPipelineState->ResetPSO(Shadow);
 }
 
-void FOpaqueShadowRenderLayer::DrawMesh(float DeltaTime)
+void FOpaqueShadowRenderLayer::DrawMesh(float DeltaTime, ERenderCondition rc)
 {
-	FRenderLayer::DrawMesh(DeltaTime);
+	FRenderLayer::DrawMesh(DeltaTime, rc);
 }
