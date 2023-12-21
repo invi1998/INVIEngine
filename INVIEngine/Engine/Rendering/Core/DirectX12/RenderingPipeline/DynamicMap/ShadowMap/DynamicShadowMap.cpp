@@ -38,13 +38,19 @@ void FDynamicShadowMap::UpdateCalculations(float delta_time, const FViewportInfo
 
 	if (ShadowViewPort)
 	{
-		FViewportInfo ShadowViewInfo{};
-		ShadowViewInfo.ViewMatrix = GetViewMatrix();
-		ShadowViewInfo.ProjectionMatrix = GetProjectionMatrix();
-		XMFLOAT3 pos = ShadowViewPort->GetPosition();
-		ShadowViewInfo.CameraPosition = XMFLOAT4(pos.x, pos.y, pos.z, 1.0f);
-		// 更新视口，偏移量为动态反射的摄像机数+主视口的摄像机
-		GeometryMap->UpdateCalculationViewport(ShadowViewInfo, GeometryMap->GetDynamicViewportNum() + 1);
+		for (size_t i = 0; i < GetLightManger()->GetLights().size(); i++)
+		{
+			if (CLightComponent* lightComponent = GetLightManger()->GetLights()[i])
+			{
+				FViewportInfo ShadowViewInfo{};
+				ShadowViewInfo.ViewMatrix = GetViewMatrix();
+				ShadowViewInfo.ProjectionMatrix = GetProjectionMatrix();
+				XMFLOAT3 pos = ShadowViewPort->GetPosition();
+				ShadowViewInfo.CameraPosition = XMFLOAT4(pos.x, pos.y, pos.z, 1.0f);
+				// 更新视口，偏移量为动态反射的摄像机数+主视口的摄像机
+				GeometryMap->UpdateCalculationViewport(ShadowViewInfo, GeometryMap->GetDynamicViewportNum() + 1);
+			}
+		}
 	}
 }
 
