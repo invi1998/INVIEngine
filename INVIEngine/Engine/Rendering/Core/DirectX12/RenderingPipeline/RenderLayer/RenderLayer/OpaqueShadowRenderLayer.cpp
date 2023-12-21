@@ -79,7 +79,7 @@ void FOpaqueShadowRenderLayer::BuildPSO()
 
 	DirectXPipelineState->BuildPipelineState(EPipelineState::OrthographicShadow);		// 构建正交阴影pso
 
-	GPSDesc.RasterizerState.DepthBias = 100;				// 斜率 固定偏移量
+	GPSDesc.RasterizerState.DepthBias = 800;				// 斜率 固定偏移量
 	DirectXPipelineState->BuildPipelineState(EPipelineState::PerspectiveShadow);		// 构建透视阴影pso
 	
 }
