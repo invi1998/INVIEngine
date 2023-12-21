@@ -27,19 +27,23 @@ void GSpotLight::Tick(float DeltaTime)
 
 	index_test += DeltaTime;
 
-	float O = 50.f;
-	float I = 30.f;
+	//float O = 50.f;
+	//float I = 30.f;
 
-	SetConicalInnerCorner(I * fabsf(cos(index_test)) + 10.f);
-	SetConicalOuterCorner(O * fabsf(cos(index_test)) + 20.f);
+	//SetConicalInnerCorner(I * fabsf(cos(index_test)) + 10.f);
+	//SetConicalOuterCorner(O * fabsf(cos(index_test)) + 20.f);
 
-	XMFLOAT3 v3 = GetRotation();
-	
-	v3.x += DeltaTime * 40.f;
-	v3.y += DeltaTime * 40.f;
-	//v3.z += DeltaTime * 100.f;
+	//XMFLOAT3 v3 = GetRotation();
+	//
+	//v3.x += DeltaTime * 40.f;
+	//v3.y += DeltaTime * 40.f;
+	////v3.z += DeltaTime * 100.f;
 
-	SetRotation(fvector_3d(v3.x, v3.y, v3.z));
+	//SetRotation(fvector_3d(v3.x, v3.y, v3.z));
+
+	XMFLOAT3 pos = GetPosition();
+	pos.y += sin(index_test) * 0.4f;
+	SetPosition(pos);
 }
 
 float GSpotLight::GetConicalInnerCorner() const
