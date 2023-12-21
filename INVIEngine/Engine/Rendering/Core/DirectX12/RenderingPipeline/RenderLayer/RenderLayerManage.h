@@ -40,6 +40,7 @@ public:
 
 	// 指定你要渲染的层级
 	void ResetPSO(int layer);
+	void ResetPSO(int layer, EPipelineState ps);
 
 	// 指定你要那个层级里面的模型进行渲染
 	void DrawMesh(float DeltaTime, int layer, ERenderCondition rc = RC_Always);

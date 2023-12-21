@@ -1,10 +1,12 @@
 #include "EngineMinimal.h"
 #include "DynamicShadowMap.h"
 
+#include "Component/Light/Core/LightComponent.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
 #include "Core/Viewport/ViewportInfo.h"
+#include "Manage/LightManager.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
@@ -55,65 +57,88 @@ void FDynamicShadowMap::Draw(float deltaTime)
 {
 	FDynamicMap::Draw(deltaTime);
 
-	if (FShadowMapRenderTarget* innerRenderTarget = dynamic_cast<FShadowMapRenderTarget*>(RenderTarget.get()))
+
+	for (size_t i = 0; i < GetLightManger()->GetLights().size(); i++)
 	{
-		// 设置资源状态为可写
-		CD3DX12_RESOURCE_BARRIER ResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-			innerRenderTarget->GetRenderTarget(),				// 资源
-			D3D12_RESOURCE_STATE_GENERIC_READ,				// 资源状态 可读
-			D3D12_RESOURCE_STATE_DEPTH_WRITE);		// 资源状态 转为 可写
+		if (CLightComponent* lightComponent = GetLightManger()->GetLights()[i])
+		{
+			if (FShadowMapRenderTarget* innerRenderTarget = dynamic_cast<FShadowMapRenderTarget*>(RenderTarget.get()))
+			{
+				// 设置资源状态为可写
+				CD3DX12_RESOURCE_BARRIER ResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+					innerRenderTarget->GetRenderTarget(),				// 资源
+					D3D12_RESOURCE_STATE_GENERIC_READ,				// 资源状态 可读
+					D3D12_RESOURCE_STATE_DEPTH_WRITE);		// 资源状态 转为 可写
 
-		GetD3dGraphicsCommandList()->ResourceBarrier(1, &ResourceBarrier);
+				GetD3dGraphicsCommandList()->ResourceBarrier(1, &ResourceBarrier);
 
-		// 需要每帧更新的数据 绑定矩形框
-		auto RenderTargetViewPort = innerRenderTarget->GetViewport();
-		auto RenderTargetScissorRect = innerRenderTarget->GetScissorRect();
+				// 需要每帧更新的数据 绑定矩形框
+				auto RenderTargetViewPort = innerRenderTarget->GetViewport();
+				auto RenderTargetScissorRect = innerRenderTarget->GetScissorRect();
 
-		GetD3dGraphicsCommandList()->RSSetViewports(1, &RenderTargetViewPort);
-		GetD3dGraphicsCommandList()->RSSetScissorRects(1, &RenderTargetScissorRect);
+				GetD3dGraphicsCommandList()->RSSetViewports(1, &RenderTargetViewPort);
+				GetD3dGraphicsCommandList()->RSSetScissorRects(1, &RenderTargetScissorRect);
 
-		UINT CBVDescriptorSize = GeometryMap->ViewportConstantBufferViews.GetConstantBufferByteSize();
+				UINT CBVDescriptorSize = GeometryMap->ViewportConstantBufferViews.GetConstantBufferByteSize();
 
-		// 清除深度模板缓冲区
-		GetD3dGraphicsCommandList()->ClearDepthStencilView(			
-			innerRenderTarget->CPUDepthStencilView,		// DSV 描述符
-			D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,					// 清除深度模板缓冲区
-			1.0f,											// 深度值
-			0,												// 模板值
-			0,												// 清除区域数量
-			nullptr);										// 清除区域)
+				// 清除深度模板缓冲区
+				GetD3dGraphicsCommandList()->ClearDepthStencilView(
+					innerRenderTarget->CPUDepthStencilView,		// DSV 描述符
+					D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,					// 清除深度模板缓冲区
+					1.0f,											// 深度值
+					0,												// 模板值
+					0,												// 清除区域数量
+					nullptr);										// 清除区域)
 
-		// 输出合并阴影贴图 （因为这里不考虑进行像素着色，所以不需要设置渲染目标（渲染目标设置为0））
-		GetD3dGraphicsCommandList()->OMSetRenderTargets(
-			0,				// 渲染目标数量
-			nullptr,		// 偏移
-			false,			// 是否采用单个句柄来绑定渲染目标视图和深度模板视图
-			&innerRenderTarget->CPUDepthStencilView);		// 指定深度模板视图
+				// 输出合并阴影贴图 （因为这里不考虑进行像素着色，所以不需要设置渲染目标（渲染目标设置为0））
+				GetD3dGraphicsCommandList()->OMSetRenderTargets(
+					0,				// 渲染目标数量
+					nullptr,		// 偏移
+					false,			// 是否采用单个句柄来绑定渲染目标视图和深度模板视图
+					&innerRenderTarget->CPUDepthStencilView);		// 指定深度模板视图
 
-		// 绑定摄像机
-		auto ViewportAddr = GeometryMap->ViewportConstantBufferViews.GetBuffer()->GetGPUVirtualAddress();
-		ViewportAddr += (1 + GeometryMap->GetDynamicViewportNum()) * CBVDescriptorSize;
+				// 绑定摄像机
+				auto ViewportAddr = GeometryMap->ViewportConstantBufferViews.GetBuffer()->GetGPUVirtualAddress();
+				ViewportAddr += (1 + GeometryMap->GetDynamicViewportNum()) * CBVDescriptorSize;
 
-		GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(		
-				1,	// 根参数的起始索引
-				ViewportAddr	// GPU资源视图
+				GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(
+					1,	// 根参数的起始索引
+					ViewportAddr	// GPU资源视图
 				);
 
-		DrawShadowMapTexture(deltaTime);
+				DrawShadowMapTexture(deltaTime);
 
-		RenderLayers->ResetPSO(RENDER_LAYER_OPAQUE_SHADOW);
+				UINT psoType = EPipelineState::OrthographicShadow;
+				switch (lightComponent->GetLightType())
+				{
+					case DirectionalLight:
+					{
+						psoType = EPipelineState::OrthographicShadow;
+						break;
+					};
+					case PointLight: break;
+					case SpotLight:
+					{
+						psoType = EPipelineState::PerspectiveShadow;
+						break;
+					};
+					default: break;
+				}
+				RenderLayers->ResetPSO(RENDER_LAYER_OPAQUE_SHADOW, static_cast<EPipelineState>(psoType));
 
-		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE, ERenderCondition::RC_Shadow);
-		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_TRANSPARENT, ERenderCondition::RC_Shadow);
-		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE_REFLECT, ERenderCondition::RC_Shadow);
+				RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE, ERenderCondition::RC_Shadow);
+				RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_TRANSPARENT, ERenderCondition::RC_Shadow);
+				RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE_REFLECT, ERenderCondition::RC_Shadow);
 
-		// 将资源状态由可写转换为可读
-		CD3DX12_RESOURCE_BARRIER ResourceBarrier2 = CD3DX12_RESOURCE_BARRIER::Transition(
-			innerRenderTarget->GetRenderTarget(),				// 资源
-			D3D12_RESOURCE_STATE_DEPTH_WRITE,				// 资源状态 可写
-			D3D12_RESOURCE_STATE_GENERIC_READ);		// 资源状态 转为 可读
+				// 将资源状态由可写转换为可读
+				CD3DX12_RESOURCE_BARRIER ResourceBarrier2 = CD3DX12_RESOURCE_BARRIER::Transition(
+					innerRenderTarget->GetRenderTarget(),				// 资源
+					D3D12_RESOURCE_STATE_DEPTH_WRITE,				// 资源状态 可写
+					D3D12_RESOURCE_STATE_GENERIC_READ);		// 资源状态 转为 可读
 
-		GetD3dGraphicsCommandList()->ResourceBarrier(1, &ResourceBarrier2);
+				GetD3dGraphicsCommandList()->ResourceBarrier(1, &ResourceBarrier2);
+			}
+		}
 	}
 }
 

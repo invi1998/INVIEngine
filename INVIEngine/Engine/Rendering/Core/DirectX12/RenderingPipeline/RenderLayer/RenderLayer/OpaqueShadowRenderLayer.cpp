@@ -77,13 +77,23 @@ void FOpaqueShadowRenderLayer::BuildPSO()
 	GPSDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
 	GPSDesc.NumRenderTargets = 0;
 
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Shadow);
+	DirectXPipelineState->BuildPipelineState(EPipelineState::OrthographicShadow);		// 构建正交阴影pso
+
+	GPSDesc.RasterizerState.DepthBias = 100;				// 斜率 固定偏移量
+	DirectXPipelineState->BuildPipelineState(EPipelineState::PerspectiveShadow);		// 构建透视阴影pso
 	
 }
 
 void FOpaqueShadowRenderLayer::ResetPSO()
 {
-	DirectXPipelineState->ResetPSO(Shadow);
+	DirectXPipelineState->ResetPSO(OrthographicShadow);
+}
+
+void FOpaqueShadowRenderLayer::ResetPSO(EPipelineState ps)
+{
+	FRenderLayer::ResetPSO(ps);
+
+	DirectXPipelineState->ResetPSO(ps);
 }
 
 void FOpaqueShadowRenderLayer::DrawMesh(float DeltaTime, ERenderCondition rc)

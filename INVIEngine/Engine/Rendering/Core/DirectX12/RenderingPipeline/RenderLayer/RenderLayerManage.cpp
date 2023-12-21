@@ -122,6 +122,14 @@ void FRenderLayerManage::ResetPSO(int layer)
 	}
 }
 
+void FRenderLayerManage::ResetPSO(int layer, EPipelineState ps)
+{
+	if (const auto innerLayer = FindByRenderLayer(layer))
+	{
+		innerLayer->ResetPSO(ps);
+	}
+}
+
 void FRenderLayerManage::DrawMesh(float DeltaTime, int layer, ERenderCondition rc)
 {
 	if (const auto innerLayer = FindByRenderLayer(layer))

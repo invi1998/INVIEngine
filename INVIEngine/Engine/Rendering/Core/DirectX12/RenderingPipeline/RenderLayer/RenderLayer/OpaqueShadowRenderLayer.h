@@ -16,6 +16,8 @@ public:
 
 	void ResetPSO() override;
 
+	void ResetPSO(EPipelineState ps) override;
+
 	void DrawMesh(float DeltaTime, ERenderCondition rc = RC_Always) override;
 };
 // 

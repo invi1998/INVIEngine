@@ -207,6 +207,10 @@ void FRenderLayer::ResetPSO()
 {
 }
 
+void FRenderLayer::ResetPSO(EPipelineState ps)
+{
+}
+
 void FRenderLayer::DrawMesh(float DeltaTime, ERenderCondition rc)
 {
 	for (auto& innerRenderData : RenderData)

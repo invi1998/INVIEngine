@@ -2,8 +2,7 @@
 
 #include "EngineMinimal.h"
 
-// 渲染管线状态类型 枚举
-
+// 渲染管线状态类型 枚举（PSO）
 enum EPipelineState : UINT
 {
 	Transparent = 0,
@@ -12,7 +11,8 @@ enum EPipelineState : UINT
 	Reflector = 3,					// 反射层
 	Solid	= 4,				// 实体
 	Wireframe	= 5,			// 线框
-	Shadow = 6,					// 阴影
+	OrthographicShadow = 6,		// 正交阴影
+	PerspectiveShadow = 7,		// 透视阴影
 };
 
 
@@ -20,5 +20,5 @@ enum EPipelineState : UINT
 enum ERenderCondition : UINT
 {
 	RC_Always = 0,		// 总是绘制
-	RC_Shadow = 1,		// 绘制阴影
+	RC_Shadow = 1,		// 绘制阴影需要进行判断
 };

@@ -45,6 +45,8 @@ public:
 	// 单独设置管线状态对象 PSO
 	virtual void ResetPSO();
 
+	virtual void ResetPSO(EPipelineState ps);
+
 	// 渲染，不包括设置管线状态对象 PSO
 	virtual void DrawMesh(float DeltaTime, ERenderCondition rc = RC_Always);
 

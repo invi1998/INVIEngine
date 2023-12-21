@@ -12,6 +12,8 @@ class CLightManager : public CCoreMinimalObject
 public:
 	void AddLight(CLightComponent* lightInstance);
 
+	std::vector<CLightComponent*>& GetLights() { return Lights; }
+
 protected:
 	std::vector<CLightComponent*> Lights;
 
