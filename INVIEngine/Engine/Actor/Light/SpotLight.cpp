@@ -9,6 +9,7 @@ static float index_test = 0.f;
 GSpotLight::GSpotLight()
 {
 	CLight::SetLightComponent(CreateObject<CSpotLightComponent>(new CSpotLightComponent()));
+	CLight::SetCastShadow(false);	// 不投射灯光模型阴影
 	index_test = 0.f;
 }
 

@@ -78,6 +78,11 @@ void CLightComponent::SetLightType(ELightType type)
 	LightType = type;
 }
 
+void CLightComponent::SetCastShadow(bool shadow) const
+{
+	SetCastShadow(shadow);
+}
+
 void CLightComponent::SetLightMesh(CMeshComponent* inLightMesh)
 {
 	LightMesh = inLightMesh;

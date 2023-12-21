@@ -34,6 +34,8 @@ public:
 
 	virtual const XMFLOAT3& GetLightIntensity() const { return LightIntensity; }
 	virtual ELightType GetLightType() const { return LightType; }
+	void SetCastShadow(bool shadow) const;
+
 
 protected:
 	void SetLightMesh(CMeshComponent* inLightMesh);

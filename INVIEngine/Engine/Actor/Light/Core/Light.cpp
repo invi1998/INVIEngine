@@ -54,6 +54,14 @@ void CLight::SetScale(const fvector_3d& InNewScale)
 	}
 }
 
+void CLight::SetCastShadow(bool shadow) const
+{
+	if (LightComponent)
+	{
+		LightComponent->SetCastShadow(shadow);
+	}
+}
+
 void CLight::SetLightComponent(CLightComponent* newComponent)
 {
 	LightComponent = newComponent;
