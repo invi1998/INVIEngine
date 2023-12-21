@@ -80,12 +80,13 @@ void CLightComponent::SetLightType(ELightType type)
 
 void CLightComponent::SetCastShadow(bool shadow) const
 {
-	SetCastShadow(shadow);
+	LightMesh->SetCastShadow(shadow);
 }
 
 void CLightComponent::SetLightMesh(CMeshComponent* inLightMesh)
 {
 	LightMesh = inLightMesh;
+	SetCastShadow(false);	// 默认灯光模型都不投射阴影
 }
 
 
