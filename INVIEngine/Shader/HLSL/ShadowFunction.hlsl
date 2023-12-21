@@ -85,7 +85,8 @@ float GetShadowFactor_PCF_Sample9(float4 InWorldPosition, float4x4 InShadowMatri
 			ShadowDepth).r;
 	}
 
-	return R / 9.f;
+	// 当R为0时，会导致阴影细节丢失，变成存粹的黑色剪影
+	return max(R / 9.f, 0.5f);
 }
 
 #endif

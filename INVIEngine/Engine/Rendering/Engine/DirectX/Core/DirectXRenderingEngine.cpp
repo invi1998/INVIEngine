@@ -746,7 +746,7 @@ int CDirectXRenderingEngine::PostInit()
 		if (GCustomMesh* customMesh = World->CreateActorObject<GCustomMesh>())
 		{
 			customMesh->CreateMesh("Asserts/Mesh/SK_Mannequin.FBX");
-			customMesh->SetPosition(XMFLOAT3{ 20.f, 0.f, 20.f });
+			customMesh->SetPosition(XMFLOAT3{ 20.f, -10.f, 30.f });
 
 			if (CMaterial* InMaterial = (*customMesh->GetMaterial())[0])
 			{
