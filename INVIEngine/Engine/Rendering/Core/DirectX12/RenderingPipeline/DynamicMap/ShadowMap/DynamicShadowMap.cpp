@@ -158,6 +158,11 @@ void FDynamicShadowMap::BuildOrthographicOffCenterProjectionMatrixLH(float radiu
 	ShadowViewPort->BuildOrthographicOffCenterProjectionMatrixLH(radius, centerPos);
 }
 
+void FDynamicShadowMap::BuildPerspectiveProjectionMatrixLH(float radius, const XMFLOAT3& centerPos)
+{
+	ShadowViewPort->SetFrustum(0.9f * XM_PI, 1.0f, 1.0f, 0.1f, radius);
+}
+
 void FDynamicShadowMap::BuildProjectionMatrix()
 {
 }
@@ -179,6 +184,28 @@ void FDynamicShadowMap::BuildOrthoProjectionMatrix(const XMFLOAT3& targetPositio
 	BuildViewMatrix();
 
 	BuildOrthographicOffCenterProjectionMatrixLH(radius, targetPosition);
+}
+
+void FDynamicShadowMap::BuildPerspectiveProjectionMatrix(const XMFLOAT3& position, const XMFLOAT3& direction, float radius)
+{
+	XMVECTOR positionVEC = XMLoadFloat3(&position);
+	XMVECTOR directionVEC = XMLoadFloat3(&direction);
+
+	// 拿到灯光位置
+	ShadowViewPort->SetPosition(positionVEC);
+
+	// 拿到目标位置
+	XMVECTOR viewTargetPositionVEC = directionVEC * -radius;
+	XMFLOAT3 viewTargetPosition{};
+	XMStoreFloat3(&viewTargetPosition, viewTargetPositionVEC);
+
+	ShadowViewPort->FaceTarget(position, viewTargetPosition, { 0.f, 1.f, 0.f });
+
+	BuildViewMatrix();
+
+	BuildProjectionMatrix();
+
+	BuildPerspectiveProjectionMatrixLH(radius, viewTargetPosition);
 }
 
 void FDynamicShadowMap::BuildDepthStencilViewDesc()
