@@ -178,8 +178,6 @@ void FDynamicReflectionCubeMap::BuildDepthStencilDescriptor()
 
 void FDynamicReflectionCubeMap::BuildRenderTargetRTV()
 {
-	FDynamicCubeMap::BuildRenderTargetRTV();
-
 	if (FCubeMapRenderTarget* inRenderTarget = dynamic_cast<FCubeMapRenderTarget*>(this->RenderTarget.get()))
 	{
 		UINT RTVSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
