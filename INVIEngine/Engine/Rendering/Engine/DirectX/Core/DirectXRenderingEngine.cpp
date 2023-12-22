@@ -91,29 +91,29 @@ int CDirectXRenderingEngine::PostInit()
 		//	ParallelLight->SetLightIntensity(XMFLOAT3(1.1f,1.1f,1.1f));
 		//}
 
-		////点灯光生成
-		//if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
-		//{
-		//	PointLight->SetPosition(XMFLOAT3(0.f, -6.f, 10.f));
-		//	PointLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
-
-		//	PointLight->SetLightIntensity(XMFLOAT3(0.9f, 0.9f, 0.9f));
-		//	PointLight->SetEndAttenuation(190.f);
-		//}
-
-		//聚灯光生成
-		if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
+		//点灯光生成
+		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
 		{
-			SpotLight->SetPosition(XMFLOAT3(0.f,0.f, -10.f));
-			SpotLight->SetRotation(fvector_3d(15.f, 180.f, 0.f));
-		
-			SpotLight->SetLightIntensity(XMFLOAT3(1.1f, 1.1f, 0.9f));
-			//SpotLight->SetStartAttenuation(1.f);
-			SpotLight->SetEndAttenuation(130.f);
-		
-			SpotLight->SetConicalInnerCorner(40.f);
-			SpotLight->SetConicalOuterCorner(60.f);
+			PointLight->SetPosition(XMFLOAT3(0.f, -6.f, 10.f));
+			PointLight->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+
+			PointLight->SetLightIntensity(XMFLOAT3(0.9f, 0.9f, 0.9f));
+			PointLight->SetEndAttenuation(190.f);
 		}
+
+		////聚灯光生成
+		//if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
+		//{
+		//	SpotLight->SetPosition(XMFLOAT3(0.f,0.f, -10.f));
+		//	SpotLight->SetRotation(fvector_3d(15.f, 180.f, 0.f));
+		//
+		//	SpotLight->SetLightIntensity(XMFLOAT3(1.1f, 1.1f, 0.9f));
+		//	//SpotLight->SetStartAttenuation(1.f);
+		//	SpotLight->SetEndAttenuation(130.f);
+		//
+		//	SpotLight->SetConicalInnerCorner(40.f);
+		//	SpotLight->SetConicalOuterCorner(60.f);
+		//}
 
 		/*if (GSphereMesh* sphere = World->CreateActorObject<GSphereMesh>())
 		{
