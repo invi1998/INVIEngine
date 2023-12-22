@@ -9,10 +9,11 @@ enum EPipelineState : UINT
 	AlphaTest = 1,
 	Background = 2,					// 背景层
 	Reflector = 3,					// 反射层
-	Solid	= 4,				// 实体
-	Wireframe	= 5,			// 线框
+	Solid = 4,				// 实体
+	Wireframe = 5,			// 线框
 	OrthographicShadow = 6,		// 正交阴影
 	PerspectiveShadow = 7,		// 透视阴影
+	ViewtianeShadow = 8,		// 全向阴影
 };
 
 

@@ -76,11 +76,17 @@ void FOpaqueShadowRenderLayer::BuildPSO()
 	// 关闭RenderTarget（将格式设置为位置，然后renderTarget数量设置为0）
 	GPSDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
 	GPSDesc.NumRenderTargets = 0;
-
 	DirectXPipelineState->BuildPipelineState(EPipelineState::OrthographicShadow);		// 构建正交阴影pso
 
+	// 透视阴影
 	GPSDesc.RasterizerState.DepthBias = 800;				// 斜率 固定偏移量
 	DirectXPipelineState->BuildPipelineState(EPipelineState::PerspectiveShadow);		// 构建透视阴影pso
+
+	// 万向阴影
+	DirectXPipelineState->BuildParam();
+	BuildViewtianeShadowShader();
+	DirectXPipelineState->BuildPipelineState(EPipelineState::ViewtianeShadow);			// 构建万向阴影pso
+
 	
 }
 
@@ -99,4 +105,33 @@ void FOpaqueShadowRenderLayer::ResetPSO(EPipelineState ps)
 void FOpaqueShadowRenderLayer::DrawMesh(float DeltaTime, ERenderCondition rc)
 {
 	FRenderLayer::DrawMesh(DeltaTime, rc);
+}
+
+void FOpaqueShadowRenderLayer::BuildViewtianeShadowShader()
+{
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///构建shader HLSL
+	///
+
+	std::vector<ShaderType::FShaderMacro> ShaderMacro;
+	BuildShaderMacro(ShaderMacro);
+
+	std::vector<D3D_SHADER_MACRO> D3dShaderMacro;
+	ShaderType::ToD3DShaderMacro(ShaderMacro, D3dShaderMacro);
+
+	VertexShader.BuildShader(L"Shader/HLSL/ViewtianeShadow.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
+	PixelShader.BuildShader(L"Shader/HLSL/ViewtianeShadow.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
+	// 绑定shader
+	DirectXPipelineState->BindShader(VertexShader, PixelShader);
+
+	// 输入布局
+	InputElementDesc =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}	// uv坐标，这里这个偏移是52字节，因为我们上面位置是3个元素，每个元素是4字节（32位），到了uv这里，就得偏移 （3）*4 = 12字节的偏移了
+
+	};
+
+	// 绑定输入布局
+	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }

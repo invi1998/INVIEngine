@@ -19,5 +19,8 @@ public:
 	void ResetPSO(EPipelineState ps) override;
 
 	void DrawMesh(float DeltaTime, ERenderCondition rc = RC_Always) override;
+
+	// 构建全向阴影贴图shader
+	void BuildViewtianeShadowShader();
 };
 // 
