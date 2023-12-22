@@ -257,7 +257,7 @@ UINT FGeometryMap::GetDrawLightCount()
 	return 1;
 }
 
-UINT FGeometryMap::GetDynamicViewportNum()
+UINT FGeometryMap::GetDynamicReflectionViewportNum()
 {
 	return DynamicReflectionMeshComponents.size() * 6;
 }
@@ -336,7 +336,7 @@ void FGeometryMap::BuildShadow()
 	DynamicShadowMap.BuildDepthStencilViewDesc();
 	DynamicShadowMap.BuildShadowMapRenderTargetDescriptor();
 
-	DynamicShadowCubeMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
+	DynamicShadowCubeMap.BuildViewPort(XMFLOAT3{ 0.f, 0.f, 0.f });
 	DynamicShadowCubeMap.BuildDepthStencilDescriptor();
 	DynamicShadowCubeMap.BuildCubeMapRenderTargetDescriptor();
 	DynamicShadowCubeMap.BuildDepthStencil();
@@ -350,7 +350,7 @@ bool FGeometryMap::IsStartUpFog()
 void FGeometryMap::BuildViewportConstantBuffer(UINT viewPortOffset)
 {
 	// 创建常量缓冲区 (主视口 + 动态反射视口 + shadow摄像机视口 + 点光源CubeMapShadow视口）
-	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + GetDynamicViewportNum() + 1 + 6 + viewPortOffset);
+	ViewportConstantBufferViews.CreateConstant(sizeof(FViewportTransformation), 1 + GetDynamicReflectionViewportNum() + 1 + 6 + viewPortOffset);
 
 	//// 描述堆句柄
 	//CD3DX12_CPU_DESCRIPTOR_HANDLE DesHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(GetHeap()->GetCPUDescriptorHandleForHeapStart());

@@ -85,7 +85,7 @@ public:
 	UINT GetDrawLightCount();
 
 	// 获取动态CubeMap(动态反射）摄像机数量
-	UINT GetDynamicViewportNum();
+	UINT GetDynamicReflectionViewportNum();
 
 	// 构建对象模型的buff缓冲区
 	void BuildMeshConstantBuffer();

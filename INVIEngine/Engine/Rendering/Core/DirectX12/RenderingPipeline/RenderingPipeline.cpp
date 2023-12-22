@@ -96,6 +96,7 @@ void FRenderingPipeline::BuildPipeline()
 
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
+	GeometryMap.DynamicShadowCubeMap.UpdateCalculations(delta_time, viewport_info);
 	DynamicCubeMap.UpdateCalculations(delta_time, viewport_info);
 	GeometryMap.UpdateCalculations(delta_time, viewport_info);
 	RenderLayerManage.UpdateCaculations(delta_time, viewport_info);

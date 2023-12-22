@@ -22,13 +22,13 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeCubeMapSRV;
 	DescriptorRangeCubeMapSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	// 阴影贴图 CBV描述表
-	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeShadowMapSRV;
-	DescriptorRangeShadowMapSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2);
-
 	// 万向阴影贴图 CBV描述表
 	CD3DX12_DESCRIPTOR_RANGE DescriptorCubeMapShadowSRV;
 	DescriptorCubeMapShadowSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+
+	// 阴影贴图 CBV描述表
+	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeShadowMapSRV;
+	DescriptorRangeShadowMapSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2);
 
 
 	// 创建根参数，使用上面的描述符范围

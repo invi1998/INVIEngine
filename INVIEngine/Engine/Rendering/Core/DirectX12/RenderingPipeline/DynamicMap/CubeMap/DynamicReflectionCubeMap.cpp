@@ -221,6 +221,6 @@ void FDynamicReflectionCubeMap::BuildRenderTargetSRV()
 
 bool FDynamicReflectionCubeMap::IsExitDynamicReflectionMesh()
 {
-	return GeometryMap->GetDynamicViewportNum() > 0;
+	return GeometryMap->GetDynamicReflectionViewportNum() > 0;
 }
 

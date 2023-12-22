@@ -96,11 +96,11 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 				// 1 主摄像机，i RenderTarget的cubeMap视口，index 是我们场景里的点光源组件，每个组件有6个摄像机
 				ViewportAddress += (
 					1	// 主摄像机
-					+ GeometryMap->GetDynamicViewportNum()	// 动态反射的摄像机
+					+ GeometryMap->GetDynamicReflectionViewportNum()	// 动态反射的摄像机
 					+ 1		// shadow
-					+ i
-					+ index * 6
+					+ i + index * 6
 					) * CBVOffsetSize;
+
 				GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(1, ViewportAddress);
 
 				// 设置PSO
@@ -163,7 +163,7 @@ void FDynamicShadowCubeMap::UpdateCalculations(float delta_time, const FViewport
 
 					GeometryMap->UpdateCalculationViewport(tempViewport,
 						1	// 主视口
-						+ GeometryMap->GetDynamicViewportNum()	// 动态反射的摄像机
+						+ GeometryMap->GetDynamicReflectionViewportNum()	// 动态反射的摄像机
 						+ i + index * 6	// CubeMapShadow的摄像机
 						);
 				}

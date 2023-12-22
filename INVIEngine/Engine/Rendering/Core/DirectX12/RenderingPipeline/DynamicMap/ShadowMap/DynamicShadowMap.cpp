@@ -48,7 +48,7 @@ void FDynamicShadowMap::UpdateCalculations(float delta_time, const FViewportInfo
 				XMFLOAT3 pos = ShadowViewPort->GetPosition();
 				ShadowViewInfo.CameraPosition = XMFLOAT4(pos.x, pos.y, pos.z, 1.0f);
 				// 更新视口，偏移量为动态反射的摄像机数+主视口的摄像机
-				GeometryMap->UpdateCalculationViewport(ShadowViewInfo, GeometryMap->GetDynamicViewportNum() + 1);
+				GeometryMap->UpdateCalculationViewport(ShadowViewInfo, GeometryMap->GetDynamicReflectionViewportNum() + 1);
 			}
 		}
 	}
@@ -105,7 +105,7 @@ void FDynamicShadowMap::Draw(float deltaTime)
 
 				// 绑定摄像机
 				auto ViewportAddr = GeometryMap->ViewportConstantBufferViews.GetBuffer()->GetGPUVirtualAddress();
-				ViewportAddr += (1 + GeometryMap->GetDynamicViewportNum()) * CBVDescriptorSize;
+				ViewportAddr += (1 + GeometryMap->GetDynamicReflectionViewportNum()) * CBVDescriptorSize;
 
 				GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(
 					1,	// 根参数的起始索引
