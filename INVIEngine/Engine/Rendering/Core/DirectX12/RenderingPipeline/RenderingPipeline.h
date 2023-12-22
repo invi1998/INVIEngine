@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DynamicMap/CubeMap/DynamicCubeMap.h"
+#include "DynamicMap/CubeMap/DynamicReflectionCubeMap.h"
 #include "Geometry/GeometryMap.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "PipelineState/DirectXPipelineState.h"
@@ -34,6 +34,6 @@ protected:
 	FDirectXPipelineState DirectXPipelineState;		// 管线状态 pso
 	FDirectXRootSignature DirectXRootSignature;		// 根签名
 
-	FDynamicCubeMap DynamicCubeMap;		// 动态CubeMap
+	FDynamicReflectionCubeMap DynamicCubeMap;		// 动态CubeMap
 };
 

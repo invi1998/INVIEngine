@@ -1,46 +1,34 @@
 #include "EngineMinimal.h"
-#include "DynamicShadowCubeMap.h"
+#include "DynamicReflectionCubeMap.h"
 
-#include "Component/Light/Core/LightComponent.h"
+#include "Component/Mesh/Core/MeshComponent.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
 #include "Core/Viewport/ViewportInfo.h"
-#include "Manage/LightManager.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
-#include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/CubeMapRenderTarget.h"
-#include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/Core/RenderTarget.h"
 
 
-FDynamicShadowCubeMap::FDynamicShadowCubeMap():FDynamicCubeMap()
+FDynamicReflectionCubeMap::FDynamicReflectionCubeMap():FDynamicCubeMap()
 {
 }
 
-FDynamicShadowCubeMap::~FDynamicShadowCubeMap()
-{
-}
-
-void FDynamicShadowCubeMap::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState,
-	FRenderLayerManage* inRenderLayer)
+void FDynamicReflectionCubeMap::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer)
 {
 	FDynamicCubeMap::Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 }
 
-void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
+void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 {
 	FDynamicCubeMap::PreDraw(DeltaTime);
 
 	if (FCubeMapRenderTarget* inRenderTarget = dynamic_cast<FCubeMapRenderTarget*>(this->RenderTarget.get()))
 	{
-		for (int j = 0; j < GetLightManger()->GetLights().size(); j++)
+		for (int j = 0; j < GeometryMap->GetDynamicReflectionMeshComponents().size(); j++)
 		{
-			CLightComponent* tmpLight = GetLightManger()->GetLights()[j];
-			if (tmpLight->GetLightType() != ELightType::PointLight)
-			{
-				break;
-			}
 			// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
 			CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
 				inRenderTarget->GetRenderTarget(),				// 当前buffer缓冲区
@@ -91,18 +79,15 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 				);
 
 				// 更新并且绑定6个视口
-				auto ViewportAddress = GeometryMap->GetViewportConstantBufferViewsGPUVirtualAddr();
+				auto ViewportAddress = GeometryMap->GetViewportConstantBufferViews().GetBuffer()->GetGPUVirtualAddress();
 				// 1 主摄像机，i RenderTarget的cubeMap视口，j 是我们场景里的动态反射的组件，每个组件有6个摄像机
 				ViewportAddress += (1 + i + j * 6) * CBVOffsetSize;
 				GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(1, ViewportAddress);
 
-				// 设置PSO
-				RenderLayers->ResetPSO(RENDER_LAYER_OPAQUE_SHADOW, EPipelineState::ViewtianeShadow);
-
 				// 渲染层级，对象模型
-				RenderLayers->DrawMesh(DeltaTime, RENDER_LAYER_OPAQUE_REFLECT, ERenderCondition::RC_Shadow);
-				RenderLayers->DrawMesh(DeltaTime, RENDER_LAYER_OPAQUE, ERenderCondition::RC_Shadow);
-				RenderLayers->DrawMesh(DeltaTime, RENDER_LAYER_TRANSPARENT, ERenderCondition::RC_Shadow);
+				RenderLayers->Draw(RENDER_LAYER_BACKGROUND, DeltaTime);
+				RenderLayers->Draw(RENDER_LAYER_OPAQUE, DeltaTime);
+				RenderLayers->Draw(RENDER_LAYER_TRANSPARENT, DeltaTime);
 			}
 
 
@@ -114,77 +99,74 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 				D3D12_RESOURCE_STATE_GENERIC_READ
 			);
 
-			
 			GetD3dGraphicsCommandList()->ResourceBarrier(
 				1,
 				&ResourceBarrierRenderTarget
 			);
 
-			// 将渲染内容更新到CubeMap
-			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(6, inRenderTarget->GetGPUShaderResourceView());	// 6是背景天空球（为了观察渲染结果，将深度CubeMap信息更新到天空球观察）
-			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(8, inRenderTarget->GetGPUShaderResourceView());	// 8是阴影的cubeMap
+			// 准备主视口
+			StartSetMainViewportRenderTarget();
 
+			// 渲染主视口
+			GeometryMap->DrawViewport(DeltaTime);
 
+			Draw(DeltaTime);
 
+			// 从渲染层级中针对指定的模型进行渲染（因为动态反射不是对所有的模型都进行动态反射计算的，只对动态反射材质的模型进行渲染）
+			RenderLayers->FindObjectDraw(DeltaTime, RENDER_LAYER_OPAQUE_REFLECT, GeometryMap->GetDynamicReflectionMeshComponents()[j]);
+
+			// 重置CubeMap
+			GeometryMap->DrawCubeMapTexture(DeltaTime);
+
+			// 结束当前主视口渲染
+			EndSetMainViewportRenderTarget();
 		}
 	}
 }
 
-void FDynamicShadowCubeMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
+void FDynamicReflectionCubeMap::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
-	FDynamicCubeMap::UpdateCalculations(delta_time, viewport_info);
 
 	if (CubeMapViewPorts.size() == 6)
 	{
-		int index = 0;
-		for (int k = 0; k < GetLightManger()->GetLights().size(); k++)
+		for (int k = 0; k < GeometryMap->GetDynamicReflectionMeshComponents().size(); k++)
 		{
-			auto meshComponent = GetLightManger()->GetLights()[k];
-			if (meshComponent->GetLightType() == ELightType::PointLight)
+			auto meshComponent = GeometryMap->GetDynamicReflectionMeshComponents()[k];
+			XMFLOAT3 position = meshComponent->GetPosition();
+
+			SetViewportPosition(position);
+			// 更新视口
+			for (size_t i = 0; i < 6; i++)
 			{
-				XMFLOAT3 position = meshComponent->GetPosition();
+				FViewportInfo tempViewport{};
+				XMFLOAT3 position = CubeMapViewPorts[i]->GetPosition();
+				tempViewport.CameraPosition = XMFLOAT4{ position.x, position.y, position.z, 1.f};
+				tempViewport.ViewMatrix = CubeMapViewPorts[i]->GetViewMatrix();
+				tempViewport.ProjectionMatrix = CubeMapViewPorts[i]->GetProjectionMatrix();
 
-				SetViewportPosition(position);
-				// 更新视口
-				for (size_t i = 0; i < 6; i++)
-				{
-					FViewportInfo tempViewport{};
-					XMFLOAT3 position = CubeMapViewPorts[i]->GetPosition();
-					tempViewport.CameraPosition = XMFLOAT4{ position.x, position.y, position.z, 1.f };
-					tempViewport.ViewMatrix = CubeMapViewPorts[i]->GetViewMatrix();
-					tempViewport.ProjectionMatrix = CubeMapViewPorts[i]->GetProjectionMatrix();
-
-					GeometryMap->UpdateCalculationViewport(tempViewport,
-						i + k * 6	// 动态反射的6个摄像机
-						+ 1);
-				}
-				index++;
+				GeometryMap->UpdateCalculationViewport(tempViewport, 
+					i + k*6	// 动态反射的6个摄像机
+					+1);
 			}
-			
 		}
-
+		
 	}
+	
 }
 
-void FDynamicShadowCubeMap::Build(const XMFLOAT3& center)
+void FDynamicReflectionCubeMap::Build(const XMFLOAT3& center)
 {
-	FDynamicCubeMap::Build(center);
+	BuildViewPort(center);		// 构建视口
+
+	BuildCubeMapRenderTargetDescriptor();		// 构建CubeMap渲染目标描述
+
+	BuildDepthStencilDescriptor();		// 构建深度模板描述
+
+	BuildDepthStencil();		// 构建深度模板
 }
 
-void FDynamicShadowCubeMap::Draw(float deltaTime)
+void FDynamicReflectionCubeMap::BuildDepthStencilDescriptor()
 {
-	FDynamicCubeMap::Draw(deltaTime);
-}
-
-void FDynamicShadowCubeMap::ResetView(int wid, int hei)
-{
-	FDynamicCubeMap::ResetView(wid, hei);
-}
-
-void FDynamicShadowCubeMap::BuildDepthStencilDescriptor()
-{
-	FDynamicCubeMap::BuildDepthStencilDescriptor();
-
 	UINT DescriptorHandleIncrementSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	DSVCubeMapCPUDesc = CD3DX12_CPU_DESCRIPTOR_HANDLE(
@@ -192,5 +174,10 @@ void FDynamicShadowCubeMap::BuildDepthStencilDescriptor()
 		1,	// 偏移1 第一个是给主渲染目标用的(场景）后面的才是给cubeMap用的
 		DescriptorHandleIncrementSize	// DSV偏移量
 	);
+}
+
+bool FDynamicReflectionCubeMap::IsExitDynamicReflectionMesh()
+{
+	return GeometryMap->GetDynamicViewportNum() > 0;
 }
 

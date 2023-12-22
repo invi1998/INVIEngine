@@ -169,6 +169,7 @@ public:
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetViewportConstantBufferViewsGPUVirtualAddr();
 
+	std::vector<CMeshComponent*>& GetDynamicReflectionMeshComponents() { return DynamicReflectionMeshComponents; }
 
 protected:
 	map<int, FGeometry> Geometries{};						// ¼¸ºÎÌå
