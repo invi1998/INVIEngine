@@ -22,10 +22,11 @@ public:
 
 	void BuildDepthStencilDescriptor() override;
 
-	void BuildRenderTargetRTV() override;
-	void BuildRenderTargetSRV() override;
 
 	// 判断场景中是否存在动态反射
 	bool IsExitDynamicReflectionMesh();
 
+protected:
+	void BuildRenderTargetRTV() override;
+	void BuildRenderTargetSRV() override;
 };

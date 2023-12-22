@@ -17,8 +17,9 @@ public:
 	void ResetView(int wid, int hei) override;
 
 	void BuildDepthStencilDescriptor() override;
-	void BuildRenderTargetSRV() override;
 
+protected:
+	void BuildRenderTargetSRV() override;
 	void BuildRenderTargetRTV() override;
 };
 
