@@ -5,6 +5,7 @@
 #include "Mesh/Core/MeshType.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DescriptorHeap/DirectXDescriptorHeap.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/DynamicMap/ShadowMap/DynamicShadowCubeMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/DynamicMap/ShadowMap/DynamicShadowMap.h"
 
 class CFogComponent;
@@ -188,7 +189,8 @@ protected:
 
 	CFogComponent* Fog;
 
-	FDynamicShadowMap DynamicShadowMap;		// 动态阴影贴图
+	FDynamicShadowMap DynamicShadowMap;				// 动态阴影贴图
+	FDynamicShadowCubeMap DynamicShadowCubeMap;		// 动态全向阴影立方体贴图
 };
 
 

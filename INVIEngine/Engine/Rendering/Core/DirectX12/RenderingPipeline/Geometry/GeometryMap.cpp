@@ -335,6 +335,11 @@ void FGeometryMap::BuildShadow()
 	DynamicShadowMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
 	DynamicShadowMap.BuildDepthStencilViewDesc();
 	DynamicShadowMap.BuildShadowMapRenderTargetDescriptor();
+
+	DynamicShadowCubeMap.BuildViewPort(XMFLOAT3{ 15.f, 12.f, 0.f });
+	DynamicShadowCubeMap.BuildDepthStencilDescriptor();
+	DynamicShadowCubeMap.BuildCubeMapRenderTargetDescriptor();
+	DynamicShadowCubeMap.BuildDepthStencil();
 }
 
 bool FGeometryMap::IsStartUpFog()

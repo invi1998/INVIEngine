@@ -37,6 +37,9 @@ void FRenderingPipeline::BuildPipeline()
 	// shadowMap 初始化
 	GeometryMap.DynamicShadowMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
+	// ShadowCubeMap 初始化
+	GeometryMap.DynamicShadowCubeMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
+
 	// 初始化根签名
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名
 	DirectXPipelineState.BindRootSignature(DirectXRootSignature.GetRootSignature());	// 绑定根签名
@@ -114,6 +117,9 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 	// 渲染阴影
 	GeometryMap.DrawShadow(DeltaTime);
+
+	// 渲染ShadowCubeMap
+	GeometryMap.DynamicShadowCubeMap.PreDraw(DeltaTime);
 
 	// 判断是否存在动态反射组件
 	if (DynamicCubeMap.IsExitDynamicReflectionMesh())
