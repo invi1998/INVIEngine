@@ -39,7 +39,7 @@ public:
 
 protected:
 	virtual void BuildRenderTargetRTV() = 0;
-	virtual void BuildRenderTargetSRV();
+	virtual void BuildRenderTargetSRV() = 0;
 
 protected:
 

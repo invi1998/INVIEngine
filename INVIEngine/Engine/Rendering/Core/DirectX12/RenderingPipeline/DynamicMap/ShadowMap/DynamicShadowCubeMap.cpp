@@ -34,6 +34,7 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 
 	if (FCubeMapRenderTarget* inRenderTarget = dynamic_cast<FCubeMapRenderTarget*>(this->RenderTarget.get()))
 	{
+		int index = 0;
 		for (int j = 0; j < GetLightManger()->GetLights().size(); j++)
 		{
 			CLightComponent* tmpLight = GetLightManger()->GetLights()[j];
@@ -92,8 +93,14 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 
 				// 更新并且绑定6个视口
 				auto ViewportAddress = GeometryMap->GetViewportConstantBufferViewsGPUVirtualAddr();
-				// 1 主摄像机，i RenderTarget的cubeMap视口，j 是我们场景里的动态反射的组件，每个组件有6个摄像机
-				ViewportAddress += (1 + i + j * 6) * CBVOffsetSize;
+				// 1 主摄像机，i RenderTarget的cubeMap视口，index 是我们场景里的点光源组件，每个组件有6个摄像机
+				ViewportAddress += (
+					1	// 主摄像机
+					+ GeometryMap->GetDynamicViewportNum()	// 动态反射的摄像机
+					+ 1		// shadow
+					+ i
+					+ index * 6
+					) * CBVOffsetSize;
 				GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(1, ViewportAddress);
 
 				// 设置PSO
@@ -125,7 +132,7 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(8, inRenderTarget->GetGPUShaderResourceView());	// 8是阴影的cubeMap
 
 
-
+			index++;
 		}
 	}
 }
@@ -155,8 +162,10 @@ void FDynamicShadowCubeMap::UpdateCalculations(float delta_time, const FViewport
 					tempViewport.ProjectionMatrix = CubeMapViewPorts[i]->GetProjectionMatrix();
 
 					GeometryMap->UpdateCalculationViewport(tempViewport,
-						i + k * 6	// 动态反射的6个摄像机
-						+ 1);
+						1	// 主视口
+						+ GeometryMap->GetDynamicViewportNum()	// 动态反射的摄像机
+						+ i + index * 6	// CubeMapShadow的摄像机
+						);
 				}
 				index++;
 			}
@@ -192,6 +201,31 @@ void FDynamicShadowCubeMap::BuildDepthStencilDescriptor()
 		3,	// 偏移3 第一个是给主渲染目标用的(场景）1 + 反射的1，到第三个才是ShadowCubeMap
 		DescriptorHandleIncrementSize	// DSV偏移量
 	);
+}
+
+void FDynamicShadowCubeMap::BuildRenderTargetSRV()
+{
+	if (FCubeMapRenderTarget* inRenderTarget = dynamic_cast<FCubeMapRenderTarget*>(this->RenderTarget.get()))
+	{
+		UINT CBVDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+		auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();
+		auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();
+
+		// 为CubeMap创建CPU shader资源视图
+		inRenderTarget->GetCPUShaderResourceView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			CPUSRVDesHeapStart,		// CPU SRV的起始地址
+			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount() + 1 + 1,	// 偏移量 CubeMap + Shadow
+			CBVDescriptorSize	// SRV偏移量
+		);
+
+		// 为CubeMap创建GPU shader资源视图
+		inRenderTarget->GetGPUShaderResourceView() = CD3DX12_GPU_DESCRIPTOR_HANDLE(
+			GPUSRVDesHeapStart,		// GPU SRV的起始地址
+			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount() + 1 + 1,	// 偏移量 CubeMap + Shadow
+			CBVDescriptorSize	// SRV偏移量
+		);
+	}
 }
 
 void FDynamicShadowCubeMap::BuildRenderTargetRTV()

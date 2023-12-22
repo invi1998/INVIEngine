@@ -161,28 +161,3 @@ void FDynamicCubeMap::SetViewportPosition(const XMFLOAT3& position)
 		CubeMapViewPorts[i]->BuildViewMatrix();
 	}
 }
-
-void FDynamicCubeMap::BuildRenderTargetSRV()
-{
-	if (FCubeMapRenderTarget* inRenderTarget = dynamic_cast<FCubeMapRenderTarget*>(this->RenderTarget.get()))
-	{
-		UINT CBVDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-		auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();
-		auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();
-
-		// 为CubeMap创建CPU shader资源视图
-		inRenderTarget->CPUShaderResourceView = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-			CPUSRVDesHeapStart,		// CPU SRV的起始地址
-			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// 偏移量
-			CBVDescriptorSize	// SRV偏移量
-		);
-
-		// 为CubeMap创建GPU shader资源视图
-		inRenderTarget->GPUShaderResourceView = CD3DX12_GPU_DESCRIPTOR_HANDLE(
-			GPUSRVDesHeapStart,		// GPU SRV的起始地址
-			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// 偏移量
-			CBVDescriptorSize	// SRV偏移量
-		);
-	}
-}
