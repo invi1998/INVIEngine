@@ -164,6 +164,7 @@ void FDynamicShadowCubeMap::UpdateCalculations(float delta_time, const FViewport
 					GeometryMap->UpdateCalculationViewport(tempViewport,
 						1	// 主视口
 						+ GeometryMap->GetDynamicReflectionViewportNum()	// 动态反射的摄像机
+						+ 1
 						+ i + index * 6	// CubeMapShadow的摄像机
 						);
 				}
