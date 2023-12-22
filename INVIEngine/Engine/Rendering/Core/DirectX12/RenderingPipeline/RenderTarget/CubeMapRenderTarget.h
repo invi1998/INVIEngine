@@ -10,6 +10,8 @@ public:
 
 	void Init(UINT w, UINT h, const DXGI_FORMAT& format) override;
 
+	std::vector<CD3DX12_CPU_DESCRIPTOR_HANDLE>& GetCPURenderTargetView() { return CPURenderTargetView; }
+
 protected:
 
 	void BuildRenderTarget() override;

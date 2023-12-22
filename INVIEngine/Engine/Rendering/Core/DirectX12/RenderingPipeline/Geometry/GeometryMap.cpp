@@ -786,3 +786,8 @@ void FGeometryMap::DrawFog(float DeltaTime)
 {
 	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(3, FogConstantBufferViews.GetBuffer()->GetGPUVirtualAddress());
 }
+
+D3D12_GPU_VIRTUAL_ADDRESS FGeometryMap::GetViewportConstantBufferViewsGPUVirtualAddr()
+{
+	return ViewportConstantBufferViews.GetBuffer()->GetGPUVirtualAddress();
+}

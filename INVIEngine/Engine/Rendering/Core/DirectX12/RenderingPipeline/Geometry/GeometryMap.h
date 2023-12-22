@@ -162,6 +162,14 @@ public:
 	// ‰÷»æŒÌ
 	void DrawFog(float DeltaTime);
 
+	FConstantBufferViews& GetViewportConstantBufferViews() { return ViewportConstantBufferViews; }
+	FConstantBufferViews& GetFogConstantBufferViews() { return FogConstantBufferViews; }
+	FConstantBufferViews& GetLightConstantBufferViews() { return LightConstantBufferViews; }
+	FConstantBufferViews& GetMaterialConstantBufferViews() { return MaterialConstantBufferViews; }
+
+	D3D12_GPU_VIRTUAL_ADDRESS GetViewportConstantBufferViewsGPUVirtualAddr();
+
+
 protected:
 	map<int, FGeometry> Geometries{};						// º∏∫ŒÃÂ
 	FDirectXDescriptorHeap DescriptorHeap;					// √Ë ˆ∂—
