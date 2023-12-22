@@ -22,6 +22,8 @@ public:
 
 	void BuildDepthStencilDescriptor() override;
 
+	void BuildRenderTargetRTV() override;
+
 	// 判断场景中是否存在动态反射
 	bool IsExitDynamicReflectionMesh();
 

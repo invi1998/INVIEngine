@@ -189,8 +189,25 @@ void FDynamicShadowCubeMap::BuildDepthStencilDescriptor()
 
 	DSVCubeMapCPUDesc = CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(),	// DSV的起始地址
-		1,	// 偏移1 第一个是给主渲染目标用的(场景）后面的才是给cubeMap用的
+		3,	// 偏移3 第一个是给主渲染目标用的(场景）1 + 反射的1，到第三个才是ShadowCubeMap
 		DescriptorHandleIncrementSize	// DSV偏移量
 	);
 }
 
+void FDynamicShadowCubeMap::BuildRenderTargetRTV()
+{
+	if (FCubeMapRenderTarget* inRenderTarget = dynamic_cast<FCubeMapRenderTarget*>(this->RenderTarget.get()))
+	{
+		UINT RTVSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		auto RTVStart = GetRTVHeap()->GetCPUDescriptorHandleForHeapStart();
+		// 为CubeMap创建渲染目标视图
+		for (size_t i = 0; i < 6; i++)
+		{
+			inRenderTarget->GetCPURenderTargetView()[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+				RTVStart,		// RTV的起始地址
+				FEngineRenderConfig::GetRenderConfig()->SwapChainCount + 6 + i,	// 交换链 前面的是给主渲染目标用的(场景） 6 是反射的 后面的才是给ShadowCubeMap用的
+				RTVSize	// RTV偏移量
+			);
+		}
+	}
+}

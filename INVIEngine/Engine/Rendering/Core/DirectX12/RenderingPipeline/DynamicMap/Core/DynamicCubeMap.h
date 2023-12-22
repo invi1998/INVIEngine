@@ -38,7 +38,7 @@ public:
 	virtual void SetViewportPosition(const XMFLOAT3& position);
 
 protected:
-	virtual void BuildRenderTargetRTV();
+	virtual void BuildRenderTargetRTV() = 0;
 	virtual void BuildRenderTargetSRV();
 
 protected:
