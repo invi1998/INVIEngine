@@ -83,11 +83,24 @@ namespace EngineMath
 			{ 45.f, 135.f, 45.f, 135.f, 0.f },	// NegativeZ
 		};
 
+	// 判断角度是否在范围内
+	bool IsAngleInRange(float angle, float x, float y)
+	{
+		if (angle >= min(x, y))
+		{
+			if (angle <= max(x, y))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// 判断点是否在CubeMap的视口里
 	bool IsPointInCubeMapViewport(float theta, float phi, ECubeMapFace face)
 	{
 		// 判断theta是否在范围内
-		if (theta >= CubeMapAxialRangeR[face].ThetaMin && theta <= CubeMapAxialRangeR[face].ThetaMax)
+		if (IsAngleInRange(theta, CubeMapAxialRangeR[face].ThetaMin, CubeMapAxialRangeR[face].ThetaMax))
 		{
 			// 判断phi是否在范围内
 			if (phi >= CubeMapAxialRangeR[face].PhiMin && phi <= CubeMapAxialRangeR[face].PhiMax)
