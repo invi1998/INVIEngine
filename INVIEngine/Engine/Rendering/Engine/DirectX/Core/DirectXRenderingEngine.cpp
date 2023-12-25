@@ -713,23 +713,49 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
+		//well
+		if (GBoxMesh* InBoxMesh = World->CreateActorObject<GBoxMesh>())
+		{
+			InBoxMesh->CreateMesh(30.f, 150, 0.4f);
+
+			InBoxMesh->SetPosition(XMFLOAT3(0.f, 0.f, -60.f));
+			if (CMaterial* InMaterial = (*InBoxMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::Lambert);
+			}
+		}
+
+		//well
+		if (GBoxMesh* InBoxMesh = World->CreateActorObject<GBoxMesh>())
+		{
+			InBoxMesh->CreateMesh(30.f, 20.f, 150.f);
+
+			InBoxMesh->SetPosition(XMFLOAT3(70.f, 0.f, 0.f));
+			if (CMaterial* InMaterial = (*InBoxMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::Lambert);
+			}
+		}
+
 
 		if (GSky* InSky = World->CreateActorObject<GSky>())//天空
 		{
 			InSky->SetPosition(XMFLOAT3(0.f, 0.f, 0.f));
 		}
 
-		//雾的实例
-		if (GFog* Fog = World->CreateActorObject<GFog>())
-		{
-			Fog->SetFogColor(XMFLOAT4(0.7f, 0.7f, 0.9f, 1.f));
-			Fog->SetFogStart(10.f);
-			Fog->SetFogRange(500.f);
+		////雾的实例
+		//if (GFog* Fog = World->CreateActorObject<GFog>())
+		//{
+		//	Fog->SetFogColor(XMFLOAT4(0.7f, 0.7f, 0.9f, 1.f));
+		//	Fog->SetFogStart(10.f);
+		//	Fog->SetFogRange(500.f);
 
-			Fog->SetFogHeight(5000.f);
-			Fog->SetFogTransparentCoefficient(0.00f);
+		//	Fog->SetFogHeight(5000.f);
+		//	Fog->SetFogTransparentCoefficient(0.00f);
 
-		}
+		//}
 
 		if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{

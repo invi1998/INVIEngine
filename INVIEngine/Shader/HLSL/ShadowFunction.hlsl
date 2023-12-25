@@ -89,4 +89,21 @@ float GetShadowFactor_PCF_Sample9(float4 InWorldPosition, float4x4 InShadowMatri
 	return max(R / 9.f, 0.5f);
 }
 
+
+// 采样万向阴影贴图（点光源阴影贴图）直接对CubeMap采样
+float ProcessingOmnidirectinalSampleCubeMapShadow(float3 position, float3 lightPosition)
+{
+	float3 direction = position - lightPosition;
+	float distance = length(direction);
+	direction /= distance;
+
+	float3 shadowMapUV = direction;
+	shadowMapUV.z = -shadowMapUV.z;
+
+	float shadowFactor = SimpleShadowCubeMap.Sample(TextureSampler, shadowMapUV).r;
+
+	return shadowFactor;
+}
+
+
 #endif

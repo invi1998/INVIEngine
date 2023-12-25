@@ -426,10 +426,25 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			// 将数值限制为【0-1】
 			Specular = saturate(Specular);
 			
-			// 计算阴影
-			// float ShadowFactor = GetShadowFactor(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
-			// float ShadowFactor = GetShadowFactor_PCF_Sample4(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
-			float ShadowFactor = GetShadowFactor_PCF_Sample9(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			float ShadowFactor = 1.f;
+			
+			if (SceneLights[i].LightType == 1)
+			{
+				// 点光源
+				ShadowFactor = ProcessingOmnidirectinalSampleCubeMapShadow(mvOut.WorldPosition.xyz, SceneLights[i].LightPosition);
+
+			}
+			else
+			{
+				// 平行光 聚光
+				
+				// 计算阴影
+				// ShadowFactor = GetShadowFactor(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+				// ShadowFactor = GetShadowFactor_PCF_Sample4(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+				ShadowFactor = GetShadowFactor_PCF_Sample9(mvOut.WorldPosition, SceneLights[i].ShadowTransform);
+			}
+			
+			
 			
 			
 			FinalColor += ShadowFactor * (saturate((Diffuse + Specular) * LightStrength * DotDiffValue));
