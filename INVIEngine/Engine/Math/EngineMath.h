@@ -5,6 +5,17 @@
 
 namespace EngineMath
 {
+	// CubeMap的6个面
+	enum ECubeMapFace : int
+	{
+		PositiveX = 0,	// x轴正方向
+		NegativeX = 1,	// x轴负方向
+		PositiveY = 2,	// y轴正方向
+		NegativeY = 3,	// y轴负方向
+		PositiveZ = 4,	// z轴正方向
+		NegativeZ = 5,	// z轴负方向
+	};
+
 	static DirectX::XMFLOAT4X4 IdentityMatrix4x4()
 	{
 		return {
@@ -43,4 +54,45 @@ namespace EngineMath
 
 		//return DirectX::XMFLOAT3{ r, theta, phi };
 	}
+
+	struct FCubeMapFaceThetaPhiRange
+	{
+		FCubeMapFaceThetaPhiRange(float inThetaMin, float inThetaMax, float inPhiMin, float inPhiMax)
+			: ThetaMin(inThetaMin)
+			, ThetaMax(inThetaMax)
+			, PhiMin(inPhiMin)
+			, PhiMax(inPhiMax)
+		{}
+
+		float ThetaMin;
+		float ThetaMax;
+		float PhiMin;
+		float PhiMax;
+	};
+
+	// 右手坐标下，CubeMap的6个面的球坐标的theta和phi的值的范围
+	static const std::vector<FCubeMapFaceThetaPhiRange> CubeMapAxialRangeR =
+		{
+			{ 45.f, 135.f, -45.f, 45.f },	// PositiveX phi 属于 0到45 0到-45
+			{ 45.f, 135.f, -135.f, 135.f },	// NegativeX phi 属于 135到180 -135到-180
+			{ 0.f, 45.f, -360.f, 360.f },	// PositiveY
+			{ 135.f, 180.f, -360.f, 360.f },	// NegativeY
+			{ 45.f, 135.f, -45.f, -135.f },	// PositiveZ
+			{ 45.f, 135.f, 45.f, 135.f },	// NegativeZ
+		};
+
+
+	// 传入笛卡尔坐标，返回处于CubeMap的哪个面（确保传入的球坐标是CubeMap坐标系下的）
+	inline ECubeMapFace GetSampleCubeMapIndex(const DirectX::XMFLOAT3& position)
+	{
+		// 先将坐标转换为球坐标
+		DirectX::XMFLOAT3 spherical = CartesianToSpherical(position);
+
+		// 然后根据球坐标的值，判断处于CubeMap的哪个面
+		float theta = position.y;
+		float phi = position.z;
+
+		// 1. 判断处于哪个面
+	}
+
 }
