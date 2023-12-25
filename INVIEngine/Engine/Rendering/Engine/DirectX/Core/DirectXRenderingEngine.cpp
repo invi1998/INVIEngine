@@ -74,6 +74,13 @@ int CDirectXRenderingEngine::PostInit()
 	// 初始化命令列表
 	ANALYSIS_RESULT(GraphicsCommandList->Reset(CommandAllocator.Get(), nullptr));
 
+	EngineMath::ECubeMapFace InType1 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(105.395, 0.f, 17.732));//x
+	EngineMath::ECubeMapFace InType2 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(-97.f, 0.f, 17.732));//-x
+	EngineMath::ECubeMapFace InType3 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(-15.611f, 61.625f, 17.732f));//y
+	EngineMath::ECubeMapFace InType4 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(9.753f, -115.674f, 15.392f));//-y
+	EngineMath::ECubeMapFace InType5 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(15.572f, 10.869f, 101.593f));//z
+	EngineMath::ECubeMapFace InType6 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(15.572f, 10.869f, -82.77f));//z
+
 	{
 		//构建Mesh
 		/*if (GMesh* BoxMesh = MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f))
