@@ -57,32 +57,57 @@ namespace EngineMath
 
 	struct FCubeMapFaceThetaPhiRange
 	{
-		FCubeMapFaceThetaPhiRange(float inThetaMin, float inThetaMax, float inPhiMin, float inPhiMax)
+		FCubeMapFaceThetaPhiRange(float inThetaMin, float inThetaMax, float inPhiMin, float inPhiMax, float inCriticalValue)
 			: ThetaMin(inThetaMin)
 			, ThetaMax(inThetaMax)
 			, PhiMin(inPhiMin)
 			, PhiMax(inPhiMax)
+			, CriticalValue(inCriticalValue)
 		{}
 
 		float ThetaMin;
 		float ThetaMax;
 		float PhiMin;
 		float PhiMax;
+		float CriticalValue;	// 临界值
 	};
 
 	// 右手坐标下，CubeMap的6个面的球坐标的theta和phi的值的范围
 	static const std::vector<FCubeMapFaceThetaPhiRange> CubeMapAxialRangeR =
 		{
-			{ 45.f, 135.f, -45.f, 45.f },	// PositiveX phi 属于 0到45 0到-45
-			{ 45.f, 135.f, -135.f, 135.f },	// NegativeX phi 属于 135到180 -135到-180
-			{ 0.f, 45.f, -360.f, 360.f },	// PositiveY
-			{ 135.f, 180.f, -360.f, 360.f },	// NegativeY
-			{ 45.f, 135.f, -45.f, -135.f },	// PositiveZ
-			{ 45.f, 135.f, 45.f, 135.f },	// NegativeZ
+			{ 45.f, 135.f, -45.f, 45.f, 0.f },	// PositiveX phi 属于 0到45 0到-45 临界值为0
+			{ 45.f, 135.f, -135.f, 135.f, 180.f },	// NegativeX phi 属于 135到180 -135到-180  临界值为180
+			{ 0.f, 45.f, -360.f, 360.f, 0.f },	// PositiveY
+			{ 135.f, 180.f, -360.f, 360.f, 0.f },	// NegativeY
+			{ 45.f, 135.f, -45.f, -135.f, 0.f },	// PositiveZ
+			{ 45.f, 135.f, 45.f, 135.f, 0.f },	// NegativeZ
 		};
 
+	// 判断点是否在CubeMap的视口里
+	bool IsPointInCubeMapViewport(float theta, float phi, ECubeMapFace face)
+	{
+		// 判断theta是否在范围内
+		if (theta >= CubeMapAxialRangeR[face].ThetaMin && theta <= CubeMapAxialRangeR[face].ThetaMax)
+		{
+			// 判断phi是否在范围内
+			if (phi >= CubeMapAxialRangeR[face].PhiMin && phi <= CubeMapAxialRangeR[face].PhiMax)
+			{
+				return true;
+			}
+			else
+			{
+				// 判断是否在临界值上
+				if (phi == CubeMapAxialRangeR[face].CriticalValue)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-	// 传入笛卡尔坐标，返回处于CubeMap的哪个面（确保传入的球坐标是CubeMap坐标系下的）
+
+	// 传入笛卡尔坐标，返回处于CubeMap的哪个视口里（确保传入的球坐标是CubeMap坐标系下的）
 	inline ECubeMapFace GetSampleCubeMapIndex(const DirectX::XMFLOAT3& position)
 	{
 		// 先将坐标转换为球坐标
@@ -92,7 +117,14 @@ namespace EngineMath
 		float theta = position.y;
 		float phi = position.z;
 
-		// 1. 判断处于哪个面
+		// 判断处于哪个面
+		for (int i = 0; i < 6; i++)
+		{
+			if (IsPointInCubeMapViewport(theta, phi, static_cast<ECubeMapFace>(i)))
+			{
+				return static_cast<ECubeMapFace>(i);
+			}
+		}
 	}
 
 }
