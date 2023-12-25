@@ -94,14 +94,7 @@ float GetShadowFactor_PCF_Sample9(float4 InWorldPosition, float4x4 InShadowMatri
 float ProcessingOmnidirectinalSampleCubeMapShadow(float3 position, float3 lightPosition)
 {
 	float3 direction = position - lightPosition;
-	float distance = length(direction);
-	direction /= distance;
-
-	float3 shadowMapUV = direction;
-	shadowMapUV.z = -shadowMapUV.z;
-
-	float shadowFactor = SimpleShadowCubeMap.Sample(TextureSampler, shadowMapUV).r;
-
+	float shadowFactor = SimpleShadowCubeMap.Sample(TextureSampler, direction).r;
 	return shadowFactor;
 }
 
