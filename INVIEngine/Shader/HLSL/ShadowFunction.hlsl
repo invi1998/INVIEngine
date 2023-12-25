@@ -98,5 +98,13 @@ float ProcessingOmnidirectinalSampleCubeMapShadow(float3 position, float3 lightP
 	return shadowFactor;
 }
 
+float ProcessingOmnidirectinalSampleCmpLevelZeroShadow(float3 position, float3 lightPosition)
+{
+	float3 direction = position - lightPosition;
+	float depth = 0.f;
+	float shadowFactor = SimpleShadowCubeMap.SampleCmpLevelZero(ShadowSampler, float4(direction, 1.f), depth).r;
+	return shadowFactor;
+}
+
 
 #endif

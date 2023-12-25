@@ -431,7 +431,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			if (SceneLights[i].LightType == 1)
 			{
 				// µ„π‚‘¥
-				ShadowFactor = ProcessingOmnidirectinalSampleCubeMapShadow(mvOut.WorldPosition.xyz, SceneLights[i].LightPosition);
+				// ShadowFactor = ProcessingOmnidirectinalSampleCubeMapShadow(mvOut.WorldPosition.xyz, SceneLights[i].LightPosition);
+				ShadowFactor = ProcessingOmnidirectinalSampleCmpLevelZeroShadow(mvOut.WorldPosition.xyz, SceneLights[i].LightPosition);
 
 			}
 			else
