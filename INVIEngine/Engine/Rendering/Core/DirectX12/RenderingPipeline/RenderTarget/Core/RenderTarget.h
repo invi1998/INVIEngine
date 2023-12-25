@@ -22,8 +22,8 @@ public:
 	FORCEINLINE ID3D12Resource* GetRenderTarget() const { return RenderTargetMap.Get(); }
 	FORCEINLINE D3D12_VIEWPORT GetViewport() const { return Viewport; }
 	FORCEINLINE D3D12_RECT GetScissorRect() const { return ScissorRect; }
-	FORCEINLINE CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUShaderResourceView() const { return GPUShaderResourceView; }
-	FORCEINLINE CD3DX12_CPU_DESCRIPTOR_HANDLE GetCPUShaderResourceView() const { return CPUShaderResourceView; }
+	FORCEINLINE CD3DX12_GPU_DESCRIPTOR_HANDLE& GetGPUShaderResourceView() { return GPUShaderResourceView; }
+	FORCEINLINE CD3DX12_CPU_DESCRIPTOR_HANDLE& GetCPUShaderResourceView() { return CPUShaderResourceView; }
 
 protected:
 	UINT Width;		// »­²¼¿í¶È
