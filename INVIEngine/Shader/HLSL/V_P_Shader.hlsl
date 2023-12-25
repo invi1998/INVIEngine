@@ -426,6 +426,9 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			// 将数值限制为【0-1】
 			Specular = saturate(Specular);
 			
+			int IndexR = GetSampleCubeMapIndexR(mvOut.WorldPosition.xyz);
+			return DebugCubeVieport(IndexR);
+			
 			float ShadowFactor = 1.f;
 			
 			if (SceneLights[i].LightType == 1)
