@@ -102,19 +102,54 @@ namespace EngineMath
 		// 判断theta是否在范围内
 		if (IsAngleInRange(theta, CubeMapAxialRangeR[face].ThetaMin, CubeMapAxialRangeR[face].ThetaMax))
 		{
-			// 判断phi是否在范围内
-			if (phi >= CubeMapAxialRangeR[face].PhiMin && phi <= CubeMapAxialRangeR[face].PhiMax)
+			// 如果临界值是0
+			if (CubeMapAxialRangeR[face].CriticalValue == 0.f)
 			{
-				return true;
-			}
-			else
-			{
-				// 判断是否在临界值上
-				if (phi == CubeMapAxialRangeR[face].CriticalValue)
+				// 如果是大于临界值的面，需要判断phi是否在范围内
+				if (phi > CubeMapAxialRangeR[face].CriticalValue)
+				{
+					if (IsAngleInRange(phi, CubeMapAxialRangeR[face].CriticalValue, max(CubeMapAxialRangeR[face].PhiMin, CubeMapAxialRangeR[face].PhiMax)))
+					{
+						return true;
+					}
+				}
+				else if (phi < CubeMapAxialRangeR[face].CriticalValue)
+				{
+					// 如果是小于临界值的面，需要判断phi是否在范围内
+					if (IsAngleInRange(phi, CubeMapAxialRangeR[face].CriticalValue, min(CubeMapAxialRangeR[face].PhiMin, CubeMapAxialRangeR[face].PhiMax)))
+					{
+						return true;
+					}
+				}
+				else
 				{
 					return true;
 				}
 			}
+			else if (CubeMapAxialRangeR[face].CriticalValue == 180.f)
+			{
+				// 如果是大于临界值的面，需要判断phi是否在范围内
+				if (phi > CubeMapAxialRangeR[face].CriticalValue)
+				{
+					if (IsAngleInRange(phi, CubeMapAxialRangeR[face].CriticalValue, max(CubeMapAxialRangeR[face].PhiMin, CubeMapAxialRangeR[face].PhiMax)))
+					{
+						return true;
+					}
+				}
+				else if (phi < CubeMapAxialRangeR[face].CriticalValue)
+				{
+					// 如果是小于临界值的面，需要判断phi是否在范围内
+					if (IsAngleInRange(phi, CubeMapAxialRangeR[face].CriticalValue, min(CubeMapAxialRangeR[face].PhiMin, CubeMapAxialRangeR[face].PhiMax)))
+					{
+						return true;
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+			
 		}
 		return false;
 	}
