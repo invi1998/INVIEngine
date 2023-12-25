@@ -40,8 +40,9 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	// 采集深度图
-	float Depth = mvOut.PositionH.z / mvOut.PositionH.w;
+	float Depth = 1.f - (mvOut.PositionH.z / mvOut.PositionH.w);
 
+	// Depth = pow(Depth, 20);
 
 	return float4(Depth, Depth, Depth, 1.f);
 }

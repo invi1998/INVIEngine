@@ -68,7 +68,7 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 				constexpr float ColorBG[] = { 0.1f, 0.105f, 0.11f, 1.0f };
 				GetD3dGraphicsCommandList()->ClearRenderTargetView(
 					inRenderTarget->GetCPURenderTargetView()[i],		// 要清除的渲染目标视图
-					ColorBG,		// 画布颜色
+					DirectX::Colors::White,		// 画布颜色
 					0,		// 后面这两个参数是和视口相关的，这里不在这里设置，后面会有专门的设置方法
 					nullptr
 				);
