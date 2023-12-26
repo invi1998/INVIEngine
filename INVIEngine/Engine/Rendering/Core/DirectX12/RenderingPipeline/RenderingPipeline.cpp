@@ -53,6 +53,9 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
 
+	// 初始化UI管线
+	UiPipeline.Initialize(GeometryMap.GetHeap(), GeometryMap.GetDrawTexture2DCount() + GeometryMap.GetDrawCubeMapCount() + 1 + 1 + 1);
+
 	// 初始化CubeMap摄像机
 	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 0.f, 0.f, 0.f });
 
@@ -144,6 +147,9 @@ void FRenderingPipeline::Draw(float DeltaTime)
 	RenderLayerManage.Draw(RENDER_LAYER_BACKGROUND, DeltaTime);
 	RenderLayerManage.Draw(RENDER_LAYER_OPAQUE, DeltaTime);
 	RenderLayerManage.Draw(RENDER_LAYER_TRANSPARENT, DeltaTime);
+
+	// 渲染UI
+	UiPipeline.Draw(DeltaTime);
 
 	DirectXPipelineState.Draw(DeltaTime);
 	

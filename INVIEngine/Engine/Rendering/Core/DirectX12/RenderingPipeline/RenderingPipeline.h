@@ -6,6 +6,7 @@
 #include "PipelineState/DirectXPipelineState.h"
 #include "RenderLayer/RenderLayerManage.h"
 #include "RootSignature/DirectXRootSignature.h"
+#include "UI/ImGuiPipeline.h"
 
 class CMeshComponent;
 struct FViewportInfo;
@@ -35,5 +36,7 @@ protected:
 	FDirectXRootSignature DirectXRootSignature;		// 根签名
 
 	FDynamicReflectionCubeMap DynamicCubeMap;		// 动态CubeMap
+
+	FImGuiPipeline UiPipeline;		// UI渲染流水线
 };
 

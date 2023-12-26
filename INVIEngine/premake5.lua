@@ -29,6 +29,7 @@ project "INVIEngine"
 		"Engine",
         "%{IncludeDir.simple_library}",
 		"%{IncludeDir.FBX_SDK}",
+		"%{IncludeDir.imgui}",
 	}
 
 	links
@@ -36,6 +37,7 @@ project "INVIEngine"
 		"d3dcompiler.lib",
 		"D3D12.lib",
 		"dxgi.lib",
+		"imgui",
 		"simple_library",
 		"%{Library.FBX_SDK}",
 		"%{Library.FBX_SDK_MD}",
