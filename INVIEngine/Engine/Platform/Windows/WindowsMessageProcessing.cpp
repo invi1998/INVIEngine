@@ -7,12 +7,22 @@
 #include "Component/Input/Input.h"
 #include <WindowsX.h>
 
+#include "imgui.h"
+
 // 全局变量：记录正在按下的键
 unordered_set<int> g_pressedKeys;
 unordered_set<int> g_releasedKeys;
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT EngineWidowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	// 给imgui添加消息处理
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+	{
+		return true;
+	}
+
 	switch (msg)
 	{
 	case WM_CLOSE:
