@@ -31,8 +31,29 @@ void FImGuiPipeline::Initialize(ID3D12DescriptorHeap* heap, UINT offset)
 
 void FImGuiPipeline::Draw(float deltaTime)
 {
+	// 开始新帧
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+
+	// 绘制UI
+	Tick(deltaTime);
+
+	// 渲染
+	ImGui::Render();
+	// 画到屏幕上 注册到DX12的命令列表中
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), GetD3dGraphicsCommandList().Get());
 }
 
 void FImGuiPipeline::Exit()
 {
+}
+
+void FImGuiPipeline::Tick(float deltaTime)
+{
+	ImGui::NewFrame();
+
+	// 绘制UI
+	ImGui::Begin("Hello, world!");
+	ImGui::Text("This is some useful text.");
+	ImGui::End();
 }
