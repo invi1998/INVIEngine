@@ -532,3 +532,300 @@ cbuffer MyConstants : register(b1)
 ```
 
 在上述代码中，cbuffer表示声明一个常量缓冲区，MyConstants是缓冲区的名称，register(b1)则指明了该缓冲区应该绑定到寄存器b1上。最后，我们定义了三个变量作为缓冲区的内容，包括一个4x4矩阵、一个3元向量和一个标量。这样，在渲染管线中使用该缓冲区时，只需要将其绑定到管线上下文的对应寄存器即可。
+
+
+
+一、图形API使用方式
+无论具体 API 如何设计，图形应用程序大都遵循以下执行顺序：
+
+初始化 API - 创建访问 API 内部工作原理所需的核心数据结构。
+加载资产 - 创建加载着色器等内容所需的数据结构，图形管道，创建和填充要执行的命令缓冲区，以及将资源发送到 GPU 。
+更新资源 - 将任何制服更新到着色器，并在此处执行应用程序级逻辑。
+显示 - 将命令缓冲区列表发送到命令队列并显示到交换链。
+重复 2、3 和 4，直到应用程序发出关闭信号。
+销毁 - 等待 GPU 完成渲染工作，并销毁所有数据结构和句柄。
+所有图形API的使用都是遵循此顺序执行图形 API 数据结构的创建和使用。
+
+二、依赖项（Importing Dependencies）
+API	Structure
+Vulkan	#include <vulkan/vulkan.hpp>
+DirectX 12	#include <d3d12.h>
+DirectX 11	#include <d3d11.h>
+Metal	#import <Metal/Metal.h>
+WebGPU	Canary版本浏览器
+OpenGL	视操作系统
+启动应用程序时，需要包含对外部 API 的依赖项，图形 API 也不例外。根据 API 的不同，您可能还需要项目中的其他库，如着色器编译器等。
+
+OpenGL是所有其他图形API的例外，因为根据操作系统和您的个人设置，可以从不同位置进行各种导入。
+
+2.1 着色器编译器（Shader Compiler）
+API	Structure
+Vulkan	#include “glslang/Include/revision.h”
+DirectX 12	<D3Dcompiler.h>
+DirectX 11	<D3Dcompiler.h>
+Metal	#import <Metal/Metal.h>
+WebGPU	无
+OpenGL	void glShaderSource(…)
+Vulkan 需要你使用外部着色器编译器（例如 glslang 或 DirectX Shader Compiler）生成 SPIR-V 。
+
+DirectX建议你使用 DirectX Shader Compiler 而不是头文件中包含的着色器编译器，因为DirectX Shader Compiler 支持较新的着色器版本以及可以优化和提升编译速度。
+
+Metal着色器可以在运行时编译，也可以在构建时使用 MacOS 路径中包含的命令行工具进行编译。
+
+OpenGL不需要外部库来编译着色器，因为它包含在库中，在OpenGL 4.6及之后版本中GLSL也可以使用SPIR-V替代。
+
+WebGPU 着色器是纯文本字符串，因此无需编译它们，。
+
+着色器的具体区分与使用我们之后详细展开。
+
+三、图形初始化（Initialize API）
+3.1 图形入口（Entry Point）
+API	Structure
+Vulkan	vk::Instance
+DirectX 12	IDXGIFactory4
+DirectX 11	IDXGIFactory
+Metal	CAMetalLayer
+WebGPU	GPU
+OpenGL	视操作系统
+图形 API 的入口（感觉叫实例对象更贴切）通常允许您访问 API 的内部类。
+
+Vulkan 的入口包括选择您准备使用的 API 版本以及您想要开启的任何扩展或层，例如错误检查、窗口表面等。
+
+DirectX 11 和 12 要求您创建工厂和Debug数据结构（可选）。
+
+在 Metal 上，一旦CAMetalLayer 层存在并附加到窗口（NSWindow、NSView、CAMetalLayer），该窗口就可以使用 Metal API 的其余部分。
+
+对于 OpenGL，最接近入口的是操作系统特定的上下文，您可以在创建操作系统窗口后请求该上下文。
+
+3.2 物理设备（Physical Device）
+物理设备图
+
+API	Structure
+Vulkan	vk::PhysicalDevice
+DirectX 12	vk::PhysicalDevice
+DirectX 11	IDXGIAdapter
+Metal	MTLDevice
+WebGPU	GPUAdapter
+OpenGL	glGetString(GL_VENDOR)
+物理设备允许您查设备（显卡）的特定详细信息，例如内存大小和功能支持版本。
+
+Metal 的物理设备和逻辑设备都由相同的数据结构共享。
+
+OpenGL 无法查询任何设备详细信息，除非您使用制造商专用扩展。您可以获取一些杂项数据，例如驱动程序供应商名称，渲染器和OpenGL版本。
+
+3.3 逻辑设备（Logical Device）
+图
+
+API	Structure
+Vulkan	vk::Device
+DirectX 12	ID3D12Device
+DirectX 11	ID3D11Device
+Metal	MTLDevice
+WebGPU	GPUDevice
+OpenGL	无
+设备允许您访问 API 的核心内部功能，例如创建图形数据结构，如纹理、缓冲区、队列、管道等。这种类型的数据结构在所有现代图形 API 中大部分都是相同的，很少会变更。
+
+Vulkan 和 DirectX 12 通过设备创建内存数据结构来提供对内存的控制。
+
+3.4 队列（Queue）
+队列图
+
+API	Structure
+Vulkan	vk::Queue
+DirectX 12	ID3D12CommandQueue
+DirectX 11	ID3D11DeviceContext
+Metal	MTLCommandQueue
+WebGPU	GPUQueue
+OpenGL	无
+队列允许您将任务排队以供 GPU 执行。GPU 是一种异步计算设备，因此显示最优解便是始终保持GPU忙碌，同时异步控将命令添加到队列中。
+
+Vulkan 队列要求您在创建设备之前指定设备将使用的队列（绘制、计算、拷贝）。
+
+3.5 命令池（Command Pool）
+命令池
+
+API	Structure
+Vulkan	vk::CommandPool
+DirectX 12	ID3D12CommandAllocator
+DirectX 11	ID3D11DeviceContext
+Metal	MTLCommandQueue
+WebGPU	GPUDevice
+OpenGL	无
+命令池是一种数据结构，可用于创建命令缓冲区。
+
+Metal 的命令池设计的比其他API好一些，因为MTLCommandQueue队列中也能分配命令缓冲区的数据结构。
+
+四、帧缓冲（Frame）
+4.1 窗口界面（Window Surface）
+API	Structure
+Vulkan	vk::Surface
+DirectX 12	ID3D12Resource
+DirectX 11	ID3D11Texture2D
+Metal	CAMetalLayer
+WebGPU	GPUCanvasContext
+OpenGL	视操作系统
+Window Surface 允许您将所有绘制调用绑定到特定于操作系统的窗口。
+
+在 DirectX 上，由于只有 Windows / Xbox 作为 API 的目标，窗口将从交换链中接收后台缓冲区中的纹理。交换链中接收窗口句柄，并从那里创建 DirectX 驱动程序内部的图面。
+
+由于 MacOS 和 iOS 窗口具有分层结构，其中应用程序包含一个视图，该视图可以包含一个图层，因此 Metal 可以在该图层中显示。
+
+4.2 交换链（Swapchain）
+交换链图
+
+API	Structure
+Vulkan	vk::Swapchain
+DirectX 12	IDXGISwapChain3
+DirectX 11	IDXGISwapChain
+Metal	CAMetalDrawable
+WebGPU	GPUCanvasContext
+OpenGL	视操作系统
+交换链在给定窗口的不同后台缓冲区之间翻转替换显示，并控制呈现的各操作，例如刷新率和后台缓冲区的交换行为。
+
+Metal 和 OpenGL API 中没有交换链的概念，而是将其留给操作系统窗口 API。
+
+4.3 帧缓冲区（Frame Buffers）
+帧缓冲图
+
+API	Structure
+Vulkan	vk::Framebuffer
+DirectX 12	ID3D12Resource
+DirectX 11	ID3D11RenderTargetView
+Metal	MTLRenderPassDescriptor
+WebGPU	GPURenderPassDescriptor
+OpenGL	GLuint
+帧缓冲区是基于光栅化图形管线执行期间用作输出的输出纹理组。
+
+DirectX 12 和 11 没有为此提供显式数据结构，而是可以传递一组视图（RTV）。
+
+五、初始化资源（Initialize Resources）
+5.1 纹理（Texture）
+API	Structure
+Vulkan	vk::Image & vk::ImageView
+DirectX 12	ID3D12Resource
+DirectX 11	ID3D11Texture2D
+Metal	MTLTexture
+WebGPU	GPUTexture & GPUTextureView
+OpenGL	GLuint
+纹理是存储颜色信息的数据数组，并用作渲染的输入/输出。Vulkan、DirectX 12 和 WebGPU 引入了具有给定纹理的多个视图的思路，这些视图可以以不同的编码格式或颜色空间查看该纹理。Vulkan 引入了图像和缓冲区托管内存的概念，因此纹理是图像的三元组，在使用时的图像视图（可以有多个），以及仅设备或 CPU-GPU 可访问空间中的内存。
+
+对于在 Vulkan和DX12 中内存管理可以看一下AMD开发者的博客：AMD Vulkan Memory Allocator & AMD D3D12 Memory Allocator
+
+5.2 缓冲区（Buffer）
+缓冲图
+
+API	Structure
+Vulkan	vk::Buffer & vk::BufferView
+DirectX 12	ID3D12Resource
+DirectX 11	ID3D11Buffer
+Metal	MTLBuffer
+WebGPU	GPUBuffer & GPUBufferView
+OpenGL	GLuint
+缓冲区是一个数据数组，例如网格的位置数据、颜色数据、索引数据等。类似的图像规则适用于 Vulkan 和 WebGPU 中的缓冲区。
+
+5.3 着色器（Shader）
+API	Structure
+Vulkan	vk::ShaderModule
+DirectX 12	ID3DBlob
+DirectX 11	ID3D11VertexShader or ID3D11PixelShader…
+Metal	MTLLibrary
+WebGPU	GPUShaderModule
+OpenGL	GLuint
+着色器往往是已编译的着色器代码的句柄（HLSL、GLSL、MSL 等），这些代码要送到给定的渲染管线。
+
+5.4 着色器绑定（Shader Bindings）
+命令缓冲区
+
+API	Structure
+Vulkan	vk::PipelineLayout & vk::DescriptorSet
+DirectX 12	ID3D12RootSignature
+DirectX 11	ID3D11DeviceContext::VSSetConstantBuffers(…)
+Metal	[MTLRenderCommandEncoder setVertexBuffer: uniformBuffer]
+WebGPU	GPUPipelineLayout
+OpenGL	GLint
+大多现代图形 API 都具有绑定数据结构，可以将统一的缓冲区和纹理连接到需要该数据的图形管道（性能更优）。Metal 的独特之处在于您可以在命令编码器中绑定常量缓冲，与 Vulkan、DirectX 12 和 WebGPU 相比，架构变得更加容易。
+
+5.5 管线（Pipeline）
+API	Structure
+Vulkan	vk::Pipeline
+DirectX 12	ID3D12PipelineState
+DirectX 11	各种状态调用
+Metal	MTLRenderPipelineState
+WebGPU	GPURenderPipeline
+OpenGL	各种状态调用
+管线是对执行光栅化绘制调用、计算调度或光线追踪调度时将执行的内容的总体描述。
+
+DirectX 11 和 OpenGL 它们没有图形管道的专用对象，而是使用调用在执行绘制调用之间设置管道状态。
+
+5.6 命令缓冲区（Command Buffer）
+命令缓冲区
+
+API	Structure
+Vulkan	vk::CommandBuffer
+DirectX 12	ID3D12GraphicsCommandList
+DirectX 11	ID3D11DeviceContext、
+Metal	MTLRenderCommandEncoder
+WebGPU	GPUCommandEncoder
+OpenGL	GL_NV_command_list
+命令缓冲区是一个异步计算单元，您可以在其中描述 GPU 要执行的过程，例如绘制调用、将数据从 CPU-GPU 可访问内存（共享内存）复制到 GPU 独占内存，以及动态设置图形管线的各个阶段。
+
+GPU 本质上是异步的，由驱动程序负责确定何时将任务调度到 GPU。
+
+5.7 命令列表（Command List）
+命令列表图
+
+API	Structure
+Vulkan	vk::SubmitInfo
+DirectX 12	ID3D12CommandList[]
+DirectX 11	ID3D11CommandList
+Metal	MTLCommandBuffer
+WebGPU	GPUCommandEncoder[]
+OpenGL	GL_NV_command_list
+命令列表是批量推送到 GPU 的命令缓冲区组。这样让让 GPU 持续工作，从而减少 CPU 和 GPU 之间的同步。
+
+5.8 栅栏（Fence）
+API	Structure
+Vulkan	vk::Fence
+DirectX 12	ID3D12Fence
+DirectX 11	ID3D11Fence
+Metal	MTLFence
+WebGPU	无
+OpenGL	glFenceSync
+栅栏是用于同步 CPU 和 GPU 的对象。可以指示CPU和GPU在围栏处等待，以便对方可以赶上。可用于管理资源分配和解除分配，从而更轻松地管理整体图形内存使用情况。
+
+5.9 屏障（Barrier）
+API	Structure
+Vulkan	vkCmdPipelineBarrier
+DirectX 12	D3D12_RESOURCE_BARRIER
+DirectX 11	无
+Metal	MTLFence
+WebGPU	无
+OpenGL	glMemoryBarrier
+屏障是命令缓冲区内更精细的同步形式。具体可以参照知乎上介绍同步相关的文章。
+
+5.10 信号量（Semaphore）
+API	Structure
+Vulkan	vk::Semaphore
+DirectX 12	HANDLE
+DirectX 11	HANDLE
+Metal	HANDLE
+WebGPU	无
+OpenGL	根据操作系统
+信号量是用于引入操作之间的依赖关系的对象，例如在将命令缓冲区提交到设备队列之前在获取交换链中的下一个图像之前等待。
+
+Vulkan的独特之处在于信号量是API的一部分，DirectX和Metal将其委托给操作系统调用。
+
+其实还有Vulkan 中的 Event 、SubPass 的隐式同步，其中Event可以看成分成前后两端的 Pipeline Barrier，控制粒度更细，通过 vkCmdSetEvent 指定 Source Stage，然后通过 vkCmdWaitEvent 指定 Destinition Stage，只等待同步的事件发生，而不需要停滞 GPU Pipeline，使 GPU 的并行性更强。各种同步的作用和作用域各不相同，大家有兴趣的可以自行查阅相关资料（所以说VK熟悉了，其他的都是大同小异）。
+
+六、空间/对齐（Spaces, Alignments）
+每个图形 API 对坐标系、NDC 坐标方向/范围、矩阵对齐、纹理对齐等具有不同的默认值，在大多数情况下，只需在片段着色器中翻转 UV中的值即可。
+
+6.1 纹理对齐方式
+API	Structure
+Vulkan	Bottom Left
+DirectX 12	Top Left
+DirectX 11	Top Left
+Metal	Top Left
+WebGPU	Bottom Left
+OpenGL	Bottom Left
+DirectX 使用左上角作为像素空间坐标
