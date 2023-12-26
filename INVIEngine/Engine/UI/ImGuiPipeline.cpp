@@ -46,6 +46,14 @@ void FImGuiPipeline::Draw(float deltaTime)
 
 void FImGuiPipeline::Exit()
 {
+	// 释放DX12平台
+	ImGui_ImplDX12_Shutdown();
+
+	// 释放Win32平台
+	ImGui_ImplWin32_Shutdown();
+
+	// 释放上下文
+	ImGui::DestroyContext();
 }
 
 void FImGuiPipeline::Tick(float deltaTime)
