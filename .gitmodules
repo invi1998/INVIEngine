@@ -1,6 +1,0 @@
-[submodule "INVIEngine/vendor/imgui"]
-	path = INVIEngine/vendor/imgui
-	url = https://github.com/invi1998/imgui
-    branch = docking
-	ignore = dirty
-
