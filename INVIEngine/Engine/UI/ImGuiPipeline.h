@@ -28,6 +28,7 @@ struct FImGuiPipeline : public IDirectXDeviceInterface_Struct
 	void Exit();
 
 protected:
+	void SetDarkThemeColors();
 	void Tick(float deltaTime);
 };
 
