@@ -4,7 +4,7 @@
 IncludeDir = {}
 IncludeDir["simple_library"] = "%{wks.location}/INVIEngine/vendor/simple_library/include"
 IncludeDir["FBX_SDK"] = "%{wks.location}/INVIEngine/vendor/FBX_SDK/include"
-IncludeDir["ImGui"] = "%{wks.location}/INVIEngine/vendor/ImGui"
+IncludeDir["imgui"] = "%{wks.location}/INVIEngine/vendor/imgui"
 
 LibraryDir = {}
 LibraryDir["FBX_SDK"] = "%{wks.location}/INVIEngine/vendor/FBX_SDK/lib/vs2022/x64/%{cfg.buildcfg}"
