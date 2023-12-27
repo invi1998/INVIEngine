@@ -12,6 +12,9 @@ public:
 
 	void Clear();
 	void AddLog(const char* fmt, ...);
+	void AddError(const char* fmt, ...);
+	void AddWarning(const char* fmt, ...);
+	void AddSuccess(const char* fmt, ...);
 
 protected:
 	ImGuiTextBuffer LogBuf;		   // »’÷æª∫≥Â«¯

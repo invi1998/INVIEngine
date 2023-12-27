@@ -46,6 +46,18 @@ void FLogSystem::AddLog(const char* fmt, ...)
 	}
 }
 
+void FLogSystem::AddError(const char* fmt, ...)
+{
+}
+
+void FLogSystem::AddWarning(const char* fmt, ...)
+{
+}
+
+void FLogSystem::AddSuccess(const char* fmt, ...)
+{
+}
+
 void FLogSystem::Draw()
 {
 	if (!ImGui::Begin("Log"))
