@@ -27,8 +27,8 @@ void FImGuiPipeline::Initialize(ID3D12DescriptorHeap* heap, UINT offset)
 	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-	// io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-medium.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
-	// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-regular.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+	// io.Fonts->AddFontFromFileTTF("Asserts/fonts/pingfang/pingfangtc-medium.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+	// io.FontDefault = io.Fonts->AddFontFromFileTTF("Asserts/fonts/pingfang/pingfangtc-regular.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
 	io.Fonts->AddFontFromFileTTF("Asserts/fonts/pingfang/pingfangtc-medium.otf", 18.0f);
 	io.FontDefault = io.Fonts->AddFontFromFileTTF("Asserts/fonts/pingfang/pingfangtc-regular.otf", 18.0f);
 
