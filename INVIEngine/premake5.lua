@@ -16,6 +16,8 @@ project "INVIEngine"
 	{
 		"Engine/**.h",
 		"Engine/**.cpp",
+		"Editor/**.h",
+		"Editor/**.cpp",
 		-- "vendor/simple_library/**.h",
 		-- "vendor/simple_library/**.c",
 		-- "vendor/simple_library/**.cpp",
@@ -28,6 +30,7 @@ project "INVIEngine"
 	includedirs
 	{
 		"Engine",
+		"Editor",
         "%{IncludeDir.simple_library}",
 		"%{IncludeDir.FBX_SDK}",
 		"%{IncludeDir.imgui}",
