@@ -24,10 +24,14 @@ workspace "INVIEngine"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-group "Dev"
-	include "INVIEngine"
-
 group "Dependencies"
 	include "vendor/premake"
 	include "INVIEngine/vendor/simple_library"
 	include "INVIEngine/vendor/imgui"
+
+
+group "Core"
+	include "INVIEngine"
+
+group "Editor"
+	include "INVIEditor"
