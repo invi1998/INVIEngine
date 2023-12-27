@@ -24,6 +24,9 @@ void FLogSystem::Destroy()
 
 void FLogSystem::Clear()
 {
+	LogBuf.clear();
+	LineOffsets.clear();
+	LineOffsets.push_back(0);
 }
 
 void FLogSystem::AddLog(const char* fmt, ...)
