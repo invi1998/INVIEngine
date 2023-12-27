@@ -168,6 +168,16 @@ CWindowsEngine* IDirectXDeviceInterface::GetEngine()
 	return dynamic_cast<CWindowsEngine*>(Engine);
 }
 
+CEditorEngine* IDirectXDeviceInterface::GetEditorEngine()
+{
+	if (CWindowsEngine* inEngine = GetEngine())
+	{
+		return inEngine->EditorEngine;
+	}
+
+	return nullptr;
+}
+
 void IDirectXDeviceInterface_Struct::StartSetMainViewportRenderTarget()
 {
 	if (CWindowsEngine* inEngine = dynamic_cast<CWindowsEngine*>(Engine))
@@ -260,4 +270,9 @@ HWND IDirectXDeviceInterface_Struct::GetMainWindowsHandle()
 CWindowsEngine* IDirectXDeviceInterface_Struct::GetEngine()
 {
 	return Interface.GetEngine();
+}
+
+CEditorEngine* IDirectXDeviceInterface_Struct::GetEditorEngine()
+{
+	return Interface.GetEditorEngine();
 }

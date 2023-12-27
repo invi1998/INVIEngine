@@ -39,6 +39,8 @@ public:
 
 	[[nodiscard]] CWindowsEngine* GetEngine();
 
+	class CEditorEngine* GetEditorEngine();
+
 };
 
 struct IDirectXDeviceInterface_Struct
@@ -68,6 +70,8 @@ public:
 	HWND GetMainWindowsHandle();
 
 	[[nodiscard]] CWindowsEngine* GetEngine();
+
+	class CEditorEngine* GetEditorEngine();
 
 private:
 	IDirectXDeviceInterface Interface{};

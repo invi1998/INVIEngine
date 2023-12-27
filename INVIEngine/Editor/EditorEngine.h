@@ -16,6 +16,7 @@ public:
 	void Tick(float DeltaTime) override;
 	int PreExit() override;
 	int PostExit() override;
+	int Exit() override;
 
 	void BuildEditor() override;
 	void DrawEditor() override;

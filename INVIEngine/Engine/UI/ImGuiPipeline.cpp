@@ -1,6 +1,8 @@
 #include "EngineMinimal.h"
 #include "ImGuiPipeline.h"
 
+#include "EditorEngine.h"
+
 FImGuiPipeline::FImGuiPipeline()
 {
 
@@ -53,6 +55,9 @@ void FImGuiPipeline::Initialize(ID3D12DescriptorHeap* heap, UINT offset)
 	// 初始化DX12平台
 	ImGui_ImplDX12_Init(GetD3dDevice().Get(), 3, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);
 
+	// 构建Editor控件
+	GetEditorEngine()->BuildEditor();
+
 }
 
 void FImGuiPipeline::Draw(float deltaTime)
@@ -60,6 +65,8 @@ void FImGuiPipeline::Draw(float deltaTime)
 	// 开始新帧
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
+
+	ImGui::NewFrame();
 
 	// 绘制UI
 	Tick(deltaTime);
@@ -90,6 +97,8 @@ void FImGuiPipeline::Exit()
 
 	// 释放上下文
 	ImGui::DestroyContext();
+
+	GetEditorEngine()->ExitEditor();
 }
 
 void FImGuiPipeline::SetDarkThemeColors()
@@ -128,10 +137,6 @@ void FImGuiPipeline::SetDarkThemeColors()
 
 void FImGuiPipeline::Tick(float deltaTime)
 {
-	ImGui::NewFrame();
-
 	// 绘制UI
-	ImGui::Begin("Hello, world!");
-	ImGui::Text("This is some useful text.");
-	ImGui::End();
+	GetEditorEngine()->DrawEditor();
 }

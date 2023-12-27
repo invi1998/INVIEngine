@@ -3,6 +3,7 @@
 #include "Core/Engine.h"
 #include "Manage/LightManager.h"
 
+class CEditorEngine;
 class CMeshManager;
 class CWorld;
 class CDirectXRenderingEngine;
@@ -40,4 +41,6 @@ protected:
 	CDirectXRenderingEngine* RenderingEngine;
 
 	CWorld* World;
+
+	CEditorEngine* EditorEngine;
 };

@@ -2,6 +2,7 @@
 
 #include "WindowsEngine.h"
 
+#include "EditorEngine.h"
 #include "WindowsMessageProcessing.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/Camera.h"
@@ -20,7 +21,7 @@
 CWindowsEngine::CWindowsEngine()
 {
 	RenderingEngine = new CDirectX12RenderingEngine();
-	
+	EditorEngine = new CEditorEngine();
 }
 
 CWindowsEngine::~CWindowsEngine()
