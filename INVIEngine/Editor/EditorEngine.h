@@ -22,6 +22,8 @@ public:
 	void DrawEditor() override;
 	void ExitEditor() override;
 
+	void DrawLayer();
+
 protected:
 	class FToolbar* Toolbar;
 	class FLogEditor* LogEditor;
