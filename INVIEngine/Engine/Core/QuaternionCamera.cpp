@@ -5,6 +5,7 @@
 #include "Component/InputComponent.h"
 #include "Component/TransformationComponent.h"
 #include "Config/EngineRenderConfig.h"
+#include "Misc/RaycastSystemLibrary.h"
 
 FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 
@@ -323,18 +324,8 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 {
 	// ENGINE_LOG_SUCCESS("pos: (%f, %f)", mousePos.x, mousePos.y);
 
-	int H = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
-	int W = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
-
-	XMFLOAT2 View{};
-	View.x = (2.f * mousePos.x / W - 1.f) / GetProjectionMatrix()._11;
-	View.y = (-2.f * mousePos.y / H + 1.f) / GetProjectionMatrix()._22;
-
-	// 射线坐标原点（起点）视口下的坐标，表示点，所以其次为1
-	XMVECTOR OriginPoint = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-
-	// 射线方向，z值为1，其次为0，因为是一个向量，所以其次为0，然后我们在计算公式的时候，假定的z值为1，所以这里z是1
-	XMVECTOR Direction = XMVectorSet(View.x, View.y, 1.f, 0.f);
+	EngineType::FHitResult HitResult{};
+	FRayCastSystemLibrary::GetHitResultByScreen(GetWorld(), mousePos, HitResult);
 }
 
 

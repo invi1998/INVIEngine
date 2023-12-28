@@ -2,6 +2,8 @@
 
 #include "CoreObject/CoreMinimalObject.h"
 
+#include "EngineType.h"
+
 class GActorObject;
 class GQuaternionCamera;
 class CCamera;
@@ -24,6 +26,9 @@ public:
 
 		return InArray;
 	}
+
+	// µ•…‰œﬂºÏ≤‚
+	bool LineTraceSingle(EngineType::FHitResult& hitResult, XMFLOAT3 start, XMFLOAT3 end);
 
 private:
 	CVARIABLE()

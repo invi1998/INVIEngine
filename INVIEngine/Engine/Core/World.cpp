@@ -15,3 +15,10 @@ CWorld::CWorld()
 CWorld::~CWorld()
 {
 }
+
+bool CWorld::LineTraceSingle(EngineType::FHitResult& hitResult, XMFLOAT3 start, XMFLOAT3 end)
+{
+	
+
+	return false;
+}
