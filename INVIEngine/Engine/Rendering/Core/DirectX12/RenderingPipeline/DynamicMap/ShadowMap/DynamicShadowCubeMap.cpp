@@ -40,7 +40,7 @@ void FDynamicShadowCubeMap::PreDraw(float DeltaTime)
 			CLightComponent* tmpLight = GetLightManger()->GetLights()[j];
 			if (tmpLight->GetLightType() != ELightType::PointLight)
 			{
-				break;
+				continue;
 			}
 			// 指向哪个资源，转换器状态，因为我们有两个buffer，他两在不断交换
 			CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(

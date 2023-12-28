@@ -70,6 +70,11 @@ void FDynamicShadowMap::Draw(float deltaTime)
 		{
 			if (FShadowMapRenderTarget* innerRenderTarget = dynamic_cast<FShadowMapRenderTarget*>(RenderTarget.get()))
 			{
+				if (lightComponent->GetLightType() == PointLight)
+				{
+					continue;
+				}
+
 				// 设置资源状态为可写
 				CD3DX12_RESOURCE_BARRIER ResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
 					innerRenderTarget->GetRenderTarget(),				// 资源
