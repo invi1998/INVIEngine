@@ -226,7 +226,7 @@ void FLogSystem::HandleBackstageLog(e_error InColorID, int InOldSize)
 	get_error_str(InColorID, error_str);
 
 	//ºÏ²¢×Ö·û´®
-	LogBuf.append(error_str);
+	// LogBuf.append(error_str);
 
 	//ÖØÖÃ×Ö·û´®
 	ResetLineOffsets(InColorID, InOldSize);

@@ -43,6 +43,9 @@ protected:
 	void RotateAroundXAxis(float rotateDegrees);
 	void RotateAroundYAxis(float rotateDegrees);
 
+	// …‰œﬂºÏ≤‚
+	void OnClickScene(const XMFLOAT2& mousePos);
+
 private:
     float Pitch = 0.0f;
     float Yaw = 0.0f;

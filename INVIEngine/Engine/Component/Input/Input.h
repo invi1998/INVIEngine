@@ -19,6 +19,8 @@ public:
 
 	static float getYOffset();
 
+	static bool IsMouseButtonClicked(int button);
+
 	static std::pair<float, float> GetMousePosition();
 };
 

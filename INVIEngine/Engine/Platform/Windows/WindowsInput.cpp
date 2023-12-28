@@ -13,6 +13,12 @@ bool FInput::IsMouseButtonPressed(int button)
 	return state;
 }
 
+bool FInput::IsMouseButtonClicked(int button)
+{
+	const bool state = GetAsyncKeyState(button) & 0x0001;
+	return state;
+}
+
 float FInput::GetMouseX()
 {
 	auto [x, y] = GetMousePosition();

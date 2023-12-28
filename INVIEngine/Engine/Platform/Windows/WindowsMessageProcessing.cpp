@@ -50,6 +50,7 @@ LRESULT EngineWidowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL:	 // 鼠标滚轮
 		MousesWheelsDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), static_cast<short>(HIWORD(wParam)));
 		return 0;
+	default: break;
 	}
 
 	// 交给windows自己处理
