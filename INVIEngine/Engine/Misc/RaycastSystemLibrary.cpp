@@ -4,6 +4,7 @@
 #include "Config/EngineRenderConfig.h"
 #include "Core/QuaternionCamera.h"
 #include "Core/World.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 
 bool FRayCastSystemLibrary::GetHitResultByScreen(CWorld* world, const XMFLOAT2& mousePos,
                                                  EngineType::FHitResult& OutHitResult)
@@ -31,7 +32,11 @@ bool FRayCastSystemLibrary::GetHitResultByScreen(CWorld* world, const XMFLOAT2& 
 		XMVECTOR viewDet = XMMatrixDeterminant(viewMatrix);
 		XMMATRIX InverseViewMatrix = XMMatrixInverse(&viewDet, viewMatrix);
 
+		// 遍历FGeometry::RenderingDataPoolVector，找到所有的mesh
+		for (auto& renderData : FGeometry::RenderingDataPoolVector)
+		{
 
+		}
 
 
 	}
