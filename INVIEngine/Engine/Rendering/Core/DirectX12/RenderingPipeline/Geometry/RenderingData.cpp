@@ -17,7 +17,7 @@ FRenderingData::FRenderingData()
 	  , IndexFormat(DXGI_FORMAT_R16_UINT)
 	  , WorldMatrix(EngineMath::IdentityMatrix4x4())
 	  , TextureTransformationMatrix(EngineMath::IdentityMatrix4x4())
-	  , Mesh(nullptr)
+	  , Mesh(nullptr), MeshRenderingData(nullptr)
 {
 }
 

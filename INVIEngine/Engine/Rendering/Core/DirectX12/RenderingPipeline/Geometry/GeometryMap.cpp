@@ -23,13 +23,26 @@
 
 UINT MeshObjectCount = 0;
 
+// 声明静态变量
+map<size_t, std::shared_ptr<FRenderingData>> FGeometry::RenderingDataPool{};
+std::vector<std::shared_ptr<FRenderingData>> FGeometry::RenderingDataPoolVector{};
+
 bool FGeometry::bRenderingDataExistence(CMeshComponent* InKey)
 {
 	if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(InKey->GetRenderLayerType()))
 	{
-		for(const auto& temp : renderLayer->RenderData)
+		for(auto& temp : renderLayer->RenderData)
 		{
-			return temp.Mesh == InKey;
+			if (temp.expired())
+			{
+				continue;
+			}
+
+			if (std::shared_ptr<FRenderingData> renderData = temp.lock())
+			{
+				return renderData->Mesh == InKey;
+			}
+			
 		}
 	}
 	
@@ -44,20 +57,38 @@ void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const F
 	{
 		if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(inMesh->GetRenderLayerType()))
 		{
-			renderLayer->RenderData.push_back(FRenderingData());
+			RenderingDataPool.insert(pair<size_t, std::shared_ptr<FRenderingData>>(meshHash, std::make_shared<FRenderingData>()));
 
-			FRenderingData& InRenderingData = renderLayer->RenderData[renderLayer->RenderData.size() - 1];
+			RenderingDataPoolVector.push_back(std::make_shared<FRenderingData>());
 
-			InRenderingData.MeshObjectIndex = MeshObjectCount++;
-			InRenderingData.GeometryKey = geometryKey;
-			InRenderingData.Mesh = inMesh;
-			InRenderingData.MeshHash = meshHash;
+			std::shared_ptr<FRenderingData> InRenderingData = RenderingDataPoolVector[RenderingDataPoolVector.size() - 1];
+
+			renderLayer->RenderData.push_back(InRenderingData);
+
+			InRenderingData->MeshObjectIndex = MeshObjectCount++;
+			InRenderingData->GeometryKey = geometryKey;
+			InRenderingData->Mesh = inMesh;
+			InRenderingData->MeshHash = meshHash;
 			// 记录顶点数据
-			InRenderingData.IndexSize = MeshData.IndexData.size();
-			InRenderingData.VertexSize = MeshData.VertexData.size();
+			InRenderingData->IndexSize = MeshData.IndexData.size();
+			InRenderingData->VertexSize = MeshData.VertexData.size();
 			// 记录数据偏移
-			InRenderingData.IndexOffsetPosition = MeshRenderingData.IndexData.size();
-			InRenderingData.VertexOffsetPosition = MeshRenderingData.VertexData.size();
+			InRenderingData->IndexOffsetPosition = MeshRenderingData.IndexData.size();
+			InRenderingData->VertexOffsetPosition = MeshRenderingData.VertexData.size();
+
+			InRenderingData->MeshRenderingData = &MeshRenderingData;
+
+			RenderingDataPool[meshHash]->MeshObjectIndex = InRenderingData->MeshObjectIndex;
+			RenderingDataPool[meshHash]->GeometryKey = InRenderingData->GeometryKey;
+			RenderingDataPool[meshHash]->Mesh = InRenderingData->Mesh;
+			RenderingDataPool[meshHash]->MeshHash = InRenderingData->MeshHash;
+
+			RenderingDataPool[meshHash]->IndexSize = MeshData.IndexData.size();
+			RenderingDataPool[meshHash]->VertexSize = MeshData.VertexData.size();
+			RenderingDataPool[meshHash]->IndexOffsetPosition = MeshRenderingData.IndexData.size();
+			RenderingDataPool[meshHash]->VertexOffsetPosition = MeshRenderingData.VertexData.size();
+
+			RenderingDataPool[meshHash]->MeshRenderingData = &MeshRenderingData;
 
 			// 一种高效的数据插入方式
 			// 索引合并
@@ -124,65 +155,39 @@ D3D12_INDEX_BUFFER_VIEW FGeometry::GetIndexBufferView()
 	return ibv;
 }
 
-void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data, int geometryKey)
+void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, std::shared_ptr<FRenderingData>& rendering_data, int geometryKey)
 {
 	// 判断当前模型是否已经被添加过了
-	if (!bRenderingDataExistence(mesh_component))
+	if (std::shared_ptr<FRenderLayer> inRenderLayer = FRenderLayerManage::FindByRenderLayer(mesh_component->GetRenderLayerType()))
 	{
-		if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(mesh_component->GetRenderLayerType()))
-		{
-			renderLayer->RenderData.push_back(rendering_data);
-			FRenderingData& InRenderingData = renderLayer->RenderData[renderLayer->RenderData.size() - 1];
+		RenderingDataPoolVector.push_back(std::make_shared<FRenderingData>());
+		std::shared_ptr<FRenderingData> InRenderingData = RenderingDataPoolVector[RenderingDataPoolVector.size() - 1];
 
-			InRenderingData.Mesh = mesh_component;
-			InRenderingData.MeshObjectIndex = MeshObjectCount++;
-			InRenderingData.GeometryKey = geometryKey;
-		}
+		inRenderLayer->RenderData.push_back(InRenderingData);
+
+		InRenderingData->MeshObjectIndex = MeshObjectCount++;
+		InRenderingData->Mesh = mesh_component;
+		InRenderingData->MeshHash = rendering_data->MeshHash;
+		InRenderingData->GeometryKey = geometryKey;
+
+		InRenderingData->IndexSize = rendering_data->IndexSize;
+		InRenderingData->VertexSize = rendering_data->VertexSize;
+		InRenderingData->IndexOffsetPosition = rendering_data->IndexOffsetPosition;
+		InRenderingData->VertexOffsetPosition = rendering_data->VertexOffsetPosition;
+
+		InRenderingData->MeshRenderingData = &MeshRenderingData;
 	}
 }
 
-bool FGeometry::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer)
+bool FGeometry::FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRenderingData>& rendering_data, int layer)
 {
-	auto findMeshRenderDataByHash = [&](std::shared_ptr<FRenderLayer> layers)->FRenderingData*
-		{
-			for (auto& tmp : layers->RenderData)
-			{
-				if (tmp.MeshHash == hashKey)
-				{
-					return &tmp;
-				}
-			}
-			return nullptr;
-		};
-
-	// 全量遍历查找渲染层级里的渲染数据
-	if (layer == -1)
+	auto findResult = RenderingDataPool.find(hashKey);
+	if (findResult != RenderingDataPool.end())
 	{
-		for (auto& layers : FRenderLayerManage::RenderLayers)
-		{
-			if (FRenderingData* renderData = findMeshRenderDataByHash(layers))
-			{
-				rendering_data = *renderData;
-				return true;
-			}
-			return false;
-		}
-		return false;
+		rendering_data = findResult->second;
+		return true;
 	}
-	else
-	{
-		// 传入指定的渲染层级进行查找
-		if (std::shared_ptr<FRenderLayer> renderLayer = FRenderLayerManage::FindByRenderLayer(layer))
-		{
-			if (FRenderingData* renderData = findMeshRenderDataByHash(renderLayer))
-			{
-				rendering_data = *renderData;
-				return true;
-			}
-		}
-		return false;
-	}
-	
+	return false;
 }
 
 /**
@@ -279,18 +284,27 @@ void FGeometryMap::BuildMaterialShaderResourceView()
 	// 收集材质
 	for (const auto& layer : FRenderLayerManage::RenderLayers)
 	{
-		for (const auto& renderData : layer->RenderData)
+		for (const auto& weakRenderData : layer->RenderData)
 		{
-			if (const auto materials = renderData.Mesh->GetMaterial())
+			if (weakRenderData.expired())
 			{
-				for (size_t i = 0; i < materials->size(); i++)
+				continue;
+			}
+
+			if (std::shared_ptr<FRenderingData> renderData = weakRenderData.lock())
+			{
+				if (const auto materials = renderData->Mesh->GetMaterial())
 				{
-					// 设置材质ID
-					(*materials)[i]->SetMaterialID(MaterialsSRV.size());
-					// 保存材质
-					MaterialsSRV.push_back((*materials)[i]);
+					for (size_t i = 0; i < materials->size(); i++)
+					{
+						// 设置材质ID
+						(*materials)[i]->SetMaterialID(MaterialsSRV.size());
+						// 保存材质
+						MaterialsSRV.push_back((*materials)[i]);
+					}
 				}
 			}
+			
 		}
 		
 	}
@@ -684,7 +698,7 @@ void FGeometryMap::PostDraw(float DeltaTime)
 {
 }
 
-void FGeometryMap::DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data)
+void FGeometryMap::DuplicateMesh(CMeshComponent* mesh_component, std::shared_ptr<FRenderingData>& rendering_data)
 {
 
 	for (auto& geometry : Geometries)
@@ -694,7 +708,7 @@ void FGeometryMap::DuplicateMesh(CMeshComponent* mesh_component, const FRenderin
 	
 }
 
-bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer)
+bool FGeometryMap::FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRenderingData>& rendering_data, int layer)
 {
 	for (auto& geometry : Geometries)
 	{

@@ -32,8 +32,14 @@ public:
 	// 获取顶点index缓冲区视图
 	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView();
 
-	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data, int geometryKey);
-	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer = -1);
+	void DuplicateMesh(CMeshComponent* mesh_component, std::shared_ptr<FRenderingData>& rendering_data, int geometryKey);
+	bool FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRenderingData>& rendering_data, int layer = -1);
+
+	// 渲染池, key为渲染数据的hash值，value为渲染数据
+	static map<size_t, std::shared_ptr<FRenderingData>> RenderingDataPool;				// 渲染数据池
+
+	// 渲染池，这里会有重复的渲染数据，因为一个模型可能会被渲染多次
+	static std::vector<std::shared_ptr<FRenderingData>> RenderingDataPoolVector;				// 渲染数据池
 
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
@@ -49,6 +55,7 @@ protected:
 	FMeshRenderingData MeshRenderingData;
 
 	// std::vector<FRenderingData> DescribeMeshRenderingData;					// 渲染数据
+
 };
 
 // 几何模型映射阶段
@@ -138,8 +145,8 @@ public:
 	void DrawCubeMapTexture(float DeltaTime);
 
 	ID3D12DescriptorHeap* GetHeap() const { return DescriptorHeap.GetHeap(); }
-	void DuplicateMesh(CMeshComponent* mesh_component, const FRenderingData& rendering_data);
-	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer = -1);
+	void DuplicateMesh(CMeshComponent* mesh_component, std::shared_ptr<FRenderingData>& rendering_data);
+	bool FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRenderingData>& rendering_data, int layer = -1);
 
 	std::unique_ptr<FRenderingTexture>* FindRenderingTexture(const std::string& key);
 

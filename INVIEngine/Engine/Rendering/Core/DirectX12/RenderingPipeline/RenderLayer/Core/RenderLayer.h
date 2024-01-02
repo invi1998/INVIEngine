@@ -33,7 +33,7 @@ public:
 
 	virtual void BuildShader() {}
 
-	virtual void DrawObject(float deltaTime, const FRenderingData& renderDate, ERenderCondition rc=RC_Always);
+	virtual void DrawObject(float deltaTime, std::weak_ptr<FRenderingData>& weakRenderDate, ERenderCondition rc=RC_Always);
 	virtual void FindObjectDraw(float delta_time, const CMeshComponent* key);
 
 	virtual int GetRenderLayerType() const { return RenderLayerType; };
@@ -60,7 +60,7 @@ protected:
 	// 在 Direct3D 12 中，输入布局是一个包含多个输入元素的数据结构，表示顶点缓冲区中存储的顶点数据的格式和排列方式。
 	std::vector<D3D12_INPUT_ELEMENT_DESC> InputElementDesc{};		// 描述输入布局（Input Layout）中的单个元素。
 
-	std::vector<FRenderingData> RenderData{};
+	std::vector<std::weak_ptr<FRenderingData>> RenderData{};
 
 	FGeometryMap* GeometryMap{};
 	FDirectXPipelineState* DirectXPipelineState{};	// 管线状态 pso

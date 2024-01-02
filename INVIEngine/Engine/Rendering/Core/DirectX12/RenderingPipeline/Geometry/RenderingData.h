@@ -3,11 +3,14 @@
 #include "Interface/DirectXDeviceInterface.h"
 
 
+struct FMeshRenderingData;
 class CMeshComponent;
 class GMesh;
 class FRenderingResourcesUpdate;
 
-struct FRenderingData : public IDirectXDeviceInterface_Struct
+struct FRenderingData :
+	public IDirectXDeviceInterface_Struct,
+	public std::enable_shared_from_this<FRenderingData>		// 在当前类中保存一个指向自身的shared_ptr，以便智能指针暴露成裸指针后，可以通过shared_from_this()获取智能指针
 {
 public:
 	FRenderingData();
@@ -41,5 +44,7 @@ public:
 	XMFLOAT4X4 TextureTransformationMatrix;		// 纹理变化矩阵
 
 	CMeshComponent* Mesh;
+
+	FMeshRenderingData* MeshRenderingData;
 };
 
