@@ -65,6 +65,24 @@ void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const F
 
 			renderLayer->RenderData.push_back(InRenderingData);
 
+			// 求出模型的AABB包围盒
+			XMFLOAT3 Min = { FLT_MAX, FLT_MAX, FLT_MAX };			// 最小点
+			XMFLOAT3 Max = { -FLT_MAX, -FLT_MAX, -FLT_MAX };		// 最大点
+
+			for (auto& vertex : MeshData.VertexData)
+			{
+				Min.x = min(Min.x, vertex.Position.x);
+				Min.y = min(Min.y, vertex.Position.y);
+				Min.z = min(Min.z, vertex.Position.z);
+
+				Max.x = max(Max.x, vertex.Position.x);
+				Max.y = max(Max.y, vertex.Position.y);
+				Max.z = max(Max.z, vertex.Position.z);
+			}
+
+			InRenderingData->Bounds.Center = XMFLOAT3((Min.x + Max.x) / 2.f, (Min.y + Max.y) / 2.f, (Min.z + Max.z) / 2.f);
+			InRenderingData->Bounds.Extents = XMFLOAT3((Max.x - Min.x) / 2.f, (Max.y - Min.y) / 2.f, (Max.z - Min.z) / 2.f);
+
 			InRenderingData->MeshObjectIndex = MeshObjectCount++;
 			InRenderingData->GeometryKey = geometryKey;
 			InRenderingData->Mesh = inMesh;
@@ -89,6 +107,7 @@ void FGeometry::BuildMesh(const size_t meshHash, CMeshComponent* inMesh, const F
 			RenderingDataPool[meshHash]->VertexOffsetPosition = MeshRenderingData.VertexData.size();
 
 			RenderingDataPool[meshHash]->MeshRenderingData = &MeshRenderingData;
+			RenderingDataPool[meshHash]->Bounds = InRenderingData->Bounds;
 
 			// 一种高效的数据插入方式
 			// 索引合并
@@ -176,6 +195,8 @@ void FGeometry::DuplicateMesh(CMeshComponent* mesh_component, std::shared_ptr<FR
 		InRenderingData->VertexOffsetPosition = rendering_data->VertexOffsetPosition;
 
 		InRenderingData->MeshRenderingData = &MeshRenderingData;
+		
+		InRenderingData->Bounds = rendering_data->Bounds;
 	}
 }
 

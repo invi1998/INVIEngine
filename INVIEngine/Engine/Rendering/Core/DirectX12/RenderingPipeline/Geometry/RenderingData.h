@@ -46,5 +46,8 @@ public:
 	CMeshComponent* Mesh;
 
 	FMeshRenderingData* MeshRenderingData;
+
+	// AABB°üÎ§ºÐ
+	BoundingBox Bounds;
 };
 
