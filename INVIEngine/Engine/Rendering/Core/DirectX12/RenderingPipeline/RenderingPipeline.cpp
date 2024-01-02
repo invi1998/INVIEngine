@@ -162,12 +162,12 @@ void FRenderingPipeline::PostDraw(float DeltaTime)
 	DirectXPipelineState.PostDraw(DeltaTime);
 }
 
-bool FRenderingPipeline::FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer)
+bool FRenderingPipeline::FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRenderingData>& rendering_data, int layer)
 {
 	return GeometryMap.FindMeshRenderingDataByHash(hashKey, rendering_data, layer);
 }
 
-void FRenderingPipeline::DuplicateMesh(CMeshComponent* my_mesh, const FRenderingData& rendering_data)
+void FRenderingPipeline::DuplicateMesh(CMeshComponent* my_mesh, std::shared_ptr<FRenderingData>& rendering_data)
 {
 	GeometryMap.DuplicateMesh(my_mesh, rendering_data);
 }

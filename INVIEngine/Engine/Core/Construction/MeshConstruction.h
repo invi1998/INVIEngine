@@ -14,7 +14,7 @@ namespace MeshConstruction
 			size_t HashKey = 0;
 			mesh->BuildKey(HashKey, std::forward<ParamTypes>(Params)...);
 
-			FRenderingData RenderingData;
+			std::shared_ptr<FRenderingData> RenderingData;
 			if (manage->GetRenderingPipeline().FindMeshRenderingDataByHash(HashKey, RenderingData, mesh->GetRenderLayerType()))
 			{
 				manage->GetRenderingPipeline().DuplicateMesh(mesh, RenderingData);

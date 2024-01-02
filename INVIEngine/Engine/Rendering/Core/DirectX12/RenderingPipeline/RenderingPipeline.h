@@ -24,8 +24,8 @@ public:
 	void PreDraw(float DeltaTime);
 	void Draw(float DeltaTime);
 	void PostDraw(float DeltaTime);
-	bool FindMeshRenderingDataByHash(size_t hashKey, FRenderingData& rendering_data, int layer = -1);
-	void DuplicateMesh(CMeshComponent* my_mesh, const FRenderingData& rendering_data);
+	bool FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRenderingData>& rendering_data, int layer = -1);
+	void DuplicateMesh(CMeshComponent* my_mesh, std::shared_ptr<FRenderingData>& rendering_data);
 
 protected:
 	FGeometryMap GeometryMap;
