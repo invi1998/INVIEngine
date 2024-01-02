@@ -46,7 +46,7 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMFLOAT3& ori
 					// 射线是否和三角形相交
 					if (TriangleTests::Intersects(originPointVW, directionVW, v0, v1, v2, triangleTime))
 					{
-												// 计算射线和三角形相交的点
+						// 计算射线和三角形相交的点
 						XMVECTOR hitPoint = XMVectorAdd(originPointVW, XMVectorScale(directionVW, triangleTime));
 						// 将相交点转换到世界空间
 						hitPoint = XMVector3TransformCoord(hitPoint, worldMatrix);
