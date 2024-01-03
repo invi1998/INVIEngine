@@ -257,4 +257,54 @@ void FRenderLayer::DrawMesh(float DeltaTime, ERenderCondition rc)
 	}
 }
 
+void FRenderLayer::Add(std::weak_ptr<FRenderingData>& weakRenderDate)
+{
+	RenderData.push_back(weakRenderDate);
+}
+
+void FRenderLayer::Remove(std::weak_ptr<FRenderingData>& weakRenderDate)
+{
+	if (weakRenderDate.expired()) return;
+
+	for (auto iter = RenderData.begin(); iter != RenderData.end(); ++iter)
+	{
+		if (iter->expired())
+		{
+			continue;
+		}
+		if (std::shared_ptr<FRenderingData> renderDate = iter->lock())
+		{
+			if (renderDate == weakRenderDate.lock())
+			{
+				RenderData.erase(iter);
+				break;
+			}
+		}
+	}
+}
+
+void FRenderLayer::Remove(const size_t hashKey)
+{
+	for (auto iter = RenderData.begin(); iter != RenderData.end(); ++iter)
+	{
+		if (iter->expired())
+		{
+			continue;
+		}
+		if (std::shared_ptr<FRenderingData> renderDate = iter->lock())
+		{
+			if (renderDate->MeshHash == hashKey)
+			{
+				RenderData.erase(iter);
+				break;
+			}
+		}
+	}
+}
+
+void FRenderLayer::Clear()
+{
+	RenderData.clear();
+}
+
 

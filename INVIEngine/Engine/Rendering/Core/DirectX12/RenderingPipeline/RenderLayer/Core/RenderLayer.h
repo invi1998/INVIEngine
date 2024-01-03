@@ -50,6 +50,14 @@ public:
 	// 渲染，不包括设置管线状态对象 PSO
 	virtual void DrawMesh(float DeltaTime, ERenderCondition rc = RC_Always);
 
+	void Add(std::weak_ptr<FRenderingData>& weakRenderDate);
+
+	void Remove(std::weak_ptr<FRenderingData>& weakRenderDate);		// 传入引用进行移除
+
+	void Remove(const size_t hashKey);		// 传入hashKey进行移除
+
+	void Clear();	// 清空层级内的所有渲染数据
+
 protected:
 	UINT RenderPriority;
 	EMeshRenderLayerType RenderLayerType;
