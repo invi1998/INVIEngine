@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "RaycastSystemLibrary.h"
 
+#include "Collision/CollisionSceneQuery.h"
 #include "Config/EngineRenderConfig.h"
 #include "Core/QuaternionCamera.h"
 #include "Core/World.h"
@@ -32,11 +33,8 @@ bool FRayCastSystemLibrary::GetHitResultByScreen(CWorld* world, const XMFLOAT2& 
 		XMVECTOR viewDet = XMMatrixDeterminant(viewMatrix);
 		XMMATRIX InverseViewMatrix = XMMatrixInverse(&viewDet, viewMatrix);
 
-		// 遍历FGeometry::RenderingDataPoolVector，找到所有的mesh
-		for (auto& renderData : FGeometry::RenderingDataPoolVector)
-		{
-
-		}
+		// 碰撞检测
+		FCollisionSceneQuery::RayCastSingleQuery(world, OriginPoint, Direction, InverseViewMatrix, OutHitResult);
 
 
 	}

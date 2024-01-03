@@ -7,6 +7,6 @@ class CWorld;
 struct FCollisionSceneQuery
 {
 	// Åö×²²éÑ¯
-	static bool RayCastSingleQuery(CWorld* world, const XMFLOAT3& origin, const XMFLOAT3& direction, const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult);
+	static bool RayCastSingleQuery(CWorld* world, const XMVECTOR& origin, const XMVECTOR& direction, const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult);
 };
 

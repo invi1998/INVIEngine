@@ -4,16 +4,13 @@
 #include "Component/Mesh/Core/MeshComponent.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 
-bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMFLOAT3& origin, const XMFLOAT3& direction, const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult)
+bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& origin, const XMVECTOR& direction, const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult)
 {
 	float finalTime = FLT_MAX;
 
 	// 遍历FGeometry::RenderingDataPoolVector，找到所有的mesh
 	for (auto& renderData : FGeometry::RenderingDataPoolVector)
 	{
-		XMVECTOR OriginPoint = XMLoadFloat3(&origin);
-
-		XMVECTOR Direction = XMLoadFloat3(&direction);
 
 		// 获取模型的世界矩阵
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&renderData->WorldMatrix);
@@ -24,15 +21,16 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMFLOAT3& ori
 		XMMATRIX viewWorldInverseMatrix = XMMatrixMultiply(viewInverseMatrix, worldInverseMatrix);
 		// 将射线转换到模型空间
 
-		XMVECTOR originPointVW = XMVector3TransformCoord(OriginPoint, viewWorldInverseMatrix);	// 模型空间下的射线原点坐标
-		XMVECTOR directionVW = XMVector3TransformNormal(Direction, viewWorldInverseMatrix);		// 模型空间下的射线方向
+		XMVECTOR originPointVW = XMVector3TransformCoord(origin, viewWorldInverseMatrix);	// 模型空间下的射线原点坐标
+		XMVECTOR directionVW = XMVector3TransformNormal(direction, viewWorldInverseMatrix);		// 模型空间下的射线方向
 
 
-		float time = 0.f;
+		float boundTime = 0.f;
+		float triangleTime = 0.f;
 		// 射线是否和AABB包围盒相交（传入的参数是模型空间下的射线，我们在模型空间下做射线相交检测）
-		if (renderData->Bounds.Intersects(originPointVW, directionVW, time))
+		if (renderData->Bounds.Intersects(originPointVW, directionVW, boundTime))
 		{
-			if (time < finalTime)	// 如果包围盒相交时间小于之前的相交时间，那么就说明射线和模型的AABB包围盒相交
+			if (boundTime < finalTime)	// 如果包围盒相交时间小于之前的相交时间，那么就说明射线和模型的AABB包围盒相交
 			{
 				// 射线是否和模型相交（三角形相交检测）
 				if (renderData->MeshRenderingData)
@@ -47,15 +45,15 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMFLOAT3& ori
 						XMVECTOR v1 = XMLoadFloat3(&renderData->MeshRenderingData->VertexData[renderData->MeshRenderingData->IndexData[renderData->IndexOffsetPosition + i * 3 + 1]].Position);
 						XMVECTOR v2 = XMLoadFloat3(&renderData->MeshRenderingData->VertexData[renderData->MeshRenderingData->IndexData[renderData->IndexOffsetPosition + i * 3 + 2]].Position);
 
-						float triangleTime = 0.f;
+						float triangleOffsetTime = 0.f;
 						// 射线是否和三角形相交
 						if (TriangleTests::Intersects(originPointVW, directionVW, v0, v1, v2, triangleTime))
 						{
-							finalTime = time;	// 更新相交时间
+							finalTime = boundTime;	// 更新相交时间
 
-							if (triangleTime < finalTime)	// 如果相交时间小于之前的相交时间，那么就说明射线和模型的三角形相交，更新射线相交结果
+							if (triangleOffsetTime < triangleTime)	// 如果相交时间小于之前的相交时间，那么就说明射线和模型的三角形相交，更新射线相交结果
 							{
-								time = triangleTime;	// 更新相交时间
+								triangleTime = triangleOffsetTime;	// 更新三角形相交时间
 
 								// 计算射线和三角形相交的点
 								XMVECTOR hitPoint = XMVectorAdd(originPointVW, XMVectorScale(directionVW, triangleTime));
@@ -63,19 +61,31 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMFLOAT3& ori
 								hitPoint = XMVector3TransformCoord(hitPoint, worldMatrix);
 
 								// 计算相交点到射线原点的距离
-								float distance = XMVectorGetX(XMVector3Length(XMVectorSubtract(hitPoint, OriginPoint)));
+								float distance = XMVectorGetX(XMVector3Length(XMVectorSubtract(hitPoint, origin)));
+
+								// 计算命中点的方向
+
+								OutHitResult.HitDistance = distance;
+								XMStoreFloat3(&OutHitResult.HitPoint, hitPoint);
+								XMStoreFloat3(&OutHitResult.HitNormal, XMVector3Normalize(XMVector3Cross(XMVectorSubtract(v1, v0), XMVectorSubtract(v2, v0))));
+								OutHitResult.bHit = true;
+								OutHitResult.HitComponent = renderData->Mesh;
+								OutHitResult.Time = triangleOffsetTime;
+
+								return true;
+
 
 								// 如果相交点到射线原点的距离小于之前的相交点到射线原点的距离，那么就更新相交点
-								if (distance < OutHitResult.Distance)
+								/*if (distance < OutHitResult.HitDistance)
 								{
-									OutHitResult.Distance = distance;
-									XMStoreFloat3(&OutHitResult.Location, hitPoint);
-									XMStoreFloat3(&OutHitResult.Normal, XMVector3Normalize(XMVector3Cross(XMVectorSubtract(v1, v0), XMVectorSubtract(v2, v0))));
+									OutHitResult.HitDistance = distance;
+									XMStoreFloat3(&OutHitResult.HitPoint, hitPoint);
+									XMStoreFloat3(&OutHitResult.HitNormal, XMVector3Normalize(XMVector3Cross(XMVectorSubtract(v1, v0), XMVectorSubtract(v2, v0))));
 									OutHitResult.bHit = true;
 									OutHitResult.HitComponent = renderData->Mesh;
-									OutHitResult.Time = time;
+									OutHitResult.Time = triangleOffsetTime;
 									return true;
-								}
+								}*/
 							}
 						}
 					}

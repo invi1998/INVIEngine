@@ -325,7 +325,48 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 	// ENGINE_LOG_SUCCESS("pos: (%f, %f)", mousePos.x, mousePos.y);
 
 	EngineType::FHitResult HitResult{};
-	FRayCastSystemLibrary::GetHitResultByScreen(GetWorld(), mousePos, HitResult);
+	if (FRayCastSystemLibrary::GetHitResultByScreen(GetWorld(), mousePos, HitResult))
+	{
+		ENGINE_LOG_SUCCESS("HitResult: (%f, %f, %f)", HitResult.HitPoint.x, HitResult.HitPoint.y, HitResult.HitPoint.z);
+		ENGINE_LOG_SUCCESS("HitResult: (%f, %f, %f)", HitResult.HitNormal.x, HitResult.HitNormal.y, HitResult.HitNormal.z);
+		ENGINE_LOG_SUCCESS("HitResult: (%f)", HitResult.HitDistance);
+		// ENGINE_LOG_SUCCESS("HitResult: (%d, %d)", HitResult.HitActor->GetActorID(), HitResult.HitComponent->GetComponentID());
+
+		//// 设置相机的位置
+		//XMFLOAT3 hitPoint = HitResult.HitPoint;
+		//XMFLOAT3 hitNormal = HitResult.HitNormal;
+		//XMFLOAT3 hitDirection = HitResult.HitDirection;
+		//float hitDistance = HitResult.HitDistance;
+
+		//XMFLOAT3 cameraPosition = GetPosition();
+		//XMVECTOR position = XMLoadFloat3(&cameraPosition);
+
+		//XMVECTOR AmountMovement = XMVectorReplicate(hitDistance);
+		//XMStoreFloat3(&cameraPosition, XMVectorMultiplyAdd(AmountMovement, XMLoadFloat3(&hitDirection), position));
+		//SetPosition(cameraPosition);
+
+		//// 设置相机的旋转
+		//XMFLOAT3 forward = GetForwardVector();
+		//XMFLOAT3 up = GetUpVector();
+		//XMFLOAT3 right = GetRightVector();
+
+		//XMVECTOR forwardVector = XMLoadFloat3(&forward);
+		//XMVECTOR upVector = XMLoadFloat3(&up);
+		//XMVECTOR rightVector = XMLoadFloat3(&right);
+
+		//XMVECTOR hitNormalVector = XMLoadFloat3(&hitNormal);
+		//XMVECTOR hitDirectionVector = XMLoadFloat3(&hitDirection);
+
+		//XMVECTOR rotationVector = XMVector3AngleBetweenNormals(hitNormalVector, upVector);
+		//XMFLOAT3 rotation = {};
+		//XMStoreFloat3(&rotation, rotationVector);
+
+		//XMVECTOR rotationVector2 = XMVector3AngleBetweenNormals(hitNormalVector, rightVector);
+		//XMFLOAT3 rotation2 = {};
+		//XMStoreFloat3(&rotation2, rotationVector2);
+
+		// ENGINE_LOG_SUCCESS("rotation: (%f, %f, %f)", rotation.x
+	}
 }
 
 
