@@ -4,7 +4,7 @@
 class CComponent : public CCoreMinimalObject
 {
 public:
-	~CComponent() override;
+	virtual ~CComponent() override;
 	void BeginInit() override;
 	void Tick(float DeltaTime) override;
 };
