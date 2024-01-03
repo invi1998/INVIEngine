@@ -9,8 +9,11 @@
 CPointLightComponent::CPointLightComponent()
 	: CRangeLightComponent()
 {
+	FCreateObjectParams params{};
+	params.Owner = this;
+
 	// 读取点光模型
-	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/PointMesh.obj"));
+	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent(params, "Asserts/Mesh/PointMesh.obj"));
 
 	// 设置点光模型为线框模式显示
 	if (GetLightMesh())

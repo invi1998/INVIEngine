@@ -39,8 +39,11 @@ CDirectXRenderingEngine::CDirectXRenderingEngine()
 
 	bTick = false;
 
-	MeshManage = CreateObject<CMeshManager>(new CMeshManager);
-	LightManager = CreateObject<CLightManager>(new CLightManager());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	MeshManage = CreateObject<CMeshManager>(params, new CMeshManager);
+	LightManager = CreateObject<CLightManager>(params, new CLightManager());
 }
 
 CDirectXRenderingEngine::~CDirectXRenderingEngine()

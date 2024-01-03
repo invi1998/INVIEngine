@@ -9,7 +9,10 @@
 
 GBoxMesh::GBoxMesh()
 {
-	GMesh::SetMeshComponent(ConstructionObject<CBoxMeshComponent>());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	GMesh::SetMeshComponent(ConstructionObject<CBoxMeshComponent>(params));
 }
 
 GBoxMesh::~GBoxMesh()

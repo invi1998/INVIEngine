@@ -8,8 +8,11 @@
 
 CSpotLightComponent::CSpotLightComponent(): CRangeLightComponent()
 {
+	FCreateObjectParams params{};
+	params.Owner = this;
+
 	// 读取点光模型
-	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/SpotMesh.obj"));
+	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent(params, "Asserts/Mesh/SpotMesh.obj"));
 
 	// 设置聚光模型为线框模式显示
 	if (GetLightMesh())

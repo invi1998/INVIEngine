@@ -5,7 +5,9 @@
 
 GFog::GFog()
 {
-	FogComponent = CreateObject<CFogComponent>(new CFogComponent());
+	FCreateObjectParams params{};
+	params.Owner = this;
+	FogComponent = CreateObject<CFogComponent>(params, new CFogComponent());
 }
 
 void GFog::SetFogColor(const XMFLOAT4& color) const

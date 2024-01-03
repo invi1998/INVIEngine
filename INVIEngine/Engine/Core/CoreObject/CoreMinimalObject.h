@@ -14,6 +14,8 @@ public:
 
 	bool IsTick() const { return bTick; }
 
+	void SetOwner(CCoreMinimalObject* InOwner) { Owner = InOwner; }		// 设置所有者
+
 	// 获取所有者
 	FORCEINLINE CCoreMinimalObject* GetOwner() const { return Owner; }
 

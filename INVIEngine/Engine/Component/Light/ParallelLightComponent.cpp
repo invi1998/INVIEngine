@@ -7,8 +7,11 @@
 
 CParallelLightComponent::CParallelLightComponent()
 {
+	FCreateObjectParams params{};
+	params.Owner = this;
+
 	// 读取平行光模型
-	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent("Asserts/Mesh/SunMesh.obj"));
+	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent(params, "Asserts/Mesh/SunMesh.obj"));
 
 	// 设置平行光为线框模式显示
 	if (GetLightMesh())

@@ -84,7 +84,7 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& CenterPoint)
 
 	for (size_t i = 0; i < 6; i++)
 	{
-		CubeMapViewPorts.push_back(CreateObject<GClientViewPort>(new GClientViewPort()));
+		CubeMapViewPorts.push_back(CreateObject<GClientViewPort>(FCreateObjectParams(), new GClientViewPort()));
 		GClientViewPort* viewport = CubeMapViewPorts[CubeMapViewPorts.size() - 1];
 
 		viewport->SetPosition(CenterPoint);

@@ -7,9 +7,12 @@
 
 CWorld::CWorld()
 {
-	Camera = CreateObject<CCamera>(new CCamera());
+	FCreateObjectParams params{};
+	params.Owner = this;
 
-	QuaternionCamera = CreateObject<GQuaternionCamera>(new GQuaternionCamera());
+	Camera = CreateObject<CCamera>(params, new CCamera());
+
+	QuaternionCamera = CreateObject<GQuaternionCamera>(params, new GQuaternionCamera());
 }
 
 CWorld::~CWorld()

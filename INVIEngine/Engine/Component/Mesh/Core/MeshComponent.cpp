@@ -7,7 +7,10 @@
 CMeshComponent::CMeshComponent()
 	: MeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT)
 {
-	Materials.push_back(CreateObject<CMaterial>(new CMaterial()));
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	Materials.push_back(CreateObject<CMaterial>(params, new CMaterial()));
 }
 
 CMeshComponent::~CMeshComponent()

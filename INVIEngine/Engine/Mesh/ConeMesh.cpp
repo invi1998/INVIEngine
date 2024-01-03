@@ -9,7 +9,10 @@
 
 GConeMesh::GConeMesh()
 {
-	GMesh::SetMeshComponent(ConstructionObject<CConeMeshComponent>());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	GMesh::SetMeshComponent(ConstructionObject<CConeMeshComponent>(params));
 }
 
 void GConeMesh::Init()

@@ -4,7 +4,10 @@
 
 GParallelLight::GParallelLight()
 {
-	CLight::SetLightComponent(CreateObject<CParallelLightComponent>(new CParallelLightComponent()));
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	CLight::SetLightComponent(CreateObject<CParallelLightComponent>(params, new CParallelLightComponent()));
 }
 
 GParallelLight::~GParallelLight()

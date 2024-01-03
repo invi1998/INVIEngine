@@ -8,7 +8,10 @@
 
 GCylinderMesh::GCylinderMesh()
 {
-	GMesh::SetMeshComponent(ConstructionObject<CCylinderMeshComponent>());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	GMesh::SetMeshComponent(ConstructionObject<CCylinderMeshComponent>(params));
 }
 
 void GCylinderMesh::Init()

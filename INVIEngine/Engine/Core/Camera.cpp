@@ -7,8 +7,11 @@
 
 CCamera::CCamera()
 {
-	InputComponent = CreateObject<CInputComponent>(new CInputComponent());
-	TransformationComponent = CreateObject<CTransformationComponent>(new CTransformationComponent());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	InputComponent = CreateObject<CInputComponent>(params, new CInputComponent());
+	TransformationComponent = CreateObject<CTransformationComponent>(params, new CTransformationComponent());
 }
 
 void CCamera::BeginInit()

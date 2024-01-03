@@ -8,7 +8,10 @@
 
 GCustomMesh::GCustomMesh()
 {
-	GMesh::SetMeshComponent(ConstructionObject<CCustomMeshComponent>());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	GMesh::SetMeshComponent(ConstructionObject<CCustomMeshComponent>(params));
 }
 
 void GCustomMesh::Init()

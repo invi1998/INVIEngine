@@ -167,7 +167,8 @@ void FDynamicShadowMap::SetViewportRotation(const XMFLOAT3& rotation)
 
 void FDynamicShadowMap::BuildViewPort(const XMFLOAT3& position)
 {
-	ShadowViewPort = CreateObject<GClientViewPort>(new GClientViewPort());
+
+	ShadowViewPort = CreateObject<GClientViewPort>(FCreateObjectParams(), new GClientViewPort());
 	ShadowViewPort->SetPosition(position);
 	ShadowViewPort->FaceTarget(position, { 10.f, 0.f, 0.f });
 	ShadowViewPort->SetFrustum(XM_PIDIV2, 1.f, 1.f, 0.1f, 10000.f);

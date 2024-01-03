@@ -53,7 +53,10 @@ int CWindowsEngine::Init(FWinMainCommandParameters InParameters)
 
 	RenderingEngine->Init(InParameters);
 
-	World = CreateObject<CWorld>(new CWorld());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	World = CreateObject<CWorld>(params, new CWorld());
 	RenderingEngine->World = World;
 
 	ENGINE_LOG("引擎初始化完成");

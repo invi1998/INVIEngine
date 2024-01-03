@@ -16,7 +16,10 @@ FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 GQuaternionCamera::GQuaternionCamera()
     : GClientViewPort()
 {
-    InputComponent = CreateObject<CInputComponent>(new CInputComponent());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+    InputComponent = CreateObject<CInputComponent>(params, new CInputComponent());
     InputComponent->OnMouseWheelDelegate.Bind(this, &GQuaternionCamera::OnMouseScroll);
     // 绑定键盘鼠标事件
     InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GQuaternionCamera::ExecuteInput);

@@ -9,7 +9,10 @@
 
 GPyramidMesh::GPyramidMesh()
 {
-	GMesh::SetMeshComponent(ConstructionObject<CPyramidMeshComponent>());
+	FCreateObjectParams params{};
+	params.Owner = this;
+
+	GMesh::SetMeshComponent(ConstructionObject<CPyramidMeshComponent>(params));
 }
 
 void GPyramidMesh::Init()
