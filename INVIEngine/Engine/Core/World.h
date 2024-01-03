@@ -22,6 +22,7 @@ public:
 	T* CreateActorObject()
 	{
 		T* InArray = new T();
+		InArray->Owner = this;		// 设置所有者
 		ActorObjects.push_back(InArray);
 
 		return InArray;

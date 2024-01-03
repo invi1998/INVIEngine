@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "CollisionSceneQuery.h"
 
+#include "Actor/Core/ActorObject.h"
 #include "Component/Mesh/Core/MeshComponent.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 
@@ -50,7 +51,7 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 
 						float triangleOffsetTime = 0.f;
 						// 射线是否和三角形相交
-						if (TriangleTests::Intersects(originPointVW, directionVW, v0, v1, v2, triangleTime))
+						if (TriangleTests::Intersects(originPointVW, directionVW, v0, v1, v2, triangleOffsetTime))
 						{
 							finalTime = boundTime;	// 更新相交时间
 
@@ -74,6 +75,11 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 								OutHitResult.bHit = true;
 								OutHitResult.HitComponent = renderData->Mesh;
 								OutHitResult.Time = triangleOffsetTime;
+								if (renderData->Mesh)
+								{
+									OutHitResult.HitActor = dynamic_cast<GActorObject*>(renderData->Mesh->GetOwner());
+								}
+								
 
 								return true;
 

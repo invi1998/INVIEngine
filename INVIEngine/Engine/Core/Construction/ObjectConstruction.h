@@ -3,15 +3,17 @@
 class CCoreMinimalObject;
 
 template <typename T>
-T* CreateObject(CCoreMinimalObject* NewObject)
+T* CreateObject(CCoreMinimalObject* owner, CCoreMinimalObject* NewObject)
 {
-	return dynamic_cast<T*>(NewObject);
+	T* obj = dynamic_cast<T*>(NewObject);
+	obj->Owner = owner;
+	return obj;
 }
 
 template <typename T, typename... ParamType>
-T* ConstructionObject(ParamType&& ... params)
+T* ConstructionObject(CCoreMinimalObject* owner, ParamType&& ... params)
 {
-	return CreateObject<T>(new T(params...));
+	return CreateObject<T>(owner, new T(params...));
 }
 
 

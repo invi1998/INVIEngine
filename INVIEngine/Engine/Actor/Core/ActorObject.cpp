@@ -7,7 +7,7 @@
 
 GActorObject::GActorObject()
 {
-	TransformationComponent = CreateObject<CTransformationComponent>(new CTransformationComponent());
+	TransformationComponent = CreateObject<CTransformationComponent>(this, new CTransformationComponent());
 }
 
 void GActorObject::SetPosition(const XMFLOAT3& InNewPosition)
