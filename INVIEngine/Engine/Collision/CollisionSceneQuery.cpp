@@ -24,6 +24,9 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 		XMVECTOR originPointVW = XMVector3TransformCoord(origin, viewWorldInverseMatrix);	// 模型空间下的射线原点坐标
 		XMVECTOR directionVW = XMVector3TransformNormal(direction, viewWorldInverseMatrix);		// 模型空间下的射线方向
 
+		// 单位化
+		directionVW = XMVector3Normalize(directionVW);
+
 
 		float boundTime = 0.f;
 		float triangleTime = 0.f;
