@@ -5,15 +5,16 @@
 // 渲染管线状态类型 枚举（PSO）
 enum EPipelineState : UINT
 {
-	Transparent = 0,
-	AlphaTest = 1,
+	Transparent = 0,				// 透明
+	AlphaTest = 1,					// Alpha测试
 	Background = 2,					// 背景层
 	Reflector = 3,					// 反射层
-	Solid = 4,				// 实体
-	Wireframe = 5,			// 线框
-	OrthographicShadow = 6,		// 正交阴影
-	PerspectiveShadow = 7,		// 透视阴影
-	ViewtianeShadow = 8,		// 全向阴影
+	Solid = 4,						// 实体
+	Wireframe = 5,					// 线框
+	OrthographicShadow = 6,			// 正交阴影
+	PerspectiveShadow = 7,			// 透视阴影
+	ViewtianeShadow = 8,			// 全向阴影
+	Selection = 9,					// 选择
 };
 
 

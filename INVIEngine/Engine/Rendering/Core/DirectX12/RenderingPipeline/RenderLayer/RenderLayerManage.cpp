@@ -6,6 +6,7 @@
 #include "RenderLayer/OpaqueReflectorRenderLayer.h"
 #include "RenderLayer/OpaqueRenderLayer.h"
 #include "RenderLayer/OpaqueShadowRenderLayer.h"
+#include "RenderLayer/SelectRenderLayer.h"
 #include "RenderLayer/TransparentRenderLayer.h"
 
 std::vector<std::shared_ptr<FRenderLayer>> FRenderLayerManage::RenderLayers;
@@ -14,6 +15,7 @@ FRenderLayerManage::FRenderLayerManage()
 {
 	RenderLayers.clear();
 
+	CreateRenderLayer<FSelectRenderLayer>();
 	CreateRenderLayer<FBackgroundRenderLayer>();
 	// CreateRenderLayer<FAlphaTestRenderLayer>();
 	CreateRenderLayer<FOpaqueRenderLayer>();
