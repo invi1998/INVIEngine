@@ -140,3 +140,41 @@ void FRenderLayerManage::DrawMesh(float DeltaTime, int layer, ERenderCondition r
 	}
 }
 
+void FRenderLayerManage::Add(std::weak_ptr<FRenderingData>& weakRenderDate, int inLayer)
+{
+	if (const auto renderData = weakRenderDate.lock())
+	{
+		if (const auto layer = FindByRenderLayer(inLayer))
+		{
+			layer->Add(weakRenderDate);
+		}
+	}
+}
+
+void FRenderLayerManage::Remove(std::weak_ptr<FRenderingData>& weakRenderDate, int inLayer)
+{
+	if (const auto renderData = weakRenderDate.lock())
+	{
+		if (const auto layer = FindByRenderLayer(inLayer))
+		{
+			layer->Remove(weakRenderDate);
+		}
+	}
+}
+
+void FRenderLayerManage::Remove(const size_t hashKey, int inLayer)
+{
+	if (const auto layer = FindByRenderLayer(inLayer))
+	{
+		layer->Remove(hashKey);
+	}
+}
+
+void FRenderLayerManage::Clear(int layer)
+{
+	if (const auto innerLayer = FindByRenderLayer(layer))
+	{
+		innerLayer->Clear();
+	}
+}
+

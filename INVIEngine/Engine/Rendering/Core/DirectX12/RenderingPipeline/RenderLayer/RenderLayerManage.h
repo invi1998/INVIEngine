@@ -1,5 +1,6 @@
 #pragma once
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
+struct FRenderingData;
 class CMeshComponent;
 struct FViewportInfo;
 struct FGeometryMap;
@@ -44,6 +45,14 @@ public:
 
 	// 指定你要那个层级里面的模型进行渲染
 	void DrawMesh(float DeltaTime, int layer, ERenderCondition rc = RC_Always);
+
+	void Add(std::weak_ptr<FRenderingData>& weakRenderDate, int layer);
+
+	void Remove(std::weak_ptr<FRenderingData>& weakRenderDate, int layer);		// 传入引用进行移除
+
+	void Remove(const size_t hashKey, int layer);		// 传入hashKey进行移除
+
+	void Clear(int layer);	// 清空层级内的所有渲染数据
 
 protected:
 	static std::vector<std::shared_ptr<FRenderLayer>> RenderLayers;
