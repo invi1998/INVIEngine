@@ -90,6 +90,10 @@ void FDynamicCubeMap::BuildViewPort(const XMFLOAT3& CenterPoint)
 		viewport->SetPosition(CenterPoint);
 		viewport->FaceTarget(CenterPoint, capture.TargetPoint[i], capture.Up[i]);
 		viewport->SetFrustum(XM_PIDIV2, 1, 1, 0.1f, 10000.f);
+
+		viewport->ViewPortInfo = RenderTarget->GetViewport();
+		viewport->ViewPortRect = RenderTarget->GetScissorRect();
+
 		viewport->BuildViewMatrix();
 	}
 }
