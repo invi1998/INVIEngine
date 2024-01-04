@@ -23,6 +23,12 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	// 将模型的顶点坐标转为世界坐标
 	float4 PositionWorld = mul(float4(mv.Position, 1.f), WorldMatrix);
 	
+	// 获取指向摄像机的向量
+	float3 ViewDir = normalize(CameraPosition.xyz - PositionWorld.xyz);
+	
+	// 将模型的顶点坐标沿着摄像机指向的方向移动一点，这样就可以让射线选中的物体在摄像机前面从而被渲染出来
+	PositionWorld.xyz += ViewDir * 0.01f;
+	
 	// 将世界坐标转为视口裁剪空间坐标
 	Out.PositionH = mul(PositionWorld, ViewportProjectionMatrix);
 	

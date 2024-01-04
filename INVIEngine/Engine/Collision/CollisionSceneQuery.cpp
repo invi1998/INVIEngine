@@ -30,10 +30,15 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 
 
 		float boundTime = 0.f;
-		float triangleTime = 0.f;
 		// 射线是否和AABB包围盒相交（传入的参数是模型空间下的射线，我们在模型空间下做射线相交检测）
 		if (renderData->Bounds.Intersects(originPointVW, directionVW, boundTime))
 		{
+			// 如果相交时间小于0，那么就说明射线和模型的AABB包围盒不相交
+			if (boundTime < 0.f)
+			{
+				continue;
+			}
+
 			if (boundTime < finalTime)	// 如果包围盒相交时间小于之前的相交时间，那么就说明射线和模型的AABB包围盒相交
 			{
 				// 射线是否和模型相交（三角形相交检测）
@@ -42,6 +47,8 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 					// 获取模型三角形的数量
 					UINT triangleCount = renderData->IndexSize / 3;
 					// 遍历所有的三角形
+
+					float triangleTime = FLT_MAX;
 					for (UINT i = 0; i < triangleCount; i++)
 					{
 						// 获取三角形的三个顶点
