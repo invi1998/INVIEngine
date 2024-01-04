@@ -21,12 +21,13 @@
 #include "Mesh/PyramidMesh.h"
 #include "Mesh/SphereMesh.h"
 #include "Mesh/TorusMesh.h"
+#include "Core/QuaternionCamera.h"
 
 class GBoxMesh;
 
 CDirectXRenderingEngine::CDirectXRenderingEngine()
 	: CurrentFenceIndex(0),
-	  CurrentSwapBufferIndex(0), ViewPortInfo(), ViewPortRect(),
+	  CurrentSwapBufferIndex(0),
 	  M4XNumQualityLevels(0),
 	  bMSAA4XEnabled(false),
 	  BackBufferFormat(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM), // 纹理格式 默认设置为 8位无符号归一化RGBA格式。（0-255的rgba值 映射到 0-1）
@@ -911,6 +912,9 @@ void CDirectXRenderingEngine::StartSetMainViewportRenderTarget()
 		&ResourceBarrierPresent
 	);
 
+	D3D12_VIEWPORT& ViewPortInfo = World->GetQuaternionCamera()->ViewPortInfo;
+	D3D12_RECT& ViewPortRect = World->GetQuaternionCamera()->ViewPortRect;
+
 	// 重置（更新）视口信息，裁剪矩阵信息
 	GraphicsCommandList->RSSetViewports(1, &ViewPortInfo);
 	GraphicsCommandList->RSSetScissorRects(1, &ViewPortRect);
@@ -1349,21 +1353,6 @@ void CDirectXRenderingEngine::PostInitDirect3D()
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 渲染视口设置(这些设置会覆盖原先的Windows画布)
-
-	// 描述视口尺寸
-	// DirectX的坐标系统和OpenGL是不一样的，DX的坐标系原点位于窗口的中心，OpenGL的坐标原点是在屏幕的左下角
-	ViewPortInfo.TopLeftX = 0;
-	ViewPortInfo.TopLeftY = 0;
-	ViewPortInfo.Width = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
-	ViewPortInfo.Height = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
-	ViewPortInfo.MinDepth = 0.f;	// 最小深度
-	ViewPortInfo.MaxDepth = 1.f;	// 最大深度
-
-	// 描述裁剪矩形
-	ViewPortRect.top = 0;
-	ViewPortRect.left = 0;
-	ViewPortRect.right = FEngineRenderConfig::GetRenderConfig()->ScreenWidth;
-	ViewPortRect.bottom = FEngineRenderConfig::GetRenderConfig()->ScreenHeight;
 
 	// CPU等待GPU执行结果
 	WaitGPUCommandQueueComplete();

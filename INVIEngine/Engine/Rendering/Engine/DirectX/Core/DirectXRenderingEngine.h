@@ -81,10 +81,6 @@ protected:
 	std::vector<ComPtr<ID3D12Resource>> SwapChainBuffer{};		// 交换链Buffer（包括两个缓冲区，一个前台缓冲区，一个后台缓冲区）
 	ComPtr<ID3D12Resource> DepthStencilBuffer;					// 深度模板缓冲区
 
-	// 和屏幕视口相关
-	D3D12_VIEWPORT ViewPortInfo;		// 视口信息
-	D3D12_RECT ViewPortRect;			// 视口裁剪矩形
-
 protected:
 
 	// 当前采样的质量级别(4采样数的质量级别）
