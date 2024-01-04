@@ -86,7 +86,7 @@ public:
 
 	CMeshComponent* CreateCustomMeshComponent(const FCreateObjectParams& InParams, const string& InPath);
 
-	FRenderingPipeline& GetRenderingPipeline() { return RenderingPipeline; };		// 渲染管线对象
+	FRenderingPipeline* GetRenderingPipeline() const { return const_cast<FRenderingPipeline*>(&RenderingPipeline); };		// 渲染管线对象
 
 protected:
 	FRenderingPipeline RenderingPipeline;		// 渲染管线对象

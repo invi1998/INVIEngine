@@ -27,6 +27,13 @@ public:
 	bool FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRenderingData>& rendering_data, int layer = -1);
 	void DuplicateMesh(CMeshComponent* my_mesh, std::shared_ptr<FRenderingData>& rendering_data);
 
+	FGeometryMap* GetGeometryMap() const { return const_cast<FGeometryMap*>(&GeometryMap); }
+	FRenderLayerManage* GetRenderLayerManage() const { return const_cast<FRenderLayerManage*>(&RenderLayerManage); }
+	FDirectXPipelineState* GetDirectXPipelineState() const { return const_cast<FDirectXPipelineState*>(&DirectXPipelineState); }
+	FDirectXRootSignature* GetDirectXRootSignature() const { return const_cast<FDirectXRootSignature*>(&DirectXRootSignature); }
+	FDynamicReflectionCubeMap* GetDynamicCubeMap() const { return const_cast<FDynamicReflectionCubeMap*>(&DynamicCubeMap); }
+	FImGuiPipeline* GetUiPipeline() const { return const_cast<FImGuiPipeline*>(&UiPipeline); }
+
 protected:
 	FGeometryMap GeometryMap;
 

@@ -46,7 +46,7 @@ ComPtr<ID3D12Device> IDirectXDeviceInterface::GetD3dDevice()
 	return nullptr;
 }
 
-CMeshManager* IDirectXDeviceInterface::GetMeshManage()
+CMeshManager* IDirectXDeviceInterface::GetMeshManage() const
 {
 	return GetEngine()->GetMeshManage();
 }
@@ -163,7 +163,7 @@ HWND IDirectXDeviceInterface::GetMainWindowsHandle()
 	return HWND();
 }
 
-CWindowsEngine* IDirectXDeviceInterface::GetEngine()
+CWindowsEngine* IDirectXDeviceInterface::GetEngine() const
 {
 	return dynamic_cast<CWindowsEngine*>(Engine);
 }
@@ -175,6 +175,24 @@ CEditorEngine* IDirectXDeviceInterface::GetEditorEngine()
 		return inEngine->EditorEngine;
 	}
 
+	return nullptr;
+}
+
+FRenderingPipeline* IDirectXDeviceInterface::GetRenderPipeline() const
+{
+	if (CMeshManager* inMeshManager = GetMeshManage())
+	{
+		return inMeshManager->GetRenderingPipeline();
+	}
+	return nullptr;
+}
+
+FRenderLayerManage* IDirectXDeviceInterface::GetRenderLayerManager() const
+{
+	if (FRenderingPipeline* inRenderingPipeline = GetRenderPipeline())
+	{
+		return inRenderingPipeline->GetRenderLayerManage();
+	}
 	return nullptr;
 }
 
@@ -275,4 +293,14 @@ CWindowsEngine* IDirectXDeviceInterface_Struct::GetEngine()
 CEditorEngine* IDirectXDeviceInterface_Struct::GetEditorEngine()
 {
 	return Interface.GetEditorEngine();
+}
+
+FRenderingPipeline* IDirectXDeviceInterface_Struct::GetRenderPipeline() const
+{
+	return Interface.GetRenderPipeline();
+}
+
+FRenderLayerManage* IDirectXDeviceInterface_Struct::GetRenderLayerManager() const
+{
+	return Interface.GetRenderLayerManager();
 }

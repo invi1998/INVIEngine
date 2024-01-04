@@ -1,5 +1,7 @@
 #pragma once
 
+class FRenderingPipeline;
+class FRenderLayerManage;
 class CLightManager;
 class CWorld;
 class CMeshManager;
@@ -8,6 +10,7 @@ class CWindowsEngine;
 // 提供渲染内容的接口
 class IDirectXDeviceInterface
 {
+	friend class IDirectXDeviceInterface_Struct;
 public:
 	// 开始 设置主视口的rendertarget
 	void StartSetMainViewportRenderTarget();
@@ -22,7 +25,7 @@ public:
 	virtual ~IDirectXDeviceInterface() = default;
 	ComPtr<ID3D12Fence> GetFence();
 	ComPtr<ID3D12Device> GetD3dDevice();
-	CMeshManager* GetMeshManage();
+	CMeshManager* GetMeshManage() const;
 	CLightManager* GetLightManger();
 	CWorld* GetWorld();
 
@@ -37,9 +40,13 @@ public:
 
 	HWND GetMainWindowsHandle();
 
-	[[nodiscard]] CWindowsEngine* GetEngine();
+	[[nodiscard]] CWindowsEngine* GetEngine() const;
 
 	class CEditorEngine* GetEditorEngine();
+
+protected:
+	FRenderingPipeline* GetRenderPipeline() const;
+	FRenderLayerManage* GetRenderLayerManager() const;
 
 };
 
@@ -72,6 +79,10 @@ public:
 	[[nodiscard]] CWindowsEngine* GetEngine();
 
 	class CEditorEngine* GetEditorEngine();
+
+protected:
+	FRenderingPipeline* GetRenderPipeline() const;
+	FRenderLayerManage* GetRenderLayerManager() const;
 
 private:
 	IDirectXDeviceInterface Interface{};

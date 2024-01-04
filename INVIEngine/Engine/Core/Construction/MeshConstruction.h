@@ -15,9 +15,9 @@ namespace MeshConstruction
 			mesh->BuildKey(HashKey, std::forward<ParamTypes>(Params)...);
 
 			std::shared_ptr<FRenderingData> RenderingData;
-			if (manage->GetRenderingPipeline().FindMeshRenderingDataByHash(HashKey, RenderingData, mesh->GetRenderLayerType()))
+			if (manage->GetRenderingPipeline()->FindMeshRenderingDataByHash(HashKey, RenderingData, mesh->GetRenderLayerType()))
 			{
-				manage->GetRenderingPipeline().DuplicateMesh(mesh, RenderingData);
+				manage->GetRenderingPipeline()->DuplicateMesh(mesh, RenderingData);
 			}
 			else
 			{
@@ -29,7 +29,7 @@ namespace MeshConstruction
 
 				// ¹¹½¨mesh
 				// BuildMesh(&MeshData);
-				manage->GetRenderingPipeline().BuildMesh(HashKey, mesh, MeshData);
+				manage->GetRenderingPipeline()->BuildMesh(HashKey, mesh, MeshData);
 
 			}
 
