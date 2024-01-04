@@ -1,5 +1,6 @@
 #pragma once
 
+struct FRenderingData;
 class GActorObject;
 class CComponent;
 
@@ -19,6 +20,8 @@ namespace EngineType
 
 		CComponent* HitComponent = nullptr;	// 命中的组件
 		GActorObject* HitActor=nullptr;		// 命中的Actor
+
+		std::weak_ptr<FRenderingData> HitRenderingData;	// 命中的渲染数据
 		
 	};
 }

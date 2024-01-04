@@ -6,6 +6,6 @@ class CWorld;
 
 struct FRayCastSystemLibrary
 {
-	static bool GetHitResultByScreen(CWorld* world, const XMFLOAT2& mousePos, EngineType::FHitResult& OutHitResult);
+	static void GetHitResultByScreen(CWorld* world, const XMFLOAT2& mousePos, EngineType::FHitResult& OutHitResult);
 };
 

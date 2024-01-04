@@ -7,7 +7,7 @@
 #include "Core/World.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 
-bool FRayCastSystemLibrary::GetHitResultByScreen(CWorld* world, const XMFLOAT2& mousePos,
+void FRayCastSystemLibrary::GetHitResultByScreen(CWorld* world, const XMFLOAT2& mousePos,
                                                  EngineType::FHitResult& OutHitResult)
 {
 	const GQuaternionCamera* camera = world->GetQuaternionCamera();
@@ -35,9 +35,5 @@ bool FRayCastSystemLibrary::GetHitResultByScreen(CWorld* world, const XMFLOAT2& 
 
 		// Åö×²¼ì²â
 		FCollisionSceneQuery::RayCastSingleQuery(world, OriginPoint, Direction, InverseViewMatrix, OutHitResult);
-
-
 	}
-
-	return false;
 }

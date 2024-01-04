@@ -75,11 +75,11 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 								OutHitResult.bHit = true;
 								OutHitResult.HitComponent = renderData->Mesh;
 								OutHitResult.Time = triangleOffsetTime;
+								OutHitResult.HitRenderingData = renderData;
 								if (renderData->Mesh)
 								{
 									OutHitResult.HitActor = dynamic_cast<GActorObject*>(renderData->Mesh->GetOwner());
 								}
-								
 
 								return true;
 

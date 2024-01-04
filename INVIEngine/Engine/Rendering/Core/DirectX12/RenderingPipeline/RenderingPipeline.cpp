@@ -148,6 +148,8 @@ void FRenderingPipeline::Draw(float DeltaTime)
 	RenderLayerManage.Draw(RENDER_LAYER_OPAQUE, DeltaTime);
 	RenderLayerManage.Draw(RENDER_LAYER_TRANSPARENT, DeltaTime);
 
+	RenderLayerManage.Draw(RENDER_LAYER_SELECT, DeltaTime);
+
 	// ‰÷»æUI
 	UiPipeline.Draw(DeltaTime);
 
