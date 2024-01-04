@@ -35,3 +35,6 @@ group "Core"
 
 group "Editor"
 	include "INVIEditor"
+
+group "BuildTool"
+	include "INVIBuildTool"
