@@ -62,6 +62,23 @@ bool GMesh::IsCastShadow() const
 	return false;
 }
 
+void GMesh::SetPickUp(bool cond)
+{
+	if (MeshComponent)
+	{
+		MeshComponent->SetPickUp(cond);
+	}
+}
+
+bool GMesh::IsPickUp() const
+{
+	if (MeshComponent)
+	{
+		return MeshComponent->IsPickUp();
+	}
+	return false;
+}
+
 void GMesh::SetPosition(const XMFLOAT3& InNewPosition)
 {
 	GActorObject::SetPosition(InNewPosition);

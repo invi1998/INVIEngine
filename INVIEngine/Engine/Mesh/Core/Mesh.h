@@ -39,6 +39,10 @@ public:
 
 	bool IsCastShadow() const;
 
+	void SetPickUp(bool cond);
+
+	bool IsPickUp() const;
+
 	template<typename T>
 	T* GetMeshComponent()
 	{

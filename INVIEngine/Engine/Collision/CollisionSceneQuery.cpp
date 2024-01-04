@@ -12,6 +12,11 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 	// 遍历FGeometry::RenderingDataPoolVector，找到所有的mesh
 	for (auto& renderData : FGeometry::RenderingDataPoolVector)
 	{
+		// 判断mesh是否可被选取
+		if (renderData->Mesh && !renderData->Mesh->IsPickUp())
+		{
+			continue;
+		}
 
 		// 获取模型的世界矩阵
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&renderData->WorldMatrix);

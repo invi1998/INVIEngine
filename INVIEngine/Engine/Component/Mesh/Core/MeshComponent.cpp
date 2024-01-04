@@ -57,5 +57,5 @@ bool CMeshComponent::IsDynamicReflection() const
 
 bool CMeshComponent::IsCastShadow() const
 {
-	return CastShadow;
+	return bCastShadow;
 }
