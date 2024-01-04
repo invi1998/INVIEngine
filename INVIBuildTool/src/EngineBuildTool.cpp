@@ -1,4 +1,4 @@
-#include "simple_library/simple_library.h"
+#include "BuildPch.h"
 
 int main()
 {
