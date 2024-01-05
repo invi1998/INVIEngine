@@ -18,12 +18,53 @@ namespace CollectClassInfo
 	constexpr char asteriskString[] = "*";
 	constexpr char ampersandString[] = "&";
 
+	constexpr char constString[] = "const";
+	constexpr char staticString[] = "static";
+	constexpr char virtualString[] = "virtual";
+	constexpr char overrideString[] = "override";
+	constexpr char finalString[] = "final";
+	constexpr char inlineString[] = "inline";
+	constexpr char explicitString[] = "explicit";
+	constexpr char friendString[] = "friend";
+	constexpr char mutableString[] = "mutable";
+	constexpr char typenameString[] = "typename";
+	constexpr char templateString[] = "template";
+
+	constexpr char codeTypeString[] = "CodeType";
+	constexpr char groupNumberString[] = "Group";
+
+	bool GetCodeTypeByFunc(char* row_ptr, FFunctionAnalysis& function_analysis)
+	{
+		char L[1024] = {0};
+		char R[1024] = {0};
+
+		// UFUNCTION(Meta = (BlueprintInternalUseOnly = "true", DisplayName = "Get All Actors Of Class", Keywords = "GetAllActorsOfClass"), BlueprintPure, Category = "Utilities|Object", meta = (BlueprintInternalUseOnly = "true", DisplayName = "Get All Actors Of Class", Keywords = "GetAllActorsOfClass"))
+
+		split(row_ptr, codeTypeString, L, R, false);	// 将row_ptr按照 "CodeType" 分割成两个字符串，存入L和R中
+
+		std::vector<std::string> elementString{};
+		simple_cpp_string_algorithm::parse_into_vector_array(L, elementString, commaString);		// 将L按照,分割成多个字符串，存入elementString中
+
+		if (elementString[0].find("Event"))	// Event类型的函数，作为程序入口在蓝图中执行
+		{
+			function_analysis.CodeType = "Event";
+			return true;
+		}
+		else if (elementString[0].find("Describe"))
+		{
+			function_analysis.CodeType = "Describe";
+			return true;
+		}
+		return false;
+
+	}
+
 	bool Collection(std::string& path, FClassAnalysis& classAnalysis)
 	{
 		std::vector<std::string> stringArray;
 		simple_cpp_helper_file::load_file_to_strings(path, stringArray);	// 将C++文件读取到stringArray中
 
-		for (int i = 0; i < stringArray.size(); i++)
+		for (int i = 0; i <= stringArray.size(); i++)
 		{
 			std::string& row = stringArray[i];
 			char* rowPtr = const_cast<char*>(row.c_str());
@@ -87,6 +128,25 @@ namespace CollectClassInfo
 
 						classAnalysis.ParentClass.push_back(parent);
 					}
+				}
+			}
+
+			// 获取标记的成员函数
+			if (contain("UFUNCTION"))
+			{
+				FFunctionAnalysis functionAnalysis{};
+				if (GetCodeTypeByFunc(rowPtr, functionAnalysis))
+				{
+					row = stringArray[i+1];	// 指向下一行的内容,即函数声明
+
+					// 判断是否是静态函数
+					if (contain(staticString))
+					{
+						functionAnalysis.bStatic = true;
+					}
+
+
+					classAnalysis.Functions.push_back(functionAnalysis);
 				}
 			}
 		}

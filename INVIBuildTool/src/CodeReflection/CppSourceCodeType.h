@@ -25,9 +25,9 @@ struct FVariableAnalysis : public FParamElement
 };
 
 // 函数解析
-struct FFunctionAnayis
+struct FFunctionAnalysis
 {
-	FFunctionAnayis() = default;
+	FFunctionAnalysis() = default;
 
 	std::vector<FParamElement> Params{};		// 参数列表
 	FParamElement Return{};						// 返回值
@@ -48,7 +48,7 @@ struct FClassAnalysis
 	std::string ClassName{};					// 类名称
 	std::vector<std::string> ParentClass{};		// 父类列表
 	std::vector<FVariableAnalysis> Variables{};	// 变量列表
-	std::vector<FFunctionAnayis> Functions{};	// 函数列表
+	std::vector<FFunctionAnalysis> Functions{};	// 函数列表
 
 	std::string APIName;						// API名称 导出宏
 
