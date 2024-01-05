@@ -88,6 +88,26 @@ namespace CollectClassInfo
 		return std::move(param_element);
 	}
 
+	bool GetCodeTypeByPro(const string& row, FVariableAnalysis* variable_analysis)
+	{
+		char L[1024] = {0};
+		char R[1024] = {0};
+
+		// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CodeType", meta = (DisplayName = "CodeType", Keywords = "CodeType"))
+
+		split(const_cast<char*>(row.c_str()), codeTypeString, L, R, false);	// 将row按照 "CodeType" 分割成两个字符串，存入L和R中
+
+		std::vector<std::string> elementString{};
+		simple_cpp_string_algorithm::parse_into_vector_array(L, elementString, commaString);		// 将L按照,分割成多个字符串，存入elementString中
+
+		if (elementString[0].find("Resources"))
+		{
+			variable_analysis->CodeType = "Resources";
+			return true;
+		}
+		return false;
+	}
+
 	bool Collection(std::string& path, FClassAnalysis& classAnalysis)
 	{
 		std::vector<std::string> stringArray;
@@ -276,9 +296,59 @@ namespace CollectClassInfo
 					classAnalysis.Functions.push_back(functionAnalysis);
 				}
 			}
+
+			// 收集成员变量
+			if (contain("UPROPERTY"))
+			{
+				if (contain("CodeType"))
+				{
+					FVariableAnalysis variableAnalysis{};
+					if (GetCodeTypeByPro(row, &variableAnalysis))
+					{
+						char R[1024] = { 0 };
+						char L[1024] = { 0 };
+
+						row = stringArray[i + 1];
+
+						//Row = \tTSubclassOf<UStaticMesh> Mesh;
+						remove_char_start(rowPtr, '\t');
+						remove_char_end(rowPtr, ';');
+
+						//Row = TSubclassOf<UStaticMesh> Mesh
+						if (contain(asteriskString))
+						{
+							variableAnalysis.bPointer = true;
+							split(rowPtr, asteriskString, R, L, false);
+						}
+
+						if (contain(ampersandString))
+						{
+							variableAnalysis.bReference = true;
+							split(rowPtr, ampersandString, R, L, false);
+						}
+
+						if (contain(spaceString))
+						{
+							split(rowPtr, spaceString, R, L, false);
+						}
+
+						if (c_str_contain(R, "const"))
+						{
+							variableAnalysis.bConst = true;
+							remove_string_start(R, "const");
+						}
+
+						trim_start_and_end_inline(R);
+						trim_start_and_end_inline(L);
+
+						variableAnalysis.Type = R;
+						variableAnalysis.Name = L;
+
+						classAnalysis.Variables.push_back(variableAnalysis);
+					}
+				}
+			}
 		}
-
-
 	}
 }
 
