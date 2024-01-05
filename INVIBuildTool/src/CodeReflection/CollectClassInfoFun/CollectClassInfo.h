@@ -3,6 +3,6 @@
 
 namespace CollectClassInfo
 {
-	bool Collection(std::string& path, FClassAnalysis& classAnalysis);
+	bool Collection(const std::string& path, FClassAnalysis& classAnalysis);
 }
 

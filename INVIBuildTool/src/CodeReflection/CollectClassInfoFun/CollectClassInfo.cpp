@@ -108,7 +108,7 @@ namespace CollectClassInfo
 		return false;
 	}
 
-	bool Collection(std::string& path, FClassAnalysis& classAnalysis)
+	bool Collection(const std::string& path, FClassAnalysis& classAnalysis)
 	{
 		std::vector<std::string> stringArray;
 		simple_cpp_helper_file::load_file_to_strings(path, stringArray);	// 将C++文件读取到stringArray中
@@ -189,7 +189,7 @@ namespace CollectClassInfo
 					row = stringArray[i+1];	// 指向下一行的内容,即函数声明
 
 					// 判断是否是静态函数
-					if (contain(staticString))
+					if (contain("\tstatic") || contain("static "))
 					{
 						functionAnalysis.bStatic = true;
 
@@ -220,8 +220,6 @@ namespace CollectClassInfo
 						char R[1024] = {0};
 						trim_start_inline(rowPtr);
 						split(rowPtr, spaceString, R, Temp, false);	// 将rowPtr按照 " " 分割成两个字符串，存入R和Temp中)
-
-
 
 						functionAnalysis.Return = CollectionVariableType(R, ECollectParamType::ECollectParamType_Return);
 

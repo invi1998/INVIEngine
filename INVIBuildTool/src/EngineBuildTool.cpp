@@ -1,7 +1,11 @@
 #include "BuildPch.h"
 
+#include "CodeReflection/CollectClassInfoFun/CollectClassInfo.h"
+
 int main()
 {
-	std::cout << "Hello World!\n";
+	FClassAnalysis classAnalysis;
+
+	CollectClassInfo::Collection("../test.cpp", classAnalysis);
 	return 0;
 }
