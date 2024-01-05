@@ -66,5 +66,8 @@ enum ECollectParamType
 	ECollectParamType_Class = 1 << 0,	// 类
 	ECollectParamType_Function = 1 << 1,	// 函数
 	ECollectParamType_Variable = 1 << 2,	// 变量
+	ECollectParamType_Macro = 1 << 3,	// 宏
+	ECollectParamType_Enum = 1 << 4,	// 枚举
+	ECollectParamType_Return = 1 << 5,	// 返回
 	ECollectParamType_All = ECollectParamType_Class | ECollectParamType_Function | ECollectParamType_Variable,	// 所有
 };

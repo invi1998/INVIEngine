@@ -59,6 +59,35 @@ namespace CollectClassInfo
 
 	}
 
+	FParamElement&& CollectionVariableType(char* str, ECollectParamType collect_param)
+	{
+		FParamElement param_element{};
+
+		param_element.Name = "Return";
+
+		if (simple_cpp_string_algorithm::string_contain(str, constString))
+		{
+			param_element.bConst = true;
+			remove_string_start(str, constString);
+		}
+		if (simple_cpp_string_algorithm::string_contain(str, asteriskString))
+		{
+			param_element.bPointer = true;
+			remove_string_start(str, asteriskString);
+		}
+		if (simple_cpp_string_algorithm::string_contain(str, ampersandString))
+		{
+			trim_start_and_end_inline(str);
+			param_element.bReference = true;
+			remove_string_start(str, ampersandString);
+		}
+
+		trim_start_and_end_inline(str);
+		param_element.Type = collect_param;
+
+		return std::move(param_element);
+	}
+
 	bool Collection(std::string& path, FClassAnalysis& classAnalysis)
 	{
 		std::vector<std::string> stringArray;
@@ -143,13 +172,113 @@ namespace CollectClassInfo
 					if (contain(staticString))
 					{
 						functionAnalysis.bStatic = true;
+
+						char L[1024] = {0};
+						char R[1024] = {0};
+
+						split(rowPtr, spaceString, L, R, false);	// 将rowPtr按照 " " 分割成两个字符串，存入L和R中)
+
+						row = L;	// 将R赋值给row，后面的代码继续处理row
+					}
+					if (contain(virtualString))	// 判断是否是虚函数
+					{
+						functionAnalysis.bVirtual = true;
+
+						char L[1024] = {0};
+						char R[1024] = {0};
+
+						split(rowPtr, spaceString, L, R, false);	// 将rowPtr按照 " " 分割成两个字符串，存入L和R中)
+
+						row = L;	// 将R赋值给row，后面的代码继续处理row
 					}
 
+					// 确定返回类型
+					char Temp[1024] = {0};
+
+					{
+						char L[1024] = {0};
+						char R[1024] = {0};
+						trim_start_inline(rowPtr);
+						split(rowPtr, spaceString, R, Temp, false);	// 将rowPtr按照 " " 分割成两个字符串，存入R和Temp中)
+
+
+
+						functionAnalysis.Return = CollectionVariableType(R, ECollectParamType::ECollectParamType_Return);
+
+						//void Hello1(UObject *Context, int32 &A,float b,bool C
+						remove_char_end(Temp, '}');
+						remove_char_end(Temp, '{');
+						trim_end_inline(Temp);
+						remove_char_end(Temp, ';');
+						remove_char_end(Temp, ')');
+						//Tmp = Hello1(UObject *Context, int32 &A,float b,bool C
+
+						char RStr[1024] = { 0 };
+						char LStr[1024] = { 0 };
+
+						split(Temp, leftParenthesisString, LStr, RStr, false);	// 将Temp按照 "(" 分割成两个字符串，存入LStr和RStr中)
+
+						// 函数名
+						functionAnalysis.FuncName = RStr;
+
+						// 解析参数列表
+						std::vector<std::string> paramList{};
+						simple_cpp_string_algorithm::parse_into_vector_array(LStr, paramList, commaString);	// 将LStr按照,分割成多个字符串，存入paramList中
+
+						// 收集变量
+						for (std::string& ele : paramList)
+						{
+							char* elePtr = const_cast<char*>(ele.c_str());
+
+							// 移除空格
+							trim_start_and_end_inline(elePtr);
+
+							char L[1024] = {0};
+							char R[1024] = {0};
+
+							FParamElement param_element{};
+
+							if (simple_cpp_string_algorithm::string_contain(elePtr, asteriskString))
+							{
+								param_element.bPointer = true;
+								split(elePtr, asteriskString, R, L, false);	// 将elePtr按照 "*" 分割成两个字符串，存入L和R中)
+							}
+							else if (simple_cpp_string_algorithm::string_contain(elePtr, ampersandString))
+							{
+								param_element.bReference = true;
+								split(elePtr, ampersandString, R, L, false);	// 将elePtr按照 "&" 分割成两个字符串，存入L和R中)
+							}
+							else
+							{
+								split(elePtr, spaceString, R, L, false);
+							}
+
+							if (c_str_contain(L, constString))
+							{
+								param_element.bConst = true;
+								remove_string_start(L, constString);
+							}
+
+							trim_start_and_end_inline(R);	// 去掉变量名前后的空格
+							trim_start_and_end_inline(L);	// 去掉变量名前后的空格
+
+							// 变量名
+							param_element.Name = L;
+
+							// 变量类型
+							param_element.Type = R;
+
+							functionAnalysis.Params.push_back(param_element);
+						}
+
+					}
 
 					classAnalysis.Functions.push_back(functionAnalysis);
 				}
 			}
 		}
+
+
 	}
 }
 
