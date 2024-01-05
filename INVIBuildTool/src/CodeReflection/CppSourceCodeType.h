@@ -43,7 +43,7 @@ struct FFunctionAnayis
 // 类解析
 struct FClassAnalysis
 {
-	FClassAnalysis() = default;
+	FClassAnalysis();
 
 	std::string ClassName{};					// 类名称
 	std::vector<std::string> ParentClass{};		// 父类列表
@@ -57,6 +57,7 @@ struct FClassAnalysis
 	int32_t MacroLine = 0;						// 行数（反射宏标记所在行数）
 
 };
+
 
 // 收集参数的类型枚举
 enum ECollectParamType
