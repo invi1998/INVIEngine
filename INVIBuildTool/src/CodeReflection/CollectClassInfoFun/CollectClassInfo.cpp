@@ -349,6 +349,7 @@ namespace CollectClassInfo
 				}
 			}
 		}
+		return false;
 	}
 }
 
