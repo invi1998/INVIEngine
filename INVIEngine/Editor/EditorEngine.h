@@ -27,6 +27,6 @@ public:
 protected:
 	class FToolbar* Toolbar;
 	class FLogEditor* LogEditor;
-	
+	class FOutLineEditor* OutLineEditor;
 };
 

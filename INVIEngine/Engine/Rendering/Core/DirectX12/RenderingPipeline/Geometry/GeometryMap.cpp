@@ -211,6 +211,17 @@ bool FGeometry::FindMeshRenderingDataByHash(size_t hashKey, std::shared_ptr<FRen
 	return false;
 }
 
+void FGeometry::FindRenderingData(std::function<EFindValueType(std::shared_ptr<FRenderingData>&)> func)
+{
+	for (auto& temp : RenderingDataPoolVector)
+	{
+		if (func(temp) == EFindValueType::FVT_COMPLETE)
+		{
+			return;
+		}
+	}
+}
+
 /**
  * \brief //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */

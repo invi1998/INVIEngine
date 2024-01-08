@@ -25,3 +25,8 @@ bool CWorld::LineTraceSingle(EngineType::FHitResult& hitResult, XMFLOAT3 start, 
 
 	return false;
 }
+
+const std::vector<GActorObject*>& CWorld::GetActors() const
+{
+	return ActorObjects;
+}

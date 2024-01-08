@@ -1,6 +1,9 @@
 #include "EngineMinimal.h"
 #include "RenderLayerManage.h"
 
+#include "Component/Mesh/Core/MeshComponent.h"
+#include "Core/World.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "RenderLayer/AlphaTestRenderLayer.h"
 #include "RenderLayer/BackgroundRenderLayer.h"
 #include "RenderLayer/OpaqueReflectorRenderLayer.h"
@@ -93,6 +96,69 @@ void FRenderLayerManage::BuildPSO()
 	{
 		layer->BuildPSO();
 	}
+}
+
+void FRenderLayerManage::HighlightObject(GActorObject* object)
+{
+	FGeometry::FindRenderingData(
+		[&](std::shared_ptr<FRenderingData>& renderDate)->EFindValueType
+		{
+			if (GActorObject* actorObject = dynamic_cast<GActorObject*>(renderDate->Mesh->GetOwner()))
+			{
+				if (actorObject == object)
+				{
+					HightlightObject(renderDate);
+					return EFindValueType::FVT_COMPLETE;
+				}
+			}
+			return EFindValueType::FVT_IN_PROGRAM;
+		}
+	);
+}
+
+extern int ActorSelected;	// 被选中的Actor的ID
+void FRenderLayerManage::HightlightObject(std::weak_ptr<FRenderingData> weakRenderDate)
+{
+	// 清除旧的高亮
+	Clear(EMeshRenderLayerType::RENDER_LAYER_SELECT);
+
+	// 设置新的高亮
+	Add(weakRenderDate, EMeshRenderLayerType::RENDER_LAYER_SELECT);
+
+	// 记录被选中的Actor的ID
+	if (const auto renderDate = weakRenderDate.lock())
+	{
+		if (GActorObject* actorObject = dynamic_cast<GActorObject*>(renderDate->Mesh->GetOwner()))
+		{
+			const std::vector<GActorObject*>& actors = GetWorld()->GetActors();
+			for (int i = 0; i < actors.size(); ++i)
+			{
+				if (actors[i] == actorObject)
+				{
+					ActorSelected = i;
+					break;
+				}
+			}
+		}
+	}
+}
+
+void FRenderLayerManage::HighlightObject(CMeshComponent* commponent)
+{
+	if (CMeshComponent* meshComponent = dynamic_cast<CMeshComponent*>(commponent))
+	{
+		FGeometry::FindRenderingData(
+		[&](std::shared_ptr<FRenderingData>& renderDate)->EFindValueType
+		{
+			if (renderDate->Mesh == meshComponent)
+			{
+				HightlightObject(renderDate);
+				return EFindValueType::FVT_COMPLETE;
+			}
+			return EFindValueType::FVT_IN_PROGRAM;
+		});		
+	}
+	
 }
 
 std::shared_ptr<FRenderLayer> FRenderLayerManage::FindByRenderLayer(int layer)

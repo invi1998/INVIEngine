@@ -5,11 +5,13 @@
 #include "ToolbarEditor/Toolbar.h"
 
 #include "imgui.h"
+#include "OutLineEditor/OutLineEditor.h"
 
 CEditorEngine::CEditorEngine()
 {
 	Toolbar = new FToolbar();
 	LogEditor = new FLogEditor();
+	OutLineEditor = new FOutLineEditor();
 }
 
 CEditorEngine::~CEditorEngine()

@@ -30,6 +30,7 @@ public:
 
 	// µ•…‰œﬂºÏ≤‚
 	bool LineTraceSingle(EngineType::FHitResult& hitResult, XMFLOAT3 start, XMFLOAT3 end);
+	const std::vector<GActorObject*>& GetActors() const;
 
 private:
 	CVARIABLE()

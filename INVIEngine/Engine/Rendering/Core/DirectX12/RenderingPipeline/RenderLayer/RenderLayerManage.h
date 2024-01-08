@@ -1,4 +1,6 @@
 #pragma once
+#include "Actor/Core/ActorObject.h"
+#include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineType.h"
 struct FRenderingData;
 class CMeshComponent;
@@ -7,7 +9,7 @@ struct FGeometryMap;
 struct FDirectXPipelineState;
 class FRenderLayer;
 
-class FRenderLayerManage
+class FRenderLayerManage : public IDirectXDeviceInterface
 {
 	friend class FRenderLayer;
 	friend class FGeometry;
@@ -34,6 +36,10 @@ public:
 	void Sort();
 
 	virtual void BuildPSO();
+
+	void HighlightObject(GActorObject* object);
+	void HightlightObject(std::weak_ptr<FRenderingData> weakRenderDate);
+	void HighlightObject(CMeshComponent* commponent);
 
 	static std::shared_ptr<FRenderLayer> FindByRenderLayer(int layer);
 

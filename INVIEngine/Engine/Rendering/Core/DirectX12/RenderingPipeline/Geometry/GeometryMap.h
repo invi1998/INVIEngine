@@ -15,6 +15,12 @@ class FRenderingTextureResourcesUpdate;
 class CMeshComponent;
 struct FViewportInfo;
 
+enum EFindValueType
+{
+	FVT_IN_PROGRAM,		// 在程序中查找
+	FVT_COMPLETE,		// 查找完成
+};
+
 struct FGeometry : IDirectXDeviceInterface_Struct
 {
 	friend struct FGeometryMap;
@@ -40,6 +46,8 @@ public:
 
 	// 渲染池，这里会有重复的渲染数据，因为一个模型可能会被渲染多次
 	static std::vector<std::shared_ptr<FRenderingData>> RenderingDataPoolVector;				// 渲染数据池
+
+	static void FindRenderingData(std::function<EFindValueType(std::shared_ptr<FRenderingData>&)> func);	// 查找渲染数据,`func`返回值为`TYPE_COMPLETE`时，查找完成
 
 protected:
 	ComPtr<ID3DBlob> CPUVertexBufferPtr;			// CPU 顶点缓冲区
