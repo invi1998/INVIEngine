@@ -340,8 +340,10 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 
 		if (FRenderLayerManage* renderLayerManage = GetRenderLayerManager())
 		{
-			renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 清空之前的选中
-			renderLayerManage->Add(HitResult.HitRenderingData, static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 添加选中
+			//renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 清空之前的选中
+			//renderLayerManage->Add(HitResult.HitRenderingData, static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 添加选中
+
+			renderLayerManage->HighlightObject(HitResult.HitRenderingData);
 		}
 	}
 	else

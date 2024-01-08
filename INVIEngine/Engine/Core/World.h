@@ -23,6 +23,11 @@ public:
 	{
 		T* InArray = new T();
 		InArray->SetOwner(this);
+
+		char name[256] = { 0 };
+		sprintf_s(name, "%s_%d", typeid(T).name(), ActorObjects.size());
+		InArray->SetName(name);
+
 		ActorObjects.push_back(InArray);
 
 		return InArray;

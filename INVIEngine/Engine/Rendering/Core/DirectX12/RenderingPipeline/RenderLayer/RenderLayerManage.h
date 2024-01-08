@@ -38,7 +38,7 @@ public:
 	virtual void BuildPSO();
 
 	void HighlightObject(GActorObject* object);
-	void HightlightObject(std::weak_ptr<FRenderingData> weakRenderDate);
+	void HighlightObject(std::weak_ptr<FRenderingData> weakRenderDate);
 	void HighlightObject(CMeshComponent* commponent);
 
 	static std::shared_ptr<FRenderLayer> FindByRenderLayer(int layer);

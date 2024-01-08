@@ -107,7 +107,7 @@ void FRenderLayerManage::HighlightObject(GActorObject* object)
 			{
 				if (actorObject == object)
 				{
-					HightlightObject(renderDate);
+					HighlightObject(renderDate);
 					return EFindValueType::FVT_COMPLETE;
 				}
 			}
@@ -117,7 +117,7 @@ void FRenderLayerManage::HighlightObject(GActorObject* object)
 }
 
 extern int ActorSelected;	// 被选中的Actor的ID
-void FRenderLayerManage::HightlightObject(std::weak_ptr<FRenderingData> weakRenderDate)
+void FRenderLayerManage::HighlightObject(std::weak_ptr<FRenderingData> weakRenderDate)
 {
 	// 清除旧的高亮
 	Clear(EMeshRenderLayerType::RENDER_LAYER_SELECT);
@@ -152,7 +152,7 @@ void FRenderLayerManage::HighlightObject(CMeshComponent* commponent)
 		{
 			if (renderDate->Mesh == meshComponent)
 			{
-				HightlightObject(renderDate);
+				HighlightObject(renderDate);
 				return EFindValueType::FVT_COMPLETE;
 			}
 			return EFindValueType::FVT_IN_PROGRAM;
