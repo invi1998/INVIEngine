@@ -22,6 +22,7 @@
 #include "Mesh/SphereMesh.h"
 #include "Mesh/TorusMesh.h"
 #include "Core/QuaternionCamera.h"
+#include "SelectEditor/OperationHandle/MoveArrow.h"
 
 class GBoxMesh;
 
@@ -86,6 +87,14 @@ int CDirectXRenderingEngine::PostInit()
 	EngineMath::ECubeMapFace InType6 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(15.572f, 10.869f, -82.77f));//z
 
 	{
+		if (GMoveArrow* Arrow = World->CreateActorObject<GMoveArrow>())
+		{
+			// Arrow->SetMesh();
+
+			Arrow->SetPosition(XMFLOAT3(0.f, 10.f, 0.f));
+			Arrow->SetScale(fvector_3d(1.f));
+		}
+
 		//¹¹½¨Mesh
 		/*if (GMesh* BoxMesh = MeshManage->CreateBoxMesh(4.f, 3.f, 1.5f))
 		{
