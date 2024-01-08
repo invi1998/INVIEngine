@@ -91,14 +91,8 @@ void GQuaternionCamera::OnUpdate(float ts)
             MouseZoom(delta.y);
         }
     }
-	if (FInput::IsKeyReleased(VK_LMENU))		// 释放alt键
-	{
-		m_InitialMousePosition.x = FInput::GetMouseX();
-		m_InitialMousePosition.y = FInput::GetMouseY();
-	}
-
 	// 按住ctrl键
-	if (FInput::IsKeyPressed(VK_LCONTROL))		// 按住左ctrl
+	else if (FInput::IsKeyPressed(VK_LCONTROL))		// 按住左ctrl
 	{
 		const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
 		// ENGINE_LOG_WARNING("IsKeyPressed:(%f, %f)", mouse.x, mouse.y);
@@ -110,6 +104,15 @@ void GQuaternionCamera::OnUpdate(float ts)
 		{
 			// 鼠标左键
 			MouseStrafe(delta);		// 上下左右平移摄像机
+		}
+	}
+	else
+	{
+		// 如果是鼠标左键点击
+		if (FInput::IsMouseButtonPressed(VK_LBUTTON))
+		{
+			const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
+			OnClickScene(mouse);
 		}
 	}
 
@@ -142,12 +145,6 @@ void GQuaternionCamera::OnUpdate(float ts)
 	{
 		XMFLOAT2 delta = { -2.f, 0.f };
 		MouseRotate(delta);
-	}
-	// 如果是鼠标左键点击
-	if (FInput::IsMouseButtonPressed(VK_LBUTTON))
-	{
-		const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
-		OnClickScene(mouse);
 	}
 
 	BuildViewMatrix();
