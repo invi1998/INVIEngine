@@ -48,15 +48,32 @@ void GQuaternionCamera::ExecuteInput()
     OnUpdate(1.0f);
 }
 
+void GQuaternionCamera::MouseStrafe(const XMFLOAT2& delta)
+{
+	XMFLOAT3 cameraPosition = GetPosition();
+	XMVECTOR right = XMLoadFloat3(&GetRightVector());
+	XMVECTOR position = XMLoadFloat3(&cameraPosition);
+
+	XMVECTOR AmountMovement = XMVectorReplicate(delta.x * 10.f);
+	XMStoreFloat3(&cameraPosition, XMVectorMultiplyAdd(AmountMovement, right, position));
+
+	XMVECTOR up = XMLoadFloat3(&GetUpVector());
+	XMVECTOR AmountMovementUp = XMVectorReplicate(delta.y * 10.f);
+	XMStoreFloat3(&cameraPosition, XMVectorMultiplyAdd(AmountMovementUp, up, XMLoadFloat3(&cameraPosition)));
+
+	SetPosition(cameraPosition);
+}
+
 void GQuaternionCamera::OnUpdate(float ts)
 {
 	
-    if (FInput::IsKeyPressed(VK_LMENU))
+    if (FInput::IsKeyPressed(VK_LMENU))	// 按住alt键
     {
         const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
 		// ENGINE_LOG_WARNING("IsKeyPressed:(%f, %f)", mouse.x, mouse.y);
         XMFLOAT2 delta = { (mouse.x - m_InitialMousePosition.x) * 0.003f, (mouse.y - m_InitialMousePosition.y) * 0.003f };
-        m_InitialMousePosition = mouse;
+        m_InitialMousePosition.x = mouse.x;
+		m_InitialMousePosition.y = mouse.y;
 
         if (FInput::IsMouseButtonPressed(VK_LBUTTON))
         {
@@ -74,6 +91,28 @@ void GQuaternionCamera::OnUpdate(float ts)
             MouseZoom(delta.y);
         }
     }
+	if (FInput::IsKeyReleased(VK_LMENU))		// 释放alt键
+	{
+		m_InitialMousePosition.x = FInput::GetMouseX();
+		m_InitialMousePosition.y = FInput::GetMouseY();
+	}
+
+	// 按住ctrl键
+	if (FInput::IsKeyPressed(VK_LCONTROL))		// 按住左ctrl
+	{
+		const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
+		// ENGINE_LOG_WARNING("IsKeyPressed:(%f, %f)", mouse.x, mouse.y);
+		XMFLOAT2 delta = { (mouse.x - m_InitialMousePosition.x) * 0.003f, (mouse.y - m_InitialMousePosition.y) * 0.003f };
+		m_InitialMousePosition.x = mouse.x;
+		m_InitialMousePosition.y = mouse.y;
+
+		if (FInput::IsMouseButtonPressed(VK_LBUTTON))
+		{
+			// 鼠标左键
+			MouseStrafe(delta);		// 上下左右平移摄像机
+		}
+	}
+
     if (FInput::IsKeyReleased(VK_TAB))
     {
         CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
@@ -290,39 +329,38 @@ float GQuaternionCamera::ZoomSpeed() const
 
 void GQuaternionCamera::RotateAroundXAxis(float rotateDegrees)
 {
-	XMMATRIX RotationY = XMMatrixRotationAxis(XMLoadFloat3(&GetRightVector()), rotateDegrees);
+	XMVECTOR right = XMLoadFloat3(&GetRightVector());
+	XMVECTOR forward = XMLoadFloat3(&GetForwardVector());
+	XMVECTOR up = XMLoadFloat3(&GetUpVector());
+
+	XMMATRIX RotationY = XMMatrixRotationAxis(right, rotateDegrees);
 
 	// 计算各个方向和按照z轴旋转后的最终效果
-	XMVECTOR upVector = XMVector3TransformNormal(XMLoadFloat3(&GetUpVector()), RotationY);
-	XMFLOAT3 up = {};
-	XMStoreFloat3(&up, upVector);
-	SetUpVector(up);
+	XMVECTOR upVector = XMVector3TransformNormal(up, RotationY);
+	SetUpVector(upVector);
 
-	XMVECTOR forwardVector = XMVector3TransformNormal(XMLoadFloat3(&GetForwardVector()), RotationY);
-	XMFLOAT3 forward = {};
-	XMStoreFloat3(&forward, forwardVector);
-	SetForwardVector(forward);
+	XMVECTOR forwardVector = XMVector3TransformNormal(forward, RotationY);
+	SetForwardVector(forwardVector);
 }
 
 void GQuaternionCamera::RotateAroundYAxis(float rotateDegrees)
 {
+
+	XMVECTOR right = XMLoadFloat3(&GetRightVector());
+	XMVECTOR forward = XMLoadFloat3(&GetForwardVector());
+	XMVECTOR up = XMLoadFloat3(&GetUpVector());
+
 	XMMATRIX RotationZ = XMMatrixRotationY(rotateDegrees);
 
 	// 计算各个方向和按照z轴旋转后的最终效果
-	XMVECTOR rightVector = XMVector3TransformNormal(XMLoadFloat3(&GetRightVector()), RotationZ);
-	XMFLOAT3 right = {};
-	XMStoreFloat3(&right, rightVector);
-	SetUpVector(right);
+	XMVECTOR rightVector = XMVector3TransformNormal(right, RotationZ);
+	SetUpVector(rightVector);
 
-	XMVECTOR upVector = XMVector3TransformNormal(XMLoadFloat3(&GetUpVector()), RotationZ);
-	XMFLOAT3 up = {};
-	XMStoreFloat3(&up, upVector);
-	SetUpVector(up);
+	/*XMVECTOR upVector = XMVector3TransformNormal(up, RotationZ);
+	SetUpVector(upVector);*/
 
-	XMVECTOR forwardVector = XMVector3TransformNormal(XMLoadFloat3(&GetForwardVector()), RotationZ);
-	XMFLOAT3 forward = {};
-	XMStoreFloat3(&forward, forwardVector);
-	SetForwardVector(forward);
+	XMVECTOR forwardVector = XMVector3TransformNormal(forward, RotationZ);
+	SetForwardVector(forwardVector);
 }
 
 void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)

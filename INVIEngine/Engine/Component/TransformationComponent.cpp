@@ -85,7 +85,7 @@ void CTransformationComponent::CorrectionVector()
 
 	Forward = XMVector3Normalize(Forward);
 	Up = XMVector3Normalize(XMVector3Cross(Forward, Right));		// 叉乘结果得到上向量，然后归一化
-	Right = XMVector3Normalize(XMVector3Cross(Up, Forward));		// 叉乘结果得到右向量，然后归一化
+	Right = XMVector3Cross(Up, Forward);		// 叉乘结果得到右向量，然后归一化
 
 	XMStoreFloat3(&ForwardVector, Forward);
 	XMStoreFloat3(&RightVector, Right);

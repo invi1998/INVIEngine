@@ -19,6 +19,7 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     virtual void ExecuteInput();
+    void MouseStrafe(const XMFLOAT2& delta);
     void OnUpdate(float ts);
 
     FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
@@ -51,7 +52,7 @@ private:
     float Yaw = 0.0f;
     float Roll = 0.0f;
 
-	XMFLOAT2 m_InitialMousePosition = { 0.0f, 0.0f };
+	POINT m_InitialMousePosition;
 
     ECameraType CameraType = ECameraType::CameraRoaming;        // 默认漫游模式
 
