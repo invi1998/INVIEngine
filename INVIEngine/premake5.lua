@@ -18,6 +18,8 @@ project "INVIEngine"
 		"Engine/**.cpp",
 		"Editor/**.h",
 		"Editor/**.cpp",
+		"Common/**.h",
+		"Common/**.cpp",
 		-- "vendor/simple_library/**.h",
 		-- "vendor/simple_library/**.c",
 		-- "vendor/simple_library/**.cpp",
