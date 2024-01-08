@@ -1,4 +1,4 @@
-// 射线选中物体的shader
+// 操作物体的shader
 
 #include "Material.hlsl"
 
