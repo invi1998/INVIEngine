@@ -9,6 +9,7 @@
 #include "RenderLayer/OpaqueReflectorRenderLayer.h"
 #include "RenderLayer/OpaqueRenderLayer.h"
 #include "RenderLayer/OpaqueShadowRenderLayer.h"
+#include "RenderLayer/OperationHandleRenderLayer.h"
 #include "RenderLayer/SelectRenderLayer.h"
 #include "RenderLayer/TransparentRenderLayer.h"
 
@@ -25,6 +26,7 @@ FRenderLayerManage::FRenderLayerManage()
 	CreateRenderLayer<FTransparentRenderLayer>();
 	CreateRenderLayer<FOpaqueReflectorRenderLayer>();
 	CreateRenderLayer<FOpaqueShadowRenderLayer>();
+	CreateRenderLayer<FOperationHandleRenderLayer>();
 }
 
 FRenderLayerManage::~FRenderLayerManage()

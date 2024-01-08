@@ -15,6 +15,7 @@ enum EPipelineState : UINT
 	PerspectiveShadow = 7,			// 透视阴影
 	ViewtianeShadow = 8,			// 全向阴影
 	Selection = 9,					// 选择
+	Operation = 10,					// 操作
 };
 
 
