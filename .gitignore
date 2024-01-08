@@ -50,3 +50,6 @@ log/
 **.vcxproj.user
 **.csproj
 
+# imgui
+**/imgui.ini
+
