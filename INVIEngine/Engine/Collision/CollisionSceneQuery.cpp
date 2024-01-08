@@ -39,7 +39,7 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 		if (renderData->Bounds.Intersects(originPointVW, directionVW, boundTime))
 		{
 			// 如果相交时间小于0，那么就说明射线和模型的AABB包围盒不相交
-			if (boundTime < 0.f)
+			if (boundTime <= 0.f)
 			{
 				continue;
 			}
