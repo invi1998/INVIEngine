@@ -15,6 +15,8 @@ GMoveArrow::GMoveArrow()
 	YAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
 	ZAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
 
+	GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
+
 	// …Ë÷√ƒ£–Õ
 	GMoveArrow::SetMesh();
 }

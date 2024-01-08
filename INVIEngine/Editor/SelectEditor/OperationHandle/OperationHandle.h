@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor/Core/ActorObject.h"
+#include "Component/Mesh/Core/MeshComponentType.h"
 #include "Interface/DirectXDeviceInterface.h"
 
 class CInputComponent;
@@ -12,6 +13,8 @@ public:
 	virtual ~GOperationHandle() override = default;
 
 	virtual void SetMesh() = 0;
+
+	virtual void SetMeshRenderLayerType(EMeshRenderLayerType mesh_render_layer);
 
 protected:
 	CVARIABLE()
