@@ -32,6 +32,7 @@ void FOutLineEditor::DrawEditor()
 		}
 		ImGui::EndChild();
 	}
+	ImGui::End();
 }
 
 void FOutLineEditor::ExitEditor()

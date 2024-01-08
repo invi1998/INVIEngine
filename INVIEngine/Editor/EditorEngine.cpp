@@ -69,6 +69,7 @@ void CEditorEngine::BuildEditor()
 
 	Toolbar->BuildEditor();
 	LogEditor->BuildEditor();
+	OutLineEditor->BuildEditor();
 }
 
 void CEditorEngine::DrawEditor()
@@ -77,12 +78,14 @@ void CEditorEngine::DrawEditor()
 
 	Toolbar->DrawEditor();
 	LogEditor->DrawEditor();
+	OutLineEditor->DrawEditor();
 }
 
 void CEditorEngine::ExitEditor()
 {
 	Toolbar->ExitEditor();
 	LogEditor->ExitEditor();
+	OutLineEditor->ExitEditor();
 }
 
 void CEditorEngine::DrawLayer()
