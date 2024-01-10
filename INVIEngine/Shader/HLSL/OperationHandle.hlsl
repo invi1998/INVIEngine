@@ -9,8 +9,8 @@ struct MeshVertexIn
 
 struct MeshVertexOut
 {
-	float4 PositionH : SV_POSITION;
 	float4 WorldPosition : POSITION;
+	float4 PositionH : SV_POSITION;
 };
 
 MeshVertexOut VSMain(MeshVertexIn mv)

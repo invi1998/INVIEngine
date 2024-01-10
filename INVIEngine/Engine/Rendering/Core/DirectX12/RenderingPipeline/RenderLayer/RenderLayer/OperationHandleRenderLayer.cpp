@@ -43,8 +43,8 @@ void FOperationHandleRenderLayer::BuildPSO()
 	FRenderLayer::BuildPSO();
 
 	CD3DX12_RASTERIZER_DESC RasterizerDesc(D3D12_DEFAULT);
-	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;		// 填充模式为实体
+	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;		// 背面裁剪
 
 	DirectXPipelineState->SetRasterizerState(RasterizerDesc);
 
@@ -52,7 +52,7 @@ void FOperationHandleRenderLayer::BuildPSO()
 	DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 	DirectXPipelineState->SetDepthStencilState(DepthStencilDesc);
 
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Operation);
+	DirectXPipelineState->BuildPipelineState(EPipelineState::Operation);	// 创建PSO
 }
 
 void FOperationHandleRenderLayer::Draw(float deltaTime)
@@ -64,5 +64,5 @@ void FOperationHandleRenderLayer::Draw(float deltaTime)
 
 void FOperationHandleRenderLayer::ResetPSO()
 {
-	DirectXPipelineState->BuildPipelineState(EPipelineState::Operation);
+	DirectXPipelineState->ResetPSO(EPipelineState::Operation);	// 重置PSO
 }
