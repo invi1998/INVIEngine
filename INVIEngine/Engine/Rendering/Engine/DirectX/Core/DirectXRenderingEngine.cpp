@@ -91,7 +91,9 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			// Arrow->SetMesh();
 
-			Arrow->SetPosition(XMFLOAT3(0.f, 10.f, 0.f));
+			Arrow->SetPosition(XMFLOAT3(0.f, 30.f, 0.f));
+
+			// Arrow->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
 		}
 
 		//¹¹½¨Mesh

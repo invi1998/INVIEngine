@@ -15,12 +15,13 @@ GMoveArrow::GMoveArrow()
 	YAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
 	ZAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
 
+	GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
+
 	// 设置模型
 	GMoveArrow::SetMesh();
 
 	ResetColor();
 
-	GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
 }
 
 void GMoveArrow::SetMesh()
@@ -32,5 +33,7 @@ void GMoveArrow::SetMesh()
 	// 旋转模型，使其成为正确的坐标系指向
 	XAxisComponent->SetRotation({ -90.0f, 0.0f, 0.0f });
 	YAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
+
+	// ResetColor();
 
 }

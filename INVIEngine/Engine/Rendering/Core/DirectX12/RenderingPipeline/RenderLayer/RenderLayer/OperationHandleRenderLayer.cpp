@@ -7,7 +7,7 @@ FOperationHandleRenderLayer::FOperationHandleRenderLayer()
 {
 	RenderPriority = 4678;
 
-	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_SELECT;
+	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_OPERATE;
 }
 
 void FOperationHandleRenderLayer::BuildShader()
