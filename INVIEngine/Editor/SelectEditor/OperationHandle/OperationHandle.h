@@ -16,6 +16,10 @@ public:
 
 	virtual void SetMeshRenderLayerType(EMeshRenderLayerType mesh_render_layer);
 
+	void ResetColor();
+
+	void ResetColor(CCustomMeshComponent* axis_component, const XMFLOAT4& color);
+
 protected:
 	CVARIABLE()
 	CCustomMeshComponent* XAxisComponent = nullptr;	// X÷·

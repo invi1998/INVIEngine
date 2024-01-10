@@ -18,6 +18,8 @@ GMoveArrow::GMoveArrow()
 	// …Ë÷√ƒ£–Õ
 	GMoveArrow::SetMesh();
 
+	ResetColor();
+
 	GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
 }
 

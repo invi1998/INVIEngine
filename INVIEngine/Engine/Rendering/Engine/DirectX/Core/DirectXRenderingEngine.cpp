@@ -92,7 +92,6 @@ int CDirectXRenderingEngine::PostInit()
 			// Arrow->SetMesh();
 
 			Arrow->SetPosition(XMFLOAT3(0.f, 10.f, 0.f));
-			Arrow->SetScale(fvector_3d(1.f));
 		}
 
 		//¹¹½¨Mesh
