@@ -62,13 +62,8 @@ bool FRayCastSystemLibrary::CheckObjectIsSelected(CWorld* world, const XMFLOAT2&
 
 	if (GetRaycastByscreen(world, mousePos, OriginPoint, Direction, InverseViewMatrix))
 	{
-		FCollisionSceneQuery::RayCastSingleQuery(world, OriginPoint, Direction, InverseViewMatrix, OutHitResult);
-
-		if (OutHitResult.HitActor == actor)
-		{
-			return true;
-		}
+		FCollisionSceneQuery::RayCastSingleQuery(world, OriginPoint, Direction, InverseViewMatrix, OutHitResult, actor);
 	}
 
-	return false;
+	return OutHitResult.bHit;
 }

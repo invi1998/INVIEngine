@@ -68,24 +68,22 @@ void GOperationHandle::OnMouseMoved()
 	XMFLOAT2 mousePos = { FInput::GetMouseX(), FInput::GetMouseX() };
 
 	EngineType::FHitResult HitResult{};
-	FRayCastSystemLibrary::GetHitResultByScreen(GetWorld(), mousePos, HitResult);
+	FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
 
 	if (HitResult.bHit)
 	{
+		ResetColor();
 		if (HitResult.HitComponent == XAxisComponent)
 		{
-			ResetColor();
-			ResetColor(XAxisComponent, { 1.f, 0.75f, 0.f, 1.f });
+			ResetColor(XAxisComponent, { 1.f, 0.95f, 0.f, 1.f });
 		}
 		else if (HitResult.HitComponent == YAxisComponent)
 		{
-			ResetColor();
-			ResetColor(YAxisComponent, { 1.f, 0.75f, 0.f, 1.f });
+			ResetColor(YAxisComponent, { 1.f, 0.95f, 0.f, 1.f });
 		}
 		else if (HitResult.HitComponent == ZAxisComponent)
 		{
-			ResetColor();
-			ResetColor(ZAxisComponent, { 1.f, 0.75f, 0.f, 1.f });
+			ResetColor(ZAxisComponent, { 1.f, 0.95f, 0.f, 1.f });
 		}
 	}
 	else
