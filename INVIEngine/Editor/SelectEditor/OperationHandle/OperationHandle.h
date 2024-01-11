@@ -20,6 +20,10 @@ public:
 
 	void ResetColor(CCustomMeshComponent* axis_component, const XMFLOAT4& color);
 
+	void BeginInit() override;
+
+	void ExecuteInput();
+
 protected:
 	CVARIABLE()
 	CCustomMeshComponent* XAxisComponent = nullptr;	// XÖá
@@ -32,5 +36,7 @@ protected:
 
 	CVARIABLE()
 	CInputComponent* InputComponent = nullptr;	// ÊäÈë×é¼þ
+
+	virtual void OnMouseMoved(const XMFLOAT2& mouse_delta);
 };
 

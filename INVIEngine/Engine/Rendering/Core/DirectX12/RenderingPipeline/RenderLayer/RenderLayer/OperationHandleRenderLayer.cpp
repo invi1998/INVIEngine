@@ -44,7 +44,7 @@ void FOperationHandleRenderLayer::BuildPSO()
 
 	CD3DX12_RASTERIZER_DESC RasterizerDesc(D3D12_DEFAULT);
 	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;		// 填充模式为实体
-	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;			// 背面裁剪
+	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;			// 背面裁剪，也就是背面不渲染
 
 	DirectXPipelineState->SetRasterizerState(RasterizerDesc);
 
