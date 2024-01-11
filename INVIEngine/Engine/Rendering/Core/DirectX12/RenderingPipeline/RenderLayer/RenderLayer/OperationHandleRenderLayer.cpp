@@ -44,12 +44,12 @@ void FOperationHandleRenderLayer::BuildPSO()
 
 	CD3DX12_RASTERIZER_DESC RasterizerDesc(D3D12_DEFAULT);
 	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;		// 填充模式为实体
-	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;		// 背面裁剪
+	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;			// 背面裁剪
 
 	DirectXPipelineState->SetRasterizerState(RasterizerDesc);
 
 	CD3DX12_DEPTH_STENCIL_DESC DepthStencilDesc = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;	// 深度测试函数，这里设置为始终通过深度测试，这样就不会因为深度测试而丢失一些片段（因为操作句柄是在模型上的，所以可能会有一些片段被深度测试给丢弃了，所以这里设置为始终通过深度测试）
 	DirectXPipelineState->SetDepthStencilState(DepthStencilDesc);
 
 	DirectXPipelineState->BuildPipelineState(EPipelineState::Operation);	// 创建PSO
