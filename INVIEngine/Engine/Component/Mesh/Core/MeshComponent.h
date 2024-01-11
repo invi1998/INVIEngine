@@ -41,6 +41,8 @@ public:
 	void SetPickUp(bool pickUp) { bPickUp = pickUp; }
 
 	bool IsPickUp() const { return bPickUp; }
+
+	bool IsOperateHandle() const { return MeshRenderLayerType == EMeshRenderLayerType::RENDER_LAYER_OPERATE; }
 	
 public:
 

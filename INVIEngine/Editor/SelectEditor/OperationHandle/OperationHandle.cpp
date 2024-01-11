@@ -57,4 +57,5 @@ void GOperationHandle::ExecuteInput()
 
 void GOperationHandle::OnMouseMoved(const XMFLOAT2& mouse_delta)
 {
+
 }
