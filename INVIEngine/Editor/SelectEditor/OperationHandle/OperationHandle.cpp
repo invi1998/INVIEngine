@@ -4,6 +4,7 @@
 #include "Component/InputComponent.h"
 #include "Component/Mesh/CustomMeshComponent.h"
 #include "Material/Core/Material.h"
+#include "Misc/RaycastSystemLibrary.h"
 
 GOperationHandle::GOperationHandle()
 {
@@ -55,7 +56,40 @@ void GOperationHandle::ExecuteInput()
 	}
 }
 
-void GOperationHandle::OnMouseMoved(const XMFLOAT2& mouse_delta)
+void GOperationHandle::Tick(float DeltaTime)
 {
+	GActorObject::Tick(DeltaTime);
 
+	OnMouseMoved();
+}
+
+void GOperationHandle::OnMouseMoved()
+{
+	XMFLOAT2 mousePos = { FInput::GetMouseX(), FInput::GetMouseX() };
+
+	EngineType::FHitResult HitResult{};
+	FRayCastSystemLibrary::GetHitResultByScreen(GetWorld(), mousePos, HitResult);
+
+	if (HitResult.bHit)
+	{
+		if (HitResult.HitComponent == XAxisComponent)
+		{
+			ResetColor();
+			ResetColor(XAxisComponent, { 1.f, 0.75f, 0.f, 1.f });
+		}
+		else if (HitResult.HitComponent == YAxisComponent)
+		{
+			ResetColor();
+			ResetColor(YAxisComponent, { 1.f, 0.75f, 0.f, 1.f });
+		}
+		else if (HitResult.HitComponent == ZAxisComponent)
+		{
+			ResetColor();
+			ResetColor(ZAxisComponent, { 1.f, 0.75f, 0.f, 1.f });
+		}
+	}
+	else
+	{
+		ResetColor();
+	}
 }

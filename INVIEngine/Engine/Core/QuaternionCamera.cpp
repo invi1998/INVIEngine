@@ -10,6 +10,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 
 FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
+// FCaptureOnMousesMoveDelegate MouseMoveDelegate;
 
 //const XMVECTOR GQuaternionCamera::DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 //const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);

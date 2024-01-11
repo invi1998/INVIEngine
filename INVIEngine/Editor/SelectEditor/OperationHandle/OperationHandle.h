@@ -24,6 +24,8 @@ public:
 
 	void ExecuteInput();
 
+	void Tick(float DeltaTime) override;
+
 protected:
 	CVARIABLE()
 	CCustomMeshComponent* XAxisComponent = nullptr;	// XÖá
@@ -37,6 +39,6 @@ protected:
 	CVARIABLE()
 	CInputComponent* InputComponent = nullptr;	// ÊäÈë×é¼þ
 
-	virtual void OnMouseMoved(const XMFLOAT2& mouse_delta);
+	virtual void OnMouseMoved();
 };
 

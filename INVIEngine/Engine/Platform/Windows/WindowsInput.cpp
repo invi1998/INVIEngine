@@ -42,3 +42,4 @@ std::pair<float, float> FInput::GetMousePosition()
 	GetCursorPos(&pt);
 	return { static_cast<float>(pt.x), static_cast<float>(pt.y) };
 }
+
