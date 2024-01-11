@@ -39,6 +39,6 @@ protected:
 	CVARIABLE()
 	CInputComponent* InputComponent = nullptr;	// ÊäÈë×é¼ş
 
-	virtual void OnMouseMoved();
+	virtual void OnMouseMoved(int x, int y);
 };
 

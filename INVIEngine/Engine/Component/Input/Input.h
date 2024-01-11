@@ -4,7 +4,7 @@
 #include "MouseCode.h"
 
 DEFINITION_MULTICAST_SINGLE_DELEGATE(FCaptureOnMousesWheelsDelegate, void, int, int, float);
-DEFINITION_MULTICAST_SINGLE_DELEGATE(FCaptureOnMousesMoveDelegate, void, int, int, float);
+DEFINITION_MULTICAST_SINGLE_DELEGATE(FCaptureOnMousesMoveDelegate, void, int, int);
 
 extern FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 extern FCaptureOnMousesMoveDelegate MouseMoveDelegate;

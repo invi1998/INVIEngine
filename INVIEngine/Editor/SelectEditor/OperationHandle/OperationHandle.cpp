@@ -6,6 +6,9 @@
 #include "Material/Core/Material.h"
 #include "Misc/RaycastSystemLibrary.h"
 
+
+FCaptureOnMousesMoveDelegate MouseMoveDelegate;
+
 GOperationHandle::GOperationHandle()
 {
 	FCreateObjectParams params{};
@@ -15,6 +18,7 @@ GOperationHandle::GOperationHandle()
 	// InputComponent->OnMouseWheelDelegate.Bind(this, &GOperationHandle::OnMouseMoved);
 	// 绑定键盘鼠标事件
 	InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GOperationHandle::ExecuteInput);
+	InputComponent->OnMouseMoveDelegate.Bind(this, &GOperationHandle::OnMouseMoved);
 }
 
 void GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType mesh_render_layer)
@@ -59,13 +63,11 @@ void GOperationHandle::ExecuteInput()
 void GOperationHandle::Tick(float DeltaTime)
 {
 	GActorObject::Tick(DeltaTime);
-
-	OnMouseMoved();
 }
 
-void GOperationHandle::OnMouseMoved()
+void GOperationHandle::OnMouseMoved(int x, int y)
 {
-	XMFLOAT2 mousePos = { FInput::GetMouseX(), FInput::GetMouseX() };
+	XMFLOAT2 mousePos(x, y);
 
 	EngineType::FHitResult HitResult{};
 	FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);

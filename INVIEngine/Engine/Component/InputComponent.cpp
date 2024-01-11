@@ -12,6 +12,8 @@ void CInputComponent::BeginInit()
 
 	MousesWheelsDelegate.AddFunction(this, &CInputComponent::OnMouseWheel);
 
+	MouseMoveDelegate.AddFunction(this, &CInputComponent::OnMouseMoved);
+
 }
 
 void CInputComponent::Tick(float DeltaTime)
@@ -36,6 +38,14 @@ void CInputComponent::OnMouseWheel(int X, int Y, float InDelta)
 	if (OnMouseWheelDelegate.IsBound())
 	{
 		OnMouseWheelDelegate.Execute((int)X, (int)Y, (float)InDelta);
+	}
+}
+
+void CInputComponent::OnMouseMoved(int x, int y)
+{
+	if (OnMouseMoveDelegate.IsBound())
+	{
+		OnMouseMoveDelegate.Execute((int)x, (int)y);
 	}
 }
 
