@@ -72,7 +72,7 @@ void GOperationHandle::Tick(float DeltaTime)
 	GActorObject::Tick(DeltaTime);
 }
 
-GOperationHandle::ESelectedAxis GOperationHandle::GetSelectedAxis() const
+ESelectedAxis GOperationHandle::GetSelectedAxis() const
 {
 	if (SelectedAxisComponent)
 	{
@@ -165,9 +165,4 @@ void GOperationHandle::OnMouseLeftDown(int x, int y)
 void GOperationHandle::OnMouseLeftUp(int x, int y)
 {
 	SelectedAxisComponent = nullptr;
-}
-
-void GOperationHandle::OnMousePressed()
-{
-
 }

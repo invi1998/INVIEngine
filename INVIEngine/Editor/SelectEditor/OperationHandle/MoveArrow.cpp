@@ -40,11 +40,26 @@ void GMoveArrow::SetMesh()
 
 }
 
-extern GActorObject* SelectedActor;	// 被选中的物体
 void GMoveArrow::OnMouseMoved(int x, int y)
 {
 	GOperationHandle::OnMouseMoved(x, y);
 
+	if (FInput::IsMouseButtonPressed(VK_LBUTTON))
+	{
+		OnMousePressed(x, y);
+	}
+}
+
+void GMoveArrow::OnMouseLeftDown(int x, int y)
+{
+	GOperationHandle::OnMouseLeftDown(x, y);
+}
+
+extern GActorObject* SelectedActor;	// 被选中的物体
+
+
+void GMoveArrow::OnMousePressed(int x, int y)
+{
 	if (SelectedActor)
 	{
 		XMVECTOR ViewOriginPoint{};		// 视口下射线原点（非屏幕坐标）
@@ -63,10 +78,40 @@ void GMoveArrow::OnMouseMoved(int x, int y)
 			// 获取选中物体的位置
 			XMVECTOR ActorLocation = XMLoadFloat3(&SelectedActor->GetPosition());
 
+			// 鼠标拖拽的轴的方向
+			XMVECTOR DragDirection{};
+
 			// 根据选中的轴向，获取射线的方向
+			switch (GetSelectedAxis())
+			{
+			case AXIS_X:
+			{
+				// 鼠标拖拽的是X轴，也就是物体的Right方向
+				XMFLOAT3 RightVector = SelectedActor->GetRightVector();
+				DragDirection = XMLoadFloat3(&RightVector);
+				break;
+			};
+			case AXIS_Y:
+			{
+				// 鼠标拖拽的是Y轴，也就是物体的Up方向
+				XMFLOAT3 UpVector = SelectedActor->GetUpVector();
+				DragDirection = XMLoadFloat3(&UpVector);
+				break;
+			};
+			case AXIS_Z:
+			{
+				// 鼠标拖拽的是Z轴，也就是物体的Forward方向
+				XMFLOAT3 ForwardVector = SelectedActor->GetForwardVector();
+				DragDirection = XMLoadFloat3(&ForwardVector);
+				break;
+			};
+			default: break;
+			}
+
+			// 计算两个射线方向向量的叉乘的模
+			float len = XMVectorGetX(XMVector3Length(XMVector3Cross(WorldDirection, DragDirection)));
+
 		}
 	}
-
-	
 }
 

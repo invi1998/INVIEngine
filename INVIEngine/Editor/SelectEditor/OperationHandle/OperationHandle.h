@@ -6,17 +6,17 @@
 class CInputComponent;
 class CCustomMeshComponent;
 
+// 选中的轴向
+enum ESelectedAxis
+{
+	AXIS_NONE = 0,
+	AXIS_X = 1,		// 对应物体的Right方向
+	AXIS_Y = 2,		// 对应物体的Up方向
+	AXIS_Z = 3,		// 对应物体的Forward方向
+};
+
 class GOperationHandle : public GActorObject, public IDirectXDeviceInterface
 {
-	// 选中的轴向
-	enum ESelectedAxis
-	{
-		AXIS_NONE = 0,
-		AXIS_X = 1,		// 对应物体的Right方向
-		AXIS_Y = 2,		// 对应物体的Up方向
-		AXIS_Z = 3,		// 对应物体的Forward方向
-	};
-
 public:
 	GOperationHandle();
 	virtual ~GOperationHandle() override = default;
@@ -55,8 +55,6 @@ protected:
 	virtual void OnMouseLeftDown(int x, int y);
 
 	virtual void OnMouseLeftUp(int x, int y);
-
-	virtual void OnMousePressed();
 
 private:
 	ESelectedAxis SelectedAxis = AXIS_NONE;	// 选中的轴向
