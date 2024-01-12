@@ -121,7 +121,14 @@ void GOperationHandle::OnMouseMoved(int x, int y)
 	}
 	else
 	{
-		ResetColor();
+		if (SelectedAxisComponent)
+		{
+			ResetColor(dynamic_cast<CCustomMeshComponent*>(SelectedAxisComponent), { 1.f, 0.95f, 0.f, 1.f });
+		}
+		else
+		{
+			ResetColor();
+		}
 	}
 }
 
