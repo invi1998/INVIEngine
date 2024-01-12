@@ -8,5 +8,7 @@ public:
 	GMoveArrow();
 
 	void SetMesh() override;
+
+	void OnMouseMoved(int x, int y) override;
 };
 

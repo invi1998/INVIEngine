@@ -8,6 +8,10 @@
 
 
 FCaptureOnMousesMoveDelegate MouseMoveDelegate;
+FCaptureOnLMousesButtonDownDelegate LeftMouseDownDelegate;	// 左键鼠标事件
+FCaptureOnLMousesButtonUpDelegate LeftMouseUpDelegate;		// 左键鼠标抬起事件
+
+extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
 
 GOperationHandle::GOperationHandle()
 {
@@ -19,6 +23,9 @@ GOperationHandle::GOperationHandle()
 	// 绑定键盘鼠标事件
 	InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GOperationHandle::ExecuteInput);
 	InputComponent->OnMouseMoveDelegate.Bind(this, &GOperationHandle::OnMouseMoved);
+
+	InputComponent->OnMouseLeftDownDelegate.Bind(this, &GOperationHandle::OnMouseLeftDown);
+	InputComponent->OnMouseLeftUpDelegate.Bind(this, &GOperationHandle::OnMouseLeftUP);
 }
 
 void GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType mesh_render_layer)
@@ -65,6 +72,30 @@ void GOperationHandle::Tick(float DeltaTime)
 	GActorObject::Tick(DeltaTime);
 }
 
+GOperationHandle::ESelectedAxis GOperationHandle::GetSelectedAxis() const
+{
+	if (SelectedAxisComponent)
+	{
+		if (SelectedAxisComponent == XAxisComponent)
+		{
+			return AXIS_X;
+		}
+		else if (SelectedAxisComponent == YAxisComponent)
+		{
+			return AXIS_Y;
+		}
+		else if (SelectedAxisComponent == ZAxisComponent)
+		{
+			return AXIS_Z;
+		}
+		else
+		{
+			return AXIS_NONE;
+		}
+	}
+	return AXIS_NONE;
+}
+
 void GOperationHandle::OnMouseMoved(int x, int y)
 {
 	XMFLOAT2 mousePos(x, y);
@@ -92,4 +123,44 @@ void GOperationHandle::OnMouseMoved(int x, int y)
 	{
 		ResetColor();
 	}
+}
+
+void GOperationHandle::OnMouseLeftDown(int x, int y)
+{
+	XMFLOAT2 mousePos(x, y);
+
+	EngineType::FHitResult HitResult{};
+	FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
+
+	if (HitResult.bHit)
+	{
+		if (HitResult.HitComponent == XAxisComponent)
+		{
+			SelectedAxisComponent = XAxisComponent;
+		}
+		else if (HitResult.HitComponent == YAxisComponent)
+		{
+			SelectedAxisComponent = YAxisComponent;
+		}
+		else if (HitResult.HitComponent == ZAxisComponent)
+		{
+			SelectedAxisComponent = ZAxisComponent;
+		}
+
+		OnMousePressed();
+	}
+	else
+	{
+		SelectedAxisComponent = nullptr;
+	}
+}
+
+void GOperationHandle::OnMouseLeftUp(int x, int y)
+{
+	SelectedAxisComponent = nullptr;
+}
+
+void GOperationHandle::OnMousePressed()
+{
+
 }

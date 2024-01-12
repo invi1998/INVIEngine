@@ -6,7 +6,7 @@ class CWorld;
 
 struct FRayCastSystemLibrary
 {
-	static bool GetRaycastByscreen(CWorld* world, const XMFLOAT2& mousePos, XMVECTOR& originPoint, XMVECTOR& direction, XMMATRIX& viewInverseMatrix);
+	static bool GetRayCastParamByScreen(CWorld* world, const XMFLOAT2& mousePos, XMVECTOR& originPoint, XMVECTOR& direction, XMMATRIX& viewInverseMatrix);	// 获取屏幕坐标下的射线参数
 
 	static void GetHitResultByScreen(CWorld* world, const XMFLOAT2& mousePos, EngineType::FHitResult& OutHitResult);
 

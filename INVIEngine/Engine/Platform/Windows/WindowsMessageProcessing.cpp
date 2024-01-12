@@ -38,12 +38,18 @@ LRESULT EngineWidowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		g_pressedKeys.erase(wParam);
 		g_releasedKeys.insert(wParam);
 		return 0;
-	//case WM_RBUTTONDOWN:	// 右键按下
-	//	MouseDownDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-	//	return 0;
-	//case WM_LBUTTONUP:		// 右键抬起
-	//	MouseUpDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-	//	return 0;
+	case WM_LBUTTONDOWN:	// 左键按下
+		LeftMouseDownDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	case WM_LBUTTONUP:		// 左键抬起
+		LeftMouseUpDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	case WM_RBUTTONDOWN:	// 右键按下
+		RightMouseDownDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	case WM_RBUTTONUP:		// 右键抬起
+		RightMouseUpDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
 	case WM_MOUSEMOVE:		// 鼠标移动
 		MouseMoveDelegate.Broadcast(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;

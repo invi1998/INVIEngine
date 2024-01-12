@@ -361,6 +361,8 @@ void GQuaternionCamera::RotateAroundYAxis(float rotateDegrees)
 	SetForwardVector(forwardVector);
 }
 
+
+extern GActorObject* SelectedActor;	// 被选中的物体
 void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 {
 	// ENGINE_LOG_SUCCESS("pos: (%f, %f)", mousePos.x, mousePos.y);
@@ -378,7 +380,7 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 		{
 			//renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 清空之前的选中
 			//renderLayerManage->Add(HitResult.HitRenderingData, static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 添加选中
-
+			SelectedActor = HitResult.HitActor;
 			renderLayerManage->HighlightObject(HitResult.HitRenderingData);
 		}
 	}
@@ -388,6 +390,7 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 		{
 			renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 清空之前的选中
 		}
+		SelectedActor = nullptr;
 	}
 }
 
