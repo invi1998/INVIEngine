@@ -10,6 +10,8 @@
 FCaptureOnMousesMoveDelegate MouseMoveDelegate;
 FCaptureOnLMousesButtonDownDelegate LeftMouseDownDelegate;	// 左键鼠标事件
 FCaptureOnLMousesButtonUpDelegate LeftMouseUpDelegate;		// 左键鼠标抬起事件
+FCaptureOnRMousesButtonDownDelegate RightMouseDownDelegate;	// 右键鼠标事件
+FCaptureOnRMousesButtonUpDelegate RightMouseUpDelegate;		// 右键鼠标抬起事件
 
 extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
 
@@ -25,7 +27,7 @@ GOperationHandle::GOperationHandle()
 	InputComponent->OnMouseMoveDelegate.Bind(this, &GOperationHandle::OnMouseMoved);
 
 	InputComponent->OnMouseLeftDownDelegate.Bind(this, &GOperationHandle::OnMouseLeftDown);
-	InputComponent->OnMouseLeftUpDelegate.Bind(this, &GOperationHandle::OnMouseLeftUP);
+	InputComponent->OnMouseLeftUpDelegate.Bind(this, &GOperationHandle::OnMouseLeftUp);
 }
 
 void GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType mesh_render_layer)
@@ -153,8 +155,6 @@ void GOperationHandle::OnMouseLeftDown(int x, int y)
 		{
 			SelectedAxisComponent = ZAxisComponent;
 		}
-
-		OnMousePressed();
 	}
 	else
 	{
