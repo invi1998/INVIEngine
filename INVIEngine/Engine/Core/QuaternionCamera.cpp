@@ -16,6 +16,8 @@ FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 //const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 //const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
+extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
+
 GQuaternionCamera::GQuaternionCamera()
     : GClientViewPort()
 {
@@ -112,8 +114,11 @@ void GQuaternionCamera::OnUpdate(float ts)
 		// 如果是鼠标左键点击
 		if (FInput::IsMouseButtonPressed(VK_LBUTTON))
 		{
-			const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
-			OnClickScene(mouse);
+			if (!SelectedAxisComponent)
+			{
+				const XMFLOAT2& mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
+				OnClickScene(mouse);
+			}
 		}
 	}
 
