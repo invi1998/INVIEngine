@@ -120,6 +120,9 @@ void GMoveArrow::OnMousePressed(int x, int y)
 
 			// 设置物体的位置
 			SelectedActor->SetPosition(DragPoint);
+
+			// 设置操作句柄的位置
+			SetPosition(DragPoint);
 		}
 	}
 }

@@ -74,6 +74,22 @@ void GOperationHandle::Tick(float DeltaTime)
 	GActorObject::Tick(DeltaTime);
 }
 
+void GOperationHandle::SetPosition(const XMVECTOR& InNewPosition)
+{
+	// GActorObject::SetPosition(InNewPosition);
+	XMFLOAT3 position;
+	XMStoreFloat3(&position, InNewPosition);
+	SetPosition(position);
+}
+
+void GOperationHandle::SetPosition(const XMFLOAT3& InNewPosition)
+{
+	// GActorObject::SetPosition(InNewPosition);
+	XAxisComponent->SetPosition(InNewPosition);
+	YAxisComponent->SetPosition(InNewPosition);
+	ZAxisComponent->SetPosition(InNewPosition);
+}
+
 ESelectedAxis GOperationHandle::GetSelectedAxis() const
 {
 	if (SelectedAxisComponent)
@@ -100,6 +116,8 @@ ESelectedAxis GOperationHandle::GetSelectedAxis() const
 
 void GOperationHandle::OnMouseMoved(int x, int y)
 {
+	if (SelectedAxisComponent) return;
+	
 	XMFLOAT2 mousePos(x, y);
 
 	EngineType::FHitResult HitResult{};

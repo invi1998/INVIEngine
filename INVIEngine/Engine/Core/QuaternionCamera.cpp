@@ -8,6 +8,7 @@
 #include "Config/EngineRenderConfig.h"
 #include "Misc/RaycastSystemLibrary.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
+#include "SelectEditor/OperationHandle/MoveArrow.h"
 
 FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 // FCaptureOnMousesMoveDelegate MouseMoveDelegate;
@@ -368,6 +369,7 @@ void GQuaternionCamera::RotateAroundYAxis(float rotateDegrees)
 
 
 extern GActorObject* SelectedActor;	// 被选中的物体
+extern GMoveArrow* MoveArrow;
 void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 {
 	// ENGINE_LOG_SUCCESS("pos: (%f, %f)", mousePos.x, mousePos.y);
@@ -387,6 +389,11 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 			//renderLayerManage->Add(HitResult.HitRenderingData, static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 添加选中
 			SelectedActor = HitResult.HitActor;
 			renderLayerManage->HighlightObject(HitResult.HitRenderingData);
+
+			if (MoveArrow)
+			{
+				MoveArrow->SetPosition(HitResult.HitActor->GetPosition());
+			}
 		}
 	}
 	else

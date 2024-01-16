@@ -35,6 +35,10 @@ public:
 
 	void Tick(float DeltaTime) override;
 
+	void SetPosition(const XMVECTOR& InNewPosition) override;
+
+	void SetPosition(const XMFLOAT3& InNewPosition) override;
+
 	ESelectedAxis GetSelectedAxis() const;
 
 protected:

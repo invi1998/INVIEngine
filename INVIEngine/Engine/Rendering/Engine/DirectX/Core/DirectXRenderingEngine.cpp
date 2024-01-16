@@ -74,6 +74,7 @@ int CDirectXRenderingEngine::Init(FWinMainCommandParameters InParameters)
 	return 0;
 }
 
+extern GMoveArrow* MoveArrow;
 int CDirectXRenderingEngine::PostInit()
 {
 	// 初始化命令列表
@@ -89,11 +90,7 @@ int CDirectXRenderingEngine::PostInit()
 	{
 		if (GMoveArrow* Arrow = World->CreateActorObject<GMoveArrow>())
 		{
-			// Arrow->SetMesh();
-
-			Arrow->SetPosition(XMFLOAT3(0.f, 30.f, 0.f));
-
-			// Arrow->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
+			MoveArrow = Arrow;
 		}
 
 		//构建Mesh
