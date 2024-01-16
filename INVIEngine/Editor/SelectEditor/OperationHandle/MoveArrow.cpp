@@ -33,8 +33,8 @@ void GMoveArrow::SetMesh()
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, ZAxisComponent, "Asserts/Mesh/MoveArrow.fbx");
 
 	// 旋转模型，使其成为正确的坐标系指向
-	XAxisComponent->SetRotation({ -90.0f, 0.0f, 0.0f });
-	YAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
+	XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
+	YAxisComponent->SetRotation({ -90.0f, 0.0f, 0.0f });
 
 	// ResetColor();
 
@@ -116,7 +116,7 @@ void GMoveArrow::OnMousePressed(int x, int y)
 			float t = XMVectorGetX(XMVector3Dot(XMVector3Cross(ActorLocation - WorldOriginPoint, WorldDirection), WorldDirectionCrossDragDirection) / (len * len));
 
 			// 计算出经过时间t后，射线的方向向量和鼠标拖拽的轴的方向向量的相交点（模型被拖拽的目标点）
-			XMVECTOR DragPoint = WorldOriginPoint + WorldDirection * t;
+			XMVECTOR DragPoint = ActorLocation + DragDirection * t;
 
 			// 设置物体的位置
 			SelectedActor->SetPosition(DragPoint);
