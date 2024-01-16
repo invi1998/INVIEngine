@@ -108,9 +108,18 @@ void GMoveArrow::OnMousePressed(int x, int y)
 			default: break;
 			}
 
+			XMVECTOR WorldDirectionCrossDragDirection = XMVector3Cross(WorldDirection, DragDirection);
 			// 计算两个射线方向向量的叉乘的模
-			float len = XMVectorGetX(XMVector3Length(XMVector3Cross(WorldDirection, DragDirection)));
+			float len = XMVectorGetX(XMVector3Length(WorldDirectionCrossDragDirection));
 
+			// 计算射线的方向向量和鼠标拖拽的轴的方向向量的相交点的时间
+			float t = XMVectorGetX(XMVector3Dot(XMVector3Cross(ActorLocation - WorldOriginPoint, WorldDirection), WorldDirectionCrossDragDirection)) / (len*len);
+
+			// 计算出经过时间t后，射线的方向向量和鼠标拖拽的轴的方向向量的相交点（模型被拖拽的目标点）
+			XMVECTOR DragPoint = WorldOriginPoint + WorldDirection * t;
+
+			// 设置物体的位置
+			SelectedActor->SetPosition(DragPoint);
 		}
 	}
 }
