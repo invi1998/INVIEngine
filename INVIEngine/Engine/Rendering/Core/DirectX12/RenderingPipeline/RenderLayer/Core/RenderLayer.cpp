@@ -207,11 +207,17 @@ void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& Viewp
 			XMFLOAT3 ForwardVector = renderingData->Mesh->GetForwardVector();
 
 			// 构造模型world
-			renderingData->WorldMatrix = {
+			/*renderingData->WorldMatrix = {
 				RightVector.x * Scale.x,	UpVector.x,				ForwardVector.x,			0.f,
 				RightVector.y,				UpVector.y * Scale.y,	ForwardVector.y,			0.f,
 				RightVector.z,				UpVector.z,				ForwardVector.z * Scale.z,	0.f,
 				Position.x,					Position.y,				Position.z,					1.f
+			};*/
+			renderingData->WorldMatrix = {
+				RightVector.x * Scale.x,	UpVector.x * Scale.y,	ForwardVector.x * Scale.z,			0.f,
+				RightVector.y * Scale.x,	UpVector.y * Scale.y,	ForwardVector.y * Scale.z,			0.f,
+				RightVector.z * Scale.x,	UpVector.z * Scale.y,	ForwardVector.z * Scale.z,			0.f,
+				Position.x,					Position.y,				Position.z,							1.f
 			};
 
 			XMMATRIX ATRTIXMatrixWorld = XMLoadFloat4x4(&renderingData->WorldMatrix);
