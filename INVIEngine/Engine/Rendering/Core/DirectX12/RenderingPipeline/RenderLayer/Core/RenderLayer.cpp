@@ -56,6 +56,8 @@ void FRenderLayer::DrawObject(float deltaTime, std::weak_ptr<FRenderingData>& we
 		// 获取当前渲染对象的渲染条件
 		auto GetRenderCondition = [&]() -> bool
 			{
+				if (!renderDate->Mesh->IsVisible()) return false;
+				
 				switch (rc)
 				{
 				case RC_Always:

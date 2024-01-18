@@ -14,6 +14,7 @@ FCaptureOnRMousesButtonDownDelegate RightMouseDownDelegate;	// 右键鼠标事件
 FCaptureOnRMousesButtonUpDelegate RightMouseUpDelegate;		// 右键鼠标抬起事件
 
 extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
+extern GActorObject* SelectedActor;	// 被选中的物体
 
 GOperationHandle::GOperationHandle()
 {
@@ -58,7 +59,8 @@ void GOperationHandle::ResetColor(CCustomMeshComponent* axis_component, const XM
 void GOperationHandle::BeginInit()
 {
 	GActorObject::BeginInit();
-	
+
+	SetVisible(false);
 }
 
 void GOperationHandle::ExecuteInput()
@@ -88,6 +90,26 @@ void GOperationHandle::SetPosition(const XMFLOAT3& InNewPosition)
 	XAxisComponent->SetPosition(InNewPosition);
 	YAxisComponent->SetPosition(InNewPosition);
 	ZAxisComponent->SetPosition(InNewPosition);
+}
+
+void GOperationHandle::SetVisible(bool visible)
+{
+	XAxisComponent->SetVisible(visible);
+	YAxisComponent->SetVisible(visible);
+	ZAxisComponent->SetVisible(visible);
+}
+
+void GOperationHandle::SetVisible(bool visible, CCustomMeshComponent* axis_component)
+{
+	if (axis_component)
+	{
+		axis_component->SetVisible(visible);
+	}
+}
+
+bool GOperationHandle::IsVisible()
+{
+	return XAxisComponent->IsVisible();
 }
 
 ESelectedAxis GOperationHandle::GetSelectedAxis() const
@@ -154,29 +176,32 @@ void GOperationHandle::OnMouseMoved(int x, int y)
 
 void GOperationHandle::OnMouseLeftDown(int x, int y)
 {
-	XMFLOAT2 mousePos(x, y);
-
-	EngineType::FHitResult HitResult{};
-	FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
-
-	if (HitResult.bHit)
+	if (SelectedActor)
 	{
-		if (HitResult.HitComponent == XAxisComponent)
+		XMFLOAT2 mousePos(x, y);
+
+		EngineType::FHitResult HitResult{};
+		FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
+
+		if (HitResult.bHit)
 		{
-			SelectedAxisComponent = XAxisComponent;
+			if (HitResult.HitComponent == XAxisComponent)
+			{
+				SelectedAxisComponent = XAxisComponent;
+			}
+			else if (HitResult.HitComponent == YAxisComponent)
+			{
+				SelectedAxisComponent = YAxisComponent;
+			}
+			else if (HitResult.HitComponent == ZAxisComponent)
+			{
+				SelectedAxisComponent = ZAxisComponent;
+			}
 		}
-		else if (HitResult.HitComponent == YAxisComponent)
+		else
 		{
-			SelectedAxisComponent = YAxisComponent;
+			SelectedAxisComponent = nullptr;
 		}
-		else if (HitResult.HitComponent == ZAxisComponent)
-		{
-			SelectedAxisComponent = ZAxisComponent;
-		}
-	}
-	else
-	{
-		SelectedAxisComponent = nullptr;
 	}
 }
 

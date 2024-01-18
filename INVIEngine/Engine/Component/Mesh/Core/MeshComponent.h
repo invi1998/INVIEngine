@@ -40,9 +40,13 @@ public:
 
 	void SetPickUp(bool pickUp) { bPickUp = pickUp; }
 
+	void SetVisible(bool visible) { bVisible = visible; }
+
 	bool IsPickUp() const { return bPickUp; }
 
 	bool IsOperateHandle() const { return MeshRenderLayerType == EMeshRenderLayerType::RENDER_LAYER_OPERATE; }
+
+	bool IsVisible() const { return bVisible; }
 	
 public:
 
@@ -51,5 +55,6 @@ public:
 protected:
 	bool bCastShadow = true;		// 是否开启投射阴影
 	bool bPickUp = true;			// 是否可以被拾取（鼠标点击，射线检测）
+	bool bVisible = true;			// 是否可见
 };
 

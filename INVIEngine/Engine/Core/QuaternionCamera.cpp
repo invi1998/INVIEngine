@@ -393,6 +393,7 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 			if (MoveArrow)
 			{
 				MoveArrow->SetPosition(HitResult.HitActor->GetPosition());
+				MoveArrow->SetVisible(true);
 			}
 		}
 	}
@@ -403,6 +404,10 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 			renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 清空之前的选中
 		}
 		SelectedActor = nullptr;
+		if (MoveArrow)
+		{
+			MoveArrow->SetVisible(false);
+		}
 	}
 }
 
