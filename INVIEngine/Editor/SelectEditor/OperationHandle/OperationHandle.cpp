@@ -3,6 +3,8 @@
 
 #include "Component/InputComponent.h"
 #include "Component/Mesh/CustomMeshComponent.h"
+#include "Core/QuaternionCamera.h"
+#include "Core/World.h"
 #include "Material/Core/Material.h"
 #include "Misc/RaycastSystemLibrary.h"
 
@@ -74,6 +76,21 @@ void GOperationHandle::ExecuteInput()
 void GOperationHandle::Tick(float DeltaTime)
 {
 	GActorObject::Tick(DeltaTime);
+
+	if (GetWorld())
+	{
+		if (GetWorld()->GetQuaternionCamera())
+		{
+			// ÉãÏñ»úÎ»ÖÃ
+			fvector_3d New3Value = EngineMath::ToVector3d(GetWorld()->GetQuaternionCamera()->GetPosition()) - EngineMath::ToVector3d(GetPosition());
+			fvector_3d Scale{ New3Value.len() / FixedZoom };
+
+			ENGINE_LOG("zoom = %f, %f, %f, %f, %f", New3Value.len(), FixedZoom, Scale.x, Scale.y, Scale.z);
+
+			SetScale(Scale);
+
+		}
+	}
 }
 
 void GOperationHandle::SetPosition(const XMVECTOR& InNewPosition)
@@ -105,6 +122,22 @@ void GOperationHandle::SetVisible(bool visible, CCustomMeshComponent* axis_compo
 	{
 		axis_component->SetVisible(visible);
 	}
+}
+
+void GOperationHandle::SetScale(const fvector_3d& InNewScale)
+{
+	GActorObject::SetScale(InNewScale);
+
+	if (InNewScale >= fvector_3d(0.5f))
+	{
+		if (XAxisComponent && YAxisComponent && ZAxisComponent)
+		{
+			XAxisComponent->SetScale(InNewScale);
+			YAxisComponent->SetScale(InNewScale);
+			ZAxisComponent->SetScale(InNewScale);
+		}
+	}
+
 }
 
 bool GOperationHandle::IsVisible()

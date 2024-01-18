@@ -62,6 +62,16 @@ namespace EngineMath
 		return fvector_3d(R, Thata, Fai);
 	}
 
+	DirectX::XMFLOAT4 ToFloat4(const fvector_4d& InV4d)
+	{
+		return DirectX::XMFLOAT4(InV4d.x, InV4d.y, InV4d.z, InV4d.w);
+	}
+
+	fvector_3d ToVector3d(const DirectX::XMFLOAT3& InV3d)
+	{
+		return fvector_3d(InV3d.x, InV3d.y, InV3d.z);
+	}
+
 	struct FCubeMapAxialRangeR
 	{
 		FCubeMapAxialRangeR()

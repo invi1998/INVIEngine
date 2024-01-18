@@ -31,6 +31,9 @@ namespace EngineMath
 		return DirectX::XMFLOAT3(InV3d.x, InV3d.y, InV3d.z);
 	}
 
+	DirectX::XMFLOAT4 ToFloat4(const fvector_4d& InV4d);
+	fvector_3d ToVector3d(const DirectX::XMFLOAT3& InV3d);
+
 	// 知道世界坐标（笛卡尔坐标），求出球坐标
 	DirectX::XMFLOAT3 CartesianToSpherical(const DirectX::XMFLOAT3& InCartesian);
 

@@ -43,6 +43,8 @@ public:
 
 	void SetVisible(bool visible, CCustomMeshComponent* axis_component);
 
+	void SetScale(const fvector_3d& InNewScale) override;
+
 	bool IsVisible();
 
 	ESelectedAxis GetSelectedAxis() const;
@@ -68,5 +70,7 @@ protected:
 
 private:
 	ESelectedAxis SelectedAxis = AXIS_NONE;	// 选中的轴向
+
+	float FixedZoom = 30.f;	// 固定的缩放比例
 };
 
