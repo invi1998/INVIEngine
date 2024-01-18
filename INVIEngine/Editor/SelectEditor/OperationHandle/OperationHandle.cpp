@@ -188,19 +188,29 @@ void GOperationHandle::OnMouseLeftDown(int x, int y)
 			if (HitResult.HitComponent == XAxisComponent)
 			{
 				SelectedAxisComponent = XAxisComponent;
+				SetVisible(true, XAxisComponent);
+				SetVisible(false, YAxisComponent);
+				SetVisible(false, ZAxisComponent);
 			}
 			else if (HitResult.HitComponent == YAxisComponent)
 			{
 				SelectedAxisComponent = YAxisComponent;
+				SetVisible(true, YAxisComponent);
+				SetVisible(false, XAxisComponent);
+				SetVisible(false, ZAxisComponent);
 			}
 			else if (HitResult.HitComponent == ZAxisComponent)
 			{
 				SelectedAxisComponent = ZAxisComponent;
+				SetVisible(true, ZAxisComponent);
+				SetVisible(false, YAxisComponent);
+				SetVisible(false, XAxisComponent);
 			}
 		}
 		else
 		{
 			SelectedAxisComponent = nullptr;
+			SetVisible(true);
 		}
 	}
 }
@@ -208,4 +218,8 @@ void GOperationHandle::OnMouseLeftDown(int x, int y)
 void GOperationHandle::OnMouseLeftUp(int x, int y)
 {
 	SelectedAxisComponent = nullptr;
+	if (SelectedActor)
+	{
+		SetVisible(true);
+	}
 }
