@@ -49,6 +49,10 @@ public:
 
 	ESelectedAxis GetSelectedAxis() const;
 
+	void SetWorldOperate(bool bWorld) { bWorldOperate = bWorld; }
+
+	bool IsWorldOperate() const { return bWorldOperate; }
+
 protected:
 	CVARIABLE()
 	CCustomMeshComponent* XAxisComponent = nullptr;	// X轴
@@ -72,5 +76,8 @@ private:
 	ESelectedAxis SelectedAxis = AXIS_NONE;	// 选中的轴向
 
 	float FixedZoom = 30.f;	// 固定的缩放比例
+
+	// 是否按世界坐标系操作
+	bool bWorldOperate = true;
 };
 

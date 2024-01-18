@@ -121,24 +121,21 @@ float GMoveArrow::GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XM
 		case AXIS_X:
 		{
 			// 鼠标拖拽的是X轴，也就是物体的Right方向
-			// XMFLOAT3 RightVector = SelectedActor->GetRightVector();	// 物体的Right方向
-				XMFLOAT3 RightVector = { 1.0f, 0.0f, 0.0f };		// 世界坐标系下的Right方向
+			XMFLOAT3 RightVector = IsWorldOperate() ? XMFLOAT3{ 1.0f, 0.0f, 0.0f } : SelectedActor->GetRightVector();	
 			DragDirection = XMLoadFloat3(&RightVector);
 			break;
 		};
 		case AXIS_Y:
 		{
 			// 鼠标拖拽的是Y轴，也就是物体的Up方向
-			// XMFLOAT3 UpVector = SelectedActor->GetUpVector();	// 物体的Up方向
-				XMFLOAT3 UpVector = { 0.0f, 1.0f, 0.0f };		// 世界坐标系下的Up方向
+			XMFLOAT3 UpVector = IsWorldOperate() ? XMFLOAT3{ 0.0f, 1.0f, 0.0f } : SelectedActor->GetUpVector();
 			DragDirection = XMLoadFloat3(&UpVector);
 			break;
 		};
 		case AXIS_Z:
 		{
 			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
-			// XMFLOAT3 ForwardVector = SelectedActor->GetForwardVector();	// 物体的Forward方向
-				XMFLOAT3 ForwardVector = { 0.0f, 0.0f, 1.0f };		// 世界坐标系下的Forward方向
+			XMFLOAT3 ForwardVector = IsWorldOperate() ? XMFLOAT3{ 0.0f, 0.0f, 1.0f } : SelectedActor->GetForwardVector();
 			DragDirection = XMLoadFloat3(&ForwardVector);
 			break;
 		};
