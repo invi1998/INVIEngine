@@ -5,6 +5,11 @@
 #include "Core/World.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/RenderingData.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
+#include "SelectEditor/OperationHandle/MoveArrow.h"
+
+
+extern GMoveArrow* MoveArrow;
+extern GActorObject* SelectedActor;
 
 void FOutLineEditor::BuildEditor()
 {
@@ -28,6 +33,15 @@ void FOutLineEditor::DrawEditor()
 			if (ImGui::Selectable(objectName, ActorSelected == i))
 			{
 				HighlightObject(actors[i]);
+
+				SelectedActor = actors[i];
+
+				if (MoveArrow)
+				{
+					MoveArrow->SetPosition(actors[i]->GetPosition());
+					MoveArrow->SetVisible(true);
+				}
+
 			}
 		}
 		ImGui::EndChild();

@@ -85,7 +85,7 @@ void GOperationHandle::Tick(float DeltaTime)
 			fvector_3d New3Value = EngineMath::ToVector3d(GetWorld()->GetQuaternionCamera()->GetPosition()) - EngineMath::ToVector3d(GetPosition());
 			fvector_3d Scale{ New3Value.len() / FixedZoom };
 
-			ENGINE_LOG("zoom = %f, %f, %f, %f, %f", New3Value.len(), FixedZoom, Scale.x, Scale.y, Scale.z);
+			// ENGINE_LOG("zoom = %f, %f, %f, %f, %f", New3Value.len(), FixedZoom, Scale.x, Scale.y, Scale.z);
 
 			SetScale(Scale);
 
