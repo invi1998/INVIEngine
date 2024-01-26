@@ -24,14 +24,21 @@ void GActorObject::SetPosition(const XMVECTOR& InNewPosition)
 	SetPosition(pos);
 }
 
-void GActorObject::SetRotation(const fvector_3d& InRotation)
+void GActorObject::SetRotation(const XMFLOAT3& InRotation)
 {
 	TransformationComponent->SetRotation(InRotation);
 }
 
-void GActorObject::SetScale(const fvector_3d& InNewScale)
+void GActorObject::SetScale(const XMFLOAT3& InNewScale)
 {
 	TransformationComponent->SetScale(InNewScale);
+}
+
+void GActorObject::SetScale(const XMVECTOR& Scale)
+{
+	XMFLOAT3 scale{};
+	XMStoreFloat3(&scale, Scale);
+	SetScale(scale);
 }
 
 void GActorObject::SetForwardVector(const XMFLOAT3& InForward)

@@ -9,8 +9,8 @@ public:
 	~CTransformationComponent() override;
 
 	virtual void SetPosition(const XMFLOAT3& InPosition);
-	virtual void SetRotation(const fvector_3d& InRotation);
-	virtual void SetScale(const fvector_3d& InScale);
+	virtual void SetRotation(const XMFLOAT3& InRotation);
+	virtual void SetScale(const XMFLOAT3& InScale);
 
 	virtual void SetForwardVector(const XMFLOAT3& InForward);
 	virtual void SetRightVector(const XMFLOAT3& InRight);

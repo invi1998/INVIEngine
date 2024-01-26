@@ -21,7 +21,7 @@ void CTransformationComponent::SetPosition(const XMFLOAT3& InPosition)
 	Position = InPosition;
 }
 
-void CTransformationComponent::SetRotation(const fvector_3d& InRotation)
+void CTransformationComponent::SetRotation(const XMFLOAT3& InRotation)
 {
 	// 传进来的参数是旋转角度，需要转成弧度进行计算
 	float rollRadians = XMConvertToRadians(InRotation.z);
@@ -45,11 +45,9 @@ void CTransformationComponent::SetRotation(const fvector_3d& InRotation)
 
 }
 
-void CTransformationComponent::SetScale(const fvector_3d& InScale)
+void CTransformationComponent::SetScale(const XMFLOAT3& InScale)
 {
-	Scale.x = InScale.x;
-	Scale.y = InScale.y;
-	Scale.z = InScale.z;
+	Scale = InScale;
 }
 
 void CTransformationComponent::SetForwardVector(const XMFLOAT3& InForward)

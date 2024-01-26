@@ -13,5 +13,8 @@ public:
 	void OnMouseLeftDown(int x, int y) override;
 
 	void OnMousePressed(int x, int y);
+
+protected:
+	float LastT2Value;
 };
 
