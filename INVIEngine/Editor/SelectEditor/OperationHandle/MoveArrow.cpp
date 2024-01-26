@@ -9,19 +9,8 @@
 extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
 extern GActorObject* SelectedActor;	// 被选中的物体
 
-GMoveArrow::GMoveArrow()
+GMoveArrow::GMoveArrow() : GOperationHandle()
 {
-	FCreateObjectParams params{};
-
-	params.Owner = this;
-
-	// 创建实例
-	XAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
-	YAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
-	ZAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
-
-	GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
-
 	// 设置模型
 	GMoveArrow::SetMesh();
 
@@ -34,6 +23,7 @@ void GMoveArrow::SetMesh()
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, XAxisComponent, "Asserts/Mesh/Handle/MoveArrow.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, YAxisComponent, "Asserts/Mesh/Handle/MoveArrow.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, ZAxisComponent, "Asserts/Mesh/Handle/MoveArrow.fbx");
+	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, AnyAxisComponent, "Asserts/Mesh/Handle/AnyAxis_Type_1.fbx");
 
 	// 旋转模型，使其成为正确的坐标系指向
 	XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });

@@ -13,6 +13,7 @@ enum ESelectedAxis
 	AXIS_X = 1,		// 对应物体的Right方向
 	AXIS_Y = 2,		// 对应物体的Up方向
 	AXIS_Z = 3,		// 对应物体的Forward方向
+	AXIS_ANY = 4,	// 任意方向
 };
 
 class GOperationHandle : public GActorObject, public IDirectXDeviceInterface
@@ -62,6 +63,9 @@ protected:
 
 	CVARIABLE()
 	CCustomMeshComponent* ZAxisComponent = nullptr;	// Z轴
+
+	CVARIABLE()
+	CCustomMeshComponent* AnyAxisComponent = nullptr;	// 任意轴
 
 	CVARIABLE()
 	CInputComponent* InputComponent = nullptr;	// 输入组件

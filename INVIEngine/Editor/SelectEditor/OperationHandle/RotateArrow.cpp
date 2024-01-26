@@ -9,20 +9,8 @@ extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
 extern GActorObject* SelectedActor;	// 被选中的物体
 
 GRotateArrow::GRotateArrow()
+	: GOperationHandle()
 {
-	LastT2Value = 0.0f;
-
-	FCreateObjectParams params{};
-
-	params.Owner = this;
-
-	// 创建实例
-	XAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
-	YAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
-	ZAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
-
-	GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
-
 	GRotateArrow::SetMesh();
 
 	ResetColor();
@@ -33,6 +21,7 @@ void GRotateArrow::SetMesh()
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, XAxisComponent, "Asserts/Mesh/Handle/RotateHandleX.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, YAxisComponent, "Asserts/Mesh/Handle/RotateHandleY.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, ZAxisComponent, "Asserts/Mesh/Handle/RotateHandleZ.fbx");
+	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, AnyAxisComponent, "Asserts/Mesh/Handle/RotateHandleZ.fbx");
 
 	// 旋转模型，使其成为正确的坐标系指向
 	/*XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });

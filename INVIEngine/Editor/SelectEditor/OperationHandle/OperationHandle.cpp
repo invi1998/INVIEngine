@@ -31,6 +31,15 @@ GOperationHandle::GOperationHandle()
 
 	InputComponent->OnMouseLeftDownDelegate.Bind(this, &GOperationHandle::OnMouseLeftDown);
 	InputComponent->OnMouseLeftUpDelegate.Bind(this, &GOperationHandle::OnMouseLeftUp);
+
+	// ´´½¨ÊµÀý
+	XAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
+	YAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
+	ZAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
+	AnyAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
+
+	GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPERATE);
+
 }
 
 void GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType mesh_render_layer)
@@ -38,6 +47,7 @@ void GOperationHandle::SetMeshRenderLayerType(EMeshRenderLayerType mesh_render_l
 	XAxisComponent->SetRenderLayerType(mesh_render_layer);
 	YAxisComponent->SetRenderLayerType(mesh_render_layer);
 	ZAxisComponent->SetRenderLayerType(mesh_render_layer);
+	AnyAxisComponent->SetRenderLayerType(mesh_render_layer);
 }
 
 void GOperationHandle::ResetColor()
@@ -45,6 +55,7 @@ void GOperationHandle::ResetColor()
 	ResetColor(XAxisComponent, {1.f, 0.f, 0.f, 1.f});
 	ResetColor(YAxisComponent, {0.f, 1.f, 0.f, 1.f});
 	ResetColor(ZAxisComponent, {0.f, 0.f, 1.f, 1.f});
+	ResetColor(AnyAxisComponent, {0.f, 1.f, 1.f, 1.f});
 }
 
 void GOperationHandle::ResetColor(CCustomMeshComponent* axis_component, const XMFLOAT4& color)
@@ -107,6 +118,7 @@ void GOperationHandle::SetPosition(const XMFLOAT3& InNewPosition)
 	XAxisComponent->SetPosition(InNewPosition);
 	YAxisComponent->SetPosition(InNewPosition);
 	ZAxisComponent->SetPosition(InNewPosition);
+	AnyAxisComponent->SetPosition(InNewPosition);
 }
 
 void GOperationHandle::SetVisible(bool visible)
@@ -114,6 +126,7 @@ void GOperationHandle::SetVisible(bool visible)
 	XAxisComponent->SetVisible(visible);
 	YAxisComponent->SetVisible(visible);
 	ZAxisComponent->SetVisible(visible);
+	AnyAxisComponent->SetVisible(visible);
 }
 
 void GOperationHandle::SetVisible(bool visible, CCustomMeshComponent* axis_component)
@@ -135,6 +148,7 @@ void GOperationHandle::SetScale(const fvector_3d& InNewScale)
 			XAxisComponent->SetScale(InNewScale);
 			YAxisComponent->SetScale(InNewScale);
 			ZAxisComponent->SetScale(InNewScale);
+			AnyAxisComponent->SetScale(InNewScale);
 		}
 	}
 
@@ -160,6 +174,10 @@ ESelectedAxis GOperationHandle::GetSelectedAxis() const
 		else if (SelectedAxisComponent == ZAxisComponent)
 		{
 			return AXIS_Z;
+		}
+		else if (SelectedAxisComponent == AnyAxisComponent)
+		{
+			return AXIS_ANY;
 		}
 		else
 		{
@@ -192,6 +210,10 @@ void GOperationHandle::OnMouseMoved(int x, int y)
 		else if (HitResult.HitComponent == ZAxisComponent)
 		{
 			ResetColor(ZAxisComponent, { 1.f, 0.95f, 0.f, 1.f });
+		}
+		else if (HitResult.HitComponent == AnyAxisComponent)
+		{
+			ResetColor(AnyAxisComponent, { 1.f, 0.95f, 0.f, 1.f });
 		}
 	}
 	else

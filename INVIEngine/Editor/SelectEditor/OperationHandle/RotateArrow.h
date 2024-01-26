@@ -15,6 +15,6 @@ public:
 	void OnMousePressed(int x, int y);
 
 protected:
-	float LastT2Value;	// 上一次的T2值
+	float LastT2Value = 0.0f;	// 上一次的T2值
 };
 
