@@ -256,3 +256,63 @@ void GOperationHandle::OnMouseLeftUp(int x, int y)
 		SetVisible(true);
 	}
 }
+
+float GOperationHandle::GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XMVECTOR& DragDirection)
+{
+	XMVECTOR ViewOriginPoint{};		// 视口下射线原点（非屏幕坐标）
+	XMVECTOR ViewDirection{};		// 视口下射线方向
+	XMMATRIX InverseViewMatrix{};	// 视口变换矩阵的逆矩阵
+
+	if (FRayCastSystemLibrary::GetRayCastParamByScreen(GetWorld(), XMFLOAT2(x, y), ViewOriginPoint, ViewDirection, InverseViewMatrix))
+	{
+		// 获取世界空间下的射线参数
+		XMVECTOR WorldOriginPoint = XMVector3TransformCoord(ViewOriginPoint, InverseViewMatrix);
+		XMVECTOR WorldDirection = XMVector3TransformNormal(ViewDirection, InverseViewMatrix);
+
+		// 对方向进行归一化
+		WorldDirection = XMVector3Normalize(WorldDirection);
+
+		// 获取选中物体的位置
+		ActorLocation = XMLoadFloat3(&SelectedActor->GetPosition());
+
+		// 鼠标拖拽的轴的方向
+
+		// 根据选中的轴向，获取射线的方向
+		switch (GetSelectedAxis())
+		{
+		case AXIS_X:
+		{
+			// 鼠标拖拽的是X轴，也就是物体的Right方向
+			XMFLOAT3 RightVector = IsWorldOperate() ? XMFLOAT3{ 1.0f, 0.0f, 0.0f } : SelectedActor->GetRightVector();
+			DragDirection = XMLoadFloat3(&RightVector);
+			break;
+		};
+		case AXIS_Y:
+		{
+			// 鼠标拖拽的是Y轴，也就是物体的Up方向
+			XMFLOAT3 UpVector = IsWorldOperate() ? XMFLOAT3{ 0.0f, 1.0f, 0.0f } : SelectedActor->GetUpVector();
+			DragDirection = XMLoadFloat3(&UpVector);
+			break;
+		};
+		case AXIS_Z:
+		{
+			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
+			XMFLOAT3 ForwardVector = IsWorldOperate() ? XMFLOAT3{ 0.0f, 0.0f, 1.0f } : SelectedActor->GetForwardVector();
+			DragDirection = XMLoadFloat3(&ForwardVector);
+			break;
+		};
+		default: break;
+		}
+
+		XMVECTOR WorldDirectionCrossDragDirection = XMVector3Cross(WorldDirection, DragDirection);
+		// 计算两个射线方向向量的叉乘的模
+		float len = XMVectorGetX(XMVector3Length(WorldDirectionCrossDragDirection));
+
+		// 计算射线的方向向量和鼠标拖拽的轴的方向向量的相交点的时间
+		const float t = XMVectorGetX(XMVector3Dot(XMVector3Cross(ActorLocation - WorldOriginPoint, WorldDirection), WorldDirectionCrossDragDirection) / (len * len));
+
+		return t;
+	}
+
+	return 0.0f;
+}

@@ -19,6 +19,7 @@ FOperationHandleSelectManage::~FOperationHandleSelectManage()
 
 FOperationHandleSelectManage* FOperationHandleSelectManage::GetInstance()
 {
+	return nullptr;
 }
 
 void FOperationHandleSelectManage::Destroy()
@@ -51,4 +52,5 @@ void FOperationHandleSelectManage::SetNewSelectedSelectedObject()
 
 GActorObject* FOperationHandleSelectManage::GetSelectedOperationHandle()
 {
+	return nullptr;
 }

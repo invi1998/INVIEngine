@@ -16,9 +16,6 @@ public:
 	void OnMousePressed(int x, int y);
 
 protected:
-	float GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XMVECTOR& DragDirection);
-
-protected:
 	XMVECTOR RelativePosition{};	// 相对于选中物体的位置
 };
 

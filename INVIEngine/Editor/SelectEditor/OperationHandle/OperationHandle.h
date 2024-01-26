@@ -72,6 +72,8 @@ protected:
 
 	virtual void OnMouseLeftUp(int x, int y);
 
+	float GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XMVECTOR& DragDirection);
+
 private:
 	ESelectedAxis SelectedAxis = AXIS_NONE;	// 选中的轴向
 
