@@ -7,6 +7,7 @@
 #include "Misc/RaycastSystemLibrary.h"
 
 extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
+extern GActorObject* SelectedActor;	// 被选中的物体
 
 GMoveArrow::GMoveArrow()
 {
@@ -70,9 +71,6 @@ void GMoveArrow::OnMouseLeftDown(int x, int y)
 		}
 	}
 }
-
-extern GActorObject* SelectedActor;	// 被选中的物体
-
 
 void GMoveArrow::OnMousePressed(int x, int y)
 {
