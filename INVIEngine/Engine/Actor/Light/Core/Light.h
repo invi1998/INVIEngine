@@ -23,8 +23,8 @@ public:
 
 public:
 	void SetPosition(const XMFLOAT3& InNewPosition) override;
-	void SetRotation(const fvector_3d& InRotation) override;
-	void SetScale(const fvector_3d& InNewScale) override;
+	void SetRotation(const XMFLOAT3& InRotation) override;
+	void SetScale(const XMFLOAT3& InNewScale) override;
 
 	virtual void SetCastShadow(bool shadow) const;
 	virtual void SetLightIntensity(const XMFLOAT3& Intensity);

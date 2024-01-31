@@ -22,8 +22,8 @@ public:
 	CMeshComponent* GetLightMesh() const { return LightMesh; }
 
 	virtual void SetPosition(const XMFLOAT3& InNewPosition) override;
-	virtual void SetRotation(const fvector_3d& InNewRotation) override;
-	virtual void SetScale(const fvector_3d& InNewScale) override;
+	virtual void SetRotation(const XMFLOAT3& InNewRotation) override;
+	virtual void SetScale(const XMFLOAT3& InNewScale) override;
 
 	virtual void SetForwardVector(const XMFLOAT3& InForwardVector) override;
 	virtual void SetRightVector(const XMFLOAT3& InRightVector) override;

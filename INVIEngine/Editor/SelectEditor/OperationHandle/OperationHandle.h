@@ -44,7 +44,7 @@ public:
 
 	void SetVisible(bool visible, CCustomMeshComponent* axis_component);
 
-	void SetScale(const fvector_3d& InNewScale) override;
+	void SetScale(const XMFLOAT3& InNewScale) override;
 
 	bool IsVisible();
 

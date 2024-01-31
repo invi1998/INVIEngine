@@ -98,7 +98,8 @@ void GOperationHandle::Tick(float DeltaTime)
 
 			// ENGINE_LOG("zoom = %f, %f, %f, %f, %f", New3Value.len(), FixedZoom, Scale.x, Scale.y, Scale.z);
 
-			SetScale(Scale);
+			XMFLOAT3 NewScale = EngineMath::ToFloat3(Scale);
+			SetScale(NewScale);
 
 		}
 	}
@@ -137,11 +138,12 @@ void GOperationHandle::SetVisible(bool visible, CCustomMeshComponent* axis_compo
 	}
 }
 
-void GOperationHandle::SetScale(const fvector_3d& InNewScale)
+void GOperationHandle::SetScale(const XMFLOAT3& InNewScale)
 {
 	GActorObject::SetScale(InNewScale);
+	fvector_3d NewScale = EngineMath::ToVector3d(InNewScale);
 
-	if (InNewScale >= fvector_3d(0.5f))
+	if (NewScale >= fvector_3d(0.5f))
 	{
 		if (XAxisComponent && YAxisComponent && ZAxisComponent)
 		{

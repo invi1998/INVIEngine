@@ -33,14 +33,14 @@ void CLightComponent::SetPosition(const XMFLOAT3& InNewPosition)
 	LightMesh->SetPosition(InNewPosition);
 }
 
-void CLightComponent::SetRotation(const fvector_3d& InNewRotation)
+void CLightComponent::SetRotation(const XMFLOAT3& InNewRotation)
 {
 	CTransformationComponent::SetRotation(InNewRotation);
 
-	LightMesh->SetRotation(InNewRotation * (-1.f));
+	LightMesh->SetRotation({ InNewRotation.x * -1, InNewRotation.y * -1, InNewRotation.z * -1 });
 }
 
-void CLightComponent::SetScale(const fvector_3d& InNewScale)
+void CLightComponent::SetScale(const XMFLOAT3& InNewScale)
 {
 	CTransformationComponent::SetScale(InNewScale);
 

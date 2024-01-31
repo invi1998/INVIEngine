@@ -87,7 +87,7 @@ void GMesh::SetPosition(const XMFLOAT3& InNewPosition)
 	GetMeshComponent()->SetPosition(InNewPosition);
 }
 
-void GMesh::SetRotation(const fvector_3d& InRotation)
+void GMesh::SetRotation(const XMFLOAT3& InRotation)
 {
 	GActorObject::SetRotation(InRotation);
 
@@ -95,7 +95,7 @@ void GMesh::SetRotation(const fvector_3d& InRotation)
 	GetMeshComponent()->SetRotation(InRotation);
 }
 
-void GMesh::SetScale(const fvector_3d& InNewScale)
+void GMesh::SetScale(const XMFLOAT3& InNewScale)
 {
 	GActorObject::SetScale(InNewScale);
 

@@ -10,7 +10,7 @@ GSky::GSky():GSphereMesh()
 
 	
 	CreateMesh(2.f, 100, 100, true);
-	GMesh::SetScale(fvector_3d(4000.f));
+	GMesh::SetScale({ 4000.f, 4000.f, 4000.f });
 	if (CMaterial* InMaterial = (*GetMaterial())[0])
 	{
 		InMaterial->SetBaseColor(XMFLOAT4(0.f, 0.f, 0.f, 1.f));

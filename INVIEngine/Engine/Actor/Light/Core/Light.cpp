@@ -34,7 +34,7 @@ void CLight::SetPosition(const XMFLOAT3& InNewPosition)
 	}
 }
 
-void CLight::SetRotation(const fvector_3d& InRotation)
+void CLight::SetRotation(const XMFLOAT3& InRotation)
 {
 	GActorObject::SetRotation(InRotation);
 
@@ -44,7 +44,7 @@ void CLight::SetRotation(const fvector_3d& InRotation)
 	}
 }
 
-void CLight::SetScale(const fvector_3d& InNewScale)
+void CLight::SetScale(const XMFLOAT3& InNewScale)
 {
 	GActorObject::SetScale(InNewScale);
 

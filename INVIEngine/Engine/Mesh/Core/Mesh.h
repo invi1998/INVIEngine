@@ -51,8 +51,8 @@ public:
 
 public:
 	virtual void SetPosition(const XMFLOAT3& InNewPosition) override;
-	virtual void SetRotation(const fvector_3d& InRotation) override;
-	virtual void SetScale(const fvector_3d& InNewScale) override;
+	virtual void SetRotation(const XMFLOAT3& InRotation) override;
+	virtual void SetScale(const XMFLOAT3& InNewScale) override;
 	void SetMeshRenderLayerType(EMeshRenderLayerType type);
 
 protected:

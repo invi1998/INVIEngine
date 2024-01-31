@@ -104,8 +104,8 @@ int CDirectXRenderingEngine::PostInit()
 		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
 		{
 			ParallelLight->SetPosition(XMFLOAT3(10.f, -10.f, 10.f));
-			ParallelLight->SetRotation(fvector_3d(30.f, 0.f, 0.f));
-			ParallelLight->SetScale(fvector_3d(1));
+			ParallelLight->SetRotation({ 30.f, 0.f, 0.f });
+			ParallelLight->SetScale({ 1.f, 1.f, 1.f });
 			ParallelLight->SetLightIntensity(XMFLOAT3(1.1f,1.1f,1.1f));
 		}
 
@@ -154,7 +154,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			InTorusMesh->CreateMesh(6.f, 2.f, 40.f, 40.f);
 			InTorusMesh->SetPosition(XMFLOAT3(-22.f, -8, 20.f));
-			InTorusMesh->SetScale(fvector_3d(1.f));
+			InTorusMesh->SetScale({ 1.f, 1.f, 1.f });
 			if (CMaterial* InMaterial = (*InTorusMesh->GetMaterial())[0])
 			{
 				InMaterial->SetMaterialType(EMaterialType::HalfLambert);
@@ -169,8 +169,8 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			InPyramidMesh->CreateMesh(EPyramidNumberSides::Pyramid_3, 1);
 			InPyramidMesh->SetPosition(XMFLOAT3(-1.f, -8, 20.f));
-			InPyramidMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
-			InPyramidMesh->SetScale(fvector_3d(1.f));
+			InPyramidMesh->SetRotation({ 0.f, 90.f, 0.f });
+			InPyramidMesh->SetScale({ 1.f, 1.f, 1.f });
 			if (CMaterial* InMaterial = (*InPyramidMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(4.f, 0.f, 0.f, 1.f));
@@ -183,7 +183,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			InPipeMesh->CreateMesh(3.f, 3.f, 6.f, 1.f, 20.f, 20.f);
 			InPipeMesh->SetPosition(XMFLOAT3(-9.f, -9, 20.f));
-			InPipeMesh->SetScale(fvector_3d(1.f));
+			InPipeMesh->SetScale({ 1.f , 1.f, 1.f});
 			if (CMaterial* InMaterial = (*InPipeMesh->GetMaterial())[0])
 			{
 				//InMaterial->SetBaseColor(fvector_4d(5.f));
@@ -201,7 +201,7 @@ int CDirectXRenderingEngine::PostInit()
 			InConeMesh->CreateMesh(2.f, 3.f, 20.f, 20.f);
 
 			InConeMesh->SetPosition(XMFLOAT3(7.f, -11.f, 20.f));
-			InConeMesh->SetScale(fvector_3d(1.f, 1.f, 1.f));
+			InConeMesh->SetScale({ 1.f, 1.f, 1.f });
 			if (CMaterial* InMaterial = (*InConeMesh->GetMaterial())[0])
 			{
 				//	InMaterial->SetBaseColor(fvector_4d(1.f));
@@ -214,7 +214,7 @@ int CDirectXRenderingEngine::PostInit()
 			InBoxMesh->CreateMesh(5.f, 5.f, 5.f);
 
 			InBoxMesh->SetPosition(XMFLOAT3(22.f, -10.f, 20.f));
-			InBoxMesh->SetScale(fvector_3d(1));
+			InBoxMesh->SetScale({ 1.f, 1.f, 1.f });
 			if (CMaterial* InMaterial = (*InBoxMesh->GetMaterial())[0])
 			{
 				//	InMaterial->SetBaseColor(fvector_4d(0.5f));
@@ -227,7 +227,7 @@ int CDirectXRenderingEngine::PostInit()
 			InCylinderMesh->CreateMesh(2.f, 2.f, 5.f, 20.f, 20.f);
 
 			InCylinderMesh->SetPosition(XMFLOAT3(14.f, -10.f, 20.f));
-			InCylinderMesh->SetScale(fvector_3d(1.f));
+			InCylinderMesh->SetScale({ 1.f, 1.f, 1.f });
 			if (CMaterial* InMaterial = (*InCylinderMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColorIndexKey("Zhuan");
@@ -242,7 +242,7 @@ int CDirectXRenderingEngine::PostInit()
 			InPlaneMesh->CreateMesh(4.f, 3.f, 20, 20);
 
 			InPlaneMesh->SetPosition(XMFLOAT3(0.f, -12.f, 0.f));
-			InPlaneMesh->SetScale(fvector_3d(50.f, 1.f, 50.f));
+			InPlaneMesh->SetScale({ 50.f, 1.f, 50.f });
 			InPlaneMesh->SetPickUp(false);
 			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
 			{
@@ -531,7 +531,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
 			SphereMesh->SetPosition(XMFLOAT3(-9.f, -3, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, -90.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, -90.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColorIndexKey("Wood");
@@ -547,7 +547,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 50, 50);
 			SphereMesh->SetPosition(XMFLOAT3(-3.f, -3, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, -90.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, -90.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColorIndexKey("MMOARPG.dds");
@@ -564,7 +564,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			SphereMesh->CreateMesh(2.f, 50, 50);
 			SphereMesh->SetPosition(XMFLOAT3(3.f, -3, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, -90.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, -90.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetDynamicReflection(true);
@@ -583,7 +583,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 100, 100);
 			SphereMesh->SetPosition(XMFLOAT3(9.f, -3, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, 90.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetNormalIndexKey("Wood2_Nor");
@@ -597,7 +597,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 100, 100);
 			SphereMesh->SetPosition(XMFLOAT3(15.f, -3, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, 90.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, 90.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetNormalIndexKey("Wood2_Nor");
@@ -612,7 +612,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			SphereMesh->CreateMesh(2.f, 100, 100);
 			SphereMesh->SetPosition(XMFLOAT3(15.f, 2, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, 0.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
@@ -626,7 +626,7 @@ int CDirectXRenderingEngine::PostInit()
 
 			SphereMesh->CreateMesh(2.f, 100, 100);
 			SphereMesh->SetPosition(XMFLOAT3(15.f, 7, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, 0.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColorIndexKey("TransparentContent");
@@ -639,7 +639,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPAQUE_REFLECT);
 			SphereMesh->CreateMesh(2.f, 100, 100);
 			SphereMesh->SetPosition(XMFLOAT3(15.f, 12, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, 0.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetDynamicReflection(true);		// 开启动态反射
@@ -656,7 +656,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT);
 			SphereMesh->CreateMesh(2.f, 100, 100);
 			SphereMesh->SetPosition(XMFLOAT3(15.f, 17, 0.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, 0.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.0f, 1.0f, 1.f));
@@ -673,7 +673,7 @@ int CDirectXRenderingEngine::PostInit()
 			SphereMesh->SetMeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_OPAQUE_REFLECT);
 			SphereMesh->CreateMesh(2.f, 100, 100);
 			SphereMesh->SetPosition(XMFLOAT3(0.f, 9.0, 10.f));
-			SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+			SphereMesh->SetRotation({ 0.f, 0.f, 0.f });
 			if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 			{
 				InMaterial->SetDynamicReflection(true);		// 开启动态反射
@@ -696,7 +696,7 @@ int CDirectXRenderingEngine::PostInit()
 			{
 				SphereMesh->CreateMesh(2.f, 30, 30);
 				SphereMesh->SetPosition(XMFLOAT3(15.f, 2, 0.f));
-				SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+				SphereMesh->SetRotation({ 0.f, 0.f, 0.f });
 				if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 				{
 					InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
@@ -718,7 +718,7 @@ int CDirectXRenderingEngine::PostInit()
 					{
 						SphereMesh->CreateMesh(2.f, 30, 30);
 						SphereMesh->SetPosition(XMFLOAT3(PBRPosition.x, PBRPosition.y, PBRPosition.z));
-						SphereMesh->SetRotation(fvector_3d(0.f, 0.f, 0.f));
+						SphereMesh->SetRotation({ 0.f, 0.f, 0.f });
 						if (CMaterial* InMaterial = (*SphereMesh->GetMaterial())[0])
 						{
 							InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
@@ -780,7 +780,7 @@ int CDirectXRenderingEngine::PostInit()
 		{
 			InPlaneMesh->CreateMesh(7.f, 7.f, 2, 2);
 			InPlaneMesh->SetPosition(XMFLOAT3(0.f, 0.f, 40.f));
-			InPlaneMesh->SetRotation(fvector_3d(90.f, 0.f, 0.f));
+			InPlaneMesh->SetRotation({ 90.f, 0.f, 0.f });
 			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
 			{
 				InMaterial->SetMaterialType(ShadowTexture);

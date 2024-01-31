@@ -161,7 +161,7 @@ void FDynamicShadowMap::SetViewportPosition(const XMFLOAT3& position)
 
 void FDynamicShadowMap::SetViewportRotation(const XMFLOAT3& rotation)
 {
-	ShadowViewPort->SetRotation(fvector_3d(rotation.x, rotation.y, rotation.z));
+	ShadowViewPort->SetRotation(rotation);
 	BuildViewMatrix();
 }
 
