@@ -23,8 +23,14 @@
 #include "Mesh/TorusMesh.h"
 #include "Core/QuaternionCamera.h"
 #include "SelectEditor/OperationHandle/MoveArrow.h"
+#include "SelectEditor/OperationHandle/RotateArrow.h"
+#include "SelectEditor/OperationHandle/ScalingArrow.h"
 
 class GBoxMesh;
+
+extern GMoveArrow* MoveArrow;
+extern GRotateArrow* RotateArrow;
+extern GScalingArrow* ScaleArrow;
 
 CDirectXRenderingEngine::CDirectXRenderingEngine()
 	: CurrentFenceIndex(0),
@@ -74,7 +80,6 @@ int CDirectXRenderingEngine::Init(FWinMainCommandParameters InParameters)
 	return 0;
 }
 
-extern GMoveArrow* MoveArrow;
 int CDirectXRenderingEngine::PostInit()
 {
 	// 初始化命令列表
@@ -91,6 +96,14 @@ int CDirectXRenderingEngine::PostInit()
 		if (GMoveArrow* Arrow = World->CreateActorObject<GMoveArrow>())
 		{
 			MoveArrow = Arrow;
+		}
+		if (GRotateArrow* Arrow = World->CreateActorObject<GRotateArrow>())
+		{
+			RotateArrow = Arrow;
+		}
+		if (GScalingArrow* Arrow = World->CreateActorObject<GScalingArrow>())
+		{
+			ScaleArrow = Arrow;
 		}
 
 		//构建Mesh
