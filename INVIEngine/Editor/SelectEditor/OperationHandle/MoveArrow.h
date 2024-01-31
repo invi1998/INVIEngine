@@ -13,6 +13,8 @@ public:
 
 	void OnMouseLeftDown(int x, int y) override;
 
+	void ExecuteInput() override;
+
 	void OnMousePressed(int x, int y);
 
 protected:

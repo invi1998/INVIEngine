@@ -32,7 +32,7 @@ public:
 
 	void BeginInit() override;
 
-	void ExecuteInput();
+	virtual void ExecuteInput() = 0;		// 该接口主要用来处理键盘鼠标事件，要求子类必须进行实现
 
 	void Tick(float DeltaTime) override;
 
@@ -77,6 +77,8 @@ protected:
 	virtual void OnMouseLeftUp(int x, int y);
 
 	float GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XMVECTOR& DragDirection);
+
+	bool IsCurrentSelectedHandle();
 
 private:
 	ESelectedAxis SelectedAxis = AXIS_NONE;	// 选中的轴向

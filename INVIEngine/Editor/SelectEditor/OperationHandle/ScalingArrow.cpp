@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "ScalingArrow.h"
 
+#include "OperationHandleSelectManage.h"
 #include "Component/Mesh/CustomMeshComponent.h"
 #include "Core/Construction/MacroConstruction.h"
 
@@ -29,6 +30,8 @@ void GScalingArrow::OnMouseMoved(int x, int y)
 {
 	GOperationHandle::OnMouseMoved(x, y);
 
+	if (!IsCurrentSelectedHandle()) return;
+
 	if (FInput::IsMouseButtonPressed(VK_LBUTTON))
 	{
 		OnMousePressed(x, y);
@@ -47,6 +50,17 @@ void GScalingArrow::OnMouseLeftDown(int x, int y)
 		if (t != 0)
 		{
 			LastT2Value = t;
+		}
+	}
+}
+
+void GScalingArrow::ExecuteInput()
+{
+	if (SelectedActor)
+	{
+		if (FInput::IsKeyPressed(Key::R))
+		{
+			FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(this);
 		}
 	}
 }

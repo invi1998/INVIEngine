@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "RotateArrow.h"
 
+#include "OperationHandleSelectManage.h"
 #include "Component/Mesh/CustomMeshComponent.h"
 #include "Component/Mesh/Core/MeshComponent.h"
 #include "Core/Construction/MacroConstruction.h"
@@ -32,6 +33,8 @@ void GRotateArrow::OnMouseMoved(int x, int y)
 {
 	GOperationHandle::OnMouseMoved(x, y);
 
+	if (!IsCurrentSelectedHandle()) return;
+
 	if (FInput::IsMouseButtonPressed(VK_LBUTTON))
 	{
 		OnMousePressed(x, y);
@@ -50,6 +53,17 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 		if (t != 0)
 		{
 			LastT2Value = t;
+		}
+	}
+}
+
+void GRotateArrow::ExecuteInput()
+{
+	if (SelectedActor)
+	{
+		if (FInput::IsKeyPressed(Key::E))
+		{
+			FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(this);
 		}
 	}
 }

@@ -33,6 +33,7 @@ project "INVIEngine"
 	{
 		"Engine",
 		"Editor",
+		"Common",
         "%{IncludeDir.simple_library}",
 		"%{IncludeDir.FBX_SDK}",
 		"%{IncludeDir.imgui}",

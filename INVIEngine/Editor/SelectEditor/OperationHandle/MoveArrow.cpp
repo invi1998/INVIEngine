@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "MoveArrow.h"
 
+#include "OperationHandleSelectManage.h"
 #include "Collision/CollisionSceneQuery.h"
 #include "Component/Mesh/CustomMeshComponent.h"
 #include "Core/Construction/MacroConstruction.h"
@@ -37,6 +38,8 @@ void GMoveArrow::OnMouseMoved(int x, int y)
 {
 	GOperationHandle::OnMouseMoved(x, y);
 
+	if (!IsCurrentSelectedHandle()) return;
+
 	if (FInput::IsMouseButtonPressed(VK_LBUTTON))
 	{
 		OnMousePressed(x, y);
@@ -58,6 +61,17 @@ void GMoveArrow::OnMouseLeftDown(int x, int y)
 			XMVECTOR DragPoint = ActorLocation + DragDirection * t;
 
 			RelativePosition = DragPoint - ActorLocation;
+		}
+	}
+}
+
+void GMoveArrow::ExecuteInput()
+{
+	if (SelectedActor)
+	{
+		if (FInput::IsKeyPressed(Key::W))
+		{
+			FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(this);
 		}
 	}
 }

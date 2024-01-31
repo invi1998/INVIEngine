@@ -8,7 +8,8 @@ public:
 	FOperationHandleSelectManage(void);
 	~FOperationHandleSelectManage(void);
 
-	static FOperationHandleSelectManage* GetInstance();
+	static FOperationHandleSelectManage* Get();
+
 	static void Destroy();
 
 	void AllOperationHandleHide();	//Òþ²ØËùÓÐ²Ù×÷¾ä±ú

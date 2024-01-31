@@ -11,6 +11,8 @@ extern class GRotateArrow* RotateArrow;
 extern class GScalingArrow* ScaleArrow;
 extern class GActorObject* SelectedActor;
 
+static FOperationHandleSelectManage* Instance = nullptr;
+
 FOperationHandleSelectManage::FOperationHandleSelectManage()
 {
 }
@@ -19,7 +21,7 @@ FOperationHandleSelectManage::~FOperationHandleSelectManage()
 {
 }
 
-FOperationHandleSelectManage* FOperationHandleSelectManage::GetInstance()
+FOperationHandleSelectManage* FOperationHandleSelectManage::Get()
 {
 	if (Instance == nullptr)
 	{

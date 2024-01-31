@@ -1,6 +1,7 @@
 #include "EngineMinimal.h"
 #include "OperationHandle.h"
 
+#include "OperationHandleSelectManage.h"
 #include "Component/InputComponent.h"
 #include "Component/Mesh/CustomMeshComponent.h"
 #include "Core/QuaternionCamera.h"
@@ -74,14 +75,6 @@ void GOperationHandle::BeginInit()
 	GActorObject::BeginInit();
 
 	SetVisible(false);
-}
-
-void GOperationHandle::ExecuteInput()
-{
-	if (FInput::IsMouseButtonPressed(VK_LBUTTON))
-	{
-		// OnMouseMoved();
-	}
 }
 
 void GOperationHandle::Tick(float DeltaTime)
@@ -191,7 +184,8 @@ ESelectedAxis GOperationHandle::GetSelectedAxis() const
 
 void GOperationHandle::OnMouseMoved(int x, int y)
 {
-	if (SelectedAxisComponent) return;
+	if (!IsCurrentSelectedHandle()) return;		// 如果不是当前选中的操作句柄，就不进行操作
+	if (SelectedAxisComponent) return;			// 如果选中的轴向不为空，就不进行操作
 	
 	XMFLOAT2 mousePos(x, y);
 
@@ -339,4 +333,9 @@ float GOperationHandle::GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocati
 	}
 
 	return 0.0f;
+}
+
+bool GOperationHandle::IsCurrentSelectedHandle()
+{
+	return FOperationHandleSelectManage::Get()->GetSelectedOperationHandle() == this;
 }
