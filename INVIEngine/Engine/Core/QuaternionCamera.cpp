@@ -2,6 +2,7 @@
 
 #include "QuaternionCamera.h"
 
+#include "OperationHandleSelectManage.h"
 #include "Component/InputComponent.h"
 #include "Component/TransformationComponent.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
@@ -109,6 +110,37 @@ void GQuaternionCamera::OnUpdate(float ts)
 			// 鼠标左键
 			MouseStrafe(delta);		// 上下左右平移摄像机
 		}
+
+		if (FInput::IsKeyReleased(VK_TAB))
+		{
+			CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
+		}
+		if (FInput::IsKeyReleased(Key::W))
+		{
+			MoveForward(5.f);
+		}
+		if (FInput::IsKeyReleased(Key::S))
+		{
+			MoveForward(-5.f);
+		}
+		if (FInput::IsKeyReleased(Key::A))
+		{
+			MoveRight(2.f);
+		}
+		if (FInput::IsKeyReleased(Key::D))
+		{
+			MoveRight(-2.f);
+		}
+		if (FInput::IsKeyReleased(Key::E))
+		{
+			XMFLOAT2 delta = { 2.f, 0.f };
+			MouseRotate(delta);
+		}
+		if (FInput::IsKeyReleased(Key::Q))
+		{
+			XMFLOAT2 delta = { -2.f, 0.f };
+			MouseRotate(delta);
+		}
 	}
 	else
 	{
@@ -121,37 +153,6 @@ void GQuaternionCamera::OnUpdate(float ts)
 				OnClickScene(mouse);
 			}
 		}
-	}
-
-    if (FInput::IsKeyReleased(VK_TAB))
-    {
-        CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
-    }
-    if (FInput::IsKeyReleased(Key::W))
-    {
-		MoveForward(5.f);
-    }
-	if (FInput::IsKeyReleased(Key::S))
-	{
-		MoveForward(-5.f);
-	}
-	if (FInput::IsKeyReleased(Key::A))
-	{
-		MoveRight(2.f);
-	}
-	if (FInput::IsKeyReleased(Key::D))
-	{
-		MoveRight(-2.f);
-	}
-	if (FInput::IsKeyReleased(Key::E))
-	{
-		XMFLOAT2 delta = { 2.f, 0.f};
-		MouseRotate(delta);
-	}
-	if (FInput::IsKeyReleased(Key::Q))
-	{
-		XMFLOAT2 delta = { -2.f, 0.f };
-		MouseRotate(delta);
 	}
 
 	BuildViewMatrix();
@@ -390,11 +391,15 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 			SelectedActor = HitResult.HitActor;
 			renderLayerManage->HighlightObject(HitResult.HitRenderingData);
 
-			if (MoveArrow)
+			FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(HitResult.HitActor);	// 设置选中的操作句柄
+			FOperationHandleSelectManage::Get()->DisplaySelectedHandle();		// 显示
+			
+
+			/*if (MoveArrow)
 			{
 				MoveArrow->SetPosition(HitResult.HitActor->GetPosition());
 				MoveArrow->SetVisible(true);
-			}
+			}*/
 		}
 	}
 	else
@@ -404,10 +409,12 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2& mousePos)
 			renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// 清空之前的选中
 		}
 		SelectedActor = nullptr;
-		if (MoveArrow)
+		FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(nullptr);
+		FOperationHandleSelectManage::Get()->AllOperationHandleHide();
+		/*if (MoveArrow)
 		{
 			MoveArrow->SetVisible(false);
-		}
+		}*/
 	}
 }
 
