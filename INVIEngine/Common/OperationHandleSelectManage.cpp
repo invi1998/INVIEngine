@@ -92,12 +92,9 @@ void FOperationHandleSelectManage::DisplaySelectedHandle()
 
 void FOperationHandleSelectManage::HideSelectedHandle()
 {
-	if (SelectedOperationHandle)
+	if (GOperationHandle* handle = dynamic_cast<GOperationHandle*>(SelectedOperationHandle))
 	{
-		if (GOperationHandle* handle = dynamic_cast<GOperationHandle*>(SelectedOperationHandle))
-		{
-			handle->SetVisible(false);
-		}
+		handle->SetVisible(false);
 	}
 }
 
