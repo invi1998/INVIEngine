@@ -71,7 +71,7 @@ void GMoveArrow::ExecuteInput()
 	{
 		if (FInput::IsKeyPressed(Key::W))
 		{
-			FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(this);
+			FOperationHandleSelectManage::Get()->DisplaySelectedHandle(this);
 		}
 	}
 }

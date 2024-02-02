@@ -63,7 +63,7 @@ void GRotateArrow::ExecuteInput()
 	{
 		if (FInput::IsKeyPressed(Key::E))
 		{
-			FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(this);
+			FOperationHandleSelectManage::Get()->DisplaySelectedHandle(this);
 		}
 	}
 }

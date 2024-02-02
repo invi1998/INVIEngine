@@ -60,7 +60,7 @@ void GScalingArrow::ExecuteInput()
 	{
 		if (FInput::IsKeyPressed(Key::R))
 		{
-			FOperationHandleSelectManage::Get()->SetNewSelectedOperationHandle(this);
+			FOperationHandleSelectManage::Get()->DisplaySelectedHandle(this);
 		}
 	}
 }
