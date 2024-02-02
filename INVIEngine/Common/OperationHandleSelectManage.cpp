@@ -98,14 +98,14 @@ void FOperationHandleSelectManage::HideSelectedHandle()
 	}
 }
 
-void FOperationHandleSelectManage::SetNewSelectedOperationHandle(GActorObject* SelectedObject)
+void FOperationHandleSelectManage::SetNewSelectedOperationHandle(GActorObject* actor)
 {
-	SelectedOperationHandle = SelectedObject;
+	SelectedOperationHandle = actor;
 }
 
-void FOperationHandleSelectManage::SetNewSelectedSelectedObject()
+void FOperationHandleSelectManage::SetNewSelectedObject(GActorObject* actor)
 {
-	SelectedObject = SelectedActor;
+	SelectedObject = actor;
 }
 
 GActorObject* FOperationHandleSelectManage::GetSelectedOperationHandle()
