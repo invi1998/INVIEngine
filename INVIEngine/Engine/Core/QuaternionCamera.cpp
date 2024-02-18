@@ -145,7 +145,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 	else
 	{
 		// 如果是鼠标左键点击
-		if (FInput::IsMouseButtonPressed(VK_LBUTTON))
+		if (FInput::IsMouseButtonClicked(VK_LBUTTON))
 		{
 			if (!SelectedAxisComponent)
 			{
@@ -376,6 +376,11 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2 &mousePos)
 
 	if (HitResult.bHit)
 	{
+		if (SelectedActor == HitResult.HitActor)
+		{
+			return;
+		}
+
 		ENGINE_LOG_SUCCESS("HitResult: (%f, %f, %f)", HitResult.HitPoint.x, HitResult.HitPoint.y, HitResult.HitPoint.z);
 		ENGINE_LOG_SUCCESS("HitResult: (%f, %f, %f)", HitResult.HitNormal.x, HitResult.HitNormal.y, HitResult.HitNormal.z);
 		ENGINE_LOG_SUCCESS("HitResult: (%f)", HitResult.HitDistance);

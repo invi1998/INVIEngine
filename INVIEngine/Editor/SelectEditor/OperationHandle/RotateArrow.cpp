@@ -5,6 +5,7 @@
 #include "Component/Mesh/CustomMeshComponent.h"
 #include "Component/Mesh/Core/MeshComponent.h"
 #include "Core/Construction/MacroConstruction.h"
+#include "Misc/RaycastSystemLibrary.h"
 
 extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
 extern GActorObject* SelectedActor;	// 被选中的物体
@@ -45,7 +46,47 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 {
 	GOperationHandle::OnMouseLeftDown(x, y);
 
-	if (!IsCurrentSelectedHandle()) return;
+	if (SelectedActor && IsCurrentSelectedHandle())
+	{
+		XMFLOAT2 mousePos(x, y);
+
+		EngineType::FHitResult HitResult{};
+		FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
+
+		if (HitResult.bHit)
+		{
+			if (HitResult.HitComponent == XAxisComponent)
+			{
+				SelectedAxisComponent = XAxisComponent;
+				SetVisible(true, XAxisComponent);
+				SetVisible(false, YAxisComponent);
+				SetVisible(false, ZAxisComponent);
+			}
+			else if (HitResult.HitComponent == YAxisComponent)
+			{
+				SelectedAxisComponent = YAxisComponent;
+				SetVisible(true, YAxisComponent);
+				SetVisible(false, XAxisComponent);
+				SetVisible(false, ZAxisComponent);
+			}
+			else if (HitResult.HitComponent == ZAxisComponent)
+			{
+				SelectedAxisComponent = ZAxisComponent;
+				SetVisible(true, ZAxisComponent);
+				SetVisible(false, YAxisComponent);
+				SetVisible(false, XAxisComponent);
+			}
+		}
+		else
+		{
+			SelectedAxisComponent = nullptr;
+			SetVisible(true);
+		}
+	}
+	else
+	{
+		return;
+	}
 
 	if (SelectedAxisComponent)
 	{
@@ -82,7 +123,7 @@ void GRotateArrow::ExecuteInput()
 
 void GRotateArrow::OnMousePressed(int x, int y)
 {
-	if (SelectedActor and SelectedAxisComponent)
+	if (SelectedActor && SelectedAxisComponent && IsCurrentSelectedHandle())
 	{
 		XMVECTOR ActorLocation{};		// 物体的位置
 		XMVECTOR DragDirection{};		// 鼠标拖拽的轴的方向
