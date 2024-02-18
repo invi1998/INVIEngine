@@ -20,6 +20,9 @@ public:
 	void OnMousePressed(int x, int y);
 
 protected:
+	void GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation, XMVECTOR& OutDirection) override;
+
+protected:
 	XMVECTOR RelativePosition{};	// 相对于选中物体的位置
 };
 

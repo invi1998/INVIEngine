@@ -77,6 +77,9 @@ protected:
 
 	virtual void OnMouseLeftUp(int x, int y);
 
+	// 需要子类实现的获取任意轴反向的虚函数，传入世界坐标系的原点和方向和实体位置，返回任意轴的方向
+	virtual void GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation, XMVECTOR& OutDirection) = 0;
+
 	float GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XMVECTOR& DragDirection);
 
 	bool IsCurrentSelectedHandle();

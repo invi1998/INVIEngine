@@ -278,6 +278,13 @@ float GOperationHandle::GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocati
 			DragDirection = XMLoadFloat3(&ForwardVector);
 			break;
 		};
+		case AXIS_ANY:
+		{
+			// 鼠标拖拽的是任意轴
+			XMFLOAT3 Direction = IsWorldOperate() ? XMFLOAT3{ 0.0f, 0.0f, 1.0f } : SelectedActor->GetForwardVector();
+			DragDirection = XMLoadFloat3(&Direction);
+			break;
+		}
 		default: break;
 		}
 

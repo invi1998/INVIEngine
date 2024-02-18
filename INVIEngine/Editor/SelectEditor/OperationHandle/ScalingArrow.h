@@ -19,6 +19,9 @@ public:
 	void OnMousePressed(int x, int y);
 
 protected:
+	void GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation, XMVECTOR& OutDirection) override;
+
+protected:
 	float LastT2Value;
 };
 

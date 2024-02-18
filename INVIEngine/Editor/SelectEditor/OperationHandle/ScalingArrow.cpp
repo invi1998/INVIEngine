@@ -138,3 +138,8 @@ void GScalingArrow::OnMousePressed(int x, int y)
 		}
 	}
 }
+
+void GScalingArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation,
+	XMVECTOR& OutDirection)
+{
+}
