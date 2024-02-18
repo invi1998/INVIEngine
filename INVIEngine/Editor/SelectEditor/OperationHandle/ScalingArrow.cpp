@@ -133,6 +133,8 @@ void GScalingArrow::OnMousePressed(int x, int y)
 			float value = OffsetScale < 0.f ? -0.25f : 0.25f;
 			CurrentScale += (DragDirection * value);
 			SelectedActor->SetScale(CurrentScale);
+
+			LastT2Value = t;
 		}
 	}
 }
