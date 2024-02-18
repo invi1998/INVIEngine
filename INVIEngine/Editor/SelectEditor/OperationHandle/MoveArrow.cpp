@@ -149,9 +149,9 @@ void GMoveArrow::OnMousePressed(int x, int y)
 	}
 }
 
-void GMoveArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation,
-	XMVECTOR& OutDirection)
+XMVECTOR GMoveArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation)
 {
+	return XMVector3Normalize(WorldDirection);
 }
 
 

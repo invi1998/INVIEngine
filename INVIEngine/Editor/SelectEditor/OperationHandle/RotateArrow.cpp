@@ -134,16 +134,9 @@ void GRotateArrow::OnMousePressed(int x, int y)
 	}
 }
 
-void GRotateArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation,
-	XMVECTOR& OutDirection)
+XMVECTOR GRotateArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation)
 {
-	if (SelectedAxisComponent)
-	{
-		XMVECTOR DragDirection{};		// 鼠标拖拽的轴的方向
-		float t = GetMouseMoveDistance(0, 0, ActorLocation, DragDirection);
-		if (t != 0)
-		{
-			OutDirection = DragDirection;
-		}
-	}
+	XMFLOAT3 Dir{ 1.f, 1.f, 1.f };
+	XMVECTOR OutDirection = XMLoadFloat3(&Dir);
+	return OutDirection;
 }

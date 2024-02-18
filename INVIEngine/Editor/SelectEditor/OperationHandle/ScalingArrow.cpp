@@ -73,6 +73,14 @@ void GScalingArrow::OnMouseLeftDown(int x, int y)
 				SetVisible(false, YAxisComponent);
 				SetVisible(false, XAxisComponent);
 			}
+			else if (HitResult.HitComponent == AnyAxisComponent)
+			{
+				SelectedAxisComponent = AnyAxisComponent;
+				SetVisible(true, AnyAxisComponent);
+				SetVisible(false, ZAxisComponent);
+				SetVisible(false, YAxisComponent);
+				SetVisible(false, XAxisComponent);
+			}
 		}
 		else
 		{
@@ -139,7 +147,9 @@ void GScalingArrow::OnMousePressed(int x, int y)
 	}
 }
 
-void GScalingArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation,
-	XMVECTOR& OutDirection)
+XMVECTOR GScalingArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation)
 {
+	XMFLOAT3 Dir{ 1.f, 1.f, 1.f };
+	XMVECTOR OutDirection = XMLoadFloat3(&Dir);
+	return OutDirection;
 }
