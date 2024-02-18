@@ -1,4 +1,5 @@
 #pragma once
+#include "OperationHandleSelectManage.h"
 #include "Actor/Core/ActorObject.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Interface/DirectXDeviceInterface.h"
@@ -79,6 +80,13 @@ protected:
 	float GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XMVECTOR& DragDirection);
 
 	bool IsCurrentSelectedHandle();
+
+	// 判断选择的操作句柄是否当前特定子类型
+	template<typename T>
+	bool IsCurrentSelectedHandleType()
+	{
+		return dynamic_cast<T*>(this) != FOperationHandleSelectManage::Get()->GetSelectedOperationHandle();
+	}
 
 private:
 	ESelectedAxis SelectedAxis = AXIS_NONE;	// 选中的轴向

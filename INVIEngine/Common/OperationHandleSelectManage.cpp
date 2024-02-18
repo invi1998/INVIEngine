@@ -81,10 +81,29 @@ void FOperationHandleSelectManage::DisplaySelectedHandle()
 		}
 		else
 		{
-			if (GOperationHandle* handle = dynamic_cast<GOperationHandle*>(SelectedOperationHandle))
+			AllOperationHandleHide();
+			// 将操作句柄附加定位到选中的物体上
+			// 判断SelectedOperationHandle的类型
+			if (GMoveArrow* handle = dynamic_cast<GMoveArrow*>(SelectedOperationHandle))
 			{
-				handle->SetPosition(SelectedActor->GetPosition());
-				handle->SetVisible(true);
+				MoveArrow->SetPosition(SelectedActor->GetPosition());
+				// handle->SetRotation(SelectedActor->GetRotation());
+				// handle->SetScale(SelectedActor->GetScale());
+				MoveArrow->SetVisible(true);
+			}
+			else if (GRotateArrow* handle = dynamic_cast<GRotateArrow*>(SelectedOperationHandle))
+			{
+				RotateArrow->SetPosition(SelectedActor->GetPosition());
+				// handle->SetRotation(SelectedActor->GetRotation());
+				// handle->SetScale(SelectedActor->GetScale());
+				RotateArrow->SetVisible(true);
+			}
+			else if (GScalingArrow* handle = dynamic_cast<GScalingArrow*>(SelectedOperationHandle))
+			{
+				ScaleArrow->SetPosition(SelectedActor->GetPosition());
+				// handle->SetRotation(SelectedActor->GetRotation());
+				// handle->SetScale(SelectedActor->GetScale());
+				ScaleArrow->SetVisible(true);
 			}
 		}
 	}

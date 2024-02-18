@@ -42,6 +42,8 @@ void GScalingArrow::OnMouseLeftDown(int x, int y)
 {
 	GOperationHandle::OnMouseLeftDown(x, y);
 
+	if (!IsCurrentSelectedHandle()) return;
+
 	if (SelectedAxisComponent)
 	{
 		XMVECTOR ActorLocation{};		// 物体的位置

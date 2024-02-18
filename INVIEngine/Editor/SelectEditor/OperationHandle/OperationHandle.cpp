@@ -269,7 +269,7 @@ void GOperationHandle::OnMouseLeftDown(int x, int y)
 void GOperationHandle::OnMouseLeftUp(int x, int y)
 {
 	SelectedAxisComponent = nullptr;
-	if (SelectedActor)
+	if (SelectedActor && IsCurrentSelectedHandle())
 	{
 		SetVisible(true);
 	}
