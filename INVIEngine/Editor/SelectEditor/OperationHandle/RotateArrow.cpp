@@ -130,6 +130,14 @@ void GRotateArrow::OnMousePressed(int x, int y)
 		float t = GetMouseMoveDistance(x, y, ActorLocation, DragDirection);
 		if (t != 0)
 		{
+			// 获取物体的旋转
+			XMFLOAT3 ActorRotation{};
+			XMVECTOR rotation = XMLoadFloat3(&SelectedActor->GetRotation());
+
+			// 四元数旋转操作对象
+
+			XMStoreFloat3(&ActorRotation, rotation);
+			SelectedActor->SetRotation(ActorRotation);
 		}
 	}
 }
