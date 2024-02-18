@@ -67,6 +67,16 @@ void GMoveArrow::OnMouseLeftDown(int x, int y)
 	}
 }
 
+void GMoveArrow::OnMouseLeftUp(int x, int y)
+{
+	GOperationHandle::OnMouseLeftUp(x, y);
+
+	if (SelectedActor && IsCurrentSelectedHandle())
+	{
+		SetVisible(true);
+	}
+}
+
 void GMoveArrow::ExecuteInput()
 {
 	if (SelectedActor)

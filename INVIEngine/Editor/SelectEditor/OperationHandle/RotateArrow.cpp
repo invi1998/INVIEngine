@@ -59,6 +59,16 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 	}
 }
 
+void GRotateArrow::OnMouseLeftUp(int x, int y)
+{
+	GOperationHandle::OnMouseLeftUp(x, y);
+
+	if (SelectedActor && IsCurrentSelectedHandle())
+	{
+		SetVisible(true);
+	}
+}
+
 void GRotateArrow::ExecuteInput()
 {
 	if (SelectedActor)

@@ -56,6 +56,16 @@ void GScalingArrow::OnMouseLeftDown(int x, int y)
 	}
 }
 
+void GScalingArrow::OnMouseLeftUp(int x, int y)
+{
+	GOperationHandle::OnMouseLeftUp(x, y);
+
+	if (SelectedActor && IsCurrentSelectedHandle())
+	{
+		SetVisible(true);
+	}
+}
+
 void GScalingArrow::ExecuteInput()
 {
 	if (SelectedActor)
