@@ -51,3 +51,13 @@ $$
 ![image-20240219164913417](.\image-20240219164913417.png)
 
 v是我们式子的后半部分，也就是我们的复数部分，然后结合上我们的3维空间，他们构成了一个整体的多维度坐标系，这里加a，表示将这一整个系统在实轴上进行了移动。
+
+
+
+## 四元数的轴-角对
+
+对于我们的四元数
+$$
+g = [\cos{\frac{\theta}{2}}, \sin{\frac{\theta}{2}}\cdot v]\\
+= [\cos{\frac{\theta}{2}}, \sin{\frac{\theta}{2}}\cdot v_x, \sin{\frac{\theta}{2}}\cdot v_y, \sin{\frac{\theta}{2}}\cdot v_z]
+$$
