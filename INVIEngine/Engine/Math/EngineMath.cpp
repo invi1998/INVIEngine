@@ -245,4 +245,16 @@ namespace EngineMath
 
 		return 0;
 	}
+
+	void BuildMatrix(DirectX::XMFLOAT4X4& OutMatrix, const DirectX::XMFLOAT3& InPosition,
+		const DirectX::XMFLOAT3& InScale, const DirectX::XMFLOAT3& Right, const DirectX::XMFLOAT3& Up,
+		const DirectX::XMFLOAT3& Forward)
+	{
+		OutMatrix = {
+					Right.x * InScale.x,	Up.x * InScale.y,	Forward.x * InScale.z,	0.f,
+					Right.y * InScale.x,	Up.y * InScale.y,	Forward.y * InScale.z,	0.f,
+					Right.z * InScale.x,	Up.z * InScale.y,	Forward.z * InScale.z,	0.f,
+					InPosition.x,			InPosition.y,		InPosition.z,			1.f,
+				};
+	}
 }

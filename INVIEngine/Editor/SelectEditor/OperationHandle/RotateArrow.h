@@ -20,6 +20,8 @@ public:
 
 	void SetScale(const XMFLOAT3& InNewScale) override;
 
+	void Tick(float DeltaTime) override;
+
 protected:
 	XMVECTOR GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation) override;
 

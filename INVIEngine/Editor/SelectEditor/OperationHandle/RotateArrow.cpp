@@ -4,6 +4,8 @@
 #include "OperationHandleSelectManage.h"
 #include "Component/Mesh/CustomMeshComponent.h"
 #include "Component/Mesh/Core/MeshComponent.h"
+#include "Core/QuaternionCamera.h"
+#include "Core/World.h"
 #include "Core/Construction/MacroConstruction.h"
 #include "Misc/RaycastSystemLibrary.h"
 
@@ -190,6 +192,37 @@ void GRotateArrow::SetScale(const XMFLOAT3& InNewScale)
 		XAxisComponent->SetScale(InNewScale);
 		YAxisComponent->SetScale(InNewScale);
 		ZAxisComponent->SetScale(InNewScale);
+	}
+}
+
+void GRotateArrow::Tick(float DeltaTime)
+{
+	GOperationHandle::Tick(DeltaTime);
+
+	if (IsCurrentSelectedHandle())
+	{
+		// 我们需要将摄像机的位置转换为操作手柄的坐标系下的位置
+		XMFLOAT4X4 ArrowMatrix{};
+		EngineMath::BuildMatrix(ArrowMatrix, GetPosition(), GetScale(), GetRightVector(), GetUpVector(), GetForwardVector());
+
+		XMMATRIX ArrowMatrixXM = XMLoadFloat4x4(&ArrowMatrix);		// 操作手柄的世界矩阵
+		XMVECTOR ArrowMatrixDetemine = XMMatrixDeterminant(ArrowMatrixXM);	// 操作手柄的世界矩阵的行列式s
+		XMMATRIX ArrowMatrixInverse = XMMatrixInverse(&ArrowMatrixDetemine, ArrowMatrixXM);	// 操作手柄的世界矩阵的逆矩阵
+
+		XMVECTOR CameraLocation = XMLoadFloat3(&GetWorld()->GetQuaternionCamera()->GetPosition());	// 摄像机的位置
+
+		XMVECTOR ArrowMatrixInverseLocation = XMVector3TransformCoord(CameraLocation, ArrowMatrixInverse);	// 摄像机的位置转换为操作手柄的坐标系下的位置
+
+		XMFLOAT3 ArrowMatrixInverseLocationFloat3;
+		XMStoreFloat3(&ArrowMatrixInverseLocationFloat3, ArrowMatrixInverseLocation);
+
+		int type = EngineMath::GetSample8CubeIndex(EngineMath::ToVector3d(ArrowMatrixInverseLocationFloat3));
+
+		switch (type)
+		{
+		default: ;
+		}
+
 	}
 }
 

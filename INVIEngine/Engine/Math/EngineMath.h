@@ -43,4 +43,6 @@ namespace EngineMath
 
 	int GetSample8CubeIndex(const fvector_3d& InPointPosition);	// 获取8个CubeMap的索引
 
+	void BuildMatrix(DirectX::XMFLOAT4X4& OutMatrix, const DirectX::XMFLOAT3& InPosition, const DirectX::XMFLOAT3& InScale, const DirectX::XMFLOAT3& Right, const DirectX::XMFLOAT3& Up, const DirectX::XMFLOAT3& Forward);
+
 }
