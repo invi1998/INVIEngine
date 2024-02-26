@@ -51,7 +51,7 @@ void CTransformationComponent::SetRotation(const XMFLOAT3& InRotation)
 	XMStoreFloat3(&UpVector, XMVector3TransformNormal(Up, RotationRollPitchYawMatrix));
 	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(Forward, RotationRollPitchYawMatrix));
 
-	Rotation = rotation;
+	XMStoreFloat3(&Rotation, LastRotation);		// ±£´æÐý×ª½Ç¶È
 }
 
 void CTransformationComponent::SetScale(const XMFLOAT3& InScale)

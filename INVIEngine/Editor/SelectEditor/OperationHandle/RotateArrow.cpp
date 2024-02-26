@@ -128,16 +128,53 @@ void GRotateArrow::OnMousePressed(int x, int y)
 		XMVECTOR ActorLocation{};		// 物体的位置
 		XMVECTOR DragDirection{};		// 鼠标拖拽的轴的方向
 		float t = GetMouseMoveDistance(x, y, ActorLocation, DragDirection);
+
 		if (t != 0)
 		{
 			// 获取物体的旋转
-			XMFLOAT3 ActorRotation{};
-			XMVECTOR rotation = XMLoadFloat3(&SelectedActor->GetRotation());
+			XMFLOAT3 ActorRotation = SelectedActor->GetRotation();
+			fvector_3d rotation = EngineMath::ToVector3d(ActorRotation);
 
-			// 四元数旋转操作对象
+			// 获取鼠标拖拽的旋转间距（角度）
+			float angle = 0.0f;
+			float offset = t - LastT2Value;
+			angle = offset < 0 ? -2.25f : 2.25f;
 
-			XMStoreFloat3(&ActorRotation, rotation);
-			SelectedActor->SetRotation(ActorRotation);
+			// TODO:这里先用simple_library库的四元数，后续考虑自己实现
+			// 定义旋转
+			fvector_3d deltaVector;
+			XMFLOAT3 ActorDirFloat3;
+			XMStoreFloat3(&ActorDirFloat3, DragDirection);
+			fvector_3d dragDirection = EngineMath::ToVector3d(ActorDirFloat3);
+			deltaVector = dragDirection * angle;
+
+			// 将物体的旋转转换为欧拉角结构
+			frotator rotationRotator(rotation.x, rotation.y, rotation.z);
+
+			// 将我们的旋转角度也转为欧拉角结构
+			frotator deltaRotator(deltaVector.x, deltaVector.y, deltaVector.z);
+
+			// 将物体的欧拉角结构转换为四元数
+			fquat rotationQuat;
+			// 将我们的旋转角度也转为四元数
+			fquat deltaQuat;
+
+			// 此时我们得到的是物体的惯性坐标系下的旋转四元数（世界坐标系下的旋转四元数），我们需要将其转换为物体坐标系下的旋转四元数
+			rotationQuat.inertia_to_object(rotationRotator);
+			deltaQuat.inertia_to_object(deltaRotator);
+
+			// 将物体的旋转四元数和计算出的旋转四元数相乘，得到新的旋转四元数，这个新的旋转四元数是物体坐标系下的
+			fquat newRotationQuat = rotationQuat * deltaQuat;
+
+			// 将新的旋转四元数转换为欧拉角，设置物体的旋转（注意先要将物体坐标系下的旋转四元数转换为世界坐标系下的旋转四元数）
+			frotator newRotationRotator;
+			newRotationRotator.object_to_inertia(newRotationQuat);
+
+			XMFLOAT3 resultRotation{newRotationRotator.roll, newRotationRotator.pitch, newRotationRotator.yaw};
+
+			SelectedActor->SetRotation(resultRotation);
+
+			LastT2Value = t;
 		}
 	}
 }
