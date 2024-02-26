@@ -179,6 +179,20 @@ void GRotateArrow::OnMousePressed(int x, int y)
 	}
 }
 
+void GRotateArrow::SetScale(const XMFLOAT3& InNewScale)
+{
+	GOperationHandle::SetScale(InNewScale);
+
+	if (XAxisComponent && YAxisComponent && ZAxisComponent)
+	{
+		AnyAxisComponent->SetScale(XMFLOAT3{InNewScale.x*1.5f, InNewScale.y*1.5f, InNewScale.z*1.5f});
+
+		XAxisComponent->SetScale(InNewScale);
+		YAxisComponent->SetScale(InNewScale);
+		ZAxisComponent->SetScale(InNewScale);
+	}
+}
+
 XMVECTOR GRotateArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation)
 {
 	XMFLOAT3 Dir{ 1.f, 1.f, 1.f };

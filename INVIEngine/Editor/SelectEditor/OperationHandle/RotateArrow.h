@@ -18,6 +18,8 @@ public:
 
 	void OnMousePressed(int x, int y);
 
+	void SetScale(const XMFLOAT3& InNewScale) override;
+
 protected:
 	XMVECTOR GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation) override;
 
