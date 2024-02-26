@@ -149,10 +149,10 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			deltaVector = dragDirection * angle;
 
 			// 将物体的旋转转换为欧拉角结构
-			frotator rotationRotator(rotation.x, rotation.y, rotation.z);
+			frotator rotationRotator(rotation.y, rotation.z, rotation.x);
 
 			// 将我们的旋转角度也转为欧拉角结构
-			frotator deltaRotator(deltaVector.x, deltaVector.y, deltaVector.z);
+			frotator deltaRotator(deltaVector.y, deltaVector.z, deltaVector.x);
 
 			// 将物体的欧拉角结构转换为四元数
 			fquat rotationQuat;

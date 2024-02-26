@@ -234,4 +234,15 @@ namespace EngineMath
 			return ECubeMapFace::NegativeZ;
 		}
 	}
+
+	int GetSample8CubeIndex(const fvector_3d& InPointPosition)
+	{
+		fvector_3d Point = GetPointSphericalCoordinates(InPointPosition);
+
+		// ÇòÃæ×ø±êÖµ
+		float PointTheta = Point.y;
+		float PointFai = Point.z;
+
+		return 0;
+	}
 }

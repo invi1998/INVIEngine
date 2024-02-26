@@ -41,4 +41,6 @@ namespace EngineMath
 	fvector_3d GetPointSphericalCoordinates(const fvector_3d& InPoint);
 	ECubeMapFace GetSampleCubeMapIndexR(const fvector_3d& InPointPosition);
 
+	int GetSample8CubeIndex(const fvector_3d& InPointPosition);	// 获取8个CubeMap的索引
+
 }
