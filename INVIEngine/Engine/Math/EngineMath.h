@@ -45,4 +45,8 @@ namespace EngineMath
 
 	void BuildMatrix(DirectX::XMFLOAT4X4& OutMatrix, const DirectX::XMFLOAT3& InPosition, const DirectX::XMFLOAT3& InScale, const DirectX::XMFLOAT3& Right, const DirectX::XMFLOAT3& Up, const DirectX::XMFLOAT3& Forward);
 
+	inline bool IsRange(float InValue, float MinV, float MaxV)
+	{
+		return InValue >= MinV && InValue <= MaxV;
+	}
 }

@@ -243,7 +243,49 @@ namespace EngineMath
 		float PointTheta = Point.y;
 		float PointFai = Point.z;
 
-		return 0;
+		// 使用theta和fai的值来判断物体在哪个面
+		// theta的值在0-45和135-180之间，fai的值在45-135之间，物体在PositiveX
+		if (IsRange(PointTheta, 0.f, 90.f))
+		{
+			if (IsRange(PointFai, 0.f, 90))
+			{
+				return 0;	// PositiveX
+			}
+			else if (IsRange(PointFai, 90.f, 180.f))
+			{
+				return 1;	// PositiveY
+			}
+			else if (IsRange(PointFai, -90.f, 0.f))
+			{
+				return 3;	// PositiveZ
+			}
+			else if (IsRange(PointFai, -180.f, -90.f))
+			{
+				return 2;	// NegativeY
+			}
+		}
+		else if (IsRange(PointTheta, 90.f, 180.f))
+		{
+			if (IsRange(PointFai, 0.f, 90))
+			{
+				return 4;	// NegativeX
+			}
+			else if (IsRange(PointFai, 90.f, 180.f))
+			{
+				return 5;	// NegativeZ
+			}
+			else if (IsRange(PointFai, -90.f, 0.f))
+			{
+				return 7;	// NegativeY
+			}
+			else if (IsRange(PointFai, -180.f, -90.f))
+			{
+				return 6;	// PositiveZ
+			}
+		}
+		
+
+		return -1;
 	}
 
 	void BuildMatrix(DirectX::XMFLOAT4X4& OutMatrix, const DirectX::XMFLOAT3& InPosition,

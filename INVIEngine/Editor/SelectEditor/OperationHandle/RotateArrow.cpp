@@ -220,6 +220,8 @@ void GRotateArrow::Tick(float DeltaTime)
 
 		switch (type)
 		{
+		case 0:
+			break;
 		default: ;
 		}
 
