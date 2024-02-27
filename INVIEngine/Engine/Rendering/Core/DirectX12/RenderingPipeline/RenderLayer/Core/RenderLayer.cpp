@@ -219,11 +219,16 @@ void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& Viewp
 			XMMATRIX ATRTIXMatrixWorld = XMLoadFloat4x4(&renderingData->WorldMatrix);
 			XMMATRIX ATRTIXTextureWorld = XMLoadFloat4x4(&renderingData->TextureTransformationMatrix);
 
+			// 更新法线矩阵
+			XMVECTOR ATRTIXMatrixWorldDetemine = XMMatrixDeterminant(ATRTIXMatrixWorld);	// 先对世界矩阵求行列式
+			XMMATRIX ATRTIXMatrixWorldInverse = XMMatrixInverse(&ATRTIXMatrixWorldDetemine, ATRTIXMatrixWorld);	// 再求逆矩阵
+
 			FObjectTransformation OBJTransformation;
 			// CPU端存储矩阵是先行后列的顺序，与GPU的默认情况（column_major）正好相反
 			// 因此当我们要把CPU的矩阵通过Constant Buffer传递到GPU时，可以在存储矩阵时进行 矩阵的转置 操作
 			XMStoreFloat4x4(&OBJTransformation.World, XMMatrixTranspose(ATRTIXMatrixWorld));
 			XMStoreFloat4x4(&OBJTransformation.TextureTransformation, XMMatrixTranspose(ATRTIXTextureWorld));
+			XMStoreFloat4x4(&OBJTransformation.NormalTransformation, ATRTIXMatrixWorldInverse);
 
 			if (auto& material = (*renderingData->Mesh->GetMaterial())[0])
 			{

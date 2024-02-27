@@ -44,7 +44,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	Out.Texcoord = mul(TextureTexcoord, MatConstBuffer.MaterialProjectionMatrix).xy;
 	
 	// ·¨Ïß
-	Out.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
+	Out.Normal = mul(mv.Normal, (float3x3) NormalMatrix);
 	
 	return Out;
 

@@ -43,11 +43,11 @@ MeshVertexOut VSMain(MeshVertexIn mv)
     else
     {
 		// 世界法线 (从切线空间转到世界空间）
-		outV.Normal = mul(mv.Normal, (float3x3) WorldMatrix);
+		outV.Normal = mul(mv.Normal, (float3x3) NormalMatrix);
 	}
 
     // 切线 (从切线空间转到世界空间）
-	outV.UTangent = mul(mv.UTangent, (float3x3) WorldMatrix);
+	outV.UTangent = mul(mv.UTangent, (float3x3) NormalMatrix);
 
     // 颜色
     outV.Color = mv.Color;
