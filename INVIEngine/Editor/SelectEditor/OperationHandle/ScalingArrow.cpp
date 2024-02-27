@@ -23,8 +23,8 @@ void GScalingArrow::SetMesh()
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, ZAxisComponent, "Asserts/Mesh/Handle/ScalingArrow.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, AnyAxisComponent, "Asserts/Mesh/Handle/AnyAxis_Type_1.fbx");
 
-	YAxisComponent->SetRotation({ -90.f, 0.f, 0.f });
-	XAxisComponent->SetRotation({ 0.f, 90.f, 0.f });
+	YAxisComponent->SetRotation(XMFLOAT3{ -90.f, 0.f, 0.f });
+	XAxisComponent->SetRotation(XMFLOAT3{ 0.f, 90.f, 0.f });
 }
 
 void GScalingArrow::OnMouseMoved(int x, int y)

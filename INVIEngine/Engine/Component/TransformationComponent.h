@@ -10,6 +10,7 @@ public:
 
 	virtual void SetPosition(const XMFLOAT3& InPosition);
 	virtual void SetRotation(const XMFLOAT3& InRotation);
+	virtual void SetRotation(const frotator& InRotation);	// 设置旋转信息，使用frotator
 	virtual void SetScale(const XMFLOAT3& InScale);
 
 	virtual void SetForwardVector(const XMFLOAT3& InForward);

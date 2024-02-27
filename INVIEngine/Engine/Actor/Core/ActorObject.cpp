@@ -29,6 +29,11 @@ void GActorObject::SetRotation(const XMFLOAT3& InRotation)
 	TransformationComponent->SetRotation(InRotation);
 }
 
+void GActorObject::SetRotation(const frotator& InRotation)
+{
+	TransformationComponent->SetRotation(InRotation);
+}
+
 void GActorObject::SetScale(const XMFLOAT3& InNewScale)
 {
 	TransformationComponent->SetScale(InNewScale);

@@ -33,7 +33,7 @@ GQuaternionCamera::GQuaternionCamera()
 
 	// UpdateViewMatrix();
 	GActorObject::SetPosition(XMFLOAT3{0.f, 0.f, 10.f});
-	GActorObject::SetRotation({0.f, 180.f, 0.f});
+	GActorObject::SetRotation(XMFLOAT3{0.f, 180.f, 0.f});
 	UpdateProjectionMatrix();
 	BuildViewMatrix();
 }

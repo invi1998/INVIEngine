@@ -54,6 +54,29 @@ void CTransformationComponent::SetRotation(const XMFLOAT3& InRotation)
 	XMStoreFloat3(&Rotation, LastRotation);		// 保存旋转角度
 }
 
+void CTransformationComponent::SetRotation(const frotator& InRotation)
+{
+	float rollRadians = XMConvertToRadians(InRotation.roll);
+	float pitchRadians = XMConvertToRadians(InRotation.pitch);
+	float yawRadians = XMConvertToRadians(InRotation.yaw);
+
+	// 旋转矩阵
+	XMMATRIX RotationRollPitchYawMatrix = XMMatrixRotationRollPitchYaw(pitchRadians, yawRadians, rollRadians);
+
+	// 归一化拿到3个方向向量
+	XMVECTOR Right = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	XMVECTOR Up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	XMVECTOR Forward = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	XMStoreFloat3(&RightVector, XMVector3TransformNormal(Right, RotationRollPitchYawMatrix));
+	XMStoreFloat3(&UpVector, XMVector3TransformNormal(Up, RotationRollPitchYawMatrix));
+	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(Forward, RotationRollPitchYawMatrix));
+
+	// 保存旋转角度，因为我们设计frotator的时候，roll是x轴，pitch是y轴，yaw是z轴，所以这里要转换一下，不能直接yaw, pitch, roll
+	Rotation = { InRotation.yaw, InRotation.pitch, InRotation.roll };
+
+}
+
 void CTransformationComponent::SetScale(const XMFLOAT3& InScale)
 {
 	Scale = InScale;

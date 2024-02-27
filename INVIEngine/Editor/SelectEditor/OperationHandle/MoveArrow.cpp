@@ -27,8 +27,8 @@ void GMoveArrow::SetMesh()
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, AnyAxisComponent, "Asserts/Mesh/Handle/AnyAxis_Type_1.fbx");
 
 	// 旋转模型，使其成为正确的坐标系指向
-	XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
-	YAxisComponent->SetRotation({ -90.0f, 0.0f, 0.0f });
+	XAxisComponent->SetRotation(XMFLOAT3{ 0.0f, 90.0f, 0.0f });
+	YAxisComponent->SetRotation(XMFLOAT3{ -90.0f, 0.0f, 0.0f });
 
 	// ResetColor();
 

@@ -37,7 +37,7 @@ void CLightComponent::SetRotation(const XMFLOAT3& InNewRotation)
 {
 	CTransformationComponent::SetRotation(InNewRotation);
 
-	LightMesh->SetRotation({ InNewRotation.x * -1, InNewRotation.y * -1, InNewRotation.z * -1 });
+	LightMesh->SetRotation(XMFLOAT3{ InNewRotation.x * -1, InNewRotation.y * -1, InNewRotation.z * -1 });
 }
 
 void CLightComponent::SetScale(const XMFLOAT3& InNewScale)

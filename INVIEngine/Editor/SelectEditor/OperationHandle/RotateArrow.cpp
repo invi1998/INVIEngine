@@ -221,8 +221,54 @@ void GRotateArrow::Tick(float DeltaTime)
 		switch (type)
 		{
 		case 0:
+			YAxisComponent->SetRotation(frotator(0.f, 90.f, 0.f));//绿
+			XAxisComponent->SetRotation(frotator(-90.f, 0, 0.f));//红色
+			AnyAxisComponent->SetRotation(frotator());
+			ZAxisComponent->SetRotation(frotator());
 			break;
-		default: ;
+		case 1:
+			YAxisComponent->SetRotation(frotator(0.f, -180.f, 0.f));//绿
+			XAxisComponent->SetRotation(frotator(-90.f, 0, 0.f));//红色
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -90.f));
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -90.f));
+			break;
+		case 2:
+			YAxisComponent->SetRotation(frotator(0.f, -90.f, 0.f));
+			XAxisComponent->SetRotation(frotator());
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -90.f));
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -90.f));
+			break;
+		case 3:
+			YAxisComponent->SetRotation(frotator());//绿
+			XAxisComponent->SetRotation(frotator());//红色
+			AnyAxisComponent->SetRotation(frotator());//青色
+			ZAxisComponent->SetRotation(frotator());//蓝色
+			break;
+		case 4:
+			YAxisComponent->SetRotation(frotator(0.f, 90.f, 0.f));//绿
+			XAxisComponent->SetRotation(frotator(-180.f, 0, 0.f));//红色
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//青色
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//蓝色
+			break;
+		case 5:
+			YAxisComponent->SetRotation(frotator(0.f, 180.f, 0.f));//绿
+			XAxisComponent->SetRotation(frotator(-180.f, 0, 0.f));//红色
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//青色
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//蓝色
+			break;
+		case 6:
+			YAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//绿
+			XAxisComponent->SetRotation(frotator(0.f, 0.f, 180.f));//红色
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//青色
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//蓝色
+			break;
+		case 7:
+			YAxisComponent->SetRotation(frotator());//绿
+			XAxisComponent->SetRotation(frotator(0.f, 0.f, 180.f));//红色
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//青色
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//蓝色
+			break;
+		default: break;
 		}
 
 	}

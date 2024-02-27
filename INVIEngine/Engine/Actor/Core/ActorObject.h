@@ -21,6 +21,7 @@ public:
 	virtual void SetPosition(const XMFLOAT3& InNewPosition);
 	virtual void SetPosition(const XMVECTOR& InNewPosition);
 	virtual void SetRotation(const XMFLOAT3& InRotation);
+	virtual void SetRotation(const frotator& InRotation);
 	virtual void SetScale(const XMFLOAT3& InNewScale);
 	virtual void SetScale(const XMVECTOR& Scale);
 
