@@ -55,9 +55,19 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	float3 ModelNormal = normalize(mvOut.Normal);
 	float3 ViewDirection = normalize(CameraPosition.xyz - mvOut.WorldPosition.xyz);
-	float DotDiffValue = pow(1.f - max(dot(ModelNormal, ViewDirection), 0.0), 4.f);
 	
-	return float4(0.98f, 0.12f, 0.22f, 1.0f) * DotDiffValue;
+	// ·ÆÄù¶ûÃè±ß
+	//float DotDiffValue = pow(1.f - max(dot(ModelNormal, ViewDirection), 0.0), 4.f);
+	
+	//return float4(0.98f, 0.12f, 0.22f, 1.0f) * DotDiffValue;
+	
+	float DotDiffValue = dot(ModelNormal, ViewDirection);
+	
+	if (DotDiffValue >= 0 && DotDiffValue <= 0.3f)
+	{
+		return float4(0.98f, 0.12f, 0.22f, 1.0f);
+	}
+	return float4(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 
