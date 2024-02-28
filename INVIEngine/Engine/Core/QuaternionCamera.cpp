@@ -30,12 +30,13 @@ GQuaternionCamera::GQuaternionCamera()
 	InputComponent->OnMouseWheelDelegate.Bind(this, &GQuaternionCamera::OnMouseScroll);
 	// 绑定键盘鼠标事件
 	InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GQuaternionCamera::ExecuteInput);
+	CameraType = ECameraType::CameraRoaming;
 
 	// UpdateViewMatrix();
 	GActorObject::SetPosition(XMFLOAT3{0.f, 0.f, 10.f});
 	GActorObject::SetRotation(XMFLOAT3{0.f, 180.f, 0.f});
 	UpdateProjectionMatrix();
-	BuildViewMatrix();
+	BuildMatrixByType();
 }
 
 void GQuaternionCamera::BeginInit()
@@ -97,7 +98,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 		}
 	}
 	// 按住ctrl键
-	else if (FInput::IsKeyPressed(VK_LCONTROL)) // 按住左ctrl
+	else if (FInput::IsKeyPressed(VK_LCONTROL) && CameraType==ECameraType::CameraRoaming) // 按住左ctrl
 	{
 		const XMFLOAT2 &mouse{FInput::GetMouseX(), FInput::GetMouseY()};
 		// ENGINE_LOG_WARNING("IsKeyPressed:(%f, %f)", mouse.x, mouse.y);
@@ -111,10 +112,6 @@ void GQuaternionCamera::OnUpdate(float ts)
 			MouseStrafe(delta); // 上下左右平移摄像机
 		}
 
-		if (FInput::IsKeyReleased(VK_TAB))
-		{
-			CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
-		}
 		if (FInput::IsKeyReleased(Key::W))
 		{
 			MoveForward(5.f);
@@ -142,6 +139,11 @@ void GQuaternionCamera::OnUpdate(float ts)
 			MouseRotate(delta);
 		}
 	}
+	else if (FInput::IsKeyReleased(VK_TAB))
+	{
+		// 切换摄像机类型
+		CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
+	}
 	else
 	{
 		// 如果是鼠标左键点击
@@ -155,7 +157,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 		}
 	}
 
-	BuildViewMatrix();
+	BuildMatrixByType();
 }
 
 // void GQuaternionCamera::UpdateViewMatrix()
@@ -415,5 +417,35 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2 &mousePos)
 		{
 			MoveArrow->SetVisible(false);
 		}*/
+	}
+}
+
+void GQuaternionCamera::BuildMatrixByType()
+{
+	switch (CameraType)
+	{
+	case CameraRoaming:
+	{
+		BuildViewMatrix();
+
+		break;
+	}
+	case ObservationObject:
+	{
+		XMFLOAT3 CameraPosition = GetPosition();
+		CameraPosition.x = Radius * sinf(Phi) * cosf(Theta);
+		CameraPosition.z = Radius * sinf(Phi) * sinf(Theta);
+		CameraPosition.y = Radius * cosf(Phi);
+
+		XMVECTOR Pos = XMVectorSet(CameraPosition.x, CameraPosition.y, CameraPosition.z, 1.0f);
+		XMVECTOR ViewTarget = XMVectorZero();
+		XMVECTOR ViewUp = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
+
+		XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
+
+		XMStoreFloat4x4(&ViewMatrix, ViewLookAt);
+
+		break;
+	}
 	}
 }

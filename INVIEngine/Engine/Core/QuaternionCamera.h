@@ -47,6 +47,8 @@ protected:
 	// …‰œﬂºÏ≤‚
 	void OnClickScene(const XMFLOAT2& mousePos);
 
+	void BuildMatrixByType();
+
 private:
     float Pitch = 0.0f;
     float Yaw = 0.0f;
