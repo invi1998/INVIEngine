@@ -1,6 +1,7 @@
 // 操作物体的shader
 
 #include "Material.hlsl"
+#include "ShadowFunction.hlsl"
 
 struct MeshVertexIn
 {
@@ -39,8 +40,10 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	MaterialConstBuffer MatConstBuffer = Materials[MaterialID];
+	
+	float r = SampleBuildCDTexture(mvOut.TexCoord);
 
-	return float4(MatConstBuffer.BaseColor.rgb, 0.35f);
+	return float4(r, r, r, 0.35f);
 }
 
 

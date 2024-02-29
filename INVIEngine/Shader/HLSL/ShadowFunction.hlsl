@@ -320,5 +320,37 @@ float4 DebugCubeVieport(int Index)
 	return float4(0.f, 0.f, 0.f, 1.f);
 }
 
+float SampleBuildCDTexture(float2 InTexCoord)
+{
+	// 这个函数做的事情是将0-1的纹理坐标映射到[-pi, pi]范围内，这样就可以在shader中直接使用纹理坐标来计算反正切值了
+	
+	float pi = 3.1415926f;	// 180度
+	float pi2 = 2 * pi;		// 360度
+	
+	float2 TexCoord = InTexCoord - 0.5f;	// 将纹理坐标转换到[-0.5, 0.5]范围内
+	float2 Atan2 = atan2(TexCoord.y, TexCoord.x);	// 计算反正切值，得到[-pi, pi]范围内的值，这里为什么用atan2而不是atan呢？因为atan2可以表示所有的角度（4个相限），而atan只能表示一个相限的角度
+	
+	//简而言之， atan2与atan的区别体现在两个方面：
+	//(1) atan2接收两个输入参数； atan只接收一个输入参数
+	//(2) atan2对象限敏感， 根据两个参数判断它是属于哪个象限并给出对应的角度值，
+	//值域范围[-pi, pi]；
+	//atan对象限不敏感， 值域范围为[-pi / 2, pi / 2]
+
+	
+	float a = Atan2.y;	// 反正切值的y分量
+	float r = 0.f;
+	if (a < 0)
+	{	// 如果y分量小于0, 说明处于[-pi, 0]范围内，在坐标系中也就是处于上半圆（y轴正半轴）的部分
+		r = (Atan2.y + pi2) / pi2;	// 把负值的y分量映射到[0, 1]范围内
+
+	}
+	else
+	{
+		r = Atan2.x / pi2;	// 把正值的x分量映射到[0, 1]范围内
+	}
+	
+	return r;
+}
+
 
 #endif
