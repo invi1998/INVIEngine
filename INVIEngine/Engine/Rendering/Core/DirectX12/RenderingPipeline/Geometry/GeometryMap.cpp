@@ -555,6 +555,10 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 
 			material->SetDirty(false);
 
+			MaterialConstantBuffer.Param0 = material->GetParam(0);
+			MaterialConstantBuffer.Param1 = material->GetParam(1);
+			MaterialConstantBuffer.Param2 = material->GetParam(2);
+
 			MaterialConstantBufferViews.Update(material->GetMaterialID(), &MaterialConstantBuffer);
 		}
 	}

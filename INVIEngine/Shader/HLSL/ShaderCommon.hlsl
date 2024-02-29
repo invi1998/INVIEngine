@@ -72,9 +72,9 @@ struct MaterialConstBuffer
 	int NormalIndex;	// 法线贴图索引
 
 	int SpecularIndex;
-	int XX1;
-	int XX2;
-	int XX3;
+	float Param0;		// 自定义参数
+	float Param1;
+	float Param2;
     
 	float4 BaseColor; // 材质基础颜色
 

@@ -122,3 +122,50 @@ void CMaterial::SetMetallicity(float x)
 	SetDirty(true);
 }
 
+void CMaterial::SetParam(int index, float value)
+{
+	switch (index)
+	{
+		case 0:
+			{
+				Param0 = value;
+				break;
+			}
+		case 1:
+			{
+				Param1 = value;
+				break;
+			}
+		case 2:
+			{
+				Param2 = value;
+				break;
+			}
+		default:
+			break;
+	}
+}
+
+float CMaterial::GetParam(int index) const
+{
+	switch (index)
+	{
+	case 0:
+	{
+		return Param0;
+	}
+	case 1:
+	{
+		return Param1;
+	}
+	case 2:
+	{
+		return Param2;
+	}
+	default:
+		break;
+	}
+
+	return 0;
+}
+

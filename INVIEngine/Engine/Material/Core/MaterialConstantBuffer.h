@@ -12,9 +12,9 @@ struct FMaterialConstantBuffer
 	int NormalIndex;			// 法线贴图索引
 
 	int SpecularIndex;			// 高光贴图索引
-	int XX1;
-	int XX2;
-	int XX3;
+	float Param0;		// 自定义参数
+	float Param1;
+	float Param2;
 
 	XMFLOAT4 BaseColor;				// 16字节
 

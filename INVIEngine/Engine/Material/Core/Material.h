@@ -48,6 +48,9 @@ public:
 	void SetRefractiveValue(float x);
 	void SetMetallicity(float x);
 
+	void SetParam(int index, float value);
+	float GetParam(int index) const;
+
 private:
 	// 材质脏标志，用于标志当前材质是否被动态修改过，如果被动态修改过，该值为true，为true，那么我们才重新提交该材质
 	bool bDirty;
@@ -75,6 +78,10 @@ private:
 
 	//金属度
 	XMFLOAT3 Metallicity;
+
+	float Param0;		// 自定义参数
+	float Param1;
+	float Param2;
 
 };
 
