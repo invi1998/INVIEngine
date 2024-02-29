@@ -42,6 +42,25 @@ void FOperationHandleRotPlaneRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
 
+	// 设置透明混合
+	D3D12_RENDER_TARGET_BLEND_DESC RenderTargetBlendDesc;
+	RenderTargetBlendDesc.BlendEnable = true;		// 开启图层混合
+	RenderTargetBlendDesc.LogicOpEnable = false;	// 关闭逻辑混合（开启混合必须将该值关闭，因为他两是互斥的）
+
+	RenderTargetBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;	// 设置源颜色和混合后颜色之间的乘法方式，设置为该值表示 将源颜色乘以源像素的 alpha 值。
+	RenderTargetBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;	// 表示目标颜色和混合后颜色之间的乘法方式。设置为该值表示 将目标像素的颜色值设置为源像素的透明度值取反（即 1 - 源像素的透明度值）。
+
+	RenderTargetBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;		// 表示混合操作的类型（加法、减法或反向减法），设置为该值表示 将源颜色和目标颜色相加。
+	RenderTargetBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;		// 表示源透明度和混合后透明度之间的乘法方式。设置为该值表示 将源像素的透明度值设置为 1。 F(1,1,1)
+	RenderTargetBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;	// 表示目标透明度和混合后透明度之间的乘法方式。设置为该值表示 将源像素的透明度值设置为 0。F(0,0,0)
+	RenderTargetBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;	// 表示透明度混合操作的类型（加法、减法或反向减法）,设置为该值表示 将源颜色和目标颜色相加
+
+	RenderTargetBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;		// 表示逻辑运算的类型（与、或、异或等）,设置为该值表示 不对输出颜色进行任何处理。
+	RenderTargetBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;	// 表示需要写入当前渲染目标的哪些颜色通道，设置为该值表示 启用所有通道。
+
+	// 设置渲染目标
+	DirectXPipelineState->SetRenderTarget(0, RenderTargetBlendDesc);
+
 	CD3DX12_RASTERIZER_DESC RasterizerDesc(D3D12_DEFAULT);
 	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;		// 填充模式为实体
 	RasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;			// 不裁剪，也就是背面也渲染

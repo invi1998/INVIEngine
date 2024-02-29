@@ -40,7 +40,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	MaterialConstBuffer MatConstBuffer = Materials[MaterialID];
 
-	return MatConstBuffer.BaseColor;
+	return float4(MatConstBuffer.BaseColor.rgb, 0.35f);
 }
 
 
