@@ -221,6 +221,10 @@ void GRotateArrow::SetScale(const XMFLOAT3& InNewScale)
 		XAxisComponent->SetScale(InNewScale);
 		YAxisComponent->SetScale(InNewScale);
 		ZAxisComponent->SetScale(InNewScale);
+
+		XPlaneComponent->SetScale(InNewScale);
+		YPlaneComponent->SetScale(InNewScale);
+		ZPlaneComponent->SetScale(InNewScale);
 	}
 }
 
