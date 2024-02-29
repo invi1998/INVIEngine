@@ -42,8 +42,13 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	MaterialConstBuffer MatConstBuffer = Materials[MaterialID];
 	
 	float r = SampleBuildCDTexture(mvOut.TexCoord);
+	
+	r += 0.6;	// CD驱动
+	r = floor(r);	// 向下取整
+	r *= 0.5f;	// 透明度
+	r *= 1.f;	// 开关
 
-	return float4(r, r, r, 0.35f);
+	return float4(1, 1, 1, r);
 }
 
 
