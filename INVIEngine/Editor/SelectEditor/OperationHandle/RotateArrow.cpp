@@ -3,6 +3,7 @@
 
 #include "OperationHandleSelectManage.h"
 #include "Component/Mesh/CustomMeshComponent.h"
+#include "Component/Mesh/PlaneMeshComponent.h"
 #include "Component/Mesh/Core/MeshComponent.h"
 #include "Core/QuaternionCamera.h"
 #include "Core/World.h"
@@ -15,6 +16,13 @@ extern GActorObject* SelectedActor;	// 被选中的物体
 GRotateArrow::GRotateArrow()
 	: GOperationHandle()
 {
+	FCreateObjectParams Params;
+	Params.Owner = this;
+
+	XPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
+	YPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
+	ZPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);	
+
 	GRotateArrow::SetMesh();
 
 	ResetColor();
@@ -22,10 +30,21 @@ GRotateArrow::GRotateArrow()
 
 void GRotateArrow::SetMesh()
 {
+	// 创建操作手柄的网格
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, XAxisComponent, "Asserts/Mesh/Handle/RotateHandleX.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, YAxisComponent, "Asserts/Mesh/Handle/RotateHandleY.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, ZAxisComponent, "Asserts/Mesh/Handle/RotateHandleZ.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, AnyAxisComponent, "Asserts/Mesh/Handle/RotateHandleZ.fbx");
+
+	// 创建轴平面（CD面片，用于显示轴的平面）
+	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, XPlaneComponent, 5.2f, 5.2f, 2, 2);	// 创建x轴的平面，宽高为5.2，细分为2
+	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, YPlaneComponent, 5.2f, 5.2f, 2, 2);	// 创建y轴的平面，宽高为5.2，细分为2
+	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, ZPlaneComponent, 5.2f, 5.2f, 2, 2);	// 创建z轴的平面，宽高为5.2，细分为2
+
+	// 让平面相互垂直
+	XPlaneComponent->SetRotation(XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+	YPlaneComponent->SetRotation(XMFLOAT3{ 90.0f, 0.0f, 0.0f });
+	ZPlaneComponent->SetRotation(XMFLOAT3{ 0.0f, 0.0f, -90.0f });
 
 	// 旋转模型，使其成为正确的坐标系指向
 	/*XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
@@ -192,6 +211,48 @@ void GRotateArrow::SetScale(const XMFLOAT3& InNewScale)
 		XAxisComponent->SetScale(InNewScale);
 		YAxisComponent->SetScale(InNewScale);
 		ZAxisComponent->SetScale(InNewScale);
+	}
+}
+
+void GRotateArrow::SetPosition(const XMFLOAT3& InNewPosition)
+{
+	GOperationHandle::SetPosition(InNewPosition);
+
+	XPlaneComponent->SetPosition(InNewPosition);
+	YPlaneComponent->SetPosition(InNewPosition);
+	ZPlaneComponent->SetPosition(InNewPosition);
+}
+
+void GRotateArrow::SetVisible(bool visible)
+{
+	GOperationHandle::SetVisible(visible);
+
+	XPlaneComponent->SetVisible(visible);
+	YPlaneComponent->SetVisible(visible);
+	ZPlaneComponent->SetVisible(visible);
+}
+
+void GRotateArrow::SetVisible(bool visible, CCustomMeshComponent* axis_component)
+{
+	GOperationHandle::SetVisible(visible, axis_component);
+
+	switch (GetSelectedAxis())
+	{
+	case AXIS_NONE: break;
+	case AXIS_X: {
+		ZPlaneComponent->SetVisible(visible);
+		break;
+	}
+	case AXIS_Y: {
+		XPlaneComponent->SetVisible(visible);
+		break;
+	}
+	case AXIS_Z: {
+		YPlaneComponent->SetVisible(visible);
+		break;
+	}
+	case AXIS_ANY: break;
+	default: break;
 	}
 }
 

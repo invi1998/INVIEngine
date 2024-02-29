@@ -1,8 +1,20 @@
 #pragma once
 #include "OperationHandle.h"
 
+class CPlaneMeshComponent;
+
 class GRotateArrow : public GOperationHandle
 {
+	CVARIABLE()
+	CPlaneMeshComponent* XPlaneComponent = nullptr;
+
+	CVARIABLE()
+	CPlaneMeshComponent* YPlaneComponent = nullptr;
+
+	CVARIABLE()
+	CPlaneMeshComponent* ZPlaneComponent = nullptr;
+
+
 public:
 	GRotateArrow();
 
@@ -19,6 +31,12 @@ public:
 	void OnMousePressed(int x, int y);
 
 	void SetScale(const XMFLOAT3& InNewScale) override;
+
+	void SetPosition(const XMFLOAT3& InNewPosition) override;
+
+	void SetVisible(bool visible) override;
+
+	void SetVisible(bool visible, CCustomMeshComponent* axis_component) override;
 
 	void Tick(float DeltaTime) override;
 
