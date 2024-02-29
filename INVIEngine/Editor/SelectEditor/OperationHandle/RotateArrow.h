@@ -42,6 +42,10 @@ public:
 
 	void Tick(float DeltaTime) override;
 
+	void SetCDValue(float InCDValue);
+
+	void ResetCDValue();
+
 protected:
 	XMVECTOR GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation) override;
 

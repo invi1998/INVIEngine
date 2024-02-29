@@ -8,6 +8,7 @@
 #include "Core/QuaternionCamera.h"
 #include "Core/World.h"
 #include "Core/Construction/MacroConstruction.h"
+#include "Material/Core/Material.h"
 #include "Misc/RaycastSystemLibrary.h"
 
 extern CMeshComponent* SelectedAxisComponent;	// 被选中的轴向
@@ -361,6 +362,27 @@ void GRotateArrow::Tick(float DeltaTime)
 		}
 
 	}
+}
+
+void GRotateArrow::SetCDValue(float InCDValue)
+{
+	if (CMaterial* material = (*XAxisComponent->GetMaterial())[0])
+	{
+		material->SetParam(0, InCDValue);
+	}
+	if (CMaterial* material = (*YAxisComponent->GetMaterial())[0])
+	{
+		material->SetParam(0, InCDValue);
+	}
+	if (CMaterial* material = (*ZAxisComponent->GetMaterial())[0])
+	{
+		material->SetParam(0, InCDValue);
+	}
+}
+
+void GRotateArrow::ResetCDValue()
+{
+	SetCDValue(0.0f);
 }
 
 XMVECTOR GRotateArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation)
