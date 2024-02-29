@@ -83,6 +83,14 @@ void GQuaternionCamera::OnUpdate(float ts)
 
 		if (FInput::IsMouseButtonPressed(VK_LBUTTON))
 		{
+			if (CameraType == ECameraType::CameraRoaming)
+			{
+				float XRadians = XMConvertToRadians(delta.x * 10.f);
+				float YRadians = XMConvertToRadians(delta.y * 10.f);
+
+				RotateAroundXAxis(YRadians);
+				RotateAroundYAxis(XRadians);
+			}
 			// ЪѓБъзѓМќ
 			MouseRotate(delta);
 		}
@@ -225,37 +233,10 @@ void GQuaternionCamera::MouseRotate(const XMFLOAT2 &delta)
 	float XRadians = XMConvertToRadians(delta.x * 10.f);
 	float YRadians = XMConvertToRadians(delta.y * 10.f);
 
-	switch (CameraType)
-	{
-	case CameraRoaming:
-	{
-		RotateAroundXAxis(YRadians);
-		RotateAroundYAxis(XRadians);
+	Theta += -XRadians;
+	Phi += YRadians;
 
-		break;
-	}
-	case ObservationObject:
-	{
-
-		Theta += -XRadians;
-		Phi += YRadians;
-
-		XMFLOAT3 CameraPosition = GetPosition();
-		CameraPosition.x = Radius * sinf(Phi) * cosf(Theta);
-		CameraPosition.z = Radius * sinf(Phi) * sinf(Theta);
-		CameraPosition.y = Radius * cosf(Phi);
-
-		XMVECTOR Pos = XMVectorSet(CameraPosition.x, CameraPosition.y, CameraPosition.z, 1.0f);
-		XMVECTOR ViewTarget = XMVectorZero();
-		XMVECTOR ViewUp = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
-
-		XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
-
-		XMStoreFloat4x4(&ViewMatrix, ViewLookAt);
-
-		break;
-	}
-	}
+	BuildMatrixByType();
 }
 
 void GQuaternionCamera::MousePan(const XMFLOAT2 &delta)

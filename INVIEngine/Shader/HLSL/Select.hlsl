@@ -32,7 +32,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	float3 ViewDir = normalize(CameraPosition.xyz - Out.WorldPosition.xyz);
 	
 	// 将模型的顶点坐标沿着摄像机指向的方向移动一点，这样就可以让射线选中的物体在摄像机前面从而被渲染出来
-	Out.WorldPosition.xyz += ViewDir * 0.01f;
+	Out.WorldPosition.xyz += ViewDir;
 	
 	// 将世界坐标转为视口裁剪空间坐标
 	Out.PositionH = mul(Out.WorldPosition, ViewportProjectionMatrix);
@@ -63,7 +63,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	
 	float DotDiffValue = dot(ModelNormal, ViewDirection);
 	
-	if (DotDiffValue >= 0 && DotDiffValue <= 0.3f)
+	if (DotDiffValue <= 0.3f)
 	{
 		return float4(0.98f, 0.12f, 0.22f, 1.0f);
 	}
