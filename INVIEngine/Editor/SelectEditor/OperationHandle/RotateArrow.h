@@ -34,6 +34,8 @@ public:
 
 	void SetPosition(const XMFLOAT3& InNewPosition) override;
 
+	void SetVisible() override;
+
 	void SetVisible(bool visible) override;
 
 	void SetVisible(bool visible, CCustomMeshComponent* axis_component) override;

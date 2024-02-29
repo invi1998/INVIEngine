@@ -84,23 +84,26 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 			if (HitResult.HitComponent == XAxisComponent)
 			{
 				SelectedAxisComponent = XAxisComponent;
-				SetVisible(true, XAxisComponent);
 				SetVisible(false, YAxisComponent);
 				SetVisible(false, ZAxisComponent);
+				SetVisible(false, AnyAxisComponent);
+				SetVisible(true, XAxisComponent);
 			}
 			else if (HitResult.HitComponent == YAxisComponent)
 			{
 				SelectedAxisComponent = YAxisComponent;
-				SetVisible(true, YAxisComponent);
 				SetVisible(false, XAxisComponent);
 				SetVisible(false, ZAxisComponent);
+				SetVisible(false, AnyAxisComponent);
+				SetVisible(true, YAxisComponent);
 			}
 			else if (HitResult.HitComponent == ZAxisComponent)
 			{
 				SelectedAxisComponent = ZAxisComponent;
-				SetVisible(true, ZAxisComponent);
 				SetVisible(false, YAxisComponent);
 				SetVisible(false, XAxisComponent);
+				SetVisible(false, AnyAxisComponent);
+				SetVisible(true, ZAxisComponent);
 			}
 		}
 		else
@@ -132,7 +135,7 @@ void GRotateArrow::OnMouseLeftUp(int x, int y)
 
 	if (SelectedActor && IsCurrentSelectedHandle())
 	{
-		SetVisible(true);
+		SetVisible();
 	}
 }
 
@@ -143,6 +146,8 @@ void GRotateArrow::ExecuteInput()
 		if (FInput::IsKeyPressed(Key::E))
 		{
 			FOperationHandleSelectManage::Get()->DisplaySelectedHandle(this);
+
+			SetVisible();
 		}
 	}
 }
@@ -228,13 +233,22 @@ void GRotateArrow::SetPosition(const XMFLOAT3& InNewPosition)
 	ZPlaneComponent->SetPosition(InNewPosition);
 }
 
+void GRotateArrow::SetVisible()
+{
+	GOperationHandle::SetVisible();
+
+	XPlaneComponent->SetVisible(false);
+	YPlaneComponent->SetVisible(false);
+	ZPlaneComponent->SetVisible(false);
+}
+
 void GRotateArrow::SetVisible(bool visible)
 {
-	GOperationHandle::SetVisible(visible);
+	XPlaneComponent->SetVisible(false);
+	YPlaneComponent->SetVisible(false);
+	ZPlaneComponent->SetVisible(false);
 
-	XPlaneComponent->SetVisible(visible);
-	YPlaneComponent->SetVisible(visible);
-	ZPlaneComponent->SetVisible(visible);
+	GOperationHandle::SetVisible(visible);
 }
 
 void GRotateArrow::SetVisible(bool visible, CCustomMeshComponent* axis_component)

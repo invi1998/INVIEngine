@@ -111,7 +111,7 @@ void GScalingArrow::OnMouseLeftUp(int x, int y)
 
 	if (SelectedActor && IsCurrentSelectedHandle())
 	{
-		SetVisible(true);
+		SetVisible();
 	}
 }
 
@@ -122,6 +122,8 @@ void GScalingArrow::ExecuteInput()
 		if (FInput::IsKeyPressed(Key::R))
 		{
 			FOperationHandleSelectManage::Get()->DisplaySelectedHandle(this);
+
+			SetVisible();
 		}
 	}
 }

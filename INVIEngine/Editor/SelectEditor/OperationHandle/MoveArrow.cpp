@@ -113,7 +113,7 @@ void GMoveArrow::OnMouseLeftUp(int x, int y)
 
 	if (SelectedActor && IsCurrentSelectedHandle())
 	{
-		SetVisible(true);
+		SetVisible();
 	}
 }
 
@@ -124,6 +124,8 @@ void GMoveArrow::ExecuteInput()
 		if (FInput::IsKeyPressed(Key::W))
 		{
 			FOperationHandleSelectManage::Get()->DisplaySelectedHandle(this);
+
+			SetVisible();
 		}
 	}
 }

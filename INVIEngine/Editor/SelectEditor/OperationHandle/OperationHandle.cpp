@@ -115,6 +115,14 @@ void GOperationHandle::SetPosition(const XMFLOAT3& InNewPosition)
 	AnyAxisComponent->SetPosition(InNewPosition);
 }
 
+void GOperationHandle::SetVisible()
+{
+	XAxisComponent->SetVisible(true);
+	YAxisComponent->SetVisible(true);
+	ZAxisComponent->SetVisible(true);
+	AnyAxisComponent->SetVisible(true);
+}
+
 void GOperationHandle::SetVisible(bool visible)
 {
 	XAxisComponent->SetVisible(visible);
