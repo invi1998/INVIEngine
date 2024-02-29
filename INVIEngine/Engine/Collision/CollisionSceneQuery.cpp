@@ -131,7 +131,7 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 }
 
 bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& origin, const XMVECTOR& direction,
-	const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult, const GActorObject* actor)
+	const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult, const GActorObject* actor, std::vector<CComponent*>& ignoreComponents)
 {
 
 	// 遍历FGeometry::RenderingDataPoolVector，找到所有的mesh
@@ -139,6 +139,11 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 	{
 		// 判断mesh是否可被选取
 		if (renderData->Mesh && !renderData->Mesh->IsOperateHandle())
+		{
+			continue;
+		}
+
+		if (renderData->Mesh && IsIgnoreComponent(renderData->Mesh, ignoreComponents))
 		{
 			continue;
 		}
@@ -164,6 +169,19 @@ bool FCollisionSceneQuery::RayCastSingleQuery(CWorld* world, const XMVECTOR& ori
 					return true;
 				}
 			}
+		}
+	}
+
+	return false;
+}
+
+bool FCollisionSceneQuery::IsIgnoreComponent(CComponent* component, std::vector<CComponent*>& ignoreComponents)
+{
+	for (const auto& ignoreComponent : ignoreComponents)
+	{
+		if (component == ignoreComponent)
+		{
+			return true;
 		}
 	}
 

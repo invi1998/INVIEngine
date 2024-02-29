@@ -12,6 +12,8 @@ struct FCollisionSceneQuery
 	static bool RayCastSingleQuery(CWorld* world, const XMVECTOR& origin, const XMVECTOR& direction, const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult);
 
 	// 检测特定的物体是否被鼠标选中
-	static bool RayCastSingleQuery(CWorld* world, const XMVECTOR& origin, const XMVECTOR& direction, const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult, const GActorObject* actor);
+	static bool RayCastSingleQuery(CWorld* world, const XMVECTOR& origin, const XMVECTOR& direction, const XMMATRIX& viewInverseMatrix, EngineType::FHitResult& OutHitResult, const GActorObject* actor, std::vector<CComponent*>& ignoreComponents);
+
+	static bool IsIgnoreComponent(CComponent* component, std::vector<CComponent*>& ignoreComponents);
 };
 

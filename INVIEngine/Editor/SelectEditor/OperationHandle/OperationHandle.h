@@ -4,6 +4,7 @@
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Interface/DirectXDeviceInterface.h"
 
+class CComponent;
 class CInputComponent;
 class CCustomMeshComponent;
 
@@ -55,6 +56,10 @@ public:
 
 	bool IsWorldOperate() const { return bWorldOperate; }
 
+	void AddIgnoreComponent(CComponent* component);
+
+	std::vector<CComponent*>& GetIgnoreComponents() { return IgnoreComponents; }
+
 protected:
 	CVARIABLE()
 	CCustomMeshComponent* XAxisComponent = nullptr;	// X轴
@@ -98,5 +103,7 @@ private:
 
 	// 是否按世界坐标系操作
 	bool bWorldOperate = true;
+
+	std::vector<CComponent*> IgnoreComponents{};	// 碰撞检测忽略的组件
 };
 

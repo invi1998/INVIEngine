@@ -48,7 +48,7 @@ void GScalingArrow::OnMouseLeftDown(int x, int y)
 		XMFLOAT2 mousePos(x, y);
 
 		EngineType::FHitResult HitResult{};
-		FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
+		FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult, GetIgnoreComponents());
 
 		if (HitResult.bHit)
 		{

@@ -21,7 +21,12 @@ GRotateArrow::GRotateArrow()
 
 	XPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
 	YPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
-	ZPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);	
+	ZPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
+
+	// 将面片添加进射线检测的忽略列表
+	AddIgnoreComponent(XPlaneComponent);
+	AddIgnoreComponent(YPlaneComponent);
+	AddIgnoreComponent(ZPlaneComponent);
 
 	GRotateArrow::SetMesh();
 
@@ -72,7 +77,7 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 		XMFLOAT2 mousePos(x, y);
 
 		EngineType::FHitResult HitResult{};
-		FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
+		FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult, GetIgnoreComponents());
 
 		if (HitResult.bHit)
 		{

@@ -182,6 +182,11 @@ ESelectedAxis GOperationHandle::GetSelectedAxis() const
 	return AXIS_NONE;
 }
 
+void GOperationHandle::AddIgnoreComponent(CComponent* component)
+{
+	IgnoreComponents.push_back(component);
+}
+
 void GOperationHandle::OnMouseMoved(int x, int y)
 {
 	if (!IsCurrentSelectedHandle()) return;		// 如果不是当前选中的操作句柄，就不进行操作
@@ -190,7 +195,7 @@ void GOperationHandle::OnMouseMoved(int x, int y)
 	XMFLOAT2 mousePos(x, y);
 
 	EngineType::FHitResult HitResult{};
-	FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult);
+	FRayCastSystemLibrary::CheckObjectIsSelected(GetWorld(), mousePos, this, HitResult, IgnoreComponents);
 
 	if (HitResult.bHit)
 	{

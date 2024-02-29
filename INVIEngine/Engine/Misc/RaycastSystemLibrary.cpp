@@ -54,7 +54,7 @@ void FRayCastSystemLibrary::GetHitResultByScreen(CWorld* world, const XMFLOAT2& 
 }
 
 bool FRayCastSystemLibrary::CheckObjectIsSelected(CWorld* world, const XMFLOAT2& mousePos, const GActorObject* actor,
-	EngineType::FHitResult& OutHitResult)
+	EngineType::FHitResult& OutHitResult, std::vector<CComponent*>& ignoreComponents)
 {
 	XMVECTOR OriginPoint{};
 	XMVECTOR Direction{};
@@ -62,7 +62,7 @@ bool FRayCastSystemLibrary::CheckObjectIsSelected(CWorld* world, const XMFLOAT2&
 
 	if (GetRayCastParamByScreen(world, mousePos, OriginPoint, Direction, InverseViewMatrix))
 	{
-		FCollisionSceneQuery::RayCastSingleQuery(world, OriginPoint, Direction, InverseViewMatrix, OutHitResult, actor);
+		FCollisionSceneQuery::RayCastSingleQuery(world, OriginPoint, Direction, InverseViewMatrix, OutHitResult, actor, ignoreComponents);
 	}
 
 	return OutHitResult.bHit;
