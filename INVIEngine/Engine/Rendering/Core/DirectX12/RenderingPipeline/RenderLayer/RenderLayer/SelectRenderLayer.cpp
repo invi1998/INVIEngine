@@ -46,6 +46,7 @@ void FSelectRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();
 
+	// 透明混合
 	D3D12_RENDER_TARGET_BLEND_DESC RenderTargetBlendDesc;
 	RenderTargetBlendDesc.BlendEnable = true;		// 开启图层混合
 	RenderTargetBlendDesc.LogicOpEnable = false;	// 关闭逻辑混合（开启混合必须将该值关闭，因为他两是互斥的）
@@ -63,6 +64,11 @@ void FSelectRenderLayer::BuildPSO()
 
 	// 设置渲染目标
 	DirectXPipelineState->SetRenderTarget(0, RenderTargetBlendDesc);
+
+	// 禁用遮挡剔除
+	CD3DX12_DEPTH_STENCIL_DESC DepthStencilDesc = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	DirectXPipelineState->SetDepthStencilState(DepthStencilDesc);
 
 	DirectXPipelineState->BuildPipelineState(EPipelineState::Selection);
 }
