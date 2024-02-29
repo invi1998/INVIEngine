@@ -150,6 +150,10 @@ void FRenderingPipeline::Draw(float DeltaTime)
 
 	RenderLayerManage.Draw(RENDER_LAYER_SELECT, DeltaTime);
 
+	// 先渲染操作句柄面片
+	RenderLayerManage.Draw(RENDER_LAYER_ROT_PLANE, DeltaTime);
+
+	// 再渲染操作句柄
 	RenderLayerManage.Draw(RENDER_LAYER_OPERATE, DeltaTime);
 
 	// 渲染UI

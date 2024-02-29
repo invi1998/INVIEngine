@@ -28,6 +28,11 @@ GRotateArrow::GRotateArrow()
 	AddIgnoreComponent(YPlaneComponent);
 	AddIgnoreComponent(ZPlaneComponent);
 
+	// ÉèÖÃäÖÈ¾²ã
+	XPlaneComponent->SetRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_ROT_PLANE);
+	YPlaneComponent->SetRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_ROT_PLANE);
+	ZPlaneComponent->SetRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_ROT_PLANE);
+
 	GRotateArrow::SetMesh();
 
 	ResetColor();

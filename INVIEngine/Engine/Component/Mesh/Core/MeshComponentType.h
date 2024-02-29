@@ -10,6 +10,7 @@ enum EMeshRenderLayerType : int
 	RENDER_LAYER_OPAQUE_SHADOW = 8,		// 不透明阴影层
 	RENDER_LAYER_SELECT = 9,			// 选择层
 	RENDER_LAYER_OPERATE = 10,			// 操作层
+	RENDER_LAYER_ROT_PLANE = 11,		// 旋转平面层
 };
 
 
