@@ -79,9 +79,9 @@ private:
 	//金属度
 	XMFLOAT3 Metallicity;
 
-	float Param0 = 0.12f;		// 自定义参数
-	float Param1 = 0.32f;
-	float Param2 = 0.74f;
+	float Param0 = 0.f;		// 自定义参数
+	float Param1 = 0.f;
+	float Param2 = 0.f;
 
 };
 
