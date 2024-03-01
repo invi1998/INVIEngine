@@ -168,6 +168,7 @@ void GRotateArrow::OnMousePressed(int x, int y)
 
 		if (t != 0)
 		{
+			SetCDValue(t/24.f);
 			// 获取物体的旋转
 			XMFLOAT3 ActorRotation = SelectedActor->GetRotation();
 			fvector_3d rotation = EngineMath::ToVector3d(ActorRotation);
@@ -366,15 +367,14 @@ void GRotateArrow::Tick(float DeltaTime)
 
 void GRotateArrow::SetCDValue(float InCDValue)
 {
-	if (CMaterial* material = (*XAxisComponent->GetMaterial())[0])
-	{
-		material->SetParam(0, InCDValue);
-	}
-	if (CMaterial* material = (*YAxisComponent->GetMaterial())[0])
-	{
-		material->SetParam(0, InCDValue);
-	}
-	if (CMaterial* material = (*ZAxisComponent->GetMaterial())[0])
+	SetCDValue(InCDValue, XAxisComponent);
+	SetCDValue(InCDValue, YAxisComponent);
+	SetCDValue(InCDValue, ZAxisComponent);
+}
+
+void GRotateArrow::SetCDValue(float InCDValue, CMeshComponent* axis_component)
+{
+	if (CMaterial* material = (*axis_component->GetMaterial())[0])
 	{
 		material->SetParam(0, InCDValue);
 	}

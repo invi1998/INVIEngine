@@ -43,7 +43,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	
 	float r = SampleBuildCDTexture(mvOut.TexCoord);
 	
-	r += 0.6;	// CD驱动
+	r += MatConstBuffer.Param0; // CD驱动
 	r = floor(r);	// 向下取整
 	r *= 0.5f;	// 透明度
 	r *= 1.f;	// 开关

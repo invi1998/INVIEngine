@@ -144,6 +144,8 @@ void CMaterial::SetParam(int index, float value)
 		default:
 			break;
 	}
+
+	SetDirty(true);
 }
 
 float CMaterial::GetParam(int index) const

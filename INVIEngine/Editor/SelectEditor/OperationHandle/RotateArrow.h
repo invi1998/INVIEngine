@@ -1,6 +1,7 @@
 #pragma once
 #include "OperationHandle.h"
 
+class CMeshComponent;
 class CPlaneMeshComponent;
 
 class GRotateArrow : public GOperationHandle
@@ -43,6 +44,8 @@ public:
 	void Tick(float DeltaTime) override;
 
 	void SetCDValue(float InCDValue);
+
+	void SetCDValue(float InCDValue, CMeshComponent* axis_component);
 
 	void ResetCDValue();
 
