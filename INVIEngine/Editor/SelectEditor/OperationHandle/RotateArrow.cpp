@@ -80,6 +80,8 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 
 	if (SelectedActor && IsCurrentSelectedHandle())
 	{
+		ResetCDValue();
+
 		XMFLOAT2 mousePos(x, y);
 
 		EngineType::FHitResult HitResult{};
@@ -168,7 +170,7 @@ void GRotateArrow::OnMousePressed(int x, int y)
 
 		if (t != 0)
 		{
-			SetCDValue(t/24.f);
+			SetCDValue(t/10.f);
 			// 获取物体的旋转
 			XMFLOAT3 ActorRotation = SelectedActor->GetRotation();
 			fvector_3d rotation = EngineMath::ToVector3d(ActorRotation);
@@ -367,9 +369,9 @@ void GRotateArrow::Tick(float DeltaTime)
 
 void GRotateArrow::SetCDValue(float InCDValue)
 {
-	SetCDValue(InCDValue, XAxisComponent);
-	SetCDValue(InCDValue, YAxisComponent);
-	SetCDValue(InCDValue, ZAxisComponent);
+	SetCDValue(InCDValue, XPlaneComponent);
+	SetCDValue(InCDValue, ZPlaneComponent);
+	SetCDValue(InCDValue, ZPlaneComponent);
 }
 
 void GRotateArrow::SetCDValue(float InCDValue, CMeshComponent* axis_component)

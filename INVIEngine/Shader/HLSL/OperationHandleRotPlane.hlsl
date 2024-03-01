@@ -49,6 +49,9 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	r *= 1.f;	// ¿ª¹Ø
 
 	return float4(1, 1, 1, r);
+	
+	// return float4(MatConstBuffer.Param0, MatConstBuffer.Param0, MatConstBuffer.Param0, 1.f); // DEBUG
+
 }
 
 

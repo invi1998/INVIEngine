@@ -523,5 +523,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
     // return CameraPosition;
 
     // return BaseColor;
+	
+	// return float4(MatConstbuffer.Param0, MatConstbuffer.Param1, MatConstbuffer.Param2, 1.f);	// debug
 
 }

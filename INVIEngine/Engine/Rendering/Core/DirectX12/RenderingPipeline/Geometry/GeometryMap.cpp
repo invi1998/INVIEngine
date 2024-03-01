@@ -313,30 +313,17 @@ void FGeometryMap::BuildMeshConstantBuffer()
 
 void FGeometryMap::BuildMaterialShaderResourceView()
 {
-	// 收集材质
-	for (const auto& layer : FRenderLayerManage::RenderLayers)
+	for (const auto& renderData : FGeometry::RenderingDataPoolVector)
 	{
-		for (const auto& weakRenderData : layer->RenderData)
+		if (const auto& materials = renderData->Mesh->GetMaterial())
 		{
-			if (weakRenderData.expired())
+			for (size_t i = 0; i < materials->size(); i++)
 			{
-				continue;
+				// 设置材质ID
+				(*materials)[i]->SetMaterialID(MaterialsSRV.size());
+				// 保存材质
+				MaterialsSRV.push_back((*materials)[i]);
 			}
-
-			if (std::shared_ptr<FRenderingData> renderData = weakRenderData.lock())
-			{
-				if (const auto materials = renderData->Mesh->GetMaterial())
-				{
-					for (size_t i = 0; i < materials->size(); i++)
-					{
-						// 设置材质ID
-						(*materials)[i]->SetMaterialID(MaterialsSRV.size());
-						// 保存材质
-						MaterialsSRV.push_back((*materials)[i]);
-					}
-				}
-			}
-			
 		}
 		
 	}
@@ -553,11 +540,12 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			// 将材质里的行矩阵转为列矩阵传入shader中
 			XMStoreFloat4x4(&MaterialConstantBuffer.Transformation, XMMatrixTranspose(Transform));
 
-			material->SetDirty(false);
-
 			MaterialConstantBuffer.Param0 = material->GetParam(0);
+			ENGINE_LOG("Param ------ 0 = %f", MaterialConstantBuffer.Param0);
 			MaterialConstantBuffer.Param1 = material->GetParam(1);
 			MaterialConstantBuffer.Param2 = material->GetParam(2);
+
+			material->SetDirty(false);
 
 			MaterialConstantBufferViews.Update(material->GetMaterialID(), &MaterialConstantBuffer);
 		}
