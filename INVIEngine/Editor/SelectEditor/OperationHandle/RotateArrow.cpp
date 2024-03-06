@@ -370,7 +370,7 @@ void GRotateArrow::Tick(float DeltaTime)
 void GRotateArrow::SetCDValue(float InCDValue)
 {
 	SetCDValue(InCDValue, XPlaneComponent);
-	SetCDValue(InCDValue, ZPlaneComponent);
+	SetCDValue(InCDValue, YPlaneComponent);
 	SetCDValue(InCDValue, ZPlaneComponent);
 }
 
