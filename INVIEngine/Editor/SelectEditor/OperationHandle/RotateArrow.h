@@ -51,6 +51,7 @@ public:
 
 protected:
 	XMVECTOR GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation) override;
+	void SetMaterial(CMeshComponent* axis_component, const std::string& path);
 
 protected:
 	float LastT2Value = 0.0f;	// 上一次的T2值

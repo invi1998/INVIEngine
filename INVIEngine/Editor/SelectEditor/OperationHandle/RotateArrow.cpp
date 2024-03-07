@@ -57,6 +57,11 @@ void GRotateArrow::SetMesh()
 	YPlaneComponent->SetRotation(XMFLOAT3{ 90.0f, 0.0f, 0.0f });
 	ZPlaneComponent->SetRotation(XMFLOAT3{ 0.0f, 0.0f, -90.0f });
 
+	// 给平面添加材质
+	SetMaterial(XPlaneComponent, "Rot_Handle_Plane.dds");
+	SetMaterial(ZPlaneComponent, "Rot_Handle_Plane.dds");
+	SetMaterial(YPlaneComponent, "Rot_Handle_Plane.dds");
+
 	// 旋转模型，使其成为正确的坐标系指向
 	/*XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
 	YAxisComponent->SetRotation({ -90.0f, 0.0f, 0.0f });*/
@@ -392,4 +397,12 @@ XMVECTOR GRotateArrow::GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR&
 	XMFLOAT3 Dir{ 1.f, 1.f, 1.f };
 	XMVECTOR OutDirection = XMLoadFloat3(&Dir);
 	return OutDirection;
+}
+
+void GRotateArrow::SetMaterial(CMeshComponent* axis_component, const std::string& path)
+{
+	if (CMaterial* material = (*axis_component->GetMaterial())[0])
+	{
+		material->SetBaseColorIndexKey(path);
+	}
 }
