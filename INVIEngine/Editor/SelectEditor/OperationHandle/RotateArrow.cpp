@@ -185,7 +185,7 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			float offset = t - LastT2Value;
 			angle = offset < 0 ? -2.25f : 2.25f;
 
-			// TODO:这里先用simple_library库的四元数，后续考虑自己实现
+			// TODO:这里先用simple_library库的四元数，后续考虑使用DX12库的四元数
 			// 定义旋转
 			fvector_3d deltaVector;
 			XMFLOAT3 ActorDirFloat3;

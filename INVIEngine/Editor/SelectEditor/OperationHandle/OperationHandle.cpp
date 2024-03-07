@@ -317,3 +317,4 @@ bool GOperationHandle::IsCurrentSelectedHandle()
 {
 	return FOperationHandleSelectManage::Get()->GetSelectedOperationHandle() == this;
 }
+
