@@ -47,8 +47,22 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	r = floor(r);	// 向下取整
 	r *= 0.5f;	// 透明度
 	r *= 1.f;	// 开关
+	
+	// 提取纹理颜色
+	float4 color = GetMaterialBaseColor(MatConstBuffer, mvOut.TexCoord);
+	
+	// 计算Alpha混合
+	float alpha = abs(color.a * r + color.r);	// a通道乘以r加上r通道
+	
+	// 裁剪边角
+	if (alpha <= 0.1f)
+	{
+		alpha = 0.f;
+	}
 
-	return float4(1, 1, 1, r);
+	return float4(0.76f, 0.14f, 1.f, alpha);
+	
+	
 	
 	// return float4(MatConstBuffer.Param0, MatConstBuffer.Param0, MatConstBuffer.Param0, 1.f); // DEBUG
 

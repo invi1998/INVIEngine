@@ -541,7 +541,6 @@ void FGeometryMap::UpdateMaterialShaderResourceView(float delta_time, const FVie
 			XMStoreFloat4x4(&MaterialConstantBuffer.Transformation, XMMatrixTranspose(Transform));
 
 			MaterialConstantBuffer.Param0 = material->GetParam(0);
-			ENGINE_LOG("Param ------ 0 = %f", MaterialConstantBuffer.Param0);
 			MaterialConstantBuffer.Param1 = material->GetParam(1);
 			MaterialConstantBuffer.Param2 = material->GetParam(2);
 

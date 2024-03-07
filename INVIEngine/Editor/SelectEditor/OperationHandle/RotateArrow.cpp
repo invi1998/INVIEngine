@@ -58,9 +58,9 @@ void GRotateArrow::SetMesh()
 	ZPlaneComponent->SetRotation(XMFLOAT3{ 0.0f, 0.0f, -90.0f });
 
 	// 给平面添加材质
-	SetMaterial(XPlaneComponent, "Rot_Handle_Plane.dds");
-	SetMaterial(ZPlaneComponent, "Rot_Handle_Plane.dds");
-	SetMaterial(YPlaneComponent, "Rot_Handle_Plane.dds");
+	SetMaterial(XPlaneComponent, "Asserts/Texture/Rot_Handle_Plane.dds");
+	SetMaterial(ZPlaneComponent, "Asserts/Texture/Rot_Handle_Plane.dds");
+	SetMaterial(YPlaneComponent, "Asserts/Texture/Rot_Handle_Plane.dds");
 
 	// 旋转模型，使其成为正确的坐标系指向
 	/*XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
