@@ -49,4 +49,7 @@ namespace EngineMath
 	{
 		return InValue >= MinV && InValue <= MaxV;
 	}
+
+	// 通过欧拉角构建旋转矩阵的逆矩阵
+	void BuildInverseMatrix(DirectX::XMMATRIX& OutMatrix, const DirectX::XMFLOAT3& InPosition, const DirectX::XMFLOAT3& InScale, const DirectX::XMFLOAT3& Right, const DirectX::XMFLOAT3& Up, const DirectX::XMFLOAT3& Forward);
 }

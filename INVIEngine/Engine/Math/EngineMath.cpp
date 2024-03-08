@@ -299,4 +299,15 @@ namespace EngineMath
 					InPosition.x,			InPosition.y,		InPosition.z,			1.f,
 				};
 	}
+
+	void BuildInverseMatrix(DirectX::XMMATRIX& OutMatrix, const DirectX::XMFLOAT3& InPosition,
+		const DirectX::XMFLOAT3& InScale, const DirectX::XMFLOAT3& Right, const DirectX::XMFLOAT3& Up,
+		const DirectX::XMFLOAT3& Forward)
+	{
+		XMFLOAT4X4 Matrix{};
+		BuildMatrix(Matrix, InPosition, InScale, Right, Up, Forward);		// 构建矩阵
+		XMMATRIX MatrixRIX = XMLoadFloat4x4(&Matrix);	// 转换为XMMatrix
+		XMVECTOR Det = XMMatrixDeterminant(MatrixRIX);	// 计算行列式
+		OutMatrix = XMMatrixInverse(&Det, MatrixRIX);	// 计算逆矩阵
+	}
 }

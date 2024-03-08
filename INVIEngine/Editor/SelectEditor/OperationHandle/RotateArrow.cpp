@@ -215,7 +215,19 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			frotator newRotationRotator;
 			newRotationRotator.object_to_inertia(newRotationQuat);
 
-			XMFLOAT3 resultRotation{newRotationRotator.roll, newRotationRotator.pitch, newRotationRotator.yaw};
+			XMFLOAT3 resultRotation{ newRotationRotator.roll, newRotationRotator.pitch, newRotationRotator.yaw };
+
+			if (IsWorldOperate())
+			{
+				XMMATRIX WorldInverseMatrix{};
+				EngineMath::BuildInverseMatrix(WorldInverseMatrix, SelectedActor->GetPosition(), SelectedActor->GetScale(), SelectedActor->GetRightVector(), SelectedActor->GetUpVector(), SelectedActor->GetForwardVector());	// 物体的世界矩阵的逆矩阵
+
+				FXMVECTOR ResultRotation = XMLoadFloat3(&resultRotation);	// 新的旋转角度
+
+				XMVECTOR ResultRotationInWorld = XMVector3TransformNormal(ResultRotation, WorldInverseMatrix);	// 新的旋转角度转换为世界坐标系下的旋转角度
+
+				XMStoreFloat3(&resultRotation, ResultRotationInWorld);
+			}
 
 			SelectedActor->SetRotation(resultRotation);
 
@@ -300,12 +312,8 @@ void GRotateArrow::Tick(float DeltaTime)
 	if (IsCurrentSelectedHandle())
 	{
 		// 我们需要将摄像机的位置转换为操作手柄的坐标系下的位置
-		XMFLOAT4X4 ArrowMatrix{};
-		EngineMath::BuildMatrix(ArrowMatrix, GetPosition(), GetScale(), GetRightVector(), GetUpVector(), GetForwardVector());
-
-		XMMATRIX ArrowMatrixXM = XMLoadFloat4x4(&ArrowMatrix);		// 操作手柄的世界矩阵
-		XMVECTOR ArrowMatrixDetemine = XMMatrixDeterminant(ArrowMatrixXM);	// 操作手柄的世界矩阵的行列式s
-		XMMATRIX ArrowMatrixInverse = XMMatrixInverse(&ArrowMatrixDetemine, ArrowMatrixXM);	// 操作手柄的世界矩阵的逆矩阵
+		XMMATRIX ArrowMatrixInverse{};
+		EngineMath::BuildInverseMatrix(ArrowMatrixInverse, GetPosition(), GetScale(), GetRightVector(), GetUpVector(), GetForwardVector());	// 操作手柄的世界矩阵的逆矩阵
 
 		XMVECTOR CameraLocation = XMLoadFloat3(&GetWorld()->GetQuaternionCamera()->GetPosition());	// 摄像机的位置
 
