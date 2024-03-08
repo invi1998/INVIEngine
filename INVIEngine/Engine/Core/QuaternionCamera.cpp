@@ -176,51 +176,6 @@ void GQuaternionCamera::OnUpdate(float ts)
 	BuildMatrixByType();
 }
 
-// void GQuaternionCamera::UpdateViewMatrix()
-//{
-//	XMVECTOR Position{};
-//	XMFLOAT4 position{};
-//	XMStoreFloat4(&position, Position);
-//	SetPosition({ position.x, position.y, position.z });
-//
-//	switch (CameraType)
-//	{
-//	case CameraRoaming:
-//		{
-//	        // m_Yaw = m_Pitch = 0.0f;	// 锁定相机旋转
-//			XMVECTOR orientation = GetRotationQuaternion();
-//	        XMMATRIX rotation = XMMatrixRotationQuaternion(orientation);
-//	        XMMATRIX transform = XMMatrixTranslationFromVector(Position) * rotation;
-//
-//			XMStoreFloat4x4(&ViewMatrix, transform);
-//
-//             break;
-//		}
-//	case ObservationObject:
-//		{
-//	        XMFLOAT3 CameraPosition{};
-//	        XMStoreFloat3(&CameraPosition, Position);
-//	        CameraPosition.x = Radius * sinf(Phi) * cosf(Theta);
-//	        CameraPosition.z = Radius * sinf(Phi) * sinf(Theta);
-//	        CameraPosition.y = Radius * cosf(Phi);
-//
-//             XMVECTOR Pos = XMVectorSet(CameraPosition.x, CameraPosition.y, CameraPosition.z, 1.0f);
-//             XMVECTOR ViewTarget = XMVectorZero();
-//             XMVECTOR ViewUp = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
-//
-//             XMMATRIX ViewLookAt = XMMatrixLookAtLH(Pos, ViewTarget, ViewUp);
-//
-//			XMStoreFloat4x4(&ViewMatrix, ViewLookAt);
-//
-//             Position = XMLoadFloat3(&CameraPosition);
-//
-//             break;
-//		}
-//	}
-//
-//	SetDirty(true);
-// }
-
 void GQuaternionCamera::SetViewportSize(int width, int height)
 {
 	ViewportWidth = width;
