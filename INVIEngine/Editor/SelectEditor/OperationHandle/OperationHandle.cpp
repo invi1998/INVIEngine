@@ -268,37 +268,7 @@ float GOperationHandle::GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocati
 		// 鼠标拖拽的轴的方向
 
 		// 根据选中的轴向，获取射线的方向
-		switch (GetSelectedAxis())
-		{
-		case AXIS_X:
-		{
-			// 鼠标拖拽的是X轴，也就是物体的Right方向
-			XMFLOAT3 RightVector = IsWorldOperate() ? XMFLOAT3{ 1.0f, 0.0f, 0.0f } : SelectedActor->GetRightVector();
-			DragDirection = XMLoadFloat3(&RightVector);
-			break;
-		};
-		case AXIS_Y:
-		{
-			// 鼠标拖拽的是Y轴，也就是物体的Up方向
-			XMFLOAT3 UpVector = IsWorldOperate() ? XMFLOAT3{ 0.0f, 1.0f, 0.0f } : SelectedActor->GetUpVector();
-			DragDirection = XMLoadFloat3(&UpVector);
-			break;
-		};
-		case AXIS_Z:
-		{
-			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
-			XMFLOAT3 ForwardVector = IsWorldOperate() ? XMFLOAT3{ 0.0f, 0.0f, 1.0f } : SelectedActor->GetForwardVector();
-			DragDirection = XMLoadFloat3(&ForwardVector);
-			break;
-		};
-		case AXIS_ANY:
-		{
-			// 鼠标拖拽的是任意轴
-			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
-			break;
-		}
-		default: break;
-		}
+		GetSelectedObjectDirection(WorldOriginPoint, WorldDirection, ActorLocation, DragDirection);
 
 		XMVECTOR WorldDirectionCrossDragDirection = XMVector3Cross(WorldDirection, DragDirection);
 		// 计算两个射线方向向量的叉乘的模
@@ -316,5 +286,80 @@ float GOperationHandle::GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocati
 bool GOperationHandle::IsCurrentSelectedHandle()
 {
 	return FOperationHandleSelectManage::Get()->GetSelectedOperationHandle() == this;
+}
+
+void GOperationHandle::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection,
+	XMVECTOR& ActorLocation, XMVECTOR& DragDirection)
+{
+	if (IsWorldOperate())
+	{
+		// 世界坐标系下获取方向
+		switch (GetSelectedAxis())
+		{
+		case AXIS_X:
+		{
+			// 鼠标拖拽的是X轴，也就是物体的Right方向
+			XMFLOAT3 RightVector = XMFLOAT3{ 1.0f, 0.0f, 0.0f };
+			DragDirection = XMLoadFloat3(&RightVector);
+			break;
+		};
+		case AXIS_Y:
+		{
+			// 鼠标拖拽的是Y轴，也就是物体的Up方向
+			XMFLOAT3 UpVector = XMFLOAT3{ 0.0f, 1.0f, 0.0f };
+			DragDirection = XMLoadFloat3(&UpVector);
+			break;
+		};
+		case AXIS_Z:
+		{
+			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
+			XMFLOAT3 ForwardVector = XMFLOAT3{ 0.0f, 0.0f, 1.0f };
+			DragDirection = XMLoadFloat3(&ForwardVector);
+			break;
+		};
+		case AXIS_ANY:
+		{
+			// 鼠标拖拽的是任意轴
+			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
+			break;
+		}
+		default: break;
+		}
+	}
+	else
+	{
+		// 根据选中的轴向，获取射线的方向
+		switch (GetSelectedAxis())
+		{
+		case AXIS_X:
+		{
+			// 鼠标拖拽的是X轴，也就是物体的Right方向
+			XMFLOAT3 RightVector = SelectedActor->GetRightVector();
+			DragDirection = XMLoadFloat3(&RightVector);
+			break;
+		};
+		case AXIS_Y:
+		{
+			// 鼠标拖拽的是Y轴，也就是物体的Up方向
+			XMFLOAT3 UpVector = SelectedActor->GetUpVector();
+			DragDirection = XMLoadFloat3(&UpVector);
+			break;
+		};
+		case AXIS_Z:
+		{
+			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
+			XMFLOAT3 ForwardVector = SelectedActor->GetForwardVector();
+			DragDirection = XMLoadFloat3(&ForwardVector);
+			break;
+		};
+		case AXIS_ANY:
+		{
+			// 鼠标拖拽的是任意轴
+			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
+			break;
+		}
+		default: break;
+		}
+	}
 }
 

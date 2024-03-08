@@ -406,3 +406,78 @@ void GRotateArrow::SetMaterial(CMeshComponent* axis_component, const std::string
 		material->SetBaseColorIndexKey(path);
 	}
 }
+
+void GRotateArrow::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection,
+	XMVECTOR& ActorLocation, XMVECTOR& DragDirection)
+{
+	if (IsWorldOperate())
+	{
+		// 世界坐标系下获取方向
+		switch (GetSelectedAxis())
+		{
+		case AXIS_X:
+		{
+			// 鼠标拖拽的是X轴，也就是物体的Right方向
+			XMFLOAT3 DirVector = XMFLOAT3{ 0.0f, 1.0f, 0.0f };
+			DragDirection = XMLoadFloat3(&DirVector);
+			break;
+		};
+		case AXIS_Y:
+		{
+			// 鼠标拖拽的是Y轴，也就是物体的Up方向
+			XMFLOAT3 DirVector = XMFLOAT3{ 1.0f, 0.0f, 0.0f };
+			DragDirection = XMLoadFloat3(&DirVector);
+			break;
+		};
+		case AXIS_Z:
+		{
+			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
+			XMFLOAT3 DirVector = XMFLOAT3{ 0.0f, 0.0f, 1.0f };
+			DragDirection = XMLoadFloat3(&DirVector);
+			break;
+		};
+		case AXIS_ANY:
+		{
+			// 鼠标拖拽的是任意轴
+			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
+			break;
+		}
+		default: break;
+		}
+	}
+	else
+	{
+		// 根据选中的轴向，获取射线的方向
+		switch (GetSelectedAxis())
+		{
+		case AXIS_X:
+		{
+			// 鼠标拖拽的是X轴，也就是物体的Right方向
+			XMFLOAT3 DirVector = SelectedActor->GetUpVector();
+			DragDirection = XMLoadFloat3(&DirVector);
+			break;
+		};
+		case AXIS_Y:
+		{
+			// 鼠标拖拽的是Y轴，也就是物体的Up方向
+			XMFLOAT3 DirVector = SelectedActor->GetRightVector();
+			DragDirection = XMLoadFloat3(&DirVector);
+			break;
+		};
+		case AXIS_Z:
+		{
+			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
+			XMFLOAT3 DirVector = SelectedActor->GetForwardVector();
+			DragDirection = XMLoadFloat3(&DirVector);
+			break;
+		};
+		case AXIS_ANY:
+		{
+			// 鼠标拖拽的是任意轴
+			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
+			break;
+		}
+		default: break;
+		}
+	}
+}

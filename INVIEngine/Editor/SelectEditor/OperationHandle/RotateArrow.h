@@ -53,6 +53,8 @@ protected:
 	XMVECTOR GetAnyAxisDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation) override;
 	void SetMaterial(CMeshComponent* axis_component, const std::string& path);
 
+	void GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation, XMVECTOR& DragDirection) override;
+
 protected:
 	float LastT2Value = 0.0f;	// 上一次的T2值
 };

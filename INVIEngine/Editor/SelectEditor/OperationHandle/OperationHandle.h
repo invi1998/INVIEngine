@@ -98,6 +98,8 @@ protected:
 		return dynamic_cast<T*>(this) != FOperationHandleSelectManage::Get()->GetSelectedOperationHandle();
 	}
 
+	virtual void GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation, XMVECTOR& DragDirection);
+
 private:
 	ESelectedAxis SelectedAxis = AXIS_NONE;	// 选中的轴向
 
