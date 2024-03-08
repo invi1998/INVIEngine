@@ -10,12 +10,12 @@ class CTransformationComponent;
 class GActorObject : public CCoreMinimalObject
 {
 	CVARIABLE()
-		CTransformationComponent* TransformationComponent;
+		CTransformationComponent* RootComponent;
 
 public:
 	GActorObject();
 
-	FORCEINLINE CTransformationComponent* GetTransformationComponent() const { return TransformationComponent; }
+	FORCEINLINE CTransformationComponent* GetRootComponent() const { return RootComponent; }
 
 public:
 	virtual void SetPosition(const XMFLOAT3& InNewPosition);

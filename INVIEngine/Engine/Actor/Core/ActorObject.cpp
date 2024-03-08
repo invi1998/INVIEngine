@@ -9,12 +9,12 @@ GActorObject::GActorObject()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
-	TransformationComponent = CreateObject<CTransformationComponent>(params, new CTransformationComponent());
+	RootComponent = CreateObject<CTransformationComponent>(params, new CTransformationComponent());
 }
 
 void GActorObject::SetPosition(const XMFLOAT3& InNewPosition)
 {
-	TransformationComponent->SetPosition(InNewPosition);
+	RootComponent->SetPosition(InNewPosition);
 }
 
 void GActorObject::SetPosition(const XMVECTOR& InNewPosition)
@@ -26,17 +26,17 @@ void GActorObject::SetPosition(const XMVECTOR& InNewPosition)
 
 void GActorObject::SetRotation(const XMFLOAT3& InRotation)
 {
-	TransformationComponent->SetRotation(InRotation);
+	RootComponent->SetRotation(InRotation);
 }
 
 void GActorObject::SetRotation(const frotator& InRotation)
 {
-	TransformationComponent->SetRotation(InRotation);
+	RootComponent->SetRotation(InRotation);
 }
 
 void GActorObject::SetScale(const XMFLOAT3& InNewScale)
 {
-	TransformationComponent->SetScale(InNewScale);
+	RootComponent->SetScale(InNewScale);
 }
 
 void GActorObject::SetScale(const XMVECTOR& Scale)
@@ -48,7 +48,7 @@ void GActorObject::SetScale(const XMVECTOR& Scale)
 
 void GActorObject::SetForwardVector(const XMFLOAT3& InForward)
 {
-	TransformationComponent->SetForwardVector(InForward);
+	RootComponent->SetForwardVector(InForward);
 }
 
 void GActorObject::SetForwardVector(const XMVECTOR& InForward)
@@ -74,40 +74,40 @@ void GActorObject::SetUpVector(const XMVECTOR& InUp)
 
 void GActorObject::SetRightVector(const XMFLOAT3& InRight)
 {
-	TransformationComponent->SetRightVector(InRight);
+	RootComponent->SetRightVector(InRight);
 }
 
 void GActorObject::SetUpVector(const XMFLOAT3& InUp)
 {
-	TransformationComponent->SetUpVector(InUp);
+	RootComponent->SetUpVector(InUp);
 }
 
 XMFLOAT3& GActorObject::GetPosition()
 {
-	return TransformationComponent->GetPosition();
+	return RootComponent->GetPosition();
 }
 
 XMFLOAT3& GActorObject::GetRotation()
 {
-	return TransformationComponent->GetRotation();
+	return RootComponent->GetRotation();
 }
 
 XMFLOAT3& GActorObject::GetScale()
 {
-	return TransformationComponent->GetScale();
+	return RootComponent->GetScale();
 }
 
 XMFLOAT3& GActorObject::GetForwardVector()
 {
-	return TransformationComponent->GetForwardVector();
+	return RootComponent->GetForwardVector();
 }
 
 XMFLOAT3& GActorObject::GetRightVector()
 {
-	return TransformationComponent->GetRightVector();
+	return RootComponent->GetRightVector();
 }
 
 XMFLOAT3& GActorObject::GetUpVector()
 {
-	return TransformationComponent->GetUpVector();
+	return RootComponent->GetUpVector();
 }

@@ -20,7 +20,7 @@ void GClientViewPort::Tick(float DeltaTime)
 
 void GClientViewPort::BuildViewMatrix()
 {
-	ViewMatrix = GetTransformationComponent()->CalculateViewMatrix();
+	ViewMatrix = GetRootComponent()->CalculateViewMatrix();
 }
 
 void GClientViewPort::BuildOrthographicOffCenterProjectionMatrixLH(float radius, const XMFLOAT3& centerPos)
