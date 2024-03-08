@@ -52,4 +52,11 @@ namespace EngineMath
 
 	// 通过欧拉角构建旋转矩阵的逆矩阵
 	void BuildInverseMatrix(DirectX::XMMATRIX& OutMatrix, const DirectX::XMFLOAT3& InPosition, const DirectX::XMFLOAT3& InScale, const DirectX::XMFLOAT3& Right, const DirectX::XMFLOAT3& Up, const DirectX::XMFLOAT3& Forward);
+
+	// 线性差值
+	template<typename T>
+	static T Lerp(const T& A, const T& B, float Alpha)
+	{
+		return A + Alpha * (B - A);	// A + Alpha * (B - A) = A * (1 - Alpha) + B * Alpha
+	}
 }

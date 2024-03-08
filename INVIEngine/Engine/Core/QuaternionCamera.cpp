@@ -160,11 +160,13 @@ void GQuaternionCamera::OnUpdate(float ts)
 	{
 		if (SelectedActor)
 		{
+			// 先让摄像机看向选中的物体
+			FaceTarget(GetPosition(), SelectedActor->GetPosition());
+
 			FTimelineDelegate TimelineDelegate{};
 			TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
 			CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, false);
 		}
-		
 	}
 	else
 	{
@@ -404,16 +406,13 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 
 	if (SelectedActor)
 	{
-		// 先让摄像机看向选中的物体
-		FaceTarget(GetPosition(), SelectedActor->GetPosition());
-
-		/*XMFLOAT3 CameraPosition = GetPosition();
+		XMFLOAT3 CameraPosition = GetPosition();
 		XMVECTOR CameraPos = XMLoadFloat3(&CameraPosition);
 		XMVECTOR ActorPos = XMLoadFloat3(&SelectedActor->GetPosition());
 
 		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, ActorPos, currentTime / duration);
 		XMStoreFloat3(&CameraPosition, NewCameraPos);
-		SetPosition(CameraPosition);*/
+		SetPosition(CameraPosition);
 
 		// ENGINE_LOG_WARNING("CameraPosition: (%f, %f, %f)", CameraPosition.x, CameraPosition.y, CameraPosition.z);
 
