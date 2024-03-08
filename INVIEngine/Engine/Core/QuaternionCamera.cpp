@@ -19,6 +19,8 @@ FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 // const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
 extern CMeshComponent *SelectedAxisComponent; // 被选中的轴向
+extern GActorObject* SelectedActor; // 被选中的物体
+extern GMoveArrow* MoveArrow;
 
 GQuaternionCamera::GQuaternionCamera()
 	: GClientViewPort()
@@ -158,7 +160,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 	{
 		FTimelineDelegate TimelineDelegate{};
 		TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
-		CameraTimeline.BindTimelineDelegate(TimelineDelegate, 10.f, false, false);
+		CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, false);
 	}
 	else
 	{
@@ -311,8 +313,6 @@ void GQuaternionCamera::RotateAroundYAxis(float rotateDegrees)
 	SetForwardVector(forwardVector);
 }
 
-extern GActorObject *SelectedActor; // 被选中的物体
-extern GMoveArrow *MoveArrow;
 void GQuaternionCamera::OnClickScene(const XMFLOAT2 &mousePos)
 {
 	// ENGINE_LOG_SUCCESS("pos: (%f, %f)", mousePos.x, mousePos.y);
@@ -400,13 +400,16 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 
 	if (SelectedActor)
 	{
-		XMFLOAT3 CameraPosition = GetPosition();
+		// 先让摄像机看向选中的物体
+		FaceTarget(GetPosition(), SelectedActor->GetPosition());
+
+		/*XMFLOAT3 CameraPosition = GetPosition();
 		XMVECTOR CameraPos = XMLoadFloat3(&CameraPosition);
 		XMVECTOR ActorPos = XMLoadFloat3(&SelectedActor->GetPosition());
 
 		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, ActorPos, currentTime / duration);
 		XMStoreFloat3(&CameraPosition, NewCameraPos);
-		SetPosition(CameraPosition);
+		SetPosition(CameraPosition);*/
 
 		// ENGINE_LOG_WARNING("CameraPosition: (%f, %f, %f)", CameraPosition.x, CameraPosition.y, CameraPosition.z);
 
