@@ -1,6 +1,7 @@
 #pragma once
 #include "CameraType.h"
 #include "Actor/Core/ActorObject.h"
+#include "Component/TimelineComponent.h"
 #include "Interface/DirectXDeviceInterface.h"
 #include "Viewport/ClientViewPort.h"
 #include "Viewport/ViewPort.h"
@@ -49,6 +50,8 @@ protected:
 
 	void BuildMatrixByType();
 
+	void LookAtAndMoveToSelectedObject(float currentTime, float duration);
+
 private:
     float Pitch = 0.0f;
     float Yaw = 0.0f;
@@ -66,5 +69,7 @@ private:
 private:
     CVARIABLE();
     CInputComponent* InputComponent;
+
+	FTimeline CameraTimeline;	//  ±º‰÷·
 };
 

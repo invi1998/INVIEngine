@@ -47,6 +47,8 @@ void GQuaternionCamera::BeginInit()
 void GQuaternionCamera::Tick(float DeltaTime)
 {
 	GClientViewPort::Tick(DeltaTime);
+
+	CameraTimeline.Tick(DeltaTime);
 }
 
 void GQuaternionCamera::ExecuteInput()
@@ -151,6 +153,12 @@ void GQuaternionCamera::OnUpdate(float ts)
 	{
 		// ÇÐ»»ÉãÏñ»úÀàÐÍ
 		CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
+	}
+	else if (FInput::IsKeyReleased(VK_F1))
+	{
+		FTimelineDelegate TimelineDelegate{};
+		TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
+		CameraTimeline.BindTimelineDelegate(TimelineDelegate, 10.f, false, false);
 	}
 	else
 	{
@@ -428,5 +436,25 @@ void GQuaternionCamera::BuildMatrixByType()
 
 		break;
 	}
+	}
+}
+
+void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float duration)
+{
+	ENGINE_LOG_WARNING("LookAtAndMoveToSelectedObject: (%f, %f)", currentTime, duration);
+
+	if (SelectedActor)
+	{
+		XMFLOAT3 CameraPosition = GetPosition();
+		XMVECTOR CameraPos = XMLoadFloat3(&CameraPosition);
+		XMVECTOR ActorPos = XMLoadFloat3(&SelectedActor->GetPosition());
+
+		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, ActorPos, currentTime / duration);
+		XMStoreFloat3(&CameraPosition, NewCameraPos);
+		SetPosition(CameraPosition);
+
+		// ENGINE_LOG_WARNING("CameraPosition: (%f, %f, %f)", CameraPosition.x, CameraPosition.y, CameraPosition.z);
+
+		// ENGINE_LOG_WARNING("ActorPos: (%f, %f, %f)", ActorPos.x, ActorPos.y, ActorPos.z);
 	}
 }
