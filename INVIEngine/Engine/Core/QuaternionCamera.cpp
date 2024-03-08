@@ -158,9 +158,13 @@ void GQuaternionCamera::OnUpdate(float ts)
 	}
 	else if (FInput::IsKeyReleased(VK_F1))
 	{
-		FTimelineDelegate TimelineDelegate{};
-		TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
-		CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, false);
+		if (SelectedActor)
+		{
+			FTimelineDelegate TimelineDelegate{};
+			TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
+			CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, false);
+		}
+		
 	}
 	else
 	{
