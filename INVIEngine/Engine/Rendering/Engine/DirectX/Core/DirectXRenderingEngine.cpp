@@ -50,7 +50,7 @@ CDirectXRenderingEngine::CDirectXRenderingEngine()
 	FCreateObjectParams params{};
 	params.Owner = this;
 
-	MeshManage = CreateObject<CMeshManager>(params, new CMeshManager);
+	MeshManage = CreateObject<CMeshManager>(params, new CMeshManager());
 	LightManager = CreateObject<CLightManager>(params, new CLightManager());
 }
 
