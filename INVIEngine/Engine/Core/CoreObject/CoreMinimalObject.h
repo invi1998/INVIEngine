@@ -3,6 +3,8 @@
 #include "GuidInterface.h"
 #include "Core/Construction/ObjectConstruction.h"
 
+class CCoreMinimalObject;
+
 class CCoreMinimalObject : public IGuidInterface
 {
 public:

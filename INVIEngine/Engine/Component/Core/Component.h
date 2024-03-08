@@ -11,8 +11,10 @@ public:
 
 	void AddChildComponent(CComponent* component);
 
+	void SetParentComponent(CComponent* component);
+
 protected:
 	CComponent* ParentComponent = nullptr;
-	std::vector<CComponent*> ChildComponents{};
+	std::vector<CComponent*> ChildComponents;
 };
 

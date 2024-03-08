@@ -1,13 +1,15 @@
 #pragma once
-#include "Actor/Core/ActorObject.h"
-#include "Component/TransformationComponent.h"
-#include "Component/Core/Component.h"
-#include "Core/CoreObject/CoreMinimalObject.h"
+
+
+class CCoreMinimalObject;
+class CComponent;
 
 namespace ConstructionComponent
 {
 	// 构造对象组件
-	void ConstructionComponent(GActorObject* InOwner, CCoreMinimalObject* NewObject);
+	void ConstructionComponent(CCoreMinimalObject* InOwner, CCoreMinimalObject* NewObject);
+
+	void UpdateComponent(CComponent* component, CComponent* parentComponent);
 }
 
 

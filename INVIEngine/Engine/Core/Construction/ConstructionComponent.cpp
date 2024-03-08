@@ -1,24 +1,42 @@
 #include "EngineMinimal.h"
 #include "ConstructionComponent.h"
+#include "Actor/Core/ActorObject.h"
+#include "Component/TransformationComponent.h"
+#include "Component/Core/Component.h"
 
-void ConstructionComponent::ConstructionComponent(GActorObject* InOwner, CCoreMinimalObject* NewObject)
+namespace ConstructionComponent
 {
-	if (CComponent* component = dynamic_cast<CComponent*>(NewObject))
+	void ConstructionComponent(CCoreMinimalObject* InOwner, CCoreMinimalObject* NewObject)
 	{
-		if (InOwner)
+		if (CComponent* component = dynamic_cast<CComponent*>(NewObject))
 		{
-			// 如果InOwner是一个ActorObject
-			if (GActorObject* actor = dynamic_cast<GActorObject*>(InOwner))
+			if (InOwner)
 			{
-				if (actor->GetRootComponent())
+				// 如果InOwner是一个Component
+				if (CComponent* comp = dynamic_cast<CComponent*>(InOwner))
 				{
-					actor->GetRootComponent()->AddChildComponent(component);
+					UpdateComponent(component, comp);
+					
 				}
-			}
-			else if (CComponent* comp = dynamic_cast<CComponent*>(InOwner))
-			{
-				comp->AddChildComponent(component);
+				// 如果InOwner是一个ActorObject
+				else if (GActorObject* actor = dynamic_cast<GActorObject*>(InOwner))
+				{
+					if (actor->GetRootComponent())
+					{
+						UpdateComponent(component, actor->GetRootComponent());
+					}
+				}
 			}
 		}
 	}
+
+	void UpdateComponent(CComponent* component, CComponent* parentComponent)
+	{
+		if (component && parentComponent && component != parentComponent)
+		{
+			parentComponent->AddChildComponent(component);
+			component->SetParentComponent(parentComponent);
+		}
+	}
 }
+

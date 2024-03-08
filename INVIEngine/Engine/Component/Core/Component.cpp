@@ -4,6 +4,7 @@
 
 CComponent::~CComponent()
 {
+	ChildComponents.clear();
 }
 
 void CComponent::BeginInit()
@@ -20,7 +21,14 @@ void CComponent::AddChildComponent(CComponent* component)
 {
 	if (component && component != this)
 	{
-		component->ParentComponent = this;
 		ChildComponents.push_back(component);
+	}
+}
+
+void CComponent::SetParentComponent(CComponent* component)
+{
+	if (component && component != this)
+	{
+		ParentComponent = component;
 	}
 }
