@@ -432,7 +432,7 @@ void GRotateArrow::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECT
 		case AXIS_Z:
 		{
 			// 鼠标拖拽的是Z轴，也就是物体的Forward方向
-			XMFLOAT3 DirVector = XMFLOAT3{ 0.0f, 0.0f, 1.0f };
+			XMFLOAT3 DirVector = XMFLOAT3{ 1.0f, 0.0f, 0.0f };
 			DragDirection = XMLoadFloat3(&DirVector);
 			break;
 		};
