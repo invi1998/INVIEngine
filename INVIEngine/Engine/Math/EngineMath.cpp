@@ -310,4 +310,36 @@ namespace EngineMath
 		XMVECTOR Det = XMMatrixDeterminant(MatrixRIX);	// 计算行列式
 		OutMatrix = XMMatrixInverse(&Det, MatrixRIX);	// 计算逆矩阵
 	}
+
+	void BuildRotationMatrix(DirectX::XMMATRIX& OutMatrix, const DirectX::XMFLOAT3& InRight,
+		const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward)
+	{
+		OutMatrix = {
+			InRight.x, InUp.x, InForward.x, 0.f,
+			InRight.y, InUp.y, InForward.y, 0.f,
+			InRight.z, InUp.z, InForward.z, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		};
+	}
+
+	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward)
+	{
+		XMVECTOR Right = XMVector3Cross(XMLoadFloat3(&InUp), XMLoadFloat3(&InForward));
+		Right = XMVector3Normalize(Right);
+
+		XMVECTOR Up = XMVector3Cross(XMLoadFloat3(&InForward), Right);
+		Up = XMVector3Normalize(Up);
+
+		XMFLOAT3 RightVector{};
+		XMStoreFloat3(&RightVector, Right);
+		XMFLOAT3 UpVector{};
+		XMStoreFloat3(&UpVector, Up);
+		XMFLOAT3 ForwardVector{};
+		XMStoreFloat3(&ForwardVector, XMVector3Normalize(XMLoadFloat3(&InForward)));
+
+		XMMATRIX RotationMatrix{};
+		BuildRotationMatrix(RotationMatrix, RightVector, UpVector, ForwardVector);
+
+		return XMQuaternionRotationMatrix(RotationMatrix);	// 根据旋转矩阵计算四元数
+	}
 }

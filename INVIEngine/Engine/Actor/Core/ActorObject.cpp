@@ -139,3 +139,8 @@ XMFLOAT3& GActorObject::GetUpVector()
 {
 	return RootComponent->GetUpVector();
 }
+
+XMVECTOR GActorObject::GetRotationQuat()
+{
+	return RootComponent->GetRotationQuat();
+}

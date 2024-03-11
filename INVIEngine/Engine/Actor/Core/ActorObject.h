@@ -44,6 +44,8 @@ public:
 	XMFLOAT3& GetForwardVector();
 	XMFLOAT3& GetRightVector();
 	XMFLOAT3& GetUpVector();
+
+	XMVECTOR GetRotationQuat();
 	
 };
 

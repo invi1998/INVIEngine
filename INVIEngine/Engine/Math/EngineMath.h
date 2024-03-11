@@ -59,4 +59,10 @@ namespace EngineMath
 	{
 		return A + Alpha * (B - A);	// A + Alpha * (B - A) = A * (1 - Alpha) + B * Alpha
 	}
+
+	// 构建旋转矩阵
+	void BuildRotationMatrix(DirectX::XMMATRIX& OutMatrix, const DirectX::XMFLOAT3& InRight, const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward);
+
+	// 构建四元数
+	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward);
 }

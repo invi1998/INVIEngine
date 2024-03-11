@@ -17,21 +17,16 @@ public:
 	virtual void SetRightVector(const XMFLOAT3& InRight);
 	virtual void SetUpVector(const XMFLOAT3& InUp);
 
-	XMFLOAT3& GetPosition() { return Position; }
 	XMFLOAT3& GetRotation();
-	XMFLOAT3& GetScale() { return Scale; }
-	XMFLOAT3& GetForwardVector()
-	{
-		return ForwardVector;
-	}
-	XMFLOAT3 &GetRightVector()
-	{
-		return RightVector;
-	}
-	XMFLOAT3 &GetUpVector()
-	{
-		return UpVector;
-	}
+
+	XMVECTOR GetRotationQuat() const;	// 获取旋转四元数
+	void SetRotationQuat(const XMVECTOR& InQuat);	// 设置旋转四元数
+
+	FORCEINLINE XMFLOAT3& GetPosition() { return Position; }
+	FORCEINLINE XMFLOAT3& GetScale() { return Scale; }
+	FORCEINLINE XMFLOAT3& GetForwardVector() { return ForwardVector; }
+	FORCEINLINE XMFLOAT3& GetRightVector() { return RightVector; }
+	FORCEINLINE XMFLOAT3& GetUpVector() { return UpVector; }
 
 public:
 	// 校正 Up, Right, Look(Forward)

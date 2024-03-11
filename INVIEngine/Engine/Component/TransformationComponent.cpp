@@ -107,6 +107,27 @@ XMFLOAT3& CTransformationComponent::GetRotation()
 	return Rotation;
 }
 
+XMVECTOR CTransformationComponent::GetRotationQuat() const
+{
+	XMMATRIX RotationMatrix{};
+	EngineMath::BuildRotationMatrix(RotationMatrix, RightVector, UpVector, ForwardVector);
+
+	return XMQuaternionRotationMatrix(RotationMatrix);
+}
+
+void CTransformationComponent::SetRotationQuat(const XMVECTOR& InQuat)
+{
+	XMMATRIX RotationMatrix = XMMatrixRotationQuaternion(InQuat);	// 通过四元数得到旋转矩阵
+
+	XMVECTOR Right = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	XMVECTOR Up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	XMVECTOR Forward = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	XMStoreFloat3(&RightVector, XMVector3TransformNormal(Right, RotationMatrix));		// 叉乘结果得到右向量，然后归一化
+	XMStoreFloat3(&UpVector, XMVector3TransformNormal(Up, RotationMatrix));		// 叉乘结果得到上向量，然后归一化
+	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(Forward, RotationMatrix));		// 叉乘结果得到前向量，然后归一化
+}
+
 void CTransformationComponent::CorrectionVector()
 {
 	XMVECTOR Right = XMLoadFloat3(&RightVector);

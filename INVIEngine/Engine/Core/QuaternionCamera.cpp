@@ -428,8 +428,16 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		XMStoreFloat3(&CameraPosition, NewCameraPos);
 		SetPosition(CameraPosition);
 
-		// ENGINE_LOG_WARNING("CameraPosition: (%f, %f, %f)", CameraPosition.x, CameraPosition.y, CameraPosition.z);
+		// 利用四元数差值算法将摄像机从当前朝向插值到目标朝向（四元数差值旋转）
+		// 先使用Forward向量和Up向量和Right向量构建旋转矩阵，然后将旋转矩阵转为四元数，然后我们再得到目标的旋转矩阵，然后将目标的旋转矩阵转为四元数，然后我们再使用四元数差值算法将摄像机的旋转插值到目标的旋转
+		// 四元数差值算法有很多种，第一种是线性插值，第二种是球面插值，第三种是SLERP插值，第四种是NLERP插值，这里我们采用SLERP插值（球面线性插值）
+		// 同时我们还需要注意的是四元数的插值是有方向的，所以我们需要判断一下摄像机的朝向和目标朝向的夹角，如果夹角大于180度，我们需要将目标朝向取反（避免四元数的插值方向错误，双倍覆盖问题）
+		XMMATRIX RotationMatrixCamera{};
+		EngineMath::BuildRotationMatrix(RotationMatrixCamera, GetRightVector(), GetUpVector(), GetForwardVector());
 
-		// ENGINE_LOG_WARNING("ActorPos: (%f, %f, %f)", ActorPos.x, ActorPos.y, ActorPos.z);
+		// 获取当前下摄像机的旋转四元数
+		XMVECTOR CameraQuat = GetRotationQuat();
+		// 获取目标的旋转四元数
+		
 	}
 }
