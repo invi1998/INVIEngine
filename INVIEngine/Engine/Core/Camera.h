@@ -39,9 +39,6 @@ private:
 	CVARIABLE();
 	CInputComponent* InputComponent;
 
-	CVARIABLE();
-	CTransformationComponent* TransformationComponent;
-
 protected:
 	XMFLOAT2 LastMousePosition = {0.f, 0.f};
 	bool bIsLeftMouseDown = false;

@@ -11,7 +11,6 @@ CCamera::CCamera()
 	params.Owner = this;
 
 	InputComponent = CreateObject<CInputComponent>(params, new CInputComponent());
-	TransformationComponent = CreateObject<CTransformationComponent>(params, new CTransformationComponent());
 }
 
 void CCamera::BeginInit()
@@ -87,8 +86,8 @@ void CCamera::OnMouseMove(const XMFLOAT2& delta)
 
 void CCamera::MoveForward(float InValue)
 {
-	XMFLOAT3 AT3Pos = TransformationComponent->GetPosition();
-	XMFLOAT3 AT3Forward = TransformationComponent->GetForwardVector();
+	XMFLOAT3 AT3Pos = GetRootComponent()->GetPosition();
+	XMFLOAT3 AT3Forward = GetRootComponent()->GetForwardVector();
 
 	XMVECTOR AmountMovement = XMVectorReplicate(InValue * 1.f);
 
@@ -97,15 +96,15 @@ void CCamera::MoveForward(float InValue)
 
 	XMStoreFloat3(&AT3Pos, XMVectorMultiplyAdd(AmountMovement, Forward, Position));
 
-	TransformationComponent->SetPosition(AT3Pos);
+	GetRootComponent()->SetPosition(AT3Pos);
 
 	BuildViewMatrix();
 }
 
 void CCamera::MoveRight(float InValue)
 {
-	XMFLOAT3 AT3Pos = TransformationComponent->GetPosition();
-	XMFLOAT3 AT3Right = TransformationComponent->GetRightVector();
+	XMFLOAT3 AT3Pos = GetRootComponent()->GetPosition();
+	XMFLOAT3 AT3Right = GetRootComponent()->GetRightVector();
 
 	XMVECTOR AmountMovement = XMVectorReplicate(InValue * 1.f);
 
@@ -114,27 +113,27 @@ void CCamera::MoveRight(float InValue)
 
 	XMStoreFloat3(&AT3Pos, XMVectorMultiplyAdd(AmountMovement, Right, Position));
 
-	TransformationComponent->SetPosition(AT3Pos);
+	GetRootComponent()->SetPosition(AT3Pos);
 
 	BuildViewMatrix();
 }
 
 void CCamera::RotateAroundYAxis(float InRotateDegrees)
 {
-	XMFLOAT3 RightVector = TransformationComponent->GetRightVector();
-	XMFLOAT3 UpVector = TransformationComponent->GetUpVector();
-	XMFLOAT3 ForwardVector = TransformationComponent->GetForwardVector();
+	XMFLOAT3 RightVector = GetRootComponent()->GetRightVector();
+	XMFLOAT3 UpVector = GetRootComponent()->GetUpVector();
+	XMFLOAT3 ForwardVector = GetRootComponent()->GetForwardVector();
 
 	// 传入弧度或得绕y轴的旋转矩阵
 	XMMATRIX RotationY = XMMatrixRotationY(InRotateDegrees);
 
 	// 将摄像机的3个方向向量乘以旋转矩阵，或得计算机绕z轴旋转的向量结果
 
-	XMStoreFloat3(&TransformationComponent->GetRightVector(), XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationY));
+	XMStoreFloat3(&GetRootComponent()->GetRightVector(), XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationY));
 
-	XMStoreFloat3(&TransformationComponent->GetUpVector(), XMVector3TransformNormal(XMLoadFloat3(&UpVector), RotationY));
+	XMStoreFloat3(&GetRootComponent()->GetUpVector(), XMVector3TransformNormal(XMLoadFloat3(&UpVector), RotationY));
 
-	XMStoreFloat3(&TransformationComponent->GetForwardVector(), XMVector3TransformNormal(XMLoadFloat3(&ForwardVector), RotationY));
+	XMStoreFloat3(&GetRootComponent()->GetForwardVector(), XMVector3TransformNormal(XMLoadFloat3(&ForwardVector), RotationY));
 
 	BuildViewMatrix();
 
@@ -142,20 +141,20 @@ void CCamera::RotateAroundYAxis(float InRotateDegrees)
 
 void CCamera::RotateAroundZAxis(float InRotateDegrees)
 {
-	XMFLOAT3 RightVector = TransformationComponent->GetRightVector();
-	XMFLOAT3 UpVector = TransformationComponent->GetUpVector();
-	XMFLOAT3 ForwardVector = TransformationComponent->GetForwardVector();
+	XMFLOAT3 RightVector = GetRootComponent()->GetRightVector();
+	XMFLOAT3 UpVector = GetRootComponent()->GetUpVector();
+	XMFLOAT3 ForwardVector = GetRootComponent()->GetForwardVector();
 
 	// 传入弧度或得绕Z轴的旋转矩阵
 	XMMATRIX RotationZ = XMMatrixRotationZ(InRotateDegrees);
 
 	// 将摄像机的3个方向向量乘以旋转矩阵，或得计算机绕z轴旋转的向量结果
 
-	XMStoreFloat3(&TransformationComponent->GetRightVector(), XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationZ));
+	XMStoreFloat3(&GetRootComponent()->GetRightVector(), XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationZ));
 
-	XMStoreFloat3(&TransformationComponent->GetUpVector(), XMVector3TransformNormal(XMLoadFloat3(&UpVector), RotationZ));
+	XMStoreFloat3(&GetRootComponent()->GetUpVector(), XMVector3TransformNormal(XMLoadFloat3(&UpVector), RotationZ));
 
-	XMStoreFloat3(&TransformationComponent->GetForwardVector(), XMVector3TransformNormal(XMLoadFloat3(&ForwardVector), RotationZ));
+	XMStoreFloat3(&GetRootComponent()->GetForwardVector(), XMVector3TransformNormal(XMLoadFloat3(&ForwardVector), RotationZ));
 
 	BuildViewMatrix();
 

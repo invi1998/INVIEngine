@@ -10,7 +10,7 @@ class CTransformationComponent;
 class GActorObject : public CCoreMinimalObject
 {
 	CVARIABLE()
-		CTransformationComponent* RootComponent;
+		CTransformationComponent* RootComponent = nullptr;	// 空指针异常会导致程序崩溃
 
 public:
 	GActorObject();
