@@ -72,10 +72,16 @@ void FTimeline::Tick(float DeltaTime)
 
 void FTimeline::BindTimelineDelegate(const FTimelineDelegate& InDelegate, float InDuration, bool InLoop, bool InReverse)
 {
+	// 重置之前的代理
+	if (TimelineDelegate.IsBound())
+	{
+		TimelineDelegate.ReleaseDelegate();
+	}
+
 	TimelineDelegate = InDelegate;
 	Duration = InDuration;
 	bLoop = InLoop;
 	bReverse = InReverse;
 	bPlaying = true;
-	CurrentTime = 0.0f;
+	CurrentTime = InReverse ? InDuration : 0.0f;
 }

@@ -165,7 +165,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 
 			FTimelineDelegate TimelineDelegate{};
 			TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
-			CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, false);
+			CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, true);
 		}
 	}
 	else
@@ -424,7 +424,7 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 
 		XMVECTOR CameraEnd = ActorPos - L * CameraForward;	// 摄像机的最终位置
 
-		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, CameraEnd, currentTime / duration);
+		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, CameraEnd, currentTime / duration);		// 插值计算摄像机的位置
 		XMStoreFloat3(&CameraPosition, NewCameraPos);
 		SetPosition(CameraPosition);
 
