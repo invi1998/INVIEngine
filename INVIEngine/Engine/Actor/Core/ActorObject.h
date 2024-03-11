@@ -17,6 +17,10 @@ public:
 
 	FORCEINLINE CTransformationComponent* GetRootComponent() const { return RootComponent; }
 
+	// ªÒ»°BoundingBox
+	void GetBoundingBox(BoundingBox& OutBoundingBox) const;
+	BoundingBox GetBoundingBox() const;
+
 public:
 	virtual void SetPosition(const XMFLOAT3& InNewPosition);
 	virtual void SetPosition(const XMVECTOR& InNewPosition);

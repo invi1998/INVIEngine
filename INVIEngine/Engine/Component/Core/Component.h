@@ -11,7 +11,8 @@ public:
 
 	void AddChildComponent(CComponent* component);
 
-	void SetParentComponent(CComponent* component);
+	FORCEINLINE CComponent* GetParentComponents() const { return ParentComponent; }	// 返回父组件
+	FORCEINLINE std::vector<CComponent*>& GetChildComponents() { return ChildComponents; }	// 返回子组件列表的引用
 
 protected:
 	CComponent* ParentComponent = nullptr;

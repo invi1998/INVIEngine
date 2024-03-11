@@ -47,9 +47,11 @@ public:
 	bool IsOperateHandle() const { return MeshRenderLayerType == EMeshRenderLayerType::RENDER_LAYER_OPERATE; }
 
 	bool IsVisible() const { return bVisible; }
-	
-public:
 
+	void GetBoundingBox(BoundingBox& box);
+	BoundingBox GetBoundingBox();
+
+public:
 	EMeshRenderLayerType MeshRenderLayerType;
 
 protected:

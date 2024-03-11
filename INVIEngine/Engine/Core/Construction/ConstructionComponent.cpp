@@ -16,7 +16,6 @@ namespace ConstructionComponent
 				if (CComponent* comp = dynamic_cast<CComponent*>(InOwner))
 				{
 					UpdateComponent(component, comp);
-					
 				}
 				// 如果InOwner是一个ActorObject
 				else if (GActorObject* actor = dynamic_cast<GActorObject*>(InOwner))
@@ -35,7 +34,6 @@ namespace ConstructionComponent
 		if (component && parentComponent && component != parentComponent)
 		{
 			parentComponent->AddChildComponent(component);
-			component->SetParentComponent(parentComponent);
 		}
 	}
 }

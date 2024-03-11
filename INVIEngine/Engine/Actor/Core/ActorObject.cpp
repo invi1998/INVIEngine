@@ -3,6 +3,7 @@
 #include "ActorObject.h"
 
 #include "Component/TransformationComponent.h"
+#include "Component/Mesh/Core/MeshComponent.h"
 
 
 GActorObject::GActorObject()
@@ -10,6 +11,33 @@ GActorObject::GActorObject()
 	FCreateObjectParams params{};
 	params.Owner = this;
 	RootComponent = CreateObject<CTransformationComponent>(params, new CTransformationComponent());
+}
+
+void GActorObject::GetBoundingBox(BoundingBox& OutBoundingBox) const
+{
+	if (RootComponent)	// 如果RootComponent不为空
+	{
+		for (auto& child : RootComponent->GetChildComponents())	// 遍历RootComponent的子组件
+		{
+			if (CMeshComponent* mesh = dynamic_cast<CMeshComponent*>(child))	// 如果子组件是MeshComponent（因为我们的BoundingBox信息是存储在MeshComponent中的）
+			{
+				// 获取BoundingBox
+				BoundingBox box{};
+				mesh->GetBoundingBox(box);
+				// 合并BoundingBox，得到最终的BoundingBox（一个ActorObject可能有多个MeshComponent，所以需要合并）
+				// 合并BoundingBox的方法是：将两个BoundingBox的最小点和最大点分别取最小值和最大值
+				// min = center - extent, max = center + extent
+				BoundingBox::CreateMerged(OutBoundingBox, OutBoundingBox, box);
+			}
+		}
+	}
+}
+
+BoundingBox GActorObject::GetBoundingBox() const
+{
+	BoundingBox box{};
+	GetBoundingBox(box);
+	return box;
 }
 
 void GActorObject::SetPosition(const XMFLOAT3& InNewPosition)

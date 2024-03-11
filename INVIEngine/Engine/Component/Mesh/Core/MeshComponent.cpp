@@ -3,6 +3,7 @@
 #include "MeshComponent.h"
 
 #include "Material/Core/Material.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 
 CMeshComponent::CMeshComponent()
 	: MeshRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_TRANSPARENT)
@@ -58,4 +59,25 @@ bool CMeshComponent::IsDynamicReflection() const
 bool CMeshComponent::IsCastShadow() const
 {
 	return bCastShadow;
+}
+
+void CMeshComponent::GetBoundingBox(BoundingBox& box)
+{
+	FGeometry::FindRenderingData([&](std::shared_ptr<FRenderingData>& renderingData)->EFindValueType const
+	{
+		if (renderingData->Mesh == this)
+		{
+			box = renderingData->Bounds;
+			return EFindValueType::FVT_COMPLETE;
+		}
+
+		return EFindValueType::FVT_IN_PROGRAM;
+	});
+}
+
+BoundingBox CMeshComponent::GetBoundingBox()
+{
+	BoundingBox box{};
+	GetBoundingBox(box);
+	return box;
 }
