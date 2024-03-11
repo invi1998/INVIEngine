@@ -343,6 +343,27 @@ namespace EngineMath
 				};
 	}
 
+	frotator BuildRotationMatrix(const fvector_3d& InForward, const fvector_3d& InUp)
+	{
+		frotator Rotator;
+
+		fvector_3d RightVector = fvector_3d::cross_product(InUp, InForward);
+		RightVector.normalize();
+
+		fvector_3d UPVector = fvector_3d::cross_product(InForward, RightVector);
+		UPVector.normalize();
+
+		fmatrix_3x3 RotatorMatrix;
+		BuildRotationMatrix(RotatorMatrix,
+						RightVector,
+						UPVector,
+						InForward);
+
+		Rotator.inertia_to_object(RotatorMatrix);
+
+		return ToDXRotator(Rotator);
+	}
+
 	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InForward, const DirectX::XMFLOAT3& InUp)
 	{
 		XMVECTOR Right = XMVector3Cross(XMLoadFloat3(&InUp), XMLoadFloat3(&InForward));
