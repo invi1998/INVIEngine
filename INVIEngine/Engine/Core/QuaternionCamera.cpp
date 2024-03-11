@@ -440,10 +440,13 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 
 		// 获取当前下摄像机的旋转四元数
 		XMVECTOR CameraQuat = GetRotationQuat();
+		// 归一化四元数
+		CameraQuat = XMQuaternionNormalize(CameraQuat);
 		// 获取目标的旋转四元数
 		XMVECTOR TargetQuat = EngineMath::BuildQuaternion(TargetForward);
+		TargetQuat = XMQuaternionNormalize(TargetQuat);
 		// 利用四元数SLERP插值算法插值摄像机的旋转
-		XMVECTOR NewCameraQuat = XMQuaternionSlerp(CameraQuat, TargetQuat, currentTime / duration);
+		XMVECTOR NewCameraQuat = XMQuaternionSlerp(CameraQuat, TargetQuat, (currentTime / duration)*4);
 
 		SetRoationQuat(NewCameraQuat);
 	}
