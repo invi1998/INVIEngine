@@ -410,7 +410,21 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		XMVECTOR CameraPos = XMLoadFloat3(&CameraPosition);
 		XMVECTOR ActorPos = XMLoadFloat3(&SelectedActor->GetPosition());
 
-		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, ActorPos, currentTime / duration);
+		// 获取选中物体的AABB盒子
+		BoundingBox boundingBox = SelectedActor->GetBoundingBox();
+		// 获取盒子的半径，然后计算摄像机的半径
+		XMFLOAT3 extents = boundingBox.Extents;
+		XMVECTOR boundingBoxSize = XMLoadFloat3(&extents);	// 转为向量
+		float R = XMVectorGetX(XMVector3Length(boundingBoxSize));	// 盒子的半径
+		float H = 20.f;		// 摄像机视椎的高度等于盒子的半径加上H，这里H取值是一个经验值，可以根据实际情况调整
+		float L = (R + H) / tan(FOV);	// 摄像机到目标的距离
+
+		// 获取摄像机的Forward向量，同时单位化向量（这里这个Forward向量是摄像机的位置到选中物体的位置的向量，所以这里是负的， 我们直接用物体的位置减去摄像机的位置）
+		XMVECTOR CameraForward = XMVector3Normalize(ActorPos - CameraPos);
+
+		XMVECTOR CameraEnd = ActorPos - L * CameraForward;	// 摄像机的最终位置
+
+		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, CameraEnd, currentTime / duration);
 		XMStoreFloat3(&CameraPosition, NewCameraPos);
 		SetPosition(CameraPosition);
 
