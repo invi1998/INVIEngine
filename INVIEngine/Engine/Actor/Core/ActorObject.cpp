@@ -100,6 +100,11 @@ void GActorObject::SetUpVector(const XMVECTOR& InUp)
 	SetUpVector(up);
 }
 
+void GActorObject::SetRoationQuat(const XMVECTOR& InQuat)
+{
+	RootComponent->SetRotationQuat(InQuat);
+}
+
 void GActorObject::SetRightVector(const XMFLOAT3& InRight)
 {
 	RootComponent->SetRightVector(InRight);

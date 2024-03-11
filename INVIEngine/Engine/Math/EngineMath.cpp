@@ -322,7 +322,7 @@ namespace EngineMath
 		};
 	}
 
-	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward)
+	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InForward, const DirectX::XMFLOAT3& InUp)
 	{
 		XMVECTOR Right = XMVector3Cross(XMLoadFloat3(&InUp), XMLoadFloat3(&InForward));
 		Right = XMVector3Normalize(Right);

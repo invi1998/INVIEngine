@@ -64,5 +64,5 @@ namespace EngineMath
 	void BuildRotationMatrix(DirectX::XMMATRIX& OutMatrix, const DirectX::XMFLOAT3& InRight, const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward);
 
 	// 构建四元数
-	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward);
+	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InForward, const DirectX::XMFLOAT3& InUp = { 0.f, 1.f, 0.f });
 }

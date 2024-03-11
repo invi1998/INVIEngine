@@ -35,6 +35,7 @@ public:
 	virtual void SetRightVector(const XMVECTOR& InRight);
 	virtual void SetUpVector(const XMFLOAT3& InUp);
 	virtual void SetUpVector(const XMVECTOR& InUp);
+	virtual void SetRoationQuat(const XMVECTOR& InQuat);
 
 public:
 	XMFLOAT3& GetPosition();

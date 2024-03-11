@@ -161,7 +161,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 		if (SelectedActor)
 		{
 			// 先让摄像机看向选中的物体
-			FaceTarget(GetPosition(), SelectedActor->GetPosition());
+			// FaceTarget(GetPosition(), SelectedActor->GetPosition());
 
 			FTimelineDelegate TimelineDelegate{};
 			TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
@@ -435,9 +435,16 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		XMMATRIX RotationMatrixCamera{};
 		EngineMath::BuildRotationMatrix(RotationMatrixCamera, GetRightVector(), GetUpVector(), GetForwardVector());
 
+		XMFLOAT3 TargetForward{};
+		XMStoreFloat3(&TargetForward, CameraForward);
+
 		// 获取当前下摄像机的旋转四元数
 		XMVECTOR CameraQuat = GetRotationQuat();
 		// 获取目标的旋转四元数
-		
+		XMVECTOR TargetQuat = EngineMath::BuildQuaternion(TargetForward);
+		// 利用四元数SLERP插值算法插值摄像机的旋转
+		XMVECTOR NewCameraQuat = XMQuaternionSlerp(CameraQuat, TargetQuat, currentTime / duration);
+
+		SetRoationQuat(NewCameraQuat);
 	}
 }
