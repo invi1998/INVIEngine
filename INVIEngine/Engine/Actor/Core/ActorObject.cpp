@@ -105,6 +105,11 @@ void GActorObject::SetRoationQuat(const XMVECTOR& InQuat)
 	RootComponent->SetRotationQuat(InQuat);
 }
 
+void GActorObject::SetRoationFQuat(const fquat& InQuat)
+{
+	RootComponent->SetRotationFQuat(InQuat);
+}
+
 void GActorObject::SetRightVector(const XMFLOAT3& InRight)
 {
 	RootComponent->SetRightVector(InRight);
@@ -148,4 +153,14 @@ XMFLOAT3& GActorObject::GetUpVector()
 XMVECTOR GActorObject::GetRotationQuat()
 {
 	return RootComponent->GetRotationQuat();
+}
+
+frotator GActorObject::GetRotationFrotator()
+{
+	return RootComponent->GetRotationFrotator();
+}
+
+fquat GActorObject::GetRotationFQuat()
+{
+	return RootComponent->GetRotationFQuat();
 }

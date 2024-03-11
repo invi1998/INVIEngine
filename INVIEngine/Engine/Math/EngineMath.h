@@ -62,7 +62,11 @@ namespace EngineMath
 
 	// 构建旋转矩阵
 	void BuildRotationMatrix(DirectX::XMMATRIX& OutMatrix, const DirectX::XMFLOAT3& InRight, const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward);
+	void BuildRotationMatrix(fmatrix_3x3& OutMatrix, const DirectX::XMFLOAT3& InRight, const DirectX::XMFLOAT3& InUp, const DirectX::XMFLOAT3& InForward);
+	void BuildRotationMatrix(fmatrix_3x3& OutMatrix, const fvector_3d& InRight, const fvector_3d& InUp, const fvector_3d& InForward);
 
 	// 构建四元数
 	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InForward, const DirectX::XMFLOAT3& InUp = { 0.f, 1.f, 0.f });
+	fquat BuildQuaternionFQuat(const fvector_3d& InForward, const fvector_3d& InUp = { 0.f, 1.f, 0.f });
+	frotator ToDXRotator(const frotator& InRotator);
 }

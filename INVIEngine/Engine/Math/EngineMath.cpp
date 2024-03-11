@@ -322,6 +322,27 @@ namespace EngineMath
 		};
 	}
 
+	void BuildRotationMatrix(fmatrix_3x3& OutMatrix, const DirectX::XMFLOAT3& InRight, const DirectX::XMFLOAT3& InUp,
+		const DirectX::XMFLOAT3& InForward)
+	{
+		OutMatrix = {
+			InRight.x, InUp.x, InForward.x,
+			InRight.y, InUp.y, InForward.y,
+			InRight.z, InUp.z, InForward.z,
+		};
+		
+	}
+
+	void BuildRotationMatrix(fmatrix_3x3& OutMatrix, const fvector_3d& InRight, const fvector_3d& InUp,
+		const fvector_3d& InForward)
+	{
+		OutMatrix = {
+					InRight.x, InUp.x, InForward.x,
+					InRight.y, InUp.y, InForward.y,
+					InRight.z, InUp.z, InForward.z,
+				};
+	}
+
 	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InForward, const DirectX::XMFLOAT3& InUp)
 	{
 		XMVECTOR Right = XMVector3Cross(XMLoadFloat3(&InUp), XMLoadFloat3(&InForward));
@@ -341,5 +362,31 @@ namespace EngineMath
 		BuildRotationMatrix(RotationMatrix, RightVector, UpVector, ForwardVector);
 
 		return XMQuaternionRotationMatrix(RotationMatrix);	// 根据旋转矩阵计算四元数
+	}
+
+	fquat BuildQuaternionFQuat(const fvector_3d& InForwardVector, const fvector_3d& InUPVector)
+	{
+		fquat Quat;
+
+		fvector_3d RightVector = fvector_3d::cross_product(InUPVector, InForwardVector);
+		RightVector.normalize();
+
+		fvector_3d UPVector = fvector_3d::cross_product(InForwardVector, RightVector);
+		UPVector.normalize();
+
+		fmatrix_3x3 RotatorMatrix;
+		BuildRotationMatrix(RotatorMatrix,
+			RightVector,
+			UPVector,
+			InForwardVector);
+
+		math_utils::matrix_to_quat(RotatorMatrix, Quat);
+
+		return Quat;
+	}
+
+	frotator ToDXRotator(const frotator& InRotator)
+	{
+		return frotator(InRotator.roll, InRotator.pitch, InRotator.yaw);
 	}
 }

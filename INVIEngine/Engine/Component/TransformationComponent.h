@@ -19,8 +19,13 @@ public:
 
 	XMFLOAT3& GetRotation();
 
-	XMVECTOR GetRotationQuat() const;	// 获取旋转四元数
+	XMVECTOR GetRotationQuat() const;	// 获取旋转四元数 DXMath
+	frotator GetRotationFrotator() const;	// 获取旋转信息 frotator
+	fquat GetRotationFQuat() const;	// 获取旋转信息 fquat
+
+
 	void SetRotationQuat(const XMVECTOR& InQuat);	// 设置旋转四元数
+	void SetRotationFQuat(const fquat& quat);	// 设置旋转信息 fquat
 
 	FORCEINLINE XMFLOAT3& GetPosition() { return Position; }
 	FORCEINLINE XMFLOAT3& GetScale() { return Scale; }

@@ -36,6 +36,7 @@ public:
 	virtual void SetUpVector(const XMFLOAT3& InUp);
 	virtual void SetUpVector(const XMVECTOR& InUp);
 	virtual void SetRoationQuat(const XMVECTOR& InQuat);
+	virtual void SetRoationFQuat(const fquat& InQuat);
 
 public:
 	XMFLOAT3& GetPosition();
@@ -47,6 +48,8 @@ public:
 	XMFLOAT3& GetUpVector();
 
 	XMVECTOR GetRotationQuat();
+	frotator GetRotationFrotator();
+	fquat GetRotationFQuat();
 	
 };
 

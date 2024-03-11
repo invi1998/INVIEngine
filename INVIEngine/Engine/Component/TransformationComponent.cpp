@@ -115,6 +115,24 @@ XMVECTOR CTransformationComponent::GetRotationQuat() const
 	return XMQuaternionRotationMatrix(RotationMatrix);
 }
 
+frotator CTransformationComponent::GetRotationFrotator() const
+{
+	frotator fRotator;
+	fmatrix_3x3 RotationMatrix;
+	EngineMath::BuildRotationMatrix(RotationMatrix, RightVector, UpVector, ForwardVector);
+	fRotator.inertia_to_object(RotationMatrix);
+	return EngineMath::ToDXRotator(fRotator);
+}
+
+fquat CTransformationComponent::GetRotationFQuat() const
+{
+	fquat fQuat;
+	fmatrix_3x3 RotationMatrix;
+	EngineMath::BuildRotationMatrix(RotationMatrix, RightVector, UpVector, ForwardVector);
+	math_utils::matrix_to_quat(RotationMatrix, fQuat);
+	return fQuat;
+}
+
 void CTransformationComponent::SetRotationQuat(const XMVECTOR& InQuat)
 {
 	XMMATRIX RotationMatrix = XMMatrixRotationQuaternion(InQuat);	// 通过四元数得到旋转矩阵
@@ -126,6 +144,29 @@ void CTransformationComponent::SetRotationQuat(const XMVECTOR& InQuat)
 	XMStoreFloat3(&RightVector, XMVector3TransformNormal(Right, RotationMatrix));		// 叉乘结果得到右向量，然后归一化
 	XMStoreFloat3(&UpVector, XMVector3TransformNormal(Up, RotationMatrix));		// 叉乘结果得到上向量，然后归一化
 	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(Forward, RotationMatrix));		// 叉乘结果得到前向量，然后归一化
+}
+
+void CTransformationComponent::SetRotationFQuat(const fquat& quat)
+{
+	fmatrix_3x3 RotationMatrix;
+	math_utils::object_to_inertia(quat, RotationMatrix);
+
+	fvector_3d Right = fvector_3d(1.f, 0.f, 0.f);
+	fvector_3d Up = fvector_3d(0.f, 1.f, 0.f);
+	fvector_3d Forward = fvector_3d(0.f, 0.f, 1.f);
+
+	Right = math_utils::mul(Right, RotationMatrix);
+	Up = math_utils::mul(Up, RotationMatrix);
+	Forward = math_utils::mul(Forward, RotationMatrix);
+
+	Right.normalize();
+	Up.normalize();
+	Forward.normalize();
+
+	RightVector = EngineMath::ToFloat3(Right);
+	UpVector = EngineMath::ToFloat3(Up);
+	ForwardVector = EngineMath::ToFloat3(Forward);
+
 }
 
 void CTransformationComponent::CorrectionVector()
