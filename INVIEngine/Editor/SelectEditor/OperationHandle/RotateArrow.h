@@ -57,8 +57,12 @@ protected:
 
 	float GetSymbolByCubeIndex(float offset);
 
+	float GetSymbol(float value, bool flip = false);
+
+	float GetSymbolMaterialByCubeIndex(float offset);
+
 protected:
-	float LastT2Value = 0.0f;	// 上一次的T2值
+	float StartDragT2Value = 0.0f;	// 上一次的T2值
 	float RotateRadio = 0.f;	// 旋转比值
 	int Sample8CubeIndex = 0;	// 采样8个立方体的索引
 };

@@ -137,7 +137,7 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 		float t = GetMouseMoveDistance(x, y, ActorLocation, DragDirection);
 		if (t != 0)
 		{
-			LastT2Value = t;
+			StartDragT2Value = t;
 			RotateRadio = 0.f;
 		}
 	}
@@ -166,7 +166,7 @@ void GRotateArrow::ExecuteInput()
 	}
 }
 
-float GetSymbol(float value, bool flip = false)
+float GRotateArrow::GetSymbol(float value, bool flip)
 {
 	if (value == 0.f) return 0.f;
 
@@ -178,6 +178,76 @@ float GetSymbol(float value, bool flip = false)
 	{
 		return value < 0 ? 1.0f : -1.0f;
 	}
+}
+
+float GRotateArrow::GetSymbolMaterialByCubeIndex(float offset)
+{
+	float symbol = 1.f;
+	// 获取轴向
+	ESelectedAxis SelectedAxis = GetSelectedAxis();
+
+	switch (Sample8CubeIndex)
+	{
+	case 2:
+	case 3:
+	{
+		switch (SelectedAxis)
+		{
+		case AXIS_X:
+		{
+			symbol = -1.f;
+			break;
+		}
+		case AXIS_Y:
+		{
+			symbol = -1.f;
+			break;
+		}
+		default: break;
+		}
+		break;
+	}
+	case 4:
+	case 5:
+	{
+		switch (SelectedAxis)
+		{
+		case AXIS_Z:
+		{
+			symbol = -1.f;
+			break;
+		}
+		default: break;
+		}
+		break;
+	}
+	case 6:
+	case 7:
+	{
+		switch (SelectedAxis)
+		{
+		case AXIS_X:
+		{
+			symbol = -1.f;
+			break;
+		}
+		case AXIS_Y:
+		{
+			symbol = -1.f;
+			break;
+		}
+		case AXIS_Z:
+		{
+			symbol = -1.f;
+			break;
+		}
+		default: break;
+		}
+		break;
+	}
+	}
+
+	return symbol;
 }
 
 void GRotateArrow::OnMousePressed(int x, int y)
@@ -196,11 +266,16 @@ void GRotateArrow::OnMousePressed(int x, int y)
 
 			float CameraAndSelectedActorDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&GetWorld()->GetQuaternionCamera()->GetPosition()) - XMLoadFloat3(&SelectedActor->GetPosition())));
 
-			float Delta = (t - LastT2Value) / CameraAndSelectedActorDistance;	// 之所以要除以摄像机和物体的距离，是因为我们需要将鼠标拖拽的距离转换为旋转的角度，我们希望摄像机和物体的距离越远，旋转的角度越小
+			float DeltaRadio = (t - StartDragT2Value) / CameraAndSelectedActorDistance;	// 之所以要除以摄像机和物体的距离，是因为我们需要将鼠标拖拽的距离转换为旋转的角度，我们希望摄像机和物体的距离越远，旋转的角度越小
 
 			// 获取鼠标拖拽的旋转间距（角度）
-			float offset = Delta - RotateRadio;
+			float offset = DeltaRadio - RotateRadio;
+			// 校正旋转符号
 			float symbol = GetSymbolByCubeIndex(offset);
+
+			float symbolMaterial = GetSymbolMaterialByCubeIndex(offset);
+
+			SetCDValue(symbolMaterial * DeltaRadio);
 
 			// TODO:这里先用simple_library库的四元数，后续考虑使用DX12库的四元数
 			// 定义旋转
@@ -221,16 +296,16 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			// 将我们的旋转角度也转为四元数
 			fquat deltaQuat;
 
-			// 此时我们得到的是物体的惯性坐标系下的旋转四元数（世界坐标系下的旋转四元数），我们需要将其转换为物体坐标系下的旋转四元数
-			rotationQuat.inertia_to_object(rotationRotator);
-			deltaQuat.inertia_to_object(deltaRotator);
+			// 此时我们得到的是物体的惯性坐标系下的旋转四元数（世界坐标系下的旋转四元数），我们需要将其由物体坐标系下的旋转四元数转换为惯性坐标系
+			rotationQuat.object_to_inertia(rotationRotator);
+			deltaQuat.object_to_inertia(deltaRotator);
 
 			// 将物体的旋转四元数和计算出的旋转四元数相乘，得到新的旋转四元数，这个新的旋转四元数是物体坐标系下的
 			fquat newRotationQuat = rotationQuat * deltaQuat;
 
 			// 将新的旋转四元数转换为欧拉角，设置物体的旋转（注意先要将物体坐标系下的旋转四元数转换为世界坐标系下的旋转四元数）
 			frotator newRotationRotator;
-			newRotationRotator.object_to_inertia(newRotationQuat);
+			newRotationRotator.inertia_to_object(newRotationQuat);
 
 			XMFLOAT3 resultRotation{ newRotationRotator.roll, newRotationRotator.pitch, newRotationRotator.yaw };
 
@@ -248,7 +323,7 @@ void GRotateArrow::OnMousePressed(int x, int y)
 
 			SelectedActor->SetRotation(resultRotation);
 
-			RotateRadio = Delta;
+			RotateRadio = DeltaRadio;
 		}
 	}
 }
