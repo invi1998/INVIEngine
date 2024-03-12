@@ -19,7 +19,7 @@ void FTimeline::Tick(float DeltaTime)
 				CurrentTime = Duration;
 				if (TimelineDelegate.IsBound())
 				{
-					TimelineDelegate.Execute(Duration, CurrentTime);
+					TimelineDelegate.Execute(CurrentTime, Duration);
 				}
 			}
 			else
@@ -33,7 +33,7 @@ void FTimeline::Tick(float DeltaTime)
 		{
 			if (TimelineDelegate.IsBound())
 			{
-				TimelineDelegate.Execute(Duration, CurrentTime);
+				TimelineDelegate.Execute(CurrentTime, Duration);
 			}
 		}
 	}
@@ -48,7 +48,7 @@ void FTimeline::Tick(float DeltaTime)
 
 				if (TimelineDelegate.IsBound())
 				{
-					TimelineDelegate.Execute(Duration, CurrentTime);
+					TimelineDelegate.Execute(CurrentTime, Duration);
 				}
 			}
 			else
@@ -63,7 +63,7 @@ void FTimeline::Tick(float DeltaTime)
 		{
 			if (TimelineDelegate.IsBound())
 			{
-				TimelineDelegate.Execute(Duration, CurrentTime);
+				TimelineDelegate.Execute(CurrentTime, Duration);
 			}
 		}
 	}

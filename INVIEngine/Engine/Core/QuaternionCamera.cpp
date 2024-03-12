@@ -165,7 +165,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 
 			FTimelineDelegate TimelineDelegate{};
 			TimelineDelegate.Bind(this, &GQuaternionCamera::LookAtAndMoveToSelectedObject);
-			CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, true);
+			CameraTimeline.BindTimelineDelegate(TimelineDelegate, 1.f, false, false);
 		}
 	}
 	else
@@ -433,9 +433,9 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		// 四元数差值算法有很多种，第一种是线性插值，第二种是球面插值，第三种是SLERP插值，第四种是NLERP插值，这里我们采用SLERP插值（球面线性插值）
 		// 同时我们还需要注意的是四元数的插值是有方向的，所以我们需要判断一下摄像机的朝向和目标朝向的夹角，如果夹角大于180度，我们需要将目标朝向取反（避免四元数的插值方向错误，双倍覆盖问题）
 
+		// CameraForward = -CameraForward;	// 取反
 		XMFLOAT3 TargetForward{};
 		XMStoreFloat3(&TargetForward, CameraForward);
-		fvector_3d forwardFV = EngineMath::ToVector3d(TargetForward);
 
 		//// 获取当前下摄像机的旋转四元数
 		//XMVECTOR CameraQuat = GetRotationQuat();
@@ -448,9 +448,11 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		//XMVECTOR NewCameraQuat = XMQuaternionSlerp(CameraQuat, TargetQuat, (currentTime / duration)*4);
 		//SetRoationQuat(NewCameraQuat);
 
-		 fquat Q1 = GetRotationFQuat();
-		 fquat Q2 = EngineMath::BuildQuaternionFQuat(forwardFV);
-		 fquat Q = fquat::lerp(Q1, Q2, (currentTime / duration)*4);
-		 SetRoationFQuat(Q);
+		
+		fvector_3d forwardFV = EngineMath::ToVector3d(TargetForward);
+		fquat Q1 = GetRotationFQuat();
+		fquat Q2 = EngineMath::BuildQuaternionFQuat(forwardFV);
+		fquat Q = fquat::lerp(Q1, Q2, (currentTime / duration)*4);
+		SetRoationFQuat(Q);
 	}
 }
