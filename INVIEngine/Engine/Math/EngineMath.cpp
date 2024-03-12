@@ -247,7 +247,7 @@ namespace EngineMath
 		// theta的值在0-45和135-180之间，fai的值在45-135之间，物体在PositiveX
 		if (IsRange(PointTheta, 0.f, 90.f))
 		{
-			if (IsRange(PointFai, 0.f, 90))
+			if (IsRange(PointFai, 0.f, 90.f))
 			{
 				return 0;	// PositiveX
 			}

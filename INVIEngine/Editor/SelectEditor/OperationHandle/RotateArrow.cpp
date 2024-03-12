@@ -166,6 +166,20 @@ void GRotateArrow::ExecuteInput()
 	}
 }
 
+float GetSymbol(float value, bool flip = false)
+{
+	if (flip)
+	{
+		return value < 0 ? -1.0f : 1.0f;
+	}
+	else
+	{
+		return value < 0 ? 1.0f : -1.0f;
+	}
+
+	return 0.f;
+}
+
 void GRotateArrow::OnMousePressed(int x, int y)
 {
 	if (SelectedActor && SelectedAxisComponent && IsCurrentSelectedHandle())
@@ -185,9 +199,8 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			float Delta = (t - LastT2Value) / CameraAndSelectedActorDistance;	// 之所以要除以摄像机和物体的距离，是因为我们需要将鼠标拖拽的距离转换为旋转的角度，我们希望摄像机和物体的距离越远，旋转的角度越小
 
 			// 获取鼠标拖拽的旋转间距（角度）
-			float angle = 0.0f;
 			float offset = Delta - RotateRadio;
-			angle = offset < 0 ? -2.25f : 2.25f;
+			float symbol = GetSymbolByCubeIndex(offset);
 
 			// TODO:这里先用simple_library库的四元数，后续考虑使用DX12库的四元数
 			// 定义旋转
@@ -195,7 +208,7 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			XMFLOAT3 ActorDirFloat3;
 			XMStoreFloat3(&ActorDirFloat3, DragDirection);
 			fvector_3d dragDirection = EngineMath::ToVector3d(ActorDirFloat3);
-			deltaVector = dragDirection * angle * fabs(offset) * 360.f;	// 旋转的角度
+			deltaVector = dragDirection * symbol * fabsf(offset) * 360.f;	// 旋转的角度
 
 			// 获取物体的欧拉角
 			frotator rotationRotator = SelectedActor->GetRotationFrotator();
@@ -326,9 +339,9 @@ void GRotateArrow::Tick(float DeltaTime)
 		XMFLOAT3 ArrowMatrixInverseLocationFloat3;
 		XMStoreFloat3(&ArrowMatrixInverseLocationFloat3, ArrowMatrixInverseLocation);
 
-		int type = EngineMath::GetSample8CubeIndex(EngineMath::ToVector3d(ArrowMatrixInverseLocationFloat3));
+		Sample8CubeIndex = EngineMath::GetSample8CubeIndex(EngineMath::ToVector3d(ArrowMatrixInverseLocationFloat3));
 
-		switch (type)
+		switch (Sample8CubeIndex)
 		{
 		case 0:
 			YAxisComponent->SetRotation(frotator(0.f, 90.f, 0.f));//绿
@@ -492,4 +505,133 @@ void GRotateArrow::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECT
 		default: break;
 		}
 	}
+}
+
+float GRotateArrow::GetSymbolByCubeIndex(float offset)
+{
+	float symbol = 1.f;
+	// 获取轴向
+	ESelectedAxis SelectedAxis = GetSelectedAxis();
+
+	switch (Sample8CubeIndex)
+	{
+	case 0:
+	case 1:
+	{
+		switch (SelectedAxis)
+		{
+		case AXIS_X:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		case AXIS_Y:
+		{
+			symbol = GetSymbol(offset, true);
+			break;
+		}
+		case AXIS_Z:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		case AXIS_ANY:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		default: break;
+		}
+		break;
+	}
+	case 2:
+	case 3:
+	{
+		switch (SelectedAxis)
+		{
+		case AXIS_X:
+		{
+			symbol = GetSymbol(offset, true);
+			break;
+		}
+		case AXIS_Y:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		case AXIS_Z:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		case AXIS_ANY:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		default: break;
+		}
+		break;
+	}
+	case 4:
+	case 5:
+	{
+		switch (SelectedAxis)
+		{
+		case AXIS_X:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		case AXIS_Y:
+		{
+			symbol = GetSymbol(offset, true);
+			break;
+		}
+		case AXIS_Z:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		case AXIS_ANY:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		default: break;
+		}
+		break;
+	}
+	case 6:
+	case 7:
+	{
+		switch (SelectedAxis)
+		{
+		case AXIS_X:
+		{
+			symbol = GetSymbol(offset, true);
+			break;
+		}
+		case AXIS_Y:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		case AXIS_Z:
+		{
+			symbol = GetSymbol(offset, true);
+			break;
+		}
+		case AXIS_ANY:
+		{
+			symbol = GetSymbol(offset);
+			break;
+		}
+		default: break;
+		}
+		break;
+	}
+	}
+
+	return symbol;
 }

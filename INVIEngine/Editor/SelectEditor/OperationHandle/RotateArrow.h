@@ -55,6 +55,8 @@ protected:
 
 	void GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECTOR& WorldDirection, XMVECTOR& ActorLocation, XMVECTOR& DragDirection) override;
 
+	float GetSymbolByCubeIndex(float offset);
+
 protected:
 	float LastT2Value = 0.0f;	// 上一次的T2值
 	float RotateRadio = 0.f;	// 旋转比值
