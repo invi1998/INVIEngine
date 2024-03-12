@@ -20,13 +20,13 @@ FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 
 extern CMeshComponent *SelectedAxisComponent; // 被选中的轴向
 extern GActorObject* SelectedActor; // 被选中的物体
-extern GMoveArrow* MoveArrow;
+extern GMoveArrow* MoveArrow; // 移动箭头
 
 GQuaternionCamera::GQuaternionCamera()
 	: GClientViewPort()
 {
 
-	SetFrustum(XM_PIDIV4, static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenWidth), static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenHeight), 1.0f, 10000.f);
+	SetFrustum(XM_PIDIV4, static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenWidth), static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenHeight), 0.1f, 10000.f);
 
 	FCreateObjectParams params{};
 	params.Owner = this;

@@ -339,6 +339,8 @@ void GRotateArrow::Tick(float DeltaTime)
 		XMFLOAT3 ArrowMatrixInverseLocationFloat3{};
 		XMStoreFloat3(&ArrowMatrixInverseLocationFloat3, ArrowMatrixInverseLocation);
 
+		ENGINE_LOG_ERROR("x = %f, y = %f, z = %f", ArrowMatrixInverseLocationFloat3.x, ArrowMatrixInverseLocationFloat3.y, ArrowMatrixInverseLocationFloat3.z);
+
 		Sample8CubeIndex = EngineMath::GetSample8CubeIndex(EngineMath::ToVector3d(ArrowMatrixInverseLocationFloat3));
 
 		switch (Sample8CubeIndex)
