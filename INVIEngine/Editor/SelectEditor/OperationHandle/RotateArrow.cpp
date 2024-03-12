@@ -168,6 +168,8 @@ void GRotateArrow::ExecuteInput()
 
 float GetSymbol(float value, bool flip = false)
 {
+	if (value == 0.f) return 0.f;
+
 	if (flip)
 	{
 		return value < 0 ? -1.0f : 1.0f;
@@ -176,8 +178,6 @@ float GetSymbol(float value, bool flip = false)
 	{
 		return value < 0 ? 1.0f : -1.0f;
 	}
-
-	return 0.f;
 }
 
 void GRotateArrow::OnMousePressed(int x, int y)
@@ -339,7 +339,7 @@ void GRotateArrow::Tick(float DeltaTime)
 		XMFLOAT3 ArrowMatrixInverseLocationFloat3{};
 		XMStoreFloat3(&ArrowMatrixInverseLocationFloat3, ArrowMatrixInverseLocation);
 
-		ENGINE_LOG_ERROR("x = %f, y = %f, z = %f", ArrowMatrixInverseLocationFloat3.x, ArrowMatrixInverseLocationFloat3.y, ArrowMatrixInverseLocationFloat3.z);
+		// ENGINE_LOG_ERROR("x = %f, y = %f, z = %f", ArrowMatrixInverseLocationFloat3.x, ArrowMatrixInverseLocationFloat3.y, ArrowMatrixInverseLocationFloat3.z);
 
 		Sample8CubeIndex = EngineMath::GetSample8CubeIndex(EngineMath::ToVector3d(ArrowMatrixInverseLocationFloat3));
 
@@ -592,7 +592,7 @@ float GRotateArrow::GetSymbolByCubeIndex(float offset)
 		}
 		case AXIS_Z:
 		{
-			symbol = GetSymbol(offset);
+			symbol = GetSymbol(offset, true);
 			break;
 		}
 		case AXIS_ANY:
