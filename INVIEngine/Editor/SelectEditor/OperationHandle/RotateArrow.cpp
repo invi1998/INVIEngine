@@ -336,7 +336,7 @@ void GRotateArrow::Tick(float DeltaTime)
 
 		XMVECTOR ArrowMatrixInverseLocation = XMVector3TransformCoord(CameraLocation, ArrowMatrixInverse);	// 摄像机的位置转换为操作手柄的坐标系下的位置
 
-		XMFLOAT3 ArrowMatrixInverseLocationFloat3;
+		XMFLOAT3 ArrowMatrixInverseLocationFloat3{};
 		XMStoreFloat3(&ArrowMatrixInverseLocationFloat3, ArrowMatrixInverseLocation);
 
 		Sample8CubeIndex = EngineMath::GetSample8CubeIndex(EngineMath::ToVector3d(ArrowMatrixInverseLocationFloat3));

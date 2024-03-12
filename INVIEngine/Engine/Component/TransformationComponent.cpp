@@ -52,7 +52,7 @@ void CTransformationComponent::SetRotation(const frotator& InRotation)
 	// 旋转矩阵
 	XMMATRIX RotationRollPitchYawMatrix = XMMatrixRotationRollPitchYaw(pitchRadians, yawRadians, rollRadians);
 
-	// 归一化拿到3个方向向量
+	// 归一化拿到3个方向向量，这种设置方式就是将旋转重置为默认的轴坐标系下的方向
 	XMVECTOR Right = XMVectorSet(1.f, 0.f, 0.f, 0.f);
 	XMVECTOR Up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	XMVECTOR Forward = XMVectorSet(0.f, 0.f, 1.f, 0.f);

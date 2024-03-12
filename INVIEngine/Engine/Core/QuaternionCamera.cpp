@@ -25,6 +25,9 @@ extern GMoveArrow* MoveArrow;
 GQuaternionCamera::GQuaternionCamera()
 	: GClientViewPort()
 {
+
+	SetFrustum(XM_PIDIV4, static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenWidth), static_cast<float>(FEngineRenderConfig::GetRenderConfig()->ScreenHeight), 1.0f, 10000.f);
+
 	FCreateObjectParams params{};
 	params.Owner = this;
 
