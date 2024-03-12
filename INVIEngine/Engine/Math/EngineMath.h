@@ -57,7 +57,7 @@ namespace EngineMath
 	template<typename T>
 	static T Lerp(const T& A, const T& B, float Alpha)
 	{
-		return A + Alpha * (B - A);	// A + Alpha * (B - A) = A * (1 - Alpha) + B * Alpha
+		return A + (B - A) * Alpha;	// A + Alpha * (B - A) = A * (1 - Alpha) + B * Alpha
 	}
 
 	// ¹¹½¨Ðý×ª¾ØÕó

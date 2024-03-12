@@ -436,6 +436,7 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		// CameraForward = -CameraForward;	// 取反
 		XMFLOAT3 TargetForward{};
 		XMStoreFloat3(&TargetForward, CameraForward);
+		fvector_3d forwardFV = EngineMath::ToVector3d(TargetForward);
 
 		if (IsQuatAnimationMode())
 		{
@@ -451,7 +452,6 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 			//SetRoationQuat(NewCameraQuat);
 
 			// 获取当前下摄像机的旋转四元数
-			fvector_3d forwardFV = EngineMath::ToVector3d(TargetForward);
 			fquat Q1 = GetRotationFQuat();
 			fquat Q2 = EngineMath::BuildQuaternionFQuat(forwardFV);
 			fquat Q = fquat::lerp(Q1, Q2, (currentTime / duration)*4);
@@ -459,13 +459,13 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		}
 		else  // 欧拉角插值
 		{
-			//// 获取当前下摄像机的旋转欧拉角
-			//XMFLOAT3 CameraRotation = GetRotation();
-			//// 获取目标的旋转欧拉角
-			//XMFLOAT3 TargetRotation = EngineMath::ToEulerAngle(TargetForward);
-			//// 利用欧拉角插值算法插值摄像机的旋转
-			//XMFLOAT3 NewCameraRotation = EngineMath::Lerp(CameraRotation, TargetRotation, (currentTime / duration));
-			//SetRotation(NewCameraRotation);
+			// 获取当前下摄像机的旋转欧拉角
+			frotator CameraRotation = GetRotationFrotator();
+			// 获取目标的旋转欧拉角
+			frotator TargetRotation = EngineMath::BuildRotationMatrix(forwardFV);
+			// 利用欧拉角插值算法插值摄像机的旋转
+			frotator NewCameraRotation = EngineMath::Lerp(CameraRotation, TargetRotation, (currentTime / duration)*4.f);
+			SetRotation(NewCameraRotation);
 		}
 		
 	}
