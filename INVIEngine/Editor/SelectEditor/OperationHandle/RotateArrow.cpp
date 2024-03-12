@@ -176,9 +176,6 @@ void GRotateArrow::OnMousePressed(int x, int y)
 		if (t != 0)
 		{
 			SetCDValue(t/10.f);
-			// 获取物体的旋转
-			XMFLOAT3 ActorRotation = SelectedActor->GetRotation();
-			fvector_3d rotation = EngineMath::ToVector3d(ActorRotation);
 
 			// 获取鼠标拖拽的旋转间距（角度）
 			float angle = 0.0f;
@@ -193,8 +190,8 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			fvector_3d dragDirection = EngineMath::ToVector3d(ActorDirFloat3);
 			deltaVector = dragDirection * angle;
 
-			// 将物体的旋转转换为欧拉角结构
-			frotator rotationRotator(rotation.y, rotation.z, rotation.x);
+			// 获取物体的欧拉角
+			frotator rotationRotator = SelectedActor->GetRotationFrotator();
 
 			// 将我们的旋转角度也转为欧拉角结构
 			frotator deltaRotator(deltaVector.y, deltaVector.z, deltaVector.x);

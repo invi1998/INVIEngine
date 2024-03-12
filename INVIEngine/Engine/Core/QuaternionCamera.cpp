@@ -437,22 +437,36 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		XMFLOAT3 TargetForward{};
 		XMStoreFloat3(&TargetForward, CameraForward);
 
-		//// 获取当前下摄像机的旋转四元数
-		//XMVECTOR CameraQuat = GetRotationQuat();
-		//// 归一化四元数
-		//CameraQuat = XMQuaternionNormalize(CameraQuat);
-		//// 获取目标的旋转四元数
-		//XMVECTOR TargetQuat = EngineMath::BuildQuaternion(TargetForward);
-		//TargetQuat = XMQuaternionNormalize(TargetQuat);
-		//// 利用四元数SLERP插值算法插值摄像机的旋转
-		//XMVECTOR NewCameraQuat = XMQuaternionSlerp(CameraQuat, TargetQuat, (currentTime / duration)*4);
-		//SetRoationQuat(NewCameraQuat);
+		if (IsQuatAnimationMode())
+		{
+			//// 获取当前下摄像机的旋转四元数
+			//XMVECTOR CameraQuat = GetRotationQuat();
+			//// 归一化四元数
+			//CameraQuat = XMQuaternionNormalize(CameraQuat);
+			//// 获取目标的旋转四元数
+			//XMVECTOR TargetQuat = EngineMath::BuildQuaternion(TargetForward);
+			//TargetQuat = XMQuaternionNormalize(TargetQuat);
+			//// 利用四元数SLERP插值算法插值摄像机的旋转
+			//XMVECTOR NewCameraQuat = XMQuaternionSlerp(CameraQuat, TargetQuat, (currentTime / duration)*4);
+			//SetRoationQuat(NewCameraQuat);
 
+			// 获取当前下摄像机的旋转四元数
+			fvector_3d forwardFV = EngineMath::ToVector3d(TargetForward);
+			fquat Q1 = GetRotationFQuat();
+			fquat Q2 = EngineMath::BuildQuaternionFQuat(forwardFV);
+			fquat Q = fquat::lerp(Q1, Q2, (currentTime / duration)*4);
+			SetRoationFQuat(Q);
+		}
+		else  // 欧拉角插值
+		{
+			//// 获取当前下摄像机的旋转欧拉角
+			//XMFLOAT3 CameraRotation = GetRotation();
+			//// 获取目标的旋转欧拉角
+			//XMFLOAT3 TargetRotation = EngineMath::ToEulerAngle(TargetForward);
+			//// 利用欧拉角插值算法插值摄像机的旋转
+			//XMFLOAT3 NewCameraRotation = EngineMath::Lerp(CameraRotation, TargetRotation, (currentTime / duration));
+			//SetRotation(NewCameraRotation);
+		}
 		
-		fvector_3d forwardFV = EngineMath::ToVector3d(TargetForward);
-		fquat Q1 = GetRotationFQuat();
-		fquat Q2 = EngineMath::BuildQuaternionFQuat(forwardFV);
-		fquat Q = fquat::lerp(Q1, Q2, (currentTime / duration)*4);
-		SetRoationFQuat(Q);
 	}
 }

@@ -23,7 +23,7 @@ void GParallelLight::Tick(float DeltaTime)
 {
 	CLight::Tick(DeltaTime);
 
-	XMFLOAT3 v3 = GetRotation();
+	XMFLOAT3 v3{};
 
 	// v3.x += DeltaTime * 40.f;
 	v3.y -= DeltaTime * 40.f;

@@ -24,6 +24,8 @@ public:
     void OnUpdate(float ts);
 
     FORCEINLINE CInputComponent* GetInputComponent() const { return InputComponent; }
+	FORCEINLINE bool IsQuatAnimationMode() const { return QuatAnimation; }
+	FORCEINLINE void SetAnimationIsQuat(bool bQuat) { QuatAnimation = bQuat; }
 
 protected:
     // void UpdateViewMatrix();
@@ -65,6 +67,7 @@ private:
     float Radius = 10.f;
     float Theta = XM_PI;
     float Phi = XM_PI * 0.25f;
+	bool QuatAnimation = true;
 
 private:
     CVARIABLE();

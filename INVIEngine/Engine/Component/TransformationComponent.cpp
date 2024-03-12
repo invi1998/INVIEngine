@@ -4,7 +4,6 @@
 
 CTransformationComponent::CTransformationComponent()
 	: Position(0.f, 0.f, 0.f)
-	, Rotation(0.f, 0.f, 0.f)
 	, Scale(1.f, 1.f, 1.f)
 	, ForwardVector(0.f, 0.f, 1.f)
 	, RightVector(1.f, 0.f, 0.f)
@@ -23,18 +22,10 @@ void CTransformationComponent::SetPosition(const XMFLOAT3& InPosition)
 
 void CTransformationComponent::SetRotation(const XMFLOAT3& InRotation)
 {
-	// 获取上一次的旋转角度
-	XMVECTOR LastRotation = XMLoadFloat3(&Rotation);
-	// 计算旋转偏移
-	XMVECTOR RotationOffset = XMLoadFloat3(&InRotation) - LastRotation;
-
-	XMFLOAT3 rotation{};
-	XMStoreFloat3(&rotation, RotationOffset);
-
 	// 传进来的参数是旋转角度，需要转成弧度进行计算
-	float rollRadians = XMConvertToRadians(rotation.z);
-	float pitchRadians = XMConvertToRadians(rotation.x);
-	float yawRadians = XMConvertToRadians(rotation.y);
+	float rollRadians = XMConvertToRadians(InRotation.z);
+	float pitchRadians = XMConvertToRadians(InRotation.x);
+	float yawRadians = XMConvertToRadians(InRotation.y);
 
 	// Rotation = XMFLOAT3(pitchRadians, yawRadians, rollRadians);
 
@@ -50,8 +41,6 @@ void CTransformationComponent::SetRotation(const XMFLOAT3& InRotation)
 	XMStoreFloat3(&RightVector, XMVector3TransformNormal(Right, RotationRollPitchYawMatrix));
 	XMStoreFloat3(&UpVector, XMVector3TransformNormal(Up, RotationRollPitchYawMatrix));
 	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(Forward, RotationRollPitchYawMatrix));
-
-	XMStoreFloat3(&Rotation, LastRotation);		// 保存旋转角度
 }
 
 void CTransformationComponent::SetRotation(const frotator& InRotation)
@@ -71,10 +60,6 @@ void CTransformationComponent::SetRotation(const frotator& InRotation)
 	XMStoreFloat3(&RightVector, XMVector3TransformNormal(Right, RotationRollPitchYawMatrix));
 	XMStoreFloat3(&UpVector, XMVector3TransformNormal(Up, RotationRollPitchYawMatrix));
 	XMStoreFloat3(&ForwardVector, XMVector3TransformNormal(Forward, RotationRollPitchYawMatrix));
-
-	// 保存旋转角度，因为我们设计frotator的时候，roll是x轴，pitch是y轴，yaw是z轴，所以这里要转换一下，不能直接yaw, pitch, roll
-	Rotation = { InRotation.yaw, InRotation.pitch, InRotation.roll };
-
 }
 
 void CTransformationComponent::SetScale(const XMFLOAT3& InScale)
@@ -97,16 +82,6 @@ void CTransformationComponent::SetUpVector(const XMFLOAT3& InUp)
 	UpVector = InUp;
 }
 
-XMFLOAT3& CTransformationComponent::GetRotation()
-{
-	/*float x = XMConvertToDegrees(Rotation.x);
-	float y = XMConvertToDegrees(Rotation.y);
-	float z = XMConvertToDegrees(Rotation.z);
-
-	XMFLOAT3 rotation = { x, y, z };*/
-	return Rotation;
-}
-
 XMVECTOR CTransformationComponent::GetRotationQuat() const
 {
 	XMMATRIX RotationMatrix{};
@@ -115,12 +90,12 @@ XMVECTOR CTransformationComponent::GetRotationQuat() const
 	return XMQuaternionRotationMatrix(RotationMatrix);
 }
 
-frotator CTransformationComponent::GetRotationFrotator() const
+frotator CTransformationComponent::GetRotationFRotator() const
 {
 	frotator fRotator;
 	fmatrix_3x3 RotationMatrix;
-	EngineMath::BuildRotationMatrix(RotationMatrix, RightVector, UpVector, ForwardVector);
-	fRotator.inertia_to_object(RotationMatrix);
+	EngineMath::BuildRotationMatrix(RotationMatrix, RightVector, UpVector, ForwardVector);		// 通过向量构建旋转矩阵
+	fRotator.inertia_to_object(RotationMatrix);		// 将旋转矩阵通过惯性转换成对象旋转信息
 	return EngineMath::ToDXRotator(fRotator);
 }
 

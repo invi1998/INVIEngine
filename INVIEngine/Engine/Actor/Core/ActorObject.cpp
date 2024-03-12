@@ -125,11 +125,6 @@ XMFLOAT3& GActorObject::GetPosition()
 	return RootComponent->GetPosition();
 }
 
-XMFLOAT3& GActorObject::GetRotation()
-{
-	return RootComponent->GetRotation();
-}
-
 XMFLOAT3& GActorObject::GetScale()
 {
 	return RootComponent->GetScale();
@@ -157,7 +152,7 @@ XMVECTOR GActorObject::GetRotationQuat()
 
 frotator GActorObject::GetRotationFrotator()
 {
-	return RootComponent->GetRotationFrotator();
+	return RootComponent->GetRotationFRotator();
 }
 
 fquat GActorObject::GetRotationFQuat()
