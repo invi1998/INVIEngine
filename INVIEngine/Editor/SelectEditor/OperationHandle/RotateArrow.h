@@ -57,6 +57,8 @@ protected:
 
 protected:
 	float LastT2Value = 0.0f;	// 上一次的T2值
+	float RotateRadio = 0.f;	// 旋转比值
+	int Sample8CubeIndex = 0;	// 采样8个立方体的索引
 };
 
 

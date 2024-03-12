@@ -138,6 +138,7 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 		if (t != 0)
 		{
 			LastT2Value = t;
+			RotateRadio = 0.f;
 		}
 	}
 }
@@ -173,13 +174,19 @@ void GRotateArrow::OnMousePressed(int x, int y)
 		XMVECTOR DragDirection{};		// 鼠标拖拽的轴的方向
 		float t = GetMouseMoveDistance(x, y, ActorLocation, DragDirection);
 
+		XMVECTOR tempNull{};
+
 		if (t != 0)
 		{
-			SetCDValue(t/10.f);
+			GOperationHandle::GetSelectedObjectDirection(tempNull, tempNull, tempNull, DragDirection);
+
+			float CameraAndSelectedActorDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&GetWorld()->GetQuaternionCamera()->GetPosition()) - XMLoadFloat3(&SelectedActor->GetPosition())));
+
+			float Delta = (t - LastT2Value) / CameraAndSelectedActorDistance;	// 之所以要除以摄像机和物体的距离，是因为我们需要将鼠标拖拽的距离转换为旋转的角度，我们希望摄像机和物体的距离越远，旋转的角度越小
 
 			// 获取鼠标拖拽的旋转间距（角度）
 			float angle = 0.0f;
-			float offset = t - LastT2Value;
+			float offset = Delta - RotateRadio;
 			angle = offset < 0 ? -2.25f : 2.25f;
 
 			// TODO:这里先用simple_library库的四元数，后续考虑使用DX12库的四元数
@@ -188,7 +195,7 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			XMFLOAT3 ActorDirFloat3;
 			XMStoreFloat3(&ActorDirFloat3, DragDirection);
 			fvector_3d dragDirection = EngineMath::ToVector3d(ActorDirFloat3);
-			deltaVector = dragDirection * angle;
+			deltaVector = dragDirection * angle * fabs(offset) * 360.f;	// 旋转的角度
 
 			// 获取物体的欧拉角
 			frotator rotationRotator = SelectedActor->GetRotationFrotator();
@@ -228,7 +235,7 @@ void GRotateArrow::OnMousePressed(int x, int y)
 
 			SelectedActor->SetRotation(resultRotation);
 
-			LastT2Value = t;
+			RotateRadio = Delta;
 		}
 	}
 }
