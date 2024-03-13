@@ -57,5 +57,4 @@ void FRenderBuffer::ResetView(int wid, int hei)
 
 void FRenderBuffer::BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource)
 {
-	OutResource->SetName(L"RenderBuffer");
 }

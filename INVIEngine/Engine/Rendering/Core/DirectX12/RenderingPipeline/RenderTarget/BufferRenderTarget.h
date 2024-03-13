@@ -13,8 +13,6 @@ public:
 	~FBufferRenderTarget() override;
 	void Init(UINT w, UINT h, const DXGI_FORMAT& format) override;
 
-	void BuildRenderTargetMap();
-
 	void BuildRenderTarget() override;
 	void BuildSRVDescriptor() override;
 	void BuildRTVDescriptor() override;

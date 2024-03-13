@@ -34,6 +34,11 @@ void FRenderingPipeline::BuildPipeline()
 	// 初始化动态cubeMap
 	DynamicCubeMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
+	// 初始化AO
+	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
+
+	SSAO.SetBufferSize(256, 256);
+
 	// shadowMap 初始化
 	GeometryMap.DynamicShadowMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
@@ -53,19 +58,11 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
 
-	// 创建描述符，注意描述符的创建一定要在常量描述堆创建之后
-	SSAO.BuildDescriptor();
-
 	// 初始化UI管线
 	UiPipeline.Initialize(GeometryMap.GetHeap(), GeometryMap.GetDrawTexture2DCount() + GeometryMap.GetDrawCubeMapCount() + 1 + 1 + 1);
 
 	// 初始化CubeMap摄像机
 	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 0.f, 0.f, 0.f });
-
-	// 初始化AO
-	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
-
-	SSAO.SetBufferSize(256, 256);
 
 	// 构建深度模板描述符
 	DynamicCubeMap.BuildDepthStencilDescriptor();
@@ -99,6 +96,9 @@ void FRenderingPipeline::BuildPipeline()
 
 	// 构建雾的常量缓冲区
 	GeometryMap.BuildFogConstantBuffer();
+
+	// 创建描述符，注意描述符的创建一定要在常量描述堆创建之后
+	SSAO.BuildDescriptor();
 
 	// 让各个渲染层级构建自己的PSO
 	RenderLayerManage.BuildPSO();
