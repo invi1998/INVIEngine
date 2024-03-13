@@ -14,7 +14,7 @@ public:
 	~FDynamicMap() override = default;
 
 	virtual void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer);
-	virtual void Init(int wid, int hei);
+	virtual void SetBufferSize(int wid, int hei);
 	virtual void PreDraw(float DeltaTime);
 	virtual void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info);
 	virtual void Build(const XMFLOAT3& center);

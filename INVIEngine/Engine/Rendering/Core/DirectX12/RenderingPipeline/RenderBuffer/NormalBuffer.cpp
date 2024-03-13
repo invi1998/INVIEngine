@@ -3,6 +3,8 @@
 
 FNormalBuffer::FNormalBuffer()
 {
+	// 初始化Buff数据存储格式
+	Format = DXGI_FORMAT_R16G16B16A16_FLOAT;	// rgba16 存储法线
 }
 
 FNormalBuffer::~FNormalBuffer()
@@ -14,9 +16,9 @@ void FNormalBuffer::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inD
 	FRenderBuffer::Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 }
 
-void FNormalBuffer::Init(int wid, int hei)
+void FNormalBuffer::SetBufferSize(int wid, int hei)
 {
-	FRenderBuffer::Init(wid, hei);
+	FRenderBuffer::SetBufferSize(wid, hei);
 }
 
 void FNormalBuffer::PreDraw(float DeltaTime)

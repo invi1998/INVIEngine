@@ -7,7 +7,7 @@ public:
 	FNormalBuffer();
 	~FNormalBuffer() override;
 	void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer) override;
-	void Init(int wid, int hei) override;
+	void SetBufferSize(int wid, int hei) override;
 	void PreDraw(float DeltaTime) override;
 	void UpdateCalculations(float delta_time, const FViewportInfo& viewport_info) override;
 	void Build(const XMFLOAT3& center) override;

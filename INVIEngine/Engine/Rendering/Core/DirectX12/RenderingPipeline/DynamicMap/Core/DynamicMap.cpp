@@ -11,7 +11,7 @@ void FDynamicMap::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDir
 	RenderLayers = inRenderLayer;
 }
 
-void FDynamicMap::Init(int wid, int hei)
+void FDynamicMap::SetBufferSize(int wid, int hei)
 {
 	Width = wid;
 	Height = hei;

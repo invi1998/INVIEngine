@@ -59,6 +59,9 @@ void FRenderingPipeline::BuildPipeline()
 	// 初始化CubeMap摄像机
 	DynamicCubeMap.BuildViewPort(XMFLOAT3{ 0.f, 0.f, 0.f });
 
+	// 初始化AO
+	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
+
 	// 构建深度模板描述符
 	DynamicCubeMap.BuildDepthStencilDescriptor();
 

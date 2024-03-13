@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AmbientOcclusion/SSAO/ScreenSpaceAmbientOcclusion.h"
 #include "DynamicMap/CubeMap/DynamicReflectionCubeMap.h"
 #include "Geometry/GeometryMap.h"
 #include "Interface/DirectXDeviceInterface.h"
@@ -45,5 +46,7 @@ protected:
 	FDynamicReflectionCubeMap DynamicCubeMap;		// 动态CubeMap
 
 	FImGuiPipeline UiPipeline;		// UI渲染流水线
+
+	FScreenSpaceAmbientOcclusion SSAO;	// 屏幕空间环境光遮蔽
 };
 
