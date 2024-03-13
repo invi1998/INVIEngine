@@ -53,6 +53,9 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
 
+	// 创建描述符，注意描述符的创建一定要在常量描述堆创建之后
+	SSAO.BuildDescriptor();
+
 	// 初始化UI管线
 	UiPipeline.Initialize(GeometryMap.GetHeap(), GeometryMap.GetDrawTexture2DCount() + GeometryMap.GetDrawCubeMapCount() + 1 + 1 + 1);
 
@@ -61,6 +64,8 @@ void FRenderingPipeline::BuildPipeline()
 
 	// 初始化AO
 	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
+
+	SSAO.SetBufferSize(256, 256);
 
 	// 构建深度模板描述符
 	DynamicCubeMap.BuildDepthStencilDescriptor();
@@ -124,6 +129,9 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 	// 渲染阴影
 	GeometryMap.DrawShadow(DeltaTime);
+
+	// 渲染AO
+	SSAO.Draw(DeltaTime);
 
 	// 渲染ShadowCubeMap
 	GeometryMap.DynamicShadowCubeMap.PreDraw(DeltaTime);
