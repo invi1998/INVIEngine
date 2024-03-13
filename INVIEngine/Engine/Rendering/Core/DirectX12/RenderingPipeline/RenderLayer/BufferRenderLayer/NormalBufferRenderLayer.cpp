@@ -18,6 +18,8 @@ void FNormalBufferRenderLayer::BuildShader()
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
 	///
+	///将我们局部空间中的法线，转到世界空间中，然后转到视图空间中，然后将其逐像素写入到RenderTarget(NormalRenderTargetBufer)中
+	///
 
 	std::vector<ShaderType::FShaderMacro> ShaderMacro;
 	BuildShaderMacro(ShaderMacro);
