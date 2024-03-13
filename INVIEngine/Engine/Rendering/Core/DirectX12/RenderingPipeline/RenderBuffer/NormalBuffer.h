@@ -15,7 +15,7 @@ public:
 	void ResetView(int wid, int hei) override;
 
 	void BuildDescriptor();		// 构建描述符
-	void BuildRenderTargetRTV();	// 构建渲染目标RTV
+	void BuildRenderTargetRTVOffset();	// 构建渲染目标RTV的地址偏移
 	void BuildSRVDescriptor();	// 构建SRV描述符
 	void BuildRTVDescriptor();	// 构建RTV描述符
 

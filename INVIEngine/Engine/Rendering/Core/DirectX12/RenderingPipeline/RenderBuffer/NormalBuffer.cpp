@@ -2,6 +2,7 @@
 #include "NormalBuffer.h"
 
 #include "Component/Mesh/Core/MeshComponentType.h"
+#include "Config/EngineRenderConfig.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/BufferRenderTarget.h"
@@ -118,8 +119,20 @@ void FNormalBuffer::BuildDescriptor()
 {
 }
 
-void FNormalBuffer::BuildRenderTargetRTV()
+void FNormalBuffer::BuildRenderTargetRTVOffset()
 {
+	UINT rtvDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);	// 获取RTV描述符大小
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvDesHandle = GetRTVHeap()->GetCPUDescriptorHandleForHeapStart();	// 获取RTV描述符句柄
+
+	int offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
+		6 +	// 反射的CubeMap
+		6;	// shadowCubeMap 6个面 (点光源阴影）
+
+	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(RenderTarget.get()))
+	{
+		renderTarget->GetCPURenderTargetView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvDesHandle, offset, rtvDescriptorSize);	// 设置RTV描述符句柄，将RTV描述符句柄指向RTV堆的指定偏移位置
+	}
 }
 
 void FNormalBuffer::BuildSRVDescriptor()
@@ -128,6 +141,16 @@ void FNormalBuffer::BuildSRVDescriptor()
 
 void FNormalBuffer::BuildRTVDescriptor()
 {
+	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(RenderTarget.get()))
+	{
+		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};	// 渲染目标视图描述符
+		rtvDesc.Format = Format;	// 数据格式
+		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;	// 视图维度-2D纹理
+		rtvDesc.Texture2D.MipSlice = 0;	// 多级渐远纹理的第0级mipmap
+		rtvDesc.Texture2D.PlaneSlice = 0;	// 纹理平面切片
+
+		GetD3dDevice()->CreateRenderTargetView(renderTarget->GetRenderTarget(), &rtvDesc, renderTarget->GetCPURenderTargetView());
+	}
 }
 
 void FNormalBuffer::BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource)

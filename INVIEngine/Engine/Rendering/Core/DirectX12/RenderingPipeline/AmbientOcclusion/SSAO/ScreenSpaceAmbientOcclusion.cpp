@@ -34,7 +34,7 @@ void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FVi
 void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 {
 	NormalBuffer.BuildDescriptor();
-	NormalBuffer.BuildRenderTargetRTV();
+	NormalBuffer.BuildRenderTargetRTVOffset();
 	NormalBuffer.BuildSRVDescriptor();
 	NormalBuffer.BuildRTVDescriptor();
 }
