@@ -1,6 +1,11 @@
 #include "EngineMinimal.h"
 #include "NormalBuffer.h"
 
+#include "Component/Mesh/Core/MeshComponentType.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/BufferRenderTarget.h"
+
 FNormalBuffer::FNormalBuffer()
 {
 	// 初始化Buff数据存储格式
@@ -38,7 +43,70 @@ void FNormalBuffer::Build(const XMFLOAT3& center)
 
 void FNormalBuffer::Draw(float deltaTime)
 {
-	FRenderBuffer::Draw(deltaTime);
+	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(RenderTarget.get()))
+	{
+		auto RenderTargetViewport = renderTarget->GetViewport();		// 获取视口
+		auto RenderTargetScissorRect = renderTarget->GetScissorRect();	// 获取裁剪矩形
+
+		GetD3dGraphicsCommandList()->RSSetViewports(1, &RenderTargetViewport);	// 设置视口
+		GetD3dGraphicsCommandList()->RSSetScissorRects(1, &RenderTargetScissorRect);	// 设置裁剪矩形
+
+		// 将资源状态从可读切换到渲染目标
+		CD3DX12_RESOURCE_BARRIER ResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+			renderTarget->GetRenderTarget(),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			D3D12_RESOURCE_STATE_RENDER_TARGET
+		);
+
+		// 清除渲染目标视图（清空画布）
+		GetD3dGraphicsCommandList()->ClearRenderTargetView(
+			renderTarget->GetCPURenderTargetView(),
+			Colors::Blue,
+			0,
+			nullptr);
+
+		// 获取深度模板(这里我们不需要做偏移，因为的深度模板是按照主视口做偏移的，我们获取最原始的深度模板就行）
+		auto DepthStenciView = GetDSVHeap()->GetCPUDescriptorHandleForHeapStart();
+
+		// 清除深度模板缓冲区
+		GetD3dGraphicsCommandList()->ClearDepthStencilView(
+			DepthStenciView,
+			D3D12_CLEAR_FLAG_DEPTH|D3D12_CLEAR_FLAG_STENCIL,
+			1.f,
+			0,
+			0,
+			nullptr
+		);
+
+		// 渲染主视口
+		GeometryMap->DrawViewport(deltaTime);
+
+		// 设置PSO
+		RenderLayers->ResetPSO(99999);
+
+		// 设置深度模板(将我们的深度模板设置为渲染目标)
+		GetD3dGraphicsCommandList()->OMSetRenderTargets(
+			1,
+			&renderTarget->GetCPURenderTargetView(),
+			true,
+			&DepthStenciView
+		);
+
+		// 渲染模型（执行shader）
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE, ERenderCondition::RC_Shadow);	// 渲染不透明物体
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_TRANSPARENT, ERenderCondition::RC_Shadow);	// 渲染透明物体
+		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE_REFLECT, ERenderCondition::RC_Shadow);	// 渲染反射物体
+		
+
+		// 将资源状态还原回可读状态
+		CD3DX12_RESOURCE_BARRIER ResourceBarrier2 = CD3DX12_RESOURCE_BARRIER::Transition(
+			renderTarget->GetRenderTarget(),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_GENERIC_READ
+			
+		);
+
+	}
 }
 
 void FNormalBuffer::ResetView(int wid, int hei)
@@ -64,6 +132,7 @@ void FNormalBuffer::BuildRTVDescriptor()
 
 void FNormalBuffer::BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource)
 {
+	OutResource->SetName(L"NormalBuffer");
 	// 资源描述
 	CD3DX12_RESOURCE_DESC CubeMapResourceDesc{};
 
