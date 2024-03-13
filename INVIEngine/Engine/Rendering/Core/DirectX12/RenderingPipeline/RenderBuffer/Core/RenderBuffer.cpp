@@ -1,8 +1,11 @@
 #include "EngineMinimal.h"
 #include "RenderBuffer.h"
 
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/BufferRenderTarget.h"
+
 FRenderBuffer::FRenderBuffer()
 {
+	CreateRenderTarget<FBufferRenderTarget>();
 }
 
 FRenderBuffer::~FRenderBuffer()
@@ -12,11 +15,19 @@ FRenderBuffer::~FRenderBuffer()
 void FRenderBuffer::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer)
 {
 	FDynamicMap::Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
+
+	// 绑定渲染目标创建事件
+	if (FBufferRenderTarget* rendertarget = dynamic_cast<FBufferRenderTarget*>(RenderTarget.get()))
+	{
+		rendertarget->OnRenderTargetCreated.Bind(this, &FRenderBuffer::BuildRenderTargetBuffer);
+	}
 }
 
-void FRenderBuffer::Init(int wid, int hei)
+void FRenderBuffer::SetBufferSize(int wid, int hei)
 {
-	FDynamicMap::Init(wid, hei);
+	FDynamicMap::SetBufferSize(wid, hei);
+
+	RenderTarget->Init(wid, hei, Format);
 }
 
 void FRenderBuffer::PreDraw(float DeltaTime)
@@ -42,4 +53,9 @@ void FRenderBuffer::Draw(float deltaTime)
 void FRenderBuffer::ResetView(int wid, int hei)
 {
 	FDynamicMap::ResetView(wid, hei);
+}
+
+void FRenderBuffer::BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource)
+{
+	OutResource->SetName(L"RenderBuffer");
 }

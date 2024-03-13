@@ -5,15 +5,13 @@
 
 FScreenSpaceAmbientOcclusion::FScreenSpaceAmbientOcclusion()
 {
-	NormalBuffer = new FNormalBuffer();
 }
 
 FScreenSpaceAmbientOcclusion::~FScreenSpaceAmbientOcclusion()
 {
 }
 
-void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState,
-                                        FRenderLayerManage* inRenderLayer)
+void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer)
 {
 	NormalBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 }
