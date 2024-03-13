@@ -15,7 +15,7 @@ public:
 	void ResetView(int wid, int hei) override;
 
 protected:
-	void BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource);
+	virtual void BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource);
 
 protected:
 	DXGI_FORMAT Format;

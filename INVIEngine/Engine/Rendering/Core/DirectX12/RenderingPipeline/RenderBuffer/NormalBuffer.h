@@ -20,6 +20,6 @@ public:
 	void BuildRTVDescriptor();	// 构建RTV描述符
 
 protected:
-	void BuildRenderTargetMap(ComPtr<ID3D12Resource>& OutResource);	// 构建渲染目标图
+	void BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource) override;	// 构建渲染目标图
 };
 

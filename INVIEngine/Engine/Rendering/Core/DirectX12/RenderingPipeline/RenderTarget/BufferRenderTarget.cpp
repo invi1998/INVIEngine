@@ -25,6 +25,7 @@ void FBufferRenderTarget::BuildRenderTargetMap()
 
 void FBufferRenderTarget::BuildRenderTarget()
 {
+	
 }
 
 void FBufferRenderTarget::BuildSRVDescriptor()
