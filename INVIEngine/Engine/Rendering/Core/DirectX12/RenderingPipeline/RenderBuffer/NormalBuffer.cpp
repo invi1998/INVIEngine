@@ -83,7 +83,7 @@ void FNormalBuffer::Draw(float deltaTime)
 		GeometryMap->DrawViewport(deltaTime);
 
 		// 设置PSO
-		RenderLayers->ResetPSO(99999);
+		RenderLayers->ResetPSO(RENDER_LAYER_SCREEN_NORMAL);
 
 		// 设置深度模板(将我们的深度模板设置为渲染目标)
 		GetD3dGraphicsCommandList()->OMSetRenderTargets(

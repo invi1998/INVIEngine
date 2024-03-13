@@ -17,6 +17,9 @@ enum EPipelineState : UINT
 	Selection = 9,					// 选择
 	Operation = 10,					// 操作手柄
 	RotatePlane = 11,				// 旋转平面
+
+
+	ScreenNormal = 20,				// 屏幕法线
 };
 
 

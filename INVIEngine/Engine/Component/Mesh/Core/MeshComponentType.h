@@ -11,6 +11,9 @@ enum EMeshRenderLayerType : int
 	RENDER_LAYER_SELECT = 9,			// 选择层
 	RENDER_LAYER_OPERATE = 10,			// 操作层
 	RENDER_LAYER_ROT_PLANE = 11,		// 旋转平面层
+
+
+	RENDER_LAYER_SCREEN_NORMAL = 20,	// 屏幕法线层
 };
 
 
