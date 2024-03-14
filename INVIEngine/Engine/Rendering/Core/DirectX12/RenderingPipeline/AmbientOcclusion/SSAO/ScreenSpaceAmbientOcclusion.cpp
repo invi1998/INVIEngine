@@ -2,10 +2,12 @@
 #include "ScreenSpaceAmbientOcclusion.h"
 
 #include "SSAOConstant.h"
+#include "Component/Mesh/Core/MeshComponentType.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NormalBuffer.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 
-FScreenSpaceAmbientOcclusion::FScreenSpaceAmbientOcclusion()
+FScreenSpaceAmbientOcclusion::FScreenSpaceAmbientOcclusion(): RenderLayer(nullptr)
 {
 }
 
@@ -15,6 +17,8 @@ FScreenSpaceAmbientOcclusion::~FScreenSpaceAmbientOcclusion()
 
 void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer)
 {
+	RenderLayer = inRenderLayer;
+
 	NormalBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 	AmbientBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 }
@@ -30,6 +34,23 @@ void FScreenSpaceAmbientOcclusion::Build()
 	SSAORootSignature.BuildRootSignature(1);		// 构建根签名
 
 	BuildSSAOConstantBufferView();	// 构建SSAO常量缓冲视图
+
+	// 绑定PSO构建代理
+	BindBuildPso();
+}
+
+void FScreenSpaceAmbientOcclusion::BuildPSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& OutPSODesc)
+{
+	// 构建PSO
+	SSAORootSignature.BuildPSO(OutPSODesc);
+}
+
+void FScreenSpaceAmbientOcclusion::BindBuildPso()
+{
+	if (RenderLayer)
+	{
+		RenderLayer->FindByRenderLayer(EMeshRenderLayerType::RENDER_LAYER_SSAO);
+	}
 }
 
 void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)

@@ -10,6 +10,9 @@ struct FViewportInfo;
 struct FDirectXPipelineState;
 struct FGeometryMap;
 
+
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FBuildPsoDelegate, void, D3D12_GRAPHICS_PIPELINE_STATE_DESC&);
+
 class FRenderLayer : public IDirectXDeviceInterface, public std::enable_shared_from_this<FRenderLayer>
 {
 	friend struct FGeometry;
@@ -57,6 +60,9 @@ public:
 	void Remove(const size_t hashKey);		// 传入hashKey进行移除
 
 	void Clear();	// 清空层级内的所有渲染数据
+
+public:
+	FBuildPsoDelegate BuildPsoDelegate;		// 构建管线状态对象的委托（PSO）
 
 protected:
 	UINT RenderPriority;

@@ -12,6 +12,7 @@
 #include "RenderLayer/OperationHandleRenderLayer.h"
 #include "RenderLayer/OperationHandleRotPlaneRenderLayer.h"
 #include "RenderLayer/SelectRenderLayer.h"
+#include "RenderLayer/SSAORenderLayer.h"
 #include "RenderLayer/TransparentRenderLayer.h"
 
 std::vector<std::shared_ptr<FRenderLayer>> FRenderLayerManage::RenderLayers;
@@ -29,6 +30,7 @@ FRenderLayerManage::FRenderLayerManage()
 	CreateRenderLayer<FOpaqueShadowRenderLayer>();
 	CreateRenderLayer<FOperationHandleRenderLayer>();
 	CreateRenderLayer<FOperationHandleRotPlaneRenderLayer>();
+	CreateRenderLayer<FSSAORenderLayer>();
 }
 
 FRenderLayerManage::~FRenderLayerManage()

@@ -14,6 +14,7 @@ enum EMeshRenderLayerType : int
 
 
 	RENDER_LAYER_SCREEN_NORMAL = 20,	// 屏幕法线层
+	RENDER_LAYER_SSAO = 21,				// 屏幕空间环境光遮蔽层
 };
 
 

@@ -248,6 +248,12 @@ void FRenderLayer::BuildPSO()
 
 	// 构建PSO参数
 	DirectXPipelineState->BuildParam();
+
+	// 需要额外定制的PSO可以走这里的代理构建
+	if (BuildPsoDelegate.IsBound())
+	{
+		BuildPsoDelegate.Execute(DirectXPipelineState->GetGPSDesc());
+	}
 }
 
 void FRenderLayer::ResetPSO()
