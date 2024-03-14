@@ -42,8 +42,8 @@ void FScreenSpaceAmbientOcclusion::Build()
 
 void FScreenSpaceAmbientOcclusion::BuildPSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& OutPSODesc)
 {
-	// 构建PSO
-	// SSAORootSignature.BuildPSO(OutPSODesc);
+	// 绑定根签名
+	OutPSODesc.pRootSignature = SSAORootSignature.GetRootSignature();
 }
 
 void FScreenSpaceAmbientOcclusion::BindBuildPso()

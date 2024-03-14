@@ -26,16 +26,8 @@ void FSSAORenderLayer::BuildShader()
 	// 绑定shader
 	DirectXPipelineState->BindShader(VertexShader, PixelShader);
 
-	// 输入布局
-	InputElementDesc =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},	// 颜色，这里这个偏移是12字节，因为我们上面位置是3个元素，每个元素是4字节（32位），所以到了颜色这里就是 3*4 = 12字节的偏移了
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},	 // 法线，这里这个偏移是28字节，因为我们上面位置是3个元素，每个元素是4字节（32位）, 加上颜色4个元素，所以到了法线这里，就得偏移 （3+4）*4 = 28字节的偏移了
-		{"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}, // 切线（U切线），这里这个偏移是32字节，因为我们上面位置是3个元素，每个元素是4字节（32位）, 加上颜色4个元素，再加上3个法线元素，到了切线这里，就得偏移 （3+4+3）*4 = 40字节的偏移了
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 52, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}	// uv坐标，这里这个偏移是52字节，因为我们上面位置是3个元素，每个元素是4字节（32位）, 加上颜色4个元素，再加上3个法线元素，再加上3个切线元素，到了uv这里，就得偏移 （3+4+3+3）*4 = 52字节的偏移了
-
-	};
+	// 输入布局(这里我们不需要输入布局，因为我们不需要输入顶点信息，我们只需要屏幕空间的纹理坐标，而这些信息已经在GBuffer中了)
+	InputElementDesc.clear();
 
 	// 绑定输入布局
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
@@ -43,7 +35,17 @@ void FSSAORenderLayer::BuildShader()
 
 void FSSAORenderLayer::BuildPSO()
 {
-	FRenderLayer::BuildPSO();
+	FRenderLayer::BuildPSO();	// 通过基类的代理，我们已经成功绑定了根签名
+
+	auto psoDesc = DirectXPipelineState->GetGPSDesc();
+
+	psoDesc.DepthStencilState.DepthEnable = false;	// 关闭深度测试（因为深度信息已经在GBuffer中了，已经由我们之前的法线信息NormalBuffer提供了）
+	psoDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;	// 深度写入掩码设置为0，不写入深度信息
+	psoDesc.RTVFormats[0] = DXGI_FORMAT_R16_UNORM;	// 设置渲染目标格式
+	psoDesc.SampleDesc.Count = 1;	// 设置采样数量
+	psoDesc.SampleDesc.Quality = 0;	// 设置采样质量
+
+	psoDesc.DSVFormat = DXGI_FORMAT_UNKNOWN;	// 设置深度模板格式(未知，因为我们不需要深度模板)
 
 	// 构建渲染管线
 	DirectXPipelineState->BuildPipelineState(SSA0);
