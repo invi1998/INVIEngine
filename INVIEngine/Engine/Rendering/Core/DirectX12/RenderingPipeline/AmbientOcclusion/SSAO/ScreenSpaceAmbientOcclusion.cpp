@@ -6,6 +6,7 @@
 #include "Core/Viewport/ViewportInfo.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NormalBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
 
 FScreenSpaceAmbientOcclusion::FScreenSpaceAmbientOcclusion(): RenderLayer(nullptr)
 {
@@ -42,14 +43,19 @@ void FScreenSpaceAmbientOcclusion::Build()
 void FScreenSpaceAmbientOcclusion::BuildPSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& OutPSODesc)
 {
 	// 构建PSO
-	SSAORootSignature.BuildPSO(OutPSODesc);
+	// SSAORootSignature.BuildPSO(OutPSODesc);
 }
 
 void FScreenSpaceAmbientOcclusion::BindBuildPso()
 {
 	if (RenderLayer)
 	{
-		RenderLayer->FindByRenderLayer(EMeshRenderLayerType::RENDER_LAYER_SSAO);
+		if (std::shared_ptr<FRenderLayer> layer = RenderLayer->FindByRenderLayer(EMeshRenderLayerType::RENDER_LAYER_SSAO))
+		{
+			// 绑定委托
+			layer->BuildPsoDelegate.Bind(this, &FScreenSpaceAmbientOcclusion::BuildPSO);
+		}
+		
 	}
 }
 
