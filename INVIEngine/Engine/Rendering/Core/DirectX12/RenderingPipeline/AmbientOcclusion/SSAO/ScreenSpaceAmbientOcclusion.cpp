@@ -14,21 +14,25 @@ FScreenSpaceAmbientOcclusion::~FScreenSpaceAmbientOcclusion()
 void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer)
 {
 	NormalBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
+	AmbientBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 }
 
 void FScreenSpaceAmbientOcclusion::SetBufferSize(int wid, int hei)
 {
 	NormalBuffer.SetBufferSize(wid, hei);
+	AmbientBuffer.SetBufferSize(wid, hei);
 }
 
 void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 {
 	NormalBuffer.Draw(DeltaTime);
+	AmbientBuffer.Draw(DeltaTime);
 }
 
 void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info)
 {
 	NormalBuffer.UpdateCalculations(DeltaTime, viewport_info);
+	AmbientBuffer.UpdateCalculations(DeltaTime, viewport_info);
 }
 
 void FScreenSpaceAmbientOcclusion::BuildDescriptor()
@@ -37,4 +41,9 @@ void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 	NormalBuffer.BuildRenderTargetRTVOffset();
 	NormalBuffer.BuildSRVDescriptor();
 	NormalBuffer.BuildRTVDescriptor();
+
+	AmbientBuffer.BuildDescriptor();
+	AmbientBuffer.BuildRenderTargetRTVOffset();
+	AmbientBuffer.BuildSRVDescriptor();
+	AmbientBuffer.BuildRTVDescriptor();
 }

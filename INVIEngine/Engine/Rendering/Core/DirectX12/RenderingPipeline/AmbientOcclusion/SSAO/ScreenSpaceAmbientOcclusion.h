@@ -1,5 +1,6 @@
 #pragma once
 #include "Interface/DirectXDeviceInterface.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/AmbientBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NormalBuffer.h"
 
 struct FViewportInfo;
@@ -22,8 +23,6 @@ public:
 
 protected:
 	FNormalBuffer NormalBuffer;
-
-private:
-
+	FAmbientBuffer AmbientBuffer;
 };
 
