@@ -6,7 +6,7 @@
 #include "Interface/DirectXDeviceInterface.h"
 #include "PipelineState/DirectXPipelineState.h"
 #include "RenderLayer/RenderLayerManage.h"
-#include "RootSignature/DirectXRootSignature.h"
+#include "RootSignature/DefaultDirectXRootSignature.h"
 #include "UI/ImGuiPipeline.h"
 
 class CMeshComponent;
@@ -31,7 +31,7 @@ public:
 	FGeometryMap* GetGeometryMap() const { return const_cast<FGeometryMap*>(&GeometryMap); }
 	FRenderLayerManage* GetRenderLayerManage() const { return const_cast<FRenderLayerManage*>(&RenderLayerManage); }
 	FDirectXPipelineState* GetDirectXPipelineState() const { return const_cast<FDirectXPipelineState*>(&DirectXPipelineState); }
-	FDirectXRootSignature* GetDirectXRootSignature() const { return const_cast<FDirectXRootSignature*>(&DirectXRootSignature); }
+	FDefaultDirectXRootSignature* GetDirectXRootSignature() const { return const_cast<FDefaultDirectXRootSignature*>(&DirectXRootSignature); }
 	FDynamicReflectionCubeMap* GetDynamicCubeMap() const { return const_cast<FDynamicReflectionCubeMap*>(&DynamicCubeMap); }
 	FImGuiPipeline* GetUiPipeline() const { return const_cast<FImGuiPipeline*>(&UiPipeline); }
 
@@ -41,7 +41,7 @@ protected:
 	FRenderLayerManage RenderLayerManage;	// 渲染层级
 
 	FDirectXPipelineState DirectXPipelineState;		// 管线状态 pso
-	FDirectXRootSignature DirectXRootSignature;		// 根签名
+	FDefaultDirectXRootSignature DirectXRootSignature;		// 根签名
 
 	FDynamicReflectionCubeMap DynamicCubeMap;		// 动态CubeMap
 

@@ -2,6 +2,7 @@
 #include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/AmbientBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NormalBuffer.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RootSignature/SSAODirectXRootSignature.h"
 
 struct FViewportInfo;
 struct FDirectXPipelineState;
@@ -22,7 +23,8 @@ public:
 	void BuildDescriptor();		// 构建描述符 用于绑定到管线上 RenderTargetView ShaderResourceView
 
 protected:
-	FNormalBuffer NormalBuffer;
-	FAmbientBuffer AmbientBuffer;
+	FNormalBuffer NormalBuffer;						// 法线缓冲
+	FAmbientBuffer AmbientBuffer;					// 环境光缓冲
+	FSSAODirectXRootSignature SSAORootSignature;	// SSAO根签名
 };
 

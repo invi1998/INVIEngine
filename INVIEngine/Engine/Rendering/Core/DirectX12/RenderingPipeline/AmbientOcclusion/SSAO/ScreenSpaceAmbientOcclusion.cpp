@@ -15,6 +15,8 @@ void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPip
 {
 	NormalBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 	AmbientBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
+
+	SSAORootSignature.BuildRootSignature(1);		// 构建根签名
 }
 
 void FScreenSpaceAmbientOcclusion::SetBufferSize(int wid, int hei)
