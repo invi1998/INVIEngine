@@ -90,7 +90,14 @@ int CDirectXRenderingEngine::PostInit()
 	EngineMath::ECubeMapFace InType3 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(-15.611f, 61.625f, 17.732f));//y
 	EngineMath::ECubeMapFace InType4 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(9.753f, -115.674f, 15.392f));//-y
 	EngineMath::ECubeMapFace InType5 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(15.572f, 10.869f, 101.593f));//z
-	EngineMath::ECubeMapFace InType6 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(15.572f, 10.869f, -82.77f));//z
+	EngineMath::ECubeMapFace InType6 = EngineMath::GetSampleCubeMapIndexR(fvector_3d(15.572f, 10.869f, -82.77f));//-z
+
+	ENGINE_LOG("InType1 %d", InType1);
+	ENGINE_LOG("InType2 %d", InType2);
+	ENGINE_LOG("InType3 %d", InType3);
+	ENGINE_LOG("InType4 %d", InType4);
+	ENGINE_LOG("InType5 %d", InType5);
+	ENGINE_LOG("InType6 %d", InType6);
 
 	{
 		if (GMoveArrow* Arrow = World->CreateActorObject<GMoveArrow>())

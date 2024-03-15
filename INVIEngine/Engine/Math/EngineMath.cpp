@@ -51,9 +51,10 @@ namespace EngineMath
 		return false;
 	}
 
+	// 传入顶点坐标，返回该顶点的球坐标
 	fvector_3d GetPointSphericalCoordinates(const fvector_3d& InPoint)
 	{
-		float AnglePre = (180.f / 3.1415926f);
+		float AnglePre = (180.f / XM_PI);
 
 		float R = sqrt(InPoint.x * InPoint.x + InPoint.y * InPoint.y + InPoint.z * InPoint.z);
 		float Thata = acos(InPoint.y / R) * AnglePre;
@@ -233,6 +234,7 @@ namespace EngineMath
 		{
 			return ECubeMapFace::NegativeZ;
 		}
+		return ECubeMapFace::FaceMAX;
 	}
 
 	int GetSample8CubeIndex(const fvector_3d& InPointPosition)
@@ -249,38 +251,38 @@ namespace EngineMath
 		{
 			if (IsRange(PointFai, 0.f, 90.f))
 			{
-				return 0;	// PositiveX
+				return 0;	// +X，+Y，+Z
 			}
 			else if (IsRange(PointFai, 90.f, 180.f))
 			{
-				return 1;	// PositiveY
+				return 1;	// +X，+Y，-Z
 			}
 			else if (IsRange(PointFai, -90.f, 0.f))
 			{
-				return 3;	// PositiveZ
+				return 3;	// +X，-Y，+Z
 			}
 			else if (IsRange(PointFai, -180.f, -90.f))
 			{
-				return 2;	// NegativeY
+				return 2;	// +X，-Y，-Z
 			}
 		}
 		else if (IsRange(PointTheta, 90.f, 180.f))
 		{
 			if (IsRange(PointFai, 0.f, 90))
 			{
-				return 4;	// NegativeX
+				return 4;	// -X，+Y，+Z
 			}
 			else if (IsRange(PointFai, 90.f, 180.f))
 			{
-				return 5;	// NegativeZ
+				return 5;	// -X，+Y，-Z
 			}
 			else if (IsRange(PointFai, -90.f, 0.f))
 			{
-				return 7;	// NegativeY
+				return 7;	// -X，-Y，+Z
 			}
 			else if (IsRange(PointFai, -180.f, -90.f))
 			{
-				return 6;	// PositiveZ
+				return 6;	// -X，-Y，-Z
 			}
 		}
 		

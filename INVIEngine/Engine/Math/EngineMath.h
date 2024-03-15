@@ -14,6 +14,8 @@ namespace EngineMath
 		NegativeY = 3,	// y轴负方向
 		PositiveZ = 4,	// z轴正方向
 		NegativeZ = 5,	// z轴负方向
+
+		FaceMAX = 6	// 未定义方向
 	};
 
 	static DirectX::XMFLOAT4X4 IdentityMatrix4x4()
