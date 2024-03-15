@@ -21,6 +21,8 @@ public:
 	virtual void Draw(float deltaTime);
 	virtual void ResetView(int wid, int hei);
 
+	std::shared_ptr<FRenderTarget>& GetRenderTarget() { return RenderTarget; }
+
 	template<typename T>
 	void CreateRenderTarget()
 	{
