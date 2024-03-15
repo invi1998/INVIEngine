@@ -56,7 +56,11 @@ void FSSAORenderLayer::Draw(float deltaTime)
 	// 渲染之前，重置PSO
 	ResetPSO();
 
-	FRenderLayer::Draw(deltaTime);
+	// 这里不需要执行基类的绘制操作，因为我们不需要输入顶点信息，我们只需要屏幕空间的纹理坐标，而这些信息已经在GBuffer中了，所以这里执行自定义的绘制操作
+	GetD3dGraphicsCommandList()->IASetIndexBuffer(nullptr);	// 设置索引缓冲区
+	GetD3dGraphicsCommandList()->IASetVertexBuffers(0, 0, nullptr);	// 设置顶点缓冲区
+	GetD3dGraphicsCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);	// 设置图元拓扑类型
+	GetD3dGraphicsCommandList()->DrawInstanced(6, 1, 0, 0);	// 执行绘制操作
 
 }
 

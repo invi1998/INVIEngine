@@ -119,10 +119,15 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 				NormalBufferRenderTarget->GetGPUShaderResourceView());
 		}
 
+		// äÖÈ¾SSAO
+		RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO);
+
 		CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(
 			renderTarget->GetRenderTarget(),
 			D3D12_RESOURCE_STATE_RENDER_TARGET,	//	´ÓäÖÈ¾×´Ì¬
 			D3D12_RESOURCE_STATE_GENERIC_READ);	//	µ½¿É¶Á×´Ì¬ ×ª»»
+
+		GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition2);
 	}
 }
 
