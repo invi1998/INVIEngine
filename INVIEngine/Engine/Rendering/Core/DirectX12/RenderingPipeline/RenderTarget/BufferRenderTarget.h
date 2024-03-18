@@ -17,9 +17,5 @@ public:
 	void BuildSRVDescriptor() override;
 	void BuildRTVDescriptor() override;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE& GetCPURenderTargetView() { return RenderTargetViewCPU; }
-
-private:
-	D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetViewCPU;	// 渲染目标视图的CPU句柄
 };
 

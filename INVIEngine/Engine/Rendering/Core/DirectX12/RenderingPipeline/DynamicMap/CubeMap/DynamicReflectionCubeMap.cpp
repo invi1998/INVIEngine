@@ -54,7 +54,7 @@ void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 				// 清除画布
 				constexpr float ColorBG[] = { 0.1f, 0.105f, 0.11f, 1.0f };
 				GetD3dGraphicsCommandList()->ClearRenderTargetView(
-					inRenderTarget->GetCPURenderTargetView()[i],		// 要清除的渲染目标视图
+					inRenderTarget->GetCPURenderTargetView(i),		// 要清除的渲染目标视图
 					ColorBG,		// 画布颜色
 					0,		// 后面这两个参数是和视口相关的，这里不在这里设置，后面会有专门的设置方法
 					nullptr
@@ -73,7 +73,7 @@ void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 				// 指定渲染缓冲区（输出合并阶段）设置渲染目标视图
 				GetD3dGraphicsCommandList()->OMSetRenderTargets(
 					1,									// 指定渲染目标数 1
-					&inRenderTarget->GetCPURenderTargetView()[i],		// 指定渲染目标
+					&inRenderTarget->GetCPURenderTargetView(i),		// 指定渲染目标
 					true,								// true表明我们传入的句柄是一个内存连续的描述符指针
 					&DSVCubeMapCPUDesc		// 传入深度
 				);
@@ -185,7 +185,7 @@ void FDynamicReflectionCubeMap::BuildRenderTargetRTV()
 		// 为CubeMap创建渲染目标视图
 		for (size_t i = 0; i < 6; i++)
 		{
-			inRenderTarget->GetCPURenderTargetView()[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			inRenderTarget->GetCPURenderTargetView(i) = CD3DX12_CPU_DESCRIPTOR_HANDLE(
 				RTVStart,		// RTV的起始地址
 				FEngineRenderConfig::GetRenderConfig()->SwapChainCount + i,	// 交换链 前面的是给主渲染目标用的(场景）后面的才是给cubeMap用的
 				RTVSize	// RTV偏移量
