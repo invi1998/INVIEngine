@@ -57,7 +57,7 @@ void FAmbientBuffer::BuildDescriptor()
 	auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
 	auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
 
-	int offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
+	UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
 		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
 		1 + // 反射Cubemap 动态反射
 		1 +	// 阴影贴图 直射灯，聚光灯

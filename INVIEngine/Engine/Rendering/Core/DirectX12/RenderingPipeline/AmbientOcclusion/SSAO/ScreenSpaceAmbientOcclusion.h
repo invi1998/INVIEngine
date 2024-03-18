@@ -31,6 +31,8 @@ public:
 
 	void BuildSSAOConstantBufferView();	// 构建SSAO常量缓冲视图
 
+	void SaveSSAOToBuffer();	// 保存SSAO到帧缓冲（渲染留存）
+
 protected:
 	FNormalBuffer NormalBuffer;						// 法线缓冲
 	FAmbientBuffer AmbientBuffer;					// 环境光缓冲

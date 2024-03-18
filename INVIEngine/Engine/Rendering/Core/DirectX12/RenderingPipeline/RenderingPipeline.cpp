@@ -112,6 +112,7 @@ void FRenderingPipeline::BuildPipeline()
 
 void FRenderingPipeline::UpdateCalculations(float delta_time, const FViewportInfo& viewport_info)
 {
+	SSAO.UpdateCalculations(delta_time, viewport_info);
 	GeometryMap.DynamicShadowCubeMap.UpdateCalculations(delta_time, viewport_info);
 	DynamicCubeMap.UpdateCalculations(delta_time, viewport_info);
 	GeometryMap.UpdateCalculations(delta_time, viewport_info);
@@ -132,15 +133,18 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 	// 渲染光照，材质贴图
 	GeometryMap.Draw(DeltaTime);
 
-	// 渲染阴影
-	GeometryMap.DrawShadow(DeltaTime);
-
 	// 渲染AO
 	SSAO.Draw(DeltaTime);
 	DirectXRootSignature.PreDraw(DeltaTime);
 
+	// 保存SSAO到指定的Buffer
+	SSAO.SaveSSAOToBuffer();
+
 	// 重新绑定贴图
 	GeometryMap.DrawTexture2D(DeltaTime);
+
+	// 渲染阴影
+	GeometryMap.DrawShadow(DeltaTime);
 
 	// 渲染ShadowCubeMap
 	GeometryMap.DynamicShadowCubeMap.PreDraw(DeltaTime);

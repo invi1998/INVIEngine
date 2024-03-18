@@ -20,7 +20,8 @@ SamplerComparisonState ShadowSampler : register(s2);		// 阴影采样器
 TextureCube SimpleCubeMap : register(t0); // 天空盒
 TextureCube SimpleShadowCubeMap : register(t1); // 万向阴影贴图 点光源
 Texture2D SimpleShadowMap : register(t2);
-Texture2D SimpleTexture2DMap[TEXTURE2D_MAP_NUM] : register(t3);		// 为了避免出现贴图数据对其导致的资源覆盖问题，这种数组类型的数据尽量放在最后的寄存器中
+Texture2D SimpleSSAOMap : register(t3);
+Texture2D SimpleTexture2DMap[TEXTURE2D_MAP_NUM] : register(t4);		// 为了避免出现贴图数据对其导致的资源覆盖问题，这种数组类型的数据尽量放在最后的寄存器中
 
 cbuffer MeshConstBuffer : register(b0)
 {

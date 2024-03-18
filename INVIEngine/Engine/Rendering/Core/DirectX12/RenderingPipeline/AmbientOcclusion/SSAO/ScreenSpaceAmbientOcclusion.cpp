@@ -121,7 +121,7 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 		}
 
 		// 渲染SSAO
-		RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO);
+		RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO, DeltaTime);
 
 		CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(
 			renderTarget->GetRenderTarget(),
@@ -184,5 +184,13 @@ void FScreenSpaceAmbientOcclusion::BuildSSAOConstantBufferView()
 		sizeof(FSSAOConstant),	// 常量缓冲大小
 		1,	// 因为我们是一个新的常量缓冲, 所以我们的对象数量是1
 		false
+	);
+}
+
+void FScreenSpaceAmbientOcclusion::SaveSSAOToBuffer()
+{
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+		9,	// 根签名的9号位置
+		NormalBuffer.GetRenderTarget()->GetGPUShaderResourceView()
 	);
 }
