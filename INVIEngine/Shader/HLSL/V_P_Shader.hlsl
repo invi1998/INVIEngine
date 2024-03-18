@@ -83,7 +83,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 		// return float4(SimpleShadowMap.Sample(TextureSampler, mvOut.Texcoord).rrr, 1.0f);
 		
 		// ‰÷»æAOÃ˘Õº
-		return float4(SimpleSSAOMap.Sample(TextureSampler, mvOut.Texcoord).rrr, 1.0f);
+		return float4(SimpleSSAOMap.Sample(TextureSampler, mvOut.Texcoord).rgb, 1.0f);
 	}
 	
     FMaterial material;

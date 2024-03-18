@@ -72,6 +72,20 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 	// 主SSAO渲染
 	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(AmbientBuffer.GetRenderTarget().get()))
 	{
+		// 刷新绑定常量缓冲区（SSAO常量缓冲区）
+		auto SSAOConstantBuffer = SSAOConstantBufferView.GetBuffer()->GetGPUVirtualAddress();
+		GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(
+			0,		// 根签名的0号位置
+			SSAOConstantBuffer);	// 常量缓冲区地址
+
+		// 绑定法线（我们之前的 NormalBuffer.Draw(DeltaTime); 已经渲染好我们需要的法线，这里只需要绑定）
+		if (std::shared_ptr<FRenderTarget> NormalBufferRenderTarget = NormalBuffer.GetRenderTarget())
+		{
+			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+				3,	// 根签名的1号位置
+				NormalBufferRenderTarget->GetGPUShaderResourceView());
+		}
+
 		auto viewport = renderTarget->GetViewport();
 		auto rect = renderTarget->GetScissorRect();
 
@@ -105,20 +119,6 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 			true,
 			nullptr
 		);
-
-		// 刷新绑定常量缓冲区（SSAO常量缓冲区）
-		auto SSAOConstantBuffer = SSAOConstantBufferView.GetBuffer()->GetGPUVirtualAddress();
-		GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(
-			0,		// 根签名的0号位置
-			SSAOConstantBuffer);	// 常量缓冲区地址
-
-		// 绑定法线（我们之前的 NormalBuffer.Draw(DeltaTime); 已经渲染好我们需要的法线，这里只需要绑定）
-		if (std::shared_ptr<FRenderTarget> NormalBufferRenderTarget = NormalBuffer.GetRenderTarget())
-		{
-			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-				1,	// 根签名的1号位置
-				NormalBufferRenderTarget->GetGPUShaderResourceView());
-		}
 
 		// 渲染SSAO
 		RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO, DeltaTime);

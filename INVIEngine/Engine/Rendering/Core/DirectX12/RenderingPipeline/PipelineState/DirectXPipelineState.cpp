@@ -24,6 +24,8 @@ void FDirectXPipelineState::BuildPipelineState(int psoType)
 		PSO.insert(pair<UINT, ComPtr<ID3D12PipelineState>>(psoType, ComPtr<ID3D12PipelineState>())); // 如果PSO里没有该pso类型，那么插入一个该类型的值
 	}
 
+	ENGINE_LOG("pos_type %d", psoType);
+
 	// 通过D3D创建渲染管线状态对象
 	ANALYSIS_RESULT(GetD3dDevice()->CreateGraphicsPipelineState(
 		&GPSDesc,

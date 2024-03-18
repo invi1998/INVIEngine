@@ -82,12 +82,6 @@ void FNormalBuffer::Draw(float deltaTime)
 			nullptr
 		);
 
-		// 渲染主视口
-		GeometryMap->DrawViewport(deltaTime);
-
-		// 设置PSO
-		RenderLayers->ResetPSO(RENDER_LAYER_SCREEN_NORMAL);
-
 		// 设置深度模板(将我们的深度模板设置为渲染目标)
 		GetD3dGraphicsCommandList()->OMSetRenderTargets(
 			1,
@@ -95,6 +89,12 @@ void FNormalBuffer::Draw(float deltaTime)
 			true,
 			&DepthStenciView
 		);
+
+		// 渲染主视口
+		GeometryMap->DrawViewport(deltaTime);
+
+		// 设置PSO
+		RenderLayers->ResetPSO(RENDER_LAYER_SCREEN_NORMAL);
 
 		// 渲染模型（执行shader）
 		RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE, ERenderCondition::RC_Shadow);	// 渲染不透明物体
@@ -163,7 +163,6 @@ void FNormalBuffer::BuildSRVDescriptor()
 
 	srvDesc.Texture2D.MostDetailedMip = 0;	// 最详细的mipmap
 	srvDesc.Texture2D.MipLevels = 1;	// mipmap级别
-	srvDesc.Texture2D.PlaneSlice = 0;	// 纹理平面切片
 
 	GetD3dDevice()->CreateShaderResourceView(RenderTarget->GetRenderTarget(), &srvDesc, RenderTarget->GetCPUShaderResourceView());
 }
@@ -185,9 +184,9 @@ void FNormalBuffer::BuildRTVDescriptor()
 void FNormalBuffer::BuildRenderTargetBuffer(ComPtr<ID3D12Resource>& OutResource)
 {
 	// 资源描述
-	CD3DX12_RESOURCE_DESC ResourceDesc;
+	CD3DX12_RESOURCE_DESC ResourceDesc{};
 
-	memset(&ResourceDesc, 0, sizeof(ResourceDesc));
+	// memset(&ResourceDesc, 0, sizeof(ResourceDesc));
 
 	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;		// 资源维度2D纹理
 	ResourceDesc.Alignment = 0;		// 对齐方式

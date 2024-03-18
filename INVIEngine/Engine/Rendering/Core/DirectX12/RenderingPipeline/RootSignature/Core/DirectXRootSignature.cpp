@@ -88,7 +88,7 @@ void FDirectXRootSignature::BuildRootSignature(UINT textureNum)
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
-		9,			// 参数数量
+		10,			// 参数数量
 		RootParam,	// 根签名参数
 		StaticSamplerObject.GetSize(),			// 静态采样数量
 		StaticSamplerObject.GetData(),			// 静态采样数据（传入采样数据指针）
