@@ -58,6 +58,8 @@ void FRenderingPipeline::BuildPipeline()
 	// 构建常量描述堆
 	GeometryMap.BuildDescriptorHeap();
 
+	SSAO.BuildDescriptor();	// 构建描述符
+
 	// 初始化UI管线
 	UiPipeline.Initialize(GeometryMap.GetHeap(), GeometryMap.GetDrawTexture2DCount() + GeometryMap.GetDrawCubeMapCount() + 1 + 1 + 1);
 
@@ -98,7 +100,10 @@ void FRenderingPipeline::BuildPipeline()
 	GeometryMap.BuildFogConstantBuffer();
 
 	// 创建描述符，注意描述符的创建一定要在常量描述堆创建之后
-	SSAO.BuildDescriptor();
+	SSAO.Build();
+
+	// 存储一个默认的GPS描述符
+	DirectXPipelineState.SaveGPSDescAsDefault();
 
 	// 让各个渲染层级构建自己的PSO
 	RenderLayerManage.BuildPSO();

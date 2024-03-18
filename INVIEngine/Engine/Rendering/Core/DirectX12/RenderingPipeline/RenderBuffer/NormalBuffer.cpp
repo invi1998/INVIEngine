@@ -121,6 +121,21 @@ void FNormalBuffer::ResetView(int wid, int hei)
 
 void FNormalBuffer::BuildDescriptor()
 {
+	UINT CBVSRVUAVDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);	// 获取CBV/SRV/UAV描述符大小
+
+	auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
+	auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
+
+	int offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
+		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
+		1 + // 反射Cubemap 动态反射
+		1 +	// 阴影贴图 直射灯，聚光灯
+		1 + // shadowCubeMap 6个面 (点光源阴影）
+		1; // UI
+
+	RenderTarget->GetCPUShaderResourceView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(CPUSRVDesHeapStart, offset, CBVSRVUAVDescriptorSize);	// 设置SRV描述符句柄，将SRV描述符句柄指向SRV堆的指定偏移位置
+	RenderTarget->GetGPUShaderResourceView() = CD3DX12_GPU_DESCRIPTOR_HANDLE(GPUSRVDesHeapStart, offset, CBVSRVUAVDescriptorSize);	// 设置SRV描述符句柄，将SRV描述符句柄指向SRV堆的指定偏移位置
+	
 }
 
 void FNormalBuffer::BuildRenderTargetRTVOffset()
@@ -141,6 +156,16 @@ void FNormalBuffer::BuildRenderTargetRTVOffset()
 
 void FNormalBuffer::BuildSRVDescriptor()
 {
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};	// 着色器资源视图描述符
+	srvDesc.Format = Format;	// 数据格式
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;	// 视图维度-2D纹理
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;	// 着色器4分量映射
+
+	srvDesc.Texture2D.MostDetailedMip = 0;	// 最详细的mipmap
+	srvDesc.Texture2D.MipLevels = 1;	// mipmap级别
+	srvDesc.Texture2D.PlaneSlice = 0;	// 纹理平面切片
+
+	GetD3dDevice()->CreateShaderResourceView(RenderTarget->GetRenderTarget(), &srvDesc, RenderTarget->GetCPUShaderResourceView());
 }
 
 void FNormalBuffer::BuildRTVDescriptor()

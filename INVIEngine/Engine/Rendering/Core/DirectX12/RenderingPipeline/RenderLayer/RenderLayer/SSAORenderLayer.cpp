@@ -5,7 +5,7 @@
 
 FSSAORenderLayer::FSSAORenderLayer()
 {
-	RenderPriority = 0;
+	RenderPriority = 99744;
 	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_SSAO;
 }
 

@@ -265,7 +265,15 @@ void FGeometryMap::BuildDescriptorHeap()
 	// DescriptorHeap.Build(GetDrawMeshCount() + GetDrawLightCount() + 1 + GetDrawTexture2DCount() + GetDrawCubeMapCount());
 
 	// 纹理贴图 + cube map(静态cubeMap) + CubeMapShadow + ui, 只需要为texture2D图片分配堆内存，因为我们将其他的(模型对象数量 + 灯光数量 + 摄像机)从常量缓冲区分离出来了，只有纹理和cubemap还在继续使用描述表
-	DescriptorHeap.Build(GetDrawTexture2DCount() + GetDrawCubeMapCount() + 1 + 1 + 1 + 1);
+	DescriptorHeap.Build(GetDrawTexture2DCount() + // 纹理贴图数量
+		GetDrawCubeMapCount() +	// CubeMap数量
+		1 + // 反射Cubemap 动态反射
+		1 +	// 阴影贴图 直射灯，聚光灯
+		1 + // shadowCubeMap 6个面 (点光源阴影）
+		1 + // UI
+		1 +	// 法线
+		1	// SSAO
+	); 
 }
 
 UINT FGeometryMap::GetDrawTexture2DCount() const

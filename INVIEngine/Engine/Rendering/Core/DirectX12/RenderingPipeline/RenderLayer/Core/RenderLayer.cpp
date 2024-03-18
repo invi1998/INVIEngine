@@ -244,10 +244,11 @@ void FRenderLayer::UpdateCaculations(float DeltaTime, const FViewportInfo& Viewp
 
 void FRenderLayer::BuildPSO()
 {
-	BuildShader();
-
 	// 构建PSO参数
 	DirectXPipelineState->BuildParam();
+
+	// 先构建PSO参数，再构建Shader，不然的话我们后构建参数会导致Shader的参数不匹配
+	BuildShader();
 
 	// 需要额外定制的PSO可以走这里的代理构建
 	if (BuildPsoDelegate.IsBound())

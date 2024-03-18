@@ -66,7 +66,8 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 	AmbientBuffer.Draw(DeltaTime);
 
 	// 构建SSAO
-	GetD3dGraphicsCommandList()->SetGraphicsRootSignature(SSAORootSignature.GetRootSignature());
+	// GetD3dGraphicsCommandList()->SetGraphicsRootSignature(SSAORootSignature.GetRootSignature());
+	SSAORootSignature.PreDraw(DeltaTime);
 
 	// 主SSAO渲染
 	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(AmbientBuffer.GetRenderTarget().get()))
@@ -181,7 +182,7 @@ void FScreenSpaceAmbientOcclusion::BuildSSAOConstantBufferView()
 {
 	SSAOConstantBufferView.CreateConstant(
 		sizeof(FSSAOConstant),	// 常量缓冲大小
-		0,	// 因为我们是一个新的常量缓冲, 所以我们的偏移量是0
+		1,	// 因为我们是一个新的常量缓冲, 所以我们的对象数量是1
 		false
 	);
 }

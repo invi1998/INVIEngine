@@ -13,33 +13,7 @@ FDirectXPipelineState::FDirectXPipelineState() : IDirectXDeviceInterface_Struct(
 
 void FDirectXPipelineState::BuildParam()
 {
-	// 配置光栅化状态
-	GPSDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);		// 光栅化状态
-
-	GPSDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;		// 默认以固体模式渲染
-
-	GPSDesc.SampleMask = UINT_MAX;		// 多重采样遮罩（混合状态下的实例蒙版）多重采样下，最多是可以采32个的样板（000...000),每个0表示一个样板位，有32个，你想采哪个就设置哪位为1，UINT_MAX表示0xffffffff采样全部的样板
-
-	// 指定图元拓扑类型
-	GPSDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;		// 三角形
-
-	// 指定渲染目标
-	GPSDesc.NumRenderTargets = 1;
-
-	// 指定混合状态
-	GPSDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);		// 默认混合
-
-	// 启用深度模板
-	GPSDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);	// 默认深度模板
-
-	// 设置采样
-	GPSDesc.SampleDesc.Count = GetEngine()->GetRenderingEngine()->GetDXGISampleCount();		// 采样数量
-	GPSDesc.SampleDesc.Quality = GetEngine()->GetRenderingEngine()->GetDXGISampleQuality();	// 采样质量
-
-	//RTV 和 DSV格式
-	GPSDesc.RTVFormats[0] = GetEngine()->GetRenderingEngine()->GetBackBufferFormat();			// 渲染目标视图格式（后台缓冲区格式）
-	GPSDesc.DSVFormat = GetEngine()->GetRenderingEngine()->GetDepthStencilFormat();			// 深度模板缓冲区格式
-
+	GPSDesc = DefaultGPSDesc;
 }
 
 void FDirectXPipelineState::BuildPipelineState(int psoType)
@@ -146,4 +120,36 @@ void FDirectXPipelineState::SetRasterizerState(const CD3DX12_RASTERIZER_DESC& ra
 void FDirectXPipelineState::SetDepthStencilState(const CD3DX12_DEPTH_STENCIL_DESC& depthStencilDesc)
 {
 	GPSDesc.DepthStencilState = depthStencilDesc;
+}
+
+void FDirectXPipelineState::SaveGPSDescAsDefault()
+{
+	// 配置光栅化状态
+	GPSDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);		// 光栅化状态
+
+	GPSDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;		// 默认以固体模式渲染
+
+	GPSDesc.SampleMask = UINT_MAX;		// 多重采样遮罩（混合状态下的实例蒙版）多重采样下，最多是可以采32个的样板（000...000),每个0表示一个样板位，有32个，你想采哪个就设置哪位为1，UINT_MAX表示0xffffffff采样全部的样板
+
+	// 指定图元拓扑类型
+	GPSDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;		// 三角形
+
+	// 指定渲染目标
+	GPSDesc.NumRenderTargets = 1;
+
+	// 指定混合状态
+	GPSDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);		// 默认混合
+
+	// 启用深度模板
+	GPSDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);	// 默认深度模板
+
+	// 设置采样
+	GPSDesc.SampleDesc.Count = GetEngine()->GetRenderingEngine()->GetDXGISampleCount();		// 采样数量
+	GPSDesc.SampleDesc.Quality = GetEngine()->GetRenderingEngine()->GetDXGISampleQuality();	// 采样质量
+
+	//RTV 和 DSV格式
+	GPSDesc.RTVFormats[0] = GetEngine()->GetRenderingEngine()->GetBackBufferFormat();			// 渲染目标视图格式（后台缓冲区格式）
+	GPSDesc.DSVFormat = GetEngine()->GetRenderingEngine()->GetDepthStencilFormat();			// 深度模板缓冲区格式
+
+	DefaultGPSDesc = GPSDesc;
 }

@@ -26,7 +26,7 @@ void FSSAODirectXRootSignature::BuildRootSignature(UINT textureNum)
 	DescriptorRangeNormalSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	// register(t0, space1)
-	RootParam[0].InitAsConstantBufferView(0);		// Normal
+	RootParam[0].InitAsDescriptorTable(1, &DescriptorRangeNormalSRV, D3D12_SHADER_VISIBILITY_ALL);		// Normal
 
 	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)
 
@@ -37,7 +37,7 @@ void FSSAODirectXRootSignature::BuildRootSignature(UINT textureNum)
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
-		9,			// 参数数量
+		1,			// 参数数量
 		RootParam,	// 根签名参数
 		GetStaticSampler().GetSize(),			// 静态采样数量
 		GetStaticSampler().GetData(),			// 静态采样数据（传入采样数据指针）
