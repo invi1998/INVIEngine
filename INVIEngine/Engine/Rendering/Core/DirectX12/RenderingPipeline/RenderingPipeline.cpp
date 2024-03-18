@@ -137,6 +137,10 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 	// äÖÈ¾AO
 	SSAO.Draw(DeltaTime);
+	DirectXRootSignature.PreDraw(DeltaTime);
+
+	// ÖØĞÂ°ó¶¨ÌùÍ¼
+	GeometryMap.DrawTexture2D(DeltaTime);
 
 	// äÖÈ¾ShadowCubeMap
 	GeometryMap.DynamicShadowCubeMap.PreDraw(DeltaTime);

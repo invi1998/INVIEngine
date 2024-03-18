@@ -19,7 +19,7 @@ public:
 	FStaticSampler& GetStaticSampler() { return StaticSamplerObject; }
 	ComPtr<ID3D12RootSignature>& GetRootSignatureComPtr() { return RootSignature; }
 
-private:
+protected:
 	ComPtr<ID3D12RootSignature> RootSignature;		// 根签名
 	FStaticSampler StaticSamplerObject;				// 静态采样器
 };

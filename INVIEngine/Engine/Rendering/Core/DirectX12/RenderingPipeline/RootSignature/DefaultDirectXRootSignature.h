@@ -13,8 +13,5 @@ public:
 	void Draw(float DeltaTime) override;
 	void PostDraw(float DeltaTime) override;
 
-private:
-	ComPtr<ID3D12RootSignature> RootSignature;		// 根签名
-	FStaticSampler StaticSamplerObject;				// 静态采样器
 };
 

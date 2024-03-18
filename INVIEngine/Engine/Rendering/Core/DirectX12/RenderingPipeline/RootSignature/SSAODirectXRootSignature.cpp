@@ -12,7 +12,7 @@ void FSSAODirectXRootSignature::BuildRootSignature(UINT textureNum)
 	///构建根签名
 	///
 	///// 创建根参数，使用上面的描述符范围
-	CD3DX12_ROOT_PARAMETER RootParam[1];
+	CD3DX12_ROOT_PARAMETER RootParam[2];
 
 	// 纹理 CBV描述表
 	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeTextureSRV;	// 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建
@@ -25,8 +25,10 @@ void FSSAODirectXRootSignature::BuildRootSignature(UINT textureNum)
 	CD3DX12_DESCRIPTOR_RANGE DescriptorRangeNormalSRV;
 	DescriptorRangeNormalSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
+	RootParam[0].InitAsConstantBufferView(0);		// register(t0, space0)
+
 	// register(t0, space1)
-	RootParam[0].InitAsDescriptorTable(1, &DescriptorRangeNormalSRV, D3D12_SHADER_VISIBILITY_ALL);		// Normal
+	RootParam[1].InitAsDescriptorTable(1, &DescriptorRangeNormalSRV, D3D12_SHADER_VISIBILITY_ALL);		// Normal
 
 	// 序列化根签名，将我们当前的描述二进制连续的一个内存(将根签名（Root Signature）序列化为字节流数据)
 
@@ -37,7 +39,7 @@ void FSSAODirectXRootSignature::BuildRootSignature(UINT textureNum)
 
 	// 根签名（Root Signature）描述结构体的创建
 	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(
-		1,			// 参数数量
+		2,			// 参数数量
 		RootParam,	// 根签名参数
 		GetStaticSampler().GetSize(),			// 静态采样数量
 		GetStaticSampler().GetData(),			// 静态采样数据（传入采样数据指针）
