@@ -4,6 +4,8 @@
 #include "SSAOConstant.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Core/Viewport/ViewportInfo.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/DepthBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NormalBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/RenderLayerManage.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
@@ -20,6 +22,8 @@ FScreenSpaceAmbientOcclusion::~FScreenSpaceAmbientOcclusion()
 void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer)
 {
 	RenderLayer = inRenderLayer;
+
+	GeometryMap = inGeometryMap;
 
 	NormalBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 	AmbientBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
@@ -167,6 +171,8 @@ void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FVi
 
 void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 {
+	BuildDepthBuffer();		// 先构建深度缓冲，保证CPU和GPU都能访问到深度缓冲，以及SRV是有效的
+
 	NormalBuffer.BuildDescriptor();
 	NormalBuffer.BuildRenderTargetRTVOffset();
 	NormalBuffer.BuildSRVDescriptor();
@@ -189,8 +195,38 @@ void FScreenSpaceAmbientOcclusion::BuildSSAOConstantBufferView()
 
 void FScreenSpaceAmbientOcclusion::SaveSSAOToBuffer()
 {
+	// 将SSAO保存到帧缓冲（渲染留存）开启这个可以检查NormalBuffer的渲染结果
+	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+	//	9,	// 根签名的9号位置
+	//	NormalBuffer.GetRenderTarget()->GetGPUShaderResourceView()
+	//);
+
+	// 将SSAO保存到帧缓冲（渲染留存）开启这个可以检查Depthbuffer的渲染结果
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
 		9,	// 根签名的9号位置
-		NormalBuffer.GetRenderTarget()->GetGPUShaderResourceView()
+		DepthBufferRenderTarget->GetGPUShaderResourceView()
 	);
+}
+
+void FScreenSpaceAmbientOcclusion::BuildDepthBuffer()
+{
+	UINT CBVDescSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	auto CpuSRVDescHeap = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();
+	auto GpuSRVDescHeap = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();
+
+	UINT offset = GeometryMap->GetDrawTexture2DCount() +	// 2D纹理数量
+		GeometryMap->GetDrawCubeMapCount() +	// 立方体纹理数量
+		1 +		// 动态CubeMap数量
+		1 +		// shadow直射灯，聚光灯数量
+		1 +		// shadow点光源数量
+		1 +		// UI
+		1 +		// 法线缓冲
+		1 + 	// 深度
+		1;		// SSAO 环境光遮蔽
+
+	// 构建深度缓冲描述堆
+	DepthBuffer::BuildDepthBufferDescriptorHeap(CpuSRVDescHeap, GpuSRVDescHeap, CBVDescSize, offset);
+
+	// 构建深度缓冲（这里我们使用的深度资源是我们之前创建的深度资源，也就是主视口的深度信息）
+	DepthBuffer::CreateDepthBuffer(GetD3dDevice().Get(), GetDepthBufferResource());
 }

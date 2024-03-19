@@ -44,6 +44,8 @@ public:
 
 	class CEditorEngine* GetEditorEngine();
 
+	ID3D12Resource* GetDepthBufferResource();
+
 protected:
 	FRenderingPipeline* GetRenderPipeline() const;
 	FRenderLayerManage* GetRenderLayerManager() const;
@@ -79,6 +81,8 @@ public:
 	[[nodiscard]] CWindowsEngine* GetEngine();
 
 	class CEditorEngine* GetEditorEngine();
+
+	ID3D12Resource* GetDepthBufferResource();
 
 protected:
 	FRenderingPipeline* GetRenderPipeline() const;

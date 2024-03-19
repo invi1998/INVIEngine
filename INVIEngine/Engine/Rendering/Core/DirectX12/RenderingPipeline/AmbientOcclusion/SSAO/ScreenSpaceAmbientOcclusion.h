@@ -33,6 +33,8 @@ public:
 
 	void SaveSSAOToBuffer();	// 保存SSAO到帧缓冲（渲染留存）
 
+	void BuildDepthBuffer();	// 构建深度缓冲
+
 protected:
 	FNormalBuffer NormalBuffer;						// 法线缓冲
 	FAmbientBuffer AmbientBuffer;					// 环境光缓冲
@@ -41,5 +43,7 @@ protected:
 	FConstantBufferViews SSAOConstantBufferView;		// SSAO常量缓冲视图
 
 	FRenderLayerManage* RenderLayer;	// 渲染层级
+
+	FGeometryMap* GeometryMap;	// 几何图
 };
 

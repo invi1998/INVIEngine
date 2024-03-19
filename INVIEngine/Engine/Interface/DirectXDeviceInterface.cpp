@@ -178,6 +178,19 @@ CEditorEngine* IDirectXDeviceInterface::GetEditorEngine()
 	return nullptr;
 }
 
+ID3D12Resource* IDirectXDeviceInterface::GetDepthBufferResource()
+{
+	if (CWindowsEngine* inEngine = GetEngine())
+	{
+		if (inEngine->GetRenderingEngine())
+		{
+			return inEngine->GetRenderingEngine()->DepthStencilBuffer.Get();
+		}
+	}
+
+	return nullptr;
+}
+
 FRenderingPipeline* IDirectXDeviceInterface::GetRenderPipeline() const
 {
 	if (CMeshManager* inMeshManager = GetMeshManage())
@@ -293,6 +306,11 @@ CWindowsEngine* IDirectXDeviceInterface_Struct::GetEngine()
 CEditorEngine* IDirectXDeviceInterface_Struct::GetEditorEngine()
 {
 	return Interface.GetEditorEngine();
+}
+
+ID3D12Resource* IDirectXDeviceInterface_Struct::GetDepthBufferResource()
+{
+	return Interface.GetDepthBufferResource();
 }
 
 FRenderingPipeline* IDirectXDeviceInterface_Struct::GetRenderPipeline() const

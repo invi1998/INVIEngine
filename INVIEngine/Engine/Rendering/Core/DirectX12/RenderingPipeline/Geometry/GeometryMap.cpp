@@ -272,6 +272,7 @@ void FGeometryMap::BuildDescriptorHeap()
 		1 + // shadowCubeMap 6个面 (点光源阴影）
 		1 + // UI
 		1 +	// 法线
+		1 + // 深度
 		1	// SSAO
 	); 
 }
