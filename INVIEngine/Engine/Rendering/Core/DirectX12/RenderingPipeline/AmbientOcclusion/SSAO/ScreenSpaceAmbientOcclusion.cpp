@@ -11,7 +11,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderLayer/Core/RenderLayer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/BufferRenderTarget.h"
 
-FScreenSpaceAmbientOcclusion::FScreenSpaceAmbientOcclusion(): RenderLayer(nullptr)
+FScreenSpaceAmbientOcclusion::FScreenSpaceAmbientOcclusion(): RenderLayer(nullptr), GeometryMap(nullptr)
 {
 }
 

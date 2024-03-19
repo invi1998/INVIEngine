@@ -72,4 +72,19 @@ namespace EngineMath
 	DirectX::XMVECTOR BuildQuaternion(const DirectX::XMFLOAT3& InForward, const DirectX::XMFLOAT3& InUp = { 0.f, 1.f, 0.f });
 	fquat BuildQuaternionFQuat(const fvector_3d& InForward, const fvector_3d& InUp = { 0.f, 1.f, 0.f });
 	frotator ToDXRotator(const frotator& InRotator);
+
+	template<typename T>
+	T GetRandomNumberGenerator(T InMin, T InMax)
+	{
+		// 创建一个随机数引擎对象并设置种子（可以使用时间作为种子）
+		std::mt19937 mt(std::random_device{}());
+
+		// 创建一个随机数分布对象
+		std::uniform_real_distribution<T> dist(InMin, InMax);
+
+		// 生成随机数
+		T RandomNumber = dist(mt);
+
+		return RandomNumber;
+	}
 }

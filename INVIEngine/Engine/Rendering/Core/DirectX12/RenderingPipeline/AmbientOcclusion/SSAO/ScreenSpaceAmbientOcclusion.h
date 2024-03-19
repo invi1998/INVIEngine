@@ -3,6 +3,7 @@
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/AmbientBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NormalBuffer.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/SampleVolume.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RootSignature/SSAODirectXRootSignature.h"
 
 struct FViewportInfo;
@@ -45,5 +46,7 @@ protected:
 	FRenderLayerManage* RenderLayer;	// 渲染层级
 
 	FGeometryMap* GeometryMap;	// 几何图
+
+	FSampleVolume SampleVolume;	// 采样体积
 };
 
