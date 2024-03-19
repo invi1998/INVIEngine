@@ -75,6 +75,9 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	// 将 [0,1] 映射到 [-1, 1]
 	AmbientLightDirection = AmbientLightDirection * 2.f - 1.f;
 	
+	// 遮蔽值
+	float Occlusion = 0.f;
+	
 	for (int i = 0; i < SAMPLE_VOLUME_NUM; i++)
 	{
 		// 将我们当前的采样点的数据作为法线，然后将环境光的方向作为入射光，然后计算反射光得到环境光反射的方向
@@ -95,6 +98,17 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 		float CDepth = SampleDepthMap.SampleLevel(DepthSampler, CTexturePosition.xy, 0.f).r;
 		
 		float3 CViewPos = CDepth * BViewPos / BViewPos.z;	// C点的位置
+		
+		// 如何判断SSAO半球遮蔽
+		// 首先我们需要判断C点的位置是否在B点的位置的前面，如果在前面，那么我们就认为这个点是可见的，如果这个点是可见的，那么我们就认为这个点是遮蔽的，我们就将遮蔽值加1
+		// 其次，如果我们的深度差太远，这个值我们也是不要的
+		float DepthDistance = AViewPos.z - CViewPos.z;	// 点和遮挡物之间的距离
+		
+		// 法线和A点到C点连线的点积
+		float NDotAC = max(dot(NormalizedSampleValue, normalize(CViewPos - AViewPos)), 0.f);
+		
+		// 遮蔽值
+		Occlusion += NDotAC * OcclusionFuncion(DepthDistance);
 
 	}
 	

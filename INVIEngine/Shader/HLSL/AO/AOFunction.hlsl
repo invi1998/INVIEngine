@@ -12,4 +12,16 @@ float DepthNDCToView(float DepthNdc)
 	return B / (DepthNdc - A);
 }
 
+// 遮蔽函数
+float OcclusionFuncion(float DepthDistance)
+{
+	if (DepthDistance < ObscurationThreshold)
+	{
+		return 0.f;
+	}
+	
+	float OcclusionLen = OcclusionFadeEnd - OcclusionFadeStart;
+	return saturate((OcclusionFadeEnd - DepthDistance) / OcclusionLen);	// 不该有负值
+}
+
 #endif
