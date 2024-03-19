@@ -107,7 +107,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 		// 法线和A点到C点连线的点积
 		float NDotAC = max(dot(NormalizedSampleValue, normalize(CViewPos - AViewPos)), 0.f);
 		
-		// 遮蔽值
+		// 遮蔽值，有多少光线被遮蔽了
 		Occlusion += NDotAC * OcclusionFuncion(DepthDistance);
 
 	}
