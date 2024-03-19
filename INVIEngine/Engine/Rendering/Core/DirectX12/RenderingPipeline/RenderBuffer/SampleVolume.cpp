@@ -60,3 +60,8 @@ void* FSampleVolume::GetVolumeData()
 {
 	return VolumeData.data();
 }
+
+void FSampleVolume::UpdateVolumeData(XMFLOAT4* Data)
+{
+	memcpy(Data, VolumeData.data(), sizeof(XMFLOAT4) * VolumeData.size());
+}

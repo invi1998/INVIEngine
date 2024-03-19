@@ -164,6 +164,9 @@ void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const
 	XMMATRIX textureMatrix = XMMatrixMultiply(invProjection, halfLambertMatrix);	// 投影矩阵和半兰伯特矩阵相乘得到纹理空间矩阵（NDC)
 	XMStoreFloat4x4(&SSAOConstant.TextureProjectionMatrix, textureMatrix);			// 存入常量缓冲
 
+	// 随机向量
+	SampleVolume.UpdateVolumeData(SSAOConstant.SampleVolumeData);	// 更新采样体积数据
+
 	SSAOConstantBufferView.Update(0, &SSAOConstant);	// 更新常量缓冲
 }
 

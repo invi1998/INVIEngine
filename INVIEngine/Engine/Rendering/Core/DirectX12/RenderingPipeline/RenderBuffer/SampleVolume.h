@@ -9,6 +9,8 @@ public:
 
 	void* GetVolumeData();
 
+	void UpdateVolumeData(XMFLOAT4* Data);
+
 protected:
 	void RandomizeVolumeData();	// 随机化体积数据
 
