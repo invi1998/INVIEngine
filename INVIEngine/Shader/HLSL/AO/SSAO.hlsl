@@ -112,8 +112,13 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 
 	}
 	
+	// ¿É¼°ÂÊ
+	float Accessibility = 1.f - Occlusion;
+	
 	// return float4(NormalizedSampleValue, 1.f);
 	// return float4(DepthNdc.rrr, 1.f);
-		return float4(NoiseSampleValue, 1.f);
+	// return float4(NoiseSampleValue, 1.f);
+	return float4(saturate(pow(Accessibility, 6.f)), saturate(pow(Accessibility, 6.f)), saturate(pow(Accessibility, 6.f)), 1.f);
+
 }
 
