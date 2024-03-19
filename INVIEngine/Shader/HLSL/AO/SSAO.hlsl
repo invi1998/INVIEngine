@@ -1,4 +1,5 @@
-#include "SSAOCommon.hlsl"
+#include "AOCommon.hlsl"
+#include "AOFunction.hlsl"
 
 // `SV_VertexID` 是在着色器程序中使用的系统内置变量，它用于表示当前顶点在顶点缓冲区中的索引。这个变量通常用于计算每个顶点的唯一标识符或执行与顶点相关的操作。
 
@@ -60,12 +61,61 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	float3 NormalizedSampleValue = normalize(SampleNormalMap.SampleLevel(TextureSampler, mvOut.Texcoord, 0).xyz);
 	
-	float3 DepthSampleValue = SampleDepthMap.SampleLevel(DepthSampler, mvOut.Texcoord, 0).xyz;
-	
 	float3 NoiseSampleValue = SampleNoiseMap.SampleLevel(TextureSampler, mvOut.Texcoord, 0).xyz;
 	
+	float3 DepthNdc = SampleDepthMap.SampleLevel(DepthSampler, mvOut.Texcoord, 0).rrr;
+	
+	float A_ViewDepth = DepthNDCToView(DepthNdc.r);
+	
+	float3 AViewPos = A_ViewDepth * mvOut.ViewPosition.xyz / mvOut.ViewPosition.z;
+	
+	// 从噪波中采样环境光，获得环境光的方向，这里得到的值是[0,1]
+	float3 AmbientLightDirection = SampleNoiseMap.SampleLevel(TextureSampler, mvOut.Texcoord, 0.f);
+	
+	// 将 [0,1] 映射到 [-1, 1]
+	AmbientLightDirection = AmbientLightDirection * 2.f - 1.f;
+	
+	for (int i = 0; i < SAMPLE_VOLUME_NUM; i++)
+	{
+		float3 SampleVolume = SampleVolumeData[i].xyz;
+		
+		float3 SampleVolumeViewPos = mul(SampleVolume, InversiveProjectionMatrix);
+		
+		SampleVolumeViewPos = SampleVolumeViewPos / SampleVolumeViewPos.w;
+		
+		float3 SampleVolumeNdc = SampleVolumeViewPos.xy / SampleVolumeViewPos.z;
+		
+		float SampleDepth = DepthNDCToView(SampleVolumeNdc.z);
+		
+		float3 SampleViewPos = SampleDepth * SampleVolumeViewPos / SampleVolumeViewPos.z;
+		
+		float3 SampleNormal = normalize(SampleNormalMap.SampleLevel(TextureSampler, SampleVolumeNdc.xy, 0).xyz);
+		
+		float3 SampleDirection = SampleViewPos - AViewPos;
+		
+		float SampleDistance = length(SampleDirection);
+		
+		SampleDirection = normalize(SampleDirection);
+		
+		float NdotL = dot(SampleNormal, SampleDirection);
+		
+		float Occlusion = max(0.f, NdotL);
+		
+		float OcclusionFade = saturate((SampleDistance - OcclusionFadeStart) / (OcclusionFadeEnd - OcclusionFadeStart));
+		
+		Occlusion = Occlusion * lerp(1.f, 1.f - OcclusionFade, Occlusion);
+		
+		Occlusion = saturate((SampleDistance - OcclusionRadius) / OcclusionRadius);
+		
+		// 通过环境光的方向和采样点的法线来计算遮蔽值
+		float3 AmbientOcclusion = AmbientLightDirection * SampleNormal;
+		
+		// 通过遮蔽值来计算环境光
+		NoiseSampleValue += AmbientOcclusion * Occlusion;
+	}
+	
 	// return float4(NormalizedSampleValue, 1.f);
-	// return float4(DepthSampleValue.rrr, 1.f);
-	return float4(NoiseSampleValue, 1.f);
+	// return float4(DepthNdc.rrr, 1.f);
+		return float4(NoiseSampleValue, 1.f);
 }
 
