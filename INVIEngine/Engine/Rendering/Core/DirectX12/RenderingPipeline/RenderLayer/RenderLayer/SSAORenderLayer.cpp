@@ -21,8 +21,8 @@ void FSSAORenderLayer::BuildShader()
 	std::vector<D3D_SHADER_MACRO> D3dShaderMacro;
 	ShaderType::ToD3DShaderMacro(ShaderMacro, D3dShaderMacro);
 
-	VertexShader.BuildShader(L"Shader/HLSL/SSAO.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
-	PixelShader.BuildShader(L"Shader/HLSL/SSAO.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
+	VertexShader.BuildShader(L"Shader/HLSL/AO/SSAO.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
+	PixelShader.BuildShader(L"Shader/HLSL/AO/SSAO.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
 	// °ó¶¨shader
 	DirectXPipelineState->BindShader(VertexShader, PixelShader);
 
