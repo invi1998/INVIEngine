@@ -37,7 +37,7 @@ void FRenderingPipeline::BuildPipeline()
 	// 初始化AO
 	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
-	SSAO.SetBufferSize(256, 256);
+	SSAO.SetBufferSize(512, 512);	// 设置AO缓冲区大小
 
 	// shadowMap 初始化
 	GeometryMap.DynamicShadowMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
