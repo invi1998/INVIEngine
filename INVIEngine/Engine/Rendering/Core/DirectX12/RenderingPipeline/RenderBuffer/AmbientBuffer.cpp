@@ -64,7 +64,8 @@ void FAmbientBuffer::BuildDescriptor()
 		1 + // shadowCubeMap 6个面 (点光源阴影）
 		1 + // UI
 		1 + // 法线
-		1  	// 深度
+		1 + // 深度
+		1	// 噪波
 	; 
 	
 	RenderTarget->GetCPUShaderResourceView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(CPUSRVDesHeapStart, offset, CBVSRVUAVDescriptorSize);	// 设置SRV描述符句柄，将SRV描述符句柄指向SRV堆的指定偏移位置

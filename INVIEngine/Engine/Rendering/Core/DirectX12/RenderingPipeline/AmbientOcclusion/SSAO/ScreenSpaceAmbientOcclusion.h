@@ -2,6 +2,7 @@
 #include "Interface/DirectXDeviceInterface.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/ConstantBuffer/ConstantBufferViews.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/AmbientBuffer.h"
+#include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NoiseBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/NormalBuffer.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/SampleVolume.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RootSignature/SSAODirectXRootSignature.h"
@@ -48,5 +49,6 @@ protected:
 	FGeometryMap* GeometryMap;	// 几何图
 
 	FSampleVolume SampleVolume;	// 采样体积
+	FNoiseBuffer NoiseBuffer;	// 噪声缓冲
 };
 

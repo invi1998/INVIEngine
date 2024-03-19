@@ -25,6 +25,7 @@ void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPip
 
 	GeometryMap = inGeometryMap;
 
+	NoiseBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 	NormalBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 	AmbientBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 }
@@ -33,6 +34,7 @@ void FScreenSpaceAmbientOcclusion::SetBufferSize(int wid, int hei)
 {
 	NormalBuffer.SetBufferSize(wid, hei);
 	AmbientBuffer.SetBufferSize(wid, hei);
+	NoiseBuffer.SetBufferSize(wid, hei);
 }
 
 void FScreenSpaceAmbientOcclusion::Build()
@@ -68,6 +70,7 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 {
 	NormalBuffer.Draw(DeltaTime);
 	AmbientBuffer.Draw(DeltaTime);
+	NoiseBuffer.Draw(DeltaTime);
 
 	// 构建SSAO
 	// GetD3dGraphicsCommandList()->SetGraphicsRootSignature(SSAORootSignature.GetRootSignature());
@@ -95,6 +98,14 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 			2,	// 根签名的9号位置
 			DepthBufferRenderTarget->GetGPUShaderResourceView()
 		);
+
+		// 噪波
+		if (std::shared_ptr<FRenderTarget> NoiseBufferRenderTarget = NoiseBuffer.GetRenderTarget())
+		{
+			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+				3,	// 根签名的1号位置
+				NoiseBufferRenderTarget->GetGPUShaderResourceView());
+		}
 
 		auto viewport = renderTarget->GetViewport();
 		auto rect = renderTarget->GetScissorRect();
@@ -174,6 +185,7 @@ void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FVi
 {
 	NormalBuffer.UpdateCalculations(DeltaTime, viewport_info);
 	AmbientBuffer.UpdateCalculations(DeltaTime, viewport_info);
+	NoiseBuffer.UpdateCalculations(DeltaTime, viewport_info);
 
 	DrawSSAOConstantBuffer(DeltaTime, viewport_info);
 }
@@ -186,6 +198,11 @@ void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 	NormalBuffer.BuildRenderTargetRTVOffset();
 	NormalBuffer.BuildSRVDescriptor();
 	NormalBuffer.BuildRTVDescriptor();
+
+	NoiseBuffer.BuildDescriptor();
+	NoiseBuffer.BuildRenderTargetRTVOffset();
+	NoiseBuffer.BuildSRVDescriptor();
+	NoiseBuffer.BuildRTVDescriptor();
 
 	AmbientBuffer.BuildDescriptor();
 	AmbientBuffer.BuildRenderTargetRTVOffset();
@@ -236,6 +253,7 @@ void FScreenSpaceAmbientOcclusion::BuildDepthBuffer()
 		1 +		// UI
 		1 +		// 法线缓冲
 		1 + 	// 深度
+		1 +		// 噪波
 		1;		// SSAO 环境光遮蔽
 
 	// 构建深度缓冲描述堆

@@ -62,7 +62,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	
 	float3 DepthSampleValue = SampleDepthMap.SampleLevel(DepthSampler, mvOut.Texcoord, 0).xyz;
 	
+	float3 NoiseSampleValue = SampleNoiseMap.SampleLevel(TextureSampler, mvOut.Texcoord, 0).xyz;
+	
 	// return float4(NormalizedSampleValue, 1.f);
-	return float4(DepthSampleValue.rrr, 1.f);
+	// return float4(DepthSampleValue.rrr, 1.f);
+	return float4(NoiseSampleValue, 1.f);
 }
 

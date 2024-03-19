@@ -12,6 +12,7 @@ SamplerState DepthSampler : register(s3); // 深度信息采样器
 
 Texture2D SampleNormalMap : register(t0); // 法线
 Texture2D SampleDepthMap : register(t1); // 深度
+Texture2D SampleNoiseMap : register(t2); // 噪波
 
 static const float2 TextureCoordinates[6] =
 {

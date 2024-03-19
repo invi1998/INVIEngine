@@ -273,6 +273,7 @@ void FGeometryMap::BuildDescriptorHeap()
 		1 + // UI
 		1 +	// 法线
 		1 + // 深度
+		1 +	// 噪波
 		1	// SSAO
 	); 
 }
