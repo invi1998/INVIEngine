@@ -112,7 +112,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 
 	}
 	
-	// 可及率
+	// 可及率，这个值越大，表示这个点越亮，越小表示这个点越暗，表示光能到达这个点的可能性
 	float Accessibility = 1.f - Occlusion;
 	
 	// return float4(NormalizedSampleValue, 1.f);
