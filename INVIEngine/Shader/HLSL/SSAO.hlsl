@@ -1,37 +1,4 @@
-// 采样状态
-SamplerState TextureSampler : register(s0); // 贴图采样器
-SamplerState AnisotropicSampler : register(s1); // 各向异性采样器
-SamplerComparisonState ShadowSampler : register(s2); // 阴影采样器
-SamplerState DepthSampler : register(s3); // 深度信息采样器
-
-Texture2D SampleNormalMap : register(t0); // 法线
-Texture2D SampleDepthMap : register(t1); // 深度
-
-static const float2 TextureCoordinates[6] =
-{
-	float2(0.f, 1.f),
-	float2(0.f, 0.f),
-	float2(1.f, 0.f),
-	
-	float2(0.f, 1.f),
-	float2(1.f, 0.f),
-	float2(1.f, 1.f),
-};
-
-struct MeshVertexOut
-{
-	float4 ViewPosition : POSITION;
-	float4 Position : SV_POSITION;
-	float2 Texcoord : TEXCOORD; // UV
-};
-
-cbuffer CBufferSSAOView : register(b0)
-{
-	float4x4 InversiveProjectionMatrix;	// 求逆后的投影矩阵
-	float4x4 ProjectionMatrix;			// 摄像机的投影矩阵
-	float4x4 TextureProjectionMatrix;	// 纹理空间的投影矩阵
-};
-
+#include "SSAOCommon.hlsl"
 
 // `SV_VertexID` 是在着色器程序中使用的系统内置变量，它用于表示当前顶点在顶点缓冲区中的索引。这个变量通常用于计算每个顶点的唯一标识符或执行与顶点相关的操作。
 
