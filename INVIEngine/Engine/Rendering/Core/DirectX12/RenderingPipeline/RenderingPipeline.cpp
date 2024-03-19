@@ -127,9 +127,6 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 	DirectXRootSignature.PreDraw(DeltaTime);
 
-	// 清除主视口
-	ClearMainSwapChainCanvas();
-
 	// 渲染光照，材质贴图
 	GeometryMap.Draw(DeltaTime);
 
@@ -139,6 +136,9 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 
 	// 保存SSAO到指定的Buffer
 	SSAO.SaveSSAOToBuffer();
+
+	// 清除主视口
+	ClearMainSwapChainCanvas();
 
 	// 重新绑定贴图
 	GeometryMap.DrawTexture2D(DeltaTime);
