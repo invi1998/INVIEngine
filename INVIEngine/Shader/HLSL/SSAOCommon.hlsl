@@ -38,6 +38,11 @@ cbuffer CBufferSSAOView : register(b0)
 	float4x4 ProjectionMatrix; // 摄像机的投影矩阵
 	float4x4 TextureProjectionMatrix; // 纹理空间的投影矩阵
 	
+	float OcclusionRadius; // 遮蔽半径
+	float OcclusionFadeStart; // 遮蔽淡出开始
+	float OcclusionFadeEnd; // 遮蔽淡出结束
+	float ObscurationThreshold; // 遮蔽阈值
+	
 	float4 SampleVolumeData[SAMPLE_VOLUME_NUM]; // 采样体数据
 };
 
