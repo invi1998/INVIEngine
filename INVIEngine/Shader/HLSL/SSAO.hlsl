@@ -2,7 +2,7 @@
 SamplerState TextureSampler : register(s0); // 贴图采样器
 SamplerState AnisotropicSampler : register(s1); // 各向异性采样器
 SamplerComparisonState ShadowSampler : register(s2); // 阴影采样器
-SamplerState PointClampSampler : register(s3); // 点限制采样器
+SamplerState DepthSampler : register(s3); // 深度信息采样器
 
 Texture2D SampleNormalMap : register(t0); // 法线
 Texture2D SampleDepthMap : register(t1); // 深度
@@ -92,6 +92,10 @@ MeshVertexOut VSMain(uint VertexID : SV_VertexID)
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	float3 NormalizedSampleValue = normalize(SampleNormalMap.SampleLevel(TextureSampler, mvOut.Texcoord, 0).xyz);
-	return float4(NormalizedSampleValue, 1.f);
+	
+	float3 DepthSampleValue = SampleDepthMap.SampleLevel(DepthSampler, mvOut.Texcoord, 0).xyz;
+	
+	// return float4(NormalizedSampleValue, 1.f);
+	return float4(DepthSampleValue.rrr, 1.f);
 }
 

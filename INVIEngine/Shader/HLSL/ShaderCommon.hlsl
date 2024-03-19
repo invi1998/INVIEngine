@@ -7,6 +7,7 @@
 SamplerState TextureSampler : register(s0);		// 贴图采样器
 SamplerState AnisotropicSampler : register(s1);		// 各向异性采样器
 SamplerComparisonState ShadowSampler : register(s2);		// 阴影采样器
+SamplerState DepthSampler : register(s3); // 深度信息采样器
 
 // 纹理 CBV描述表
 //CD3DX12_DESCRIPTOR_RANGE DescriptorRangeTextureSRV; // 常量缓冲区区描述符范围 描述符范围（Descriptor Range）的创建

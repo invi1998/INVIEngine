@@ -194,23 +194,28 @@ void FScreenSpaceAmbientOcclusion::BuildSSAOConstantBufferView()
 {
 	SSAOConstantBufferView.CreateConstant(
 		sizeof(FSSAOConstant),	// 常量缓冲大小
-		1,	// 因为我们是一个新的常量缓冲, 所以我们的对象数量是1
-		false
+		1	// 因为我们是一个新的常量缓冲, 所以我们的对象数量是1
 	);
 }
 
 void FScreenSpaceAmbientOcclusion::SaveSSAOToBuffer()
 {
-	// 将SSAO保存到帧缓冲（渲染留存）开启这个可以检查NormalBuffer的渲染结果
+	// 将NormalBuffer保存到帧缓冲（渲染留存）开启这个可以检查NormalBuffer的渲染结果
 	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
 	//	9,	// 根签名的9号位置
 	//	NormalBuffer.GetRenderTarget()->GetGPUShaderResourceView()
 	//);
 
-	// 将SSAO保存到帧缓冲（渲染留存）开启这个可以检查Depthbuffer的渲染结果
+	// 将DepthBuffer保存到帧缓冲（渲染留存）开启这个可以检查DepthBuffer的渲染结果
+	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+	//	9,	// 根签名的9号位置
+	//	DepthBufferRenderTarget->GetGPUShaderResourceView()
+	//);
+
+	// SSAO保存到帧缓冲（渲染留存）
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
 		9,	// 根签名的9号位置
-		DepthBufferRenderTarget->GetGPUShaderResourceView()
+		AmbientBuffer.GetRenderTarget()->GetGPUShaderResourceView()
 	);
 }
 
