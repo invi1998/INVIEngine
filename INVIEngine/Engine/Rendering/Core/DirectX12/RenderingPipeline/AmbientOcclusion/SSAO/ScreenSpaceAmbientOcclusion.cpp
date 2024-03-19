@@ -33,7 +33,7 @@ void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPip
 void FScreenSpaceAmbientOcclusion::SetBufferSize(int wid, int hei)
 {
 	NormalBuffer.SetBufferSize(wid, hei);
-	AmbientBuffer.SetBufferSize(wid, hei);
+	AmbientBuffer.SetBufferSize(wid/2, hei/2);
 	NoiseBuffer.SetBufferSize(wid, hei);
 }
 

@@ -3,6 +3,7 @@
 #include "RenderingPipeline.h"
 
 #include "Component/Mesh/Core/MeshComponent.h"
+#include "Config/EngineRenderConfig.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Core/Viewport/ViewportTransformation.h"
 #include "Mesh/Core/ObjectTransformation.h"
@@ -37,7 +38,7 @@ void FRenderingPipeline::BuildPipeline()
 	// 初始化AO
 	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
-	SSAO.SetBufferSize(512, 512);	// 设置AO缓冲区大小
+	SSAO.SetBufferSize(FEngineRenderConfig::GetRenderConfig()->ScreenWidth, FEngineRenderConfig::GetRenderConfig()->ScreenHeight);	// 设置AO缓冲区大小
 
 	// shadowMap 初始化
 	GeometryMap.DynamicShadowMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
