@@ -77,41 +77,25 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	
 	for (int i = 0; i < SAMPLE_VOLUME_NUM; i++)
 	{
-		float3 SampleVolume = SampleVolumeData[i].xyz;
+		// 将我们当前的采样点的数据作为法线，然后将环境光的方向作为入射光，然后计算反射光得到环境光反射的方向
+		float3 AmbientLightReflect = reflect(SampleVolumeData[i].xyz, AmbientLightDirection);
 		
-		float3 SampleVolumeViewPos = mul(SampleVolume, InversiveProjectionMatrix);
+		// sign函数返回一个值的符号，如果值为负数则返回-1，如果值为正数则返回1，如果值为0则返回0
+		float SignValue = sign(dot(AmbientLightReflect, NormalizedSampleValue));
 		
-		SampleVolumeViewPos = SampleVolumeViewPos / SampleVolumeViewPos.w;
+		float3 BViewPos = AViewPos + SignValue * AmbientLightReflect * OcclusionRadius;	// 计算出我们的B点的位置，用反射光的方向乘以遮蔽半径，然后再乘以符号值，如果是正数则是加，如果是负数则是减
 		
-		float3 SampleVolumeNdc = SampleVolumeViewPos.xy / SampleVolumeViewPos.z;
+		// 求C点位置过程
+		// 首先，因为我们B和C在同一条直线上，我们先将B转换到纹理空间下，转换到纹理空间后我们再除以w，就将B点的位置转换到近景层面，然后我们提取他的X,Y,然后我们再在（X,Y)这个像素下去提取深度信息
+		// 如果这个深度信息大于B点的深度信息，那么我们就认为这个点是可见的，如果这个点是可见的，那么我们就认为这个点是遮蔽的，我们就将遮蔽值加1
 		
-		float SampleDepth = DepthNDCToView(SampleVolumeNdc.z);
+		float4 CTexturePosition = mul(float4(BViewPos, 1.f), TextureProjectionMatrix);
+		CTexturePosition /= CTexturePosition.w;		// 齐次除法将值归一化到近景层面里
 		
-		float3 SampleViewPos = SampleDepth * SampleVolumeViewPos / SampleVolumeViewPos.z;
+		float CDepth = SampleDepthMap.SampleLevel(DepthSampler, CTexturePosition.xy, 0.f).r;
 		
-		float3 SampleNormal = normalize(SampleNormalMap.SampleLevel(TextureSampler, SampleVolumeNdc.xy, 0).xyz);
-		
-		float3 SampleDirection = SampleViewPos - AViewPos;
-		
-		float SampleDistance = length(SampleDirection);
-		
-		SampleDirection = normalize(SampleDirection);
-		
-		float NdotL = dot(SampleNormal, SampleDirection);
-		
-		float Occlusion = max(0.f, NdotL);
-		
-		float OcclusionFade = saturate((SampleDistance - OcclusionFadeStart) / (OcclusionFadeEnd - OcclusionFadeStart));
-		
-		Occlusion = Occlusion * lerp(1.f, 1.f - OcclusionFade, Occlusion);
-		
-		Occlusion = saturate((SampleDistance - OcclusionRadius) / OcclusionRadius);
-		
-		// 通过环境光的方向和采样点的法线来计算遮蔽值
-		float3 AmbientOcclusion = AmbientLightDirection * SampleNormal;
-		
-		// 通过遮蔽值来计算环境光
-		NoiseSampleValue += AmbientOcclusion * Occlusion;
+		float3 CViewPos = CDepth * BViewPos / BViewPos.z;	// C点的位置
+
 	}
 	
 	// return float4(NormalizedSampleValue, 1.f);
