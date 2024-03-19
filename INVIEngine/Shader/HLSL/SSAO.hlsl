@@ -5,6 +5,7 @@ SamplerComparisonState ShadowSampler : register(s2); // 阴影采样器
 SamplerState PointClampSampler : register(s3); // 点限制采样器
 
 Texture2D SampleNormalMap : register(t0); // 法线
+Texture2D SampleDepthMap : register(t1); // 深度
 
 static const float2 TextureCoordinates[6] =
 {

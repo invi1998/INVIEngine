@@ -24,7 +24,7 @@ public:
 	FORCEINLINE D3D12_RECT GetScissorRect() const { return ScissorRect; }
 	FORCEINLINE CD3DX12_GPU_DESCRIPTOR_HANDLE& GetGPUShaderResourceView() { return GPUShaderResourceView; }
 	FORCEINLINE CD3DX12_CPU_DESCRIPTOR_HANDLE& GetCPUShaderResourceView() { return CPUShaderResourceView; }
-	FORCEINLINE D3D12_CPU_DESCRIPTOR_HANDLE& GetCPURenderTargetView() { return RenderTargetViewCPU; }
+	FORCEINLINE CD3DX12_CPU_DESCRIPTOR_HANDLE& GetCPURenderTargetView() { return RenderTargetViewCPU; }
 
 private:
 	
@@ -45,7 +45,7 @@ protected:
 	ComPtr<ID3D12Resource> RenderTargetMap;		// 实际的D3D渲染资源
 	CD3DX12_CPU_DESCRIPTOR_HANDLE CPUShaderResourceView;		// shader资源Cpu视图 SRV
 	CD3DX12_GPU_DESCRIPTOR_HANDLE GPUShaderResourceView;		// shader资源Gpu视图 SRV
-	D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetViewCPU;			// 渲染目标视图的CPU句柄 RTV
+	CD3DX12_CPU_DESCRIPTOR_HANDLE RenderTargetViewCPU;			// 渲染目标视图的CPU句柄 RTV
 };
 
 // Path: INVIEngine/Engine/Rendering/Core/DirectX12/RenderingPipeline/DynamicMap/CubeMap/DynamicCubeMap.h

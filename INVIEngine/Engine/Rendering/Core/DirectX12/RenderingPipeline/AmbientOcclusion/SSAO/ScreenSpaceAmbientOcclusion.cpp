@@ -86,9 +86,15 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 		if (std::shared_ptr<FRenderTarget> NormalBufferRenderTarget = NormalBuffer.GetRenderTarget())
 		{
 			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-				3,	// 根签名的1号位置
+				1,	// 根签名的1号位置
 				NormalBufferRenderTarget->GetGPUShaderResourceView());
 		}
+
+		// 深度
+		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+			2,	// 根签名的9号位置
+			DepthBufferRenderTarget->GetGPUShaderResourceView()
+		);
 
 		auto viewport = renderTarget->GetViewport();
 		auto rect = renderTarget->GetScissorRect();
