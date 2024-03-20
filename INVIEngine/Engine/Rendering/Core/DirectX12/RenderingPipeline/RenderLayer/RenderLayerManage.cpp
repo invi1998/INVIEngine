@@ -12,6 +12,7 @@
 #include "RenderLayer/OperationHandleRenderLayer.h"
 #include "RenderLayer/OperationHandleRotPlaneRenderLayer.h"
 #include "RenderLayer/SelectRenderLayer.h"
+#include "RenderLayer/SSAOBilateralRenderLayer.h"
 #include "RenderLayer/SSAORenderLayer.h"
 #include "RenderLayer/TransparentRenderLayer.h"
 
@@ -31,6 +32,7 @@ FRenderLayerManage::FRenderLayerManage()
 	CreateRenderLayer<FOperationHandleRenderLayer>();
 	CreateRenderLayer<FOperationHandleRotPlaneRenderLayer>();
 	CreateRenderLayer<FSSAORenderLayer>();
+	CreateRenderLayer<FSSAOBilateralRenderLayer>();
 }
 
 FRenderLayerManage::~FRenderLayerManage()

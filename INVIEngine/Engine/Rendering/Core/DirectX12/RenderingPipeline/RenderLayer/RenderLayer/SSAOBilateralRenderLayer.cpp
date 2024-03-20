@@ -1,15 +1,15 @@
 #include "EngineMinimal.h"
-#include "SSAORenderLayer.h"
+#include "SSAOBilateralRenderLayer.h"
 
 #include "Rendering/Core/DirectX12/RenderingPipeline/PipelineState/DirectXPipelineState.h"
 
-FSSAORenderLayer::FSSAORenderLayer()
+FSSAOBilateralRenderLayer::FSSAOBilateralRenderLayer()
 {
-	RenderPriority = 10000;
-	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_SSAO;
+	RenderPriority = 10111;
+	RenderLayerType = EMeshRenderLayerType::RENDER_LAYER_SSAO_BILATERAL_BLUR;
 }
 
-void FSSAORenderLayer::BuildShader()
+void FSSAOBilateralRenderLayer::BuildShader()
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///构建shader HLSL
@@ -21,8 +21,8 @@ void FSSAORenderLayer::BuildShader()
 	std::vector<D3D_SHADER_MACRO> D3dShaderMacro;
 	ShaderType::ToD3DShaderMacro(ShaderMacro, D3dShaderMacro);
 
-	VertexShader.BuildShader(L"Shader/HLSL/AO/SSAO.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
-	PixelShader.BuildShader(L"Shader/HLSL/AO/SSAO.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
+	VertexShader.BuildShader(L"Shader/HLSL/AO/SSAOBilateralBlur.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
+	PixelShader.BuildShader(L"Shader/HLSL/AO/SSAOBilateralBlur.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
 	// 绑定shader
 	DirectXPipelineState->BindShader(VertexShader, PixelShader);
 
@@ -33,7 +33,7 @@ void FSSAORenderLayer::BuildShader()
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
 
-void FSSAORenderLayer::BuildPSO()
+void FSSAOBilateralRenderLayer::BuildPSO()
 {
 	FRenderLayer::BuildPSO();	// 通过基类的代理，我们已经成功绑定了根签名
 
@@ -48,10 +48,10 @@ void FSSAORenderLayer::BuildPSO()
 	psoDesc.DSVFormat = DXGI_FORMAT_UNKNOWN;	// 设置深度模板格式(未知，因为我们不需要深度模板)
 
 	// 构建渲染管线
-	DirectXPipelineState->BuildPipelineState(SSA0);
+	DirectXPipelineState->BuildPipelineState(SSAOBilateralBlur);
 }
 
-void FSSAORenderLayer::Draw(float deltaTime)
+void FSSAOBilateralRenderLayer::Draw(float deltaTime)
 {
 	// 渲染之前，重置PSO
 	ResetPSO();
@@ -64,7 +64,7 @@ void FSSAORenderLayer::Draw(float deltaTime)
 
 }
 
-void FSSAORenderLayer::ResetPSO()
+void FSSAOBilateralRenderLayer::ResetPSO()
 {
-	DirectXPipelineState->ResetPSO(SSA0);
+	DirectXPipelineState->ResetPSO(SSAOBilateralBlur);
 }

@@ -205,6 +205,7 @@ void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FVi
 	NormalBuffer.UpdateCalculations(DeltaTime, viewport_info);
 	AmbientBuffer.UpdateCalculations(DeltaTime, viewport_info);
 	NoiseBuffer.UpdateCalculations(DeltaTime, viewport_info);
+	BilateralBlur.UpdateCalculations(DeltaTime, viewport_info);
 
 	DrawSSAOConstantBuffer(DeltaTime, viewport_info);
 }

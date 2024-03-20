@@ -21,6 +21,7 @@ enum EPipelineState : UINT
 
 	ScreenNormal = 20,				// ÆÁÄ»·¨Ïß
 	SSA0 = 21,						// SSAO
+	SSAOBilateralBlur = 22,			// SSAOË«±ßÄ£ºý
 };
 
 
