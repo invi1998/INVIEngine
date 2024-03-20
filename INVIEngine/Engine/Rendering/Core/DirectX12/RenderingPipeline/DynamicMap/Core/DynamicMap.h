@@ -30,8 +30,8 @@ public:
 	UINT GetSRVOffset() const { return SRVOffset; }
 	UINT GetRTVOffset() const { return RTVOffset; }
 
-	void SetSRVOffset(UINT inSRVOffset) { SRVOffset = inSRVOffset; }
-	void SetRTVOffset(UINT inRTVOffset) { RTVOffset = inRTVOffset; }
+	void SetSRVOffset(const UINT inSRVOffset) { SRVOffset = inSRVOffset; }
+	void SetRTVOffset(const UINT inRTVOffset) { RTVOffset = inRTVOffset; }
 
 	std::shared_ptr<FRenderTarget>& GetRenderTarget() { return RenderTarget; }
 

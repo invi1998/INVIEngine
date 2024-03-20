@@ -35,16 +35,16 @@ void FRenderingPipeline::BuildPipeline()
 	// 初始化动态cubeMap
 	DynamicCubeMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
-	// 初始化AO
-	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
-
-	SSAO.SetBufferSize(FEngineRenderConfig::GetRenderConfig()->ScreenWidth, FEngineRenderConfig::GetRenderConfig()->ScreenHeight);	// 设置AO缓冲区大小
-
 	// shadowMap 初始化
 	GeometryMap.DynamicShadowMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
 
 	// ShadowCubeMap 初始化
 	GeometryMap.DynamicShadowCubeMap.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
+
+	// 初始化AO
+	SSAO.Init(&GeometryMap, &DirectXPipelineState, &RenderLayerManage);
+
+	SSAO.SetBufferSize(FEngineRenderConfig::GetRenderConfig()->ScreenWidth, FEngineRenderConfig::GetRenderConfig()->ScreenHeight);	// 设置AO缓冲区大小
 
 	// 初始化根签名
 	DirectXRootSignature.BuildRootSignature(GeometryMap.GetDrawTexture2DCount());	// 构建根签名

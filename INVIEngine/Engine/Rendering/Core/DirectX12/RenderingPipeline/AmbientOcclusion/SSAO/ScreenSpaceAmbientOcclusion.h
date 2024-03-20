@@ -41,8 +41,14 @@ public:
 	void BuildDepthBuffer();	// 构建深度缓冲
 
 	UINT GetAmbientSRVOffset() const;	// 获取环境光SRV偏移
-
 	UINT GetAmbientRTVOffset() const;	// 获取环境光RTV偏移
+
+	UINT GetDepthBufferSRVOffset() const;	// 获取深度缓冲SRV偏移
+
+	UINT GetNoiseBufferSRVOffset() const;	// 获取噪声缓冲SRV偏移
+
+	UINT GetNormalBufferSRVOffset() const;	// 获取法线缓冲SRV偏移
+	UINT GetNormalBufferRTVOffset() const;	// 获取法线缓冲RTV偏移
 
 	UINT GetBilateralBlurSRVOffset() const;	// 获取双边模糊SRV偏移
 	UINT GetBilateralBlurRTVOffset() const;	// 获取双边模糊RTV偏移

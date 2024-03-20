@@ -50,23 +50,7 @@ void FNoiseBuffer::ResetView(int wid, int hei)
 
 void FNoiseBuffer::BuildDescriptor()
 {
-	UINT CBVSRVUAVDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);	// 获取CBV/SRV/UAV描述符大小
-
-	auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
-	auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
-
-	UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
-		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
-		1 + // 反射Cubemap 动态反射
-		1 +	// 阴影贴图 直射灯，聚光灯
-		1 + // shadowCubeMap 6个面 (点光源阴影）
-		1 + // UI
-		1 + // 法线
-		1	// 深度
-		;
-
-	RenderTarget->GetCPUShaderResourceView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(CPUSRVDesHeapStart, offset, CBVSRVUAVDescriptorSize);	// 设置SRV描述符句柄，将SRV描述符句柄指向SRV堆的指定偏移位置
-	RenderTarget->GetGPUShaderResourceView() = CD3DX12_GPU_DESCRIPTOR_HANDLE(GPUSRVDesHeapStart, offset, CBVSRVUAVDescriptorSize);	// 设置SRV描述符句柄，将SRV描述符句柄指向SRV堆的指定偏移位置
+	CalculateSRVOffset();
 }
 
 void FNoiseBuffer::BuildRenderTargetRTVOffset()
@@ -111,26 +95,26 @@ void FNoiseBuffer::BuildUploadBuffer(const D3D12_RESOURCE_DESC& ResourceDesc, Co
 		IID_PPV_ARGS(NoiseMapUploadBuffer.GetAddressOf())
 	));
 
-	// XMCOLOR Buffer[256 * 256] = {0};
-	// D3D12_SUBRESOURCE_DATA SubResourceData = GetSubResourceData(Buffer[0], 256, 256);
+	 XMCOLOR Buffer[256 * 256] = {0};
+	 D3D12_SUBRESOURCE_DATA SubResourceData = GetSubResourceData(Buffer, 256, 256);
 
-	// 将数据拷贝到上传堆
-	float* Data = nullptr;
-	CD3DX12_RANGE ReadRange(0, 0);
-	ANALYSIS_RESULT(NoiseMapUploadBuffer->Map(0, &ReadRange, reinterpret_cast<void**>(&Data)));
-	for (int i = 0; i < ResourceDesc.Width * ResourceDesc.Height * 4; i++)
-	{
-		Data[i] = static_cast<float>(rand()) / RAND_MAX;
-	}
-	NoiseMapUploadBuffer->Unmap(0, nullptr);
+	//// 将数据拷贝到上传堆
+	//float* Data = nullptr;
+	//CD3DX12_RANGE ReadRange(0, 0);
+	//ANALYSIS_RESULT(NoiseMapUploadBuffer->Map(0, &ReadRange, reinterpret_cast<void**>(&Data)));
+	//for (int i = 0; i < ResourceDesc.Width * ResourceDesc.Height * 4; i++)
+	//{
+	//	Data[i] = static_cast<float>(rand()) / RAND_MAX;
+	//}
+	//NoiseMapUploadBuffer->Unmap(0, nullptr);
 
 	// 将数据从上传堆拷贝到默认堆
 	CD3DX12_RESOURCE_BARRIER Barrier = CD3DX12_RESOURCE_BARRIER::Transition(OutResource.Get(),
 				D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_COPY_DEST);
 	GetD3dGraphicsCommandList()->ResourceBarrier(1, &Barrier);
 
-	GetD3dGraphicsCommandList()->CopyResource(OutResource.Get(), NoiseMapUploadBuffer.Get());
-	// UpdateSubresources(GetD3dGraphicsCommandList(), OutResource.Get(), NoiseMapUploadBuffer.Get(), 0, 0, SubNum, &SubResourceData);
+	// GetD3dGraphicsCommandList()->CopyResource(OutResource.Get(), NoiseMapUploadBuffer.Get());
+	UpdateSubresources(GetD3dGraphicsCommandList().Get(), OutResource.Get(), NoiseMapUploadBuffer.Get(), 0, 0, SubNum, &SubResourceData);
 
 	Barrier = CD3DX12_RESOURCE_BARRIER::Transition(OutResource.Get(),
 				D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);

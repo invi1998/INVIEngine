@@ -121,37 +121,12 @@ void FNormalBuffer::ResetView(int wid, int hei)
 
 void FNormalBuffer::BuildDescriptor()
 {
-	UINT CBVSRVUAVDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);	// 获取CBV/SRV/UAV描述符大小
-
-	auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
-	auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();	// 获取SRV描述符句柄
-
-	int offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
-		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
-		1 + // 反射Cubemap 动态反射
-		1 +	// 阴影贴图 直射灯，聚光灯
-		1 + // shadowCubeMap 6个面 (点光源阴影）
-		1; // UI
-
-	RenderTarget->GetCPUShaderResourceView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(CPUSRVDesHeapStart, offset, CBVSRVUAVDescriptorSize);	// 设置SRV描述符句柄，将SRV描述符句柄指向SRV堆的指定偏移位置
-	RenderTarget->GetGPUShaderResourceView() = CD3DX12_GPU_DESCRIPTOR_HANDLE(GPUSRVDesHeapStart, offset, CBVSRVUAVDescriptorSize);	// 设置SRV描述符句柄，将SRV描述符句柄指向SRV堆的指定偏移位置
-	
+	CalculateSRVOffset();
 }
 
 void FNormalBuffer::BuildRenderTargetRTVOffset()
 {
-	UINT rtvDescriptorSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);	// 获取RTV描述符大小
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvDesHandle = GetRTVHeap()->GetCPUDescriptorHandleForHeapStart();	// 获取RTV描述符句柄
-
-	int offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
-		6 +	// 反射的CubeMap
-		6;	// shadowCubeMap 6个面 (点光源阴影）
-
-	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(RenderTarget.get()))
-	{
-		renderTarget->GetCPURenderTargetView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvDesHandle, offset, rtvDescriptorSize);	// 设置RTV描述符句柄，将RTV描述符句柄指向RTV堆的指定偏移位置
-	}
+	CalculateRTVOffset();
 }
 
 void FNormalBuffer::BuildSRVDescriptor()

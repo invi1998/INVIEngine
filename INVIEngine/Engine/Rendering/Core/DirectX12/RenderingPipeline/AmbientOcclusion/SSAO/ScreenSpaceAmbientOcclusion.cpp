@@ -29,6 +29,7 @@ void FScreenSpaceAmbientOcclusion::Init(FGeometryMap* inGeometryMap, FDirectXPip
 	NoiseBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 	NormalBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 	AmbientBuffer.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
+	BilateralBlur.Init(inGeometryMap, inDirectXPipelineState, inRenderLayer);
 }
 
 void FScreenSpaceAmbientOcclusion::SetBufferSize(int wid, int hei)
@@ -36,6 +37,7 @@ void FScreenSpaceAmbientOcclusion::SetBufferSize(int wid, int hei)
 	NormalBuffer.SetBufferSize(wid, hei);
 	AmbientBuffer.SetBufferSize(wid/2, hei/2);
 	NoiseBuffer.SetBufferSize(wid, hei);
+	BilateralBlur.SetBufferSize(wid, hei);
 }
 
 void FScreenSpaceAmbientOcclusion::Build()
@@ -207,11 +209,14 @@ void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 {
 	BuildDepthBuffer();		// 先构建深度缓冲，保证CPU和GPU都能访问到深度缓冲，以及SRV是有效的
 
+	NormalBuffer.SetSRVOffset(GetNormalBufferSRVOffset());		// 设置环境光SRV偏移
+	NormalBuffer.SetRTVOffset(GetNormalBufferRTVOffset());		// 设置环境光RTV偏移
 	NormalBuffer.BuildDescriptor();
 	NormalBuffer.BuildRenderTargetRTVOffset();
 	NormalBuffer.BuildSRVDescriptor();
 	NormalBuffer.BuildRTVDescriptor();
 
+	NoiseBuffer.SetSRVOffset(GetNoiseBufferSRVOffset());		// 设置噪波SRV偏移
 	NoiseBuffer.BuildDescriptor();
 	NoiseBuffer.BuildRenderTargetRTVOffset();
 	NoiseBuffer.BuildSRVDescriptor();
@@ -219,15 +224,13 @@ void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 
 	AmbientBuffer.SetSRVOffset(GetAmbientSRVOffset());		// 设置环境光SRV偏移
 	AmbientBuffer.SetRTVOffset(GetAmbientRTVOffset());		// 设置环境光RTV偏移
-
 	AmbientBuffer.BuildDescriptor();
 	AmbientBuffer.BuildRenderTargetRTVOffset();
 	AmbientBuffer.BuildSRVDescriptor();
 	AmbientBuffer.BuildRTVDescriptor();
 
-	BilateralBlur.SetSRVOffset(GetAmbientSRVOffset());		// 设置双边模糊SRV偏移
-	BilateralBlur.SetRTVOffset(GetAmbientRTVOffset());		// 设置双边模糊RTV偏移
-
+	BilateralBlur.SetSRVOffset(GetBilateralBlurSRVOffset());		// 设置双边模糊SRV偏移
+	BilateralBlur.SetRTVOffset(GetBilateralBlurRTVOffset());		// 设置双边模糊RTV偏移
 	BilateralBlur.BuildDescriptor();
 	BilateralBlur.BuildRenderTargetRTVOffset();
 	BilateralBlur.BuildSRVDescriptor();
@@ -273,31 +276,54 @@ void FScreenSpaceAmbientOcclusion::SaveSSAOToBuffer()
 
 void FScreenSpaceAmbientOcclusion::BuildDepthBuffer()
 {
-	UINT CBVDescSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	auto CpuSRVDescHeap = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();
-	auto GpuSRVDescHeap = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();
-
-	UINT offset = GeometryMap->GetDrawTexture2DCount() +	// 2D纹理数量
-		GeometryMap->GetDrawCubeMapCount() +	// 立方体纹理数量
-		1 +		// 动态CubeMap数量
-		1 +		// shadow直射灯，聚光灯数量
-		1 +		// shadow点光源数量
-		1 +		// UI
-		1 +		// 法线缓冲
-		1 + 	// 深度
-		1 +		// 噪波
-		1;		// SSAO 环境光遮蔽
-
 	// 构建深度缓冲描述堆
-	DepthBuffer::BuildDepthBufferDescriptorHeap(CpuSRVDescHeap, GpuSRVDescHeap, CBVDescSize, offset);
+	DepthBuffer::BuildDepthBufferDescriptorHeap(
+		GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart(),	// 获取CPU描述符句柄
+		GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart(),	// 获取GPU描述符句柄
+		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV),	// 获取CBV/SRV/UAV描述符大小
+		GetDepthBufferSRVOffset());	// 获取深度缓冲SRV偏移
 
 	// 构建深度缓冲（这里我们使用的深度资源是我们之前创建的深度资源，也就是主视口的深度信息）
 	DepthBuffer::CreateDepthBuffer(GetD3dDevice().Get(), GetDepthBufferResource());
 }
 
+
+UINT FScreenSpaceAmbientOcclusion::GetNormalBufferSRVOffset() const
+{
+	return  GeometryMap->GetDrawTexture2DCount() + //Texture2D
+		GeometryMap->GetDrawCubeMapCount() + //静态Cube贴图 背景 天空球
+		1 + //动态Cube贴图 反射
+		1 + //Shadow 直射灯 聚光灯 Shadow
+		1 + //ShadowCubeMap 点光源的 Shadow
+		1;//UI
+}
+
+UINT FScreenSpaceAmbientOcclusion::GetDepthBufferSRVOffset() const
+{
+	return	GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
+		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
+		1 + //动态Cube贴图 反射
+		1 + //Shadow 直射灯 聚光灯 Shadow
+		1 + //ShadowCubeMap 点光源的 Shadow
+		1 + //UI
+		1;  //Nor
+}
+
+UINT FScreenSpaceAmbientOcclusion::GetNoiseBufferSRVOffset() const
+{
+	return  GeometryMap->GetDrawTexture2DCount() + //Texture2D
+		GeometryMap->GetDrawCubeMapCount() + //静态Cube贴图 背景 天空球
+		1 + //动态Cube贴图 反射
+		1 + //Shadow 直射灯 聚光灯 Shadow
+		1 + //ShadowCubeMap 点光源的 Shadow
+		1 + //UI
+		1 + //法线
+		1; //深度 
+}
+
 UINT FScreenSpaceAmbientOcclusion::GetAmbientSRVOffset() const
 {
-	UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
+	const UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
 		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
 		1 + // 反射Cubemap 动态反射
 		1 +	// 阴影贴图 直射灯，聚光灯
@@ -311,19 +337,9 @@ UINT FScreenSpaceAmbientOcclusion::GetAmbientSRVOffset() const
 	return offset;
 }
 
-UINT FScreenSpaceAmbientOcclusion::GetAmbientRTVOffset() const
-{
-	UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
-		6 +	// 反射的CubeMap
-		6 + // shadowCubeMap 6个面 (点光源阴影）
-		1;	// 法线
-
-	return offset;
-}
-
 UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurSRVOffset() const
 {
-	UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
+	const UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
 		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
 		1 + // 反射Cubemap 动态反射
 		1 +	// 阴影贴图 直射灯，聚光灯
@@ -338,9 +354,26 @@ UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurSRVOffset() const
 	return offset;
 }
 
+UINT FScreenSpaceAmbientOcclusion::GetNormalBufferRTVOffset() const
+{
+	return	FEngineRenderConfig::GetRenderConfig()->SwapChainCount +//交换链
+		6 +//反射的CubeMap RTV
+		6; //ShadowCubeMap RTV Point Light
+}
+
+UINT FScreenSpaceAmbientOcclusion::GetAmbientRTVOffset() const
+{
+	const UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
+		6 +	// 反射的CubeMap
+		6 + // shadowCubeMap 6个面 (点光源阴影）
+		1;	// 法线
+
+	return offset;
+}
+
 UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurRTVOffset() const
 {
-	UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
+	const UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
 		6 +	// 反射的CubeMap
 		6 + // shadowCubeMap 6个面 (点光源阴影）
 		1 +	// 法线
