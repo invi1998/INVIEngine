@@ -271,11 +271,12 @@ void FGeometryMap::BuildDescriptorHeap()
 		1 +	// 阴影贴图 直射灯，聚光灯
 		1 + // shadowCubeMap 6个面 (点光源阴影）
 		1 + // UI
-		1 +	// 法线
+		1 +	// 屏幕法线
 		1 + // 深度
 		1 +	// 噪波
-		1	// SSAO
-	); 
+		1 +	// SSAO
+		1	// 双边模糊
+	);
 }
 
 UINT FGeometryMap::GetDrawTexture2DCount() const

@@ -41,9 +41,13 @@ public:
 
 	UINT GetAmbientRTVOffset() const;	// 获取环境光RTV偏移
 
+	UINT GetBilateralBlurSRVOffset() const;	// 获取双边模糊SRV偏移
+	UINT GetBilateralBlurRTVOffset() const;	// 获取双边模糊RTV偏移
+
 protected:
 	FNormalBuffer NormalBuffer;						// 法线缓冲
 	FAmbientBuffer AmbientBuffer;					// 环境光缓冲
+	FAmbientBuffer BilateralBlur;					// 双边模糊
 	FSSAODirectXRootSignature SSAORootSignature;	// SSAO根签名
 
 	FConstantBufferViews SSAOConstantBufferView;		// SSAO常量缓冲视图

@@ -212,6 +212,14 @@ void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 	AmbientBuffer.BuildRenderTargetRTVOffset();
 	AmbientBuffer.BuildSRVDescriptor();
 	AmbientBuffer.BuildRTVDescriptor();
+
+	BilateralBlur.SetSRVOffset(GetAmbientSRVOffset());		// 设置双边模糊SRV偏移
+	BilateralBlur.SetRTVOffset(GetAmbientRTVOffset());		// 设置双边模糊RTV偏移
+
+	BilateralBlur.BuildDescriptor();
+	BilateralBlur.BuildRenderTargetRTVOffset();
+	BilateralBlur.BuildSRVDescriptor();
+	BilateralBlur.BuildRTVDescriptor();
 }
 
 void FScreenSpaceAmbientOcclusion::BuildSSAOConstantBufferView()
@@ -290,6 +298,34 @@ UINT FScreenSpaceAmbientOcclusion::GetAmbientRTVOffset() const
 		6 + // shadowCubeMap 6个面 (点光源阴影）
 		1;	// 法线
 
+	return offset;
+}
+
+UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurSRVOffset() const
+{
+	UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
+		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
+		1 + // 反射Cubemap 动态反射
+		1 +	// 阴影贴图 直射灯，聚光灯
+		1 + // shadowCubeMap 6个面 (点光源阴影）
+		1 + // UI
+		1 + // 法线
+		1 + // 深度
+		1 +	// 噪波
+		1;	// SSAO 环境光遮蔽
+		;
+
+	return offset;
+}
+
+UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurRTVOffset() const
+{
+	UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
+		6 +	// 反射的CubeMap
+		6 + // shadowCubeMap 6个面 (点光源阴影）
+		1 +	// 法线
+		1	// SSAO 环境光遮蔽
+		;
 	return offset;
 }
 

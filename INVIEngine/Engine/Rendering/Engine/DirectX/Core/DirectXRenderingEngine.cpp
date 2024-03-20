@@ -1237,7 +1237,8 @@ bool CDirectXRenderingEngine::InitDirect3D()
 		+ 6		// CubeMap的6个面的交换链
 		+ 6		// 万向阴影的cubeMap
 		+ 1		// 屏幕法线
-		+ 1;	// 环境光遮蔽
+		+ 1		// 环境光遮蔽	SSAO
+		+ 1;	// 双边模糊
 	// 描述符数量，这里设置为2，是因为我们使用双缓冲（前台缓冲区，后台缓冲区，所以有两个渲染视图，所以需要两个RTV， 故这里配置2）（+6表示CubeMap的6个面的交换链 + 6表示万向阴影的cubeMap + 1屏幕法线）
 	RTVDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;	// 指定描述符类型-渲染目标视图
 	RTVDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;	// 指定描述符默认用法
