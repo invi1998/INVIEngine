@@ -157,13 +157,13 @@ void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const
 {
 	FSSAOConstant SSAOConstant;
 	// 从视口信息中获取投影矩阵
-	SSAOConstant.ProjectionMatrix = viewport_info.ProjectionMatrix;
 
 	// 投影矩阵的逆矩阵
 	XMMATRIX invProjection = XMLoadFloat4x4(&SSAOConstant.ProjectionMatrix);	// 加载投影矩阵
 	XMVECTOR det = XMMatrixDeterminant(invProjection);	// 计算行列式
 	XMMATRIX invView = XMMatrixInverse(&det, invProjection);	// 计算逆矩阵
 	XMStoreFloat4x4(&SSAOConstant.InversiveProjectionMatrix, XMMatrixTranspose(invView));		// 转置逆矩阵并存入常量缓冲
+	XMStoreFloat4x4(&SSAOConstant.ProjectionMatrix, XMMatrixTranspose(invProjection));		// 转置投影矩阵并存入常量缓冲
 
 	// [-1, 1] -> [0. 1]
 	XMMATRIX halfLambertMatrix = {

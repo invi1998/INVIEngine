@@ -81,6 +81,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	MaterialConstBuffer MatConstbuffer = Materials[MaterialID];
 	
+	// 归一化到屏幕空间（近景层面）
 	mvOut.TexPositionHome /= mvOut.TexPositionHome.w;
 	
 	// 环境光可及率 （这里采样不能用纹理坐标，因为纹理坐标是世界坐标，这里需要屏幕空间坐标）
