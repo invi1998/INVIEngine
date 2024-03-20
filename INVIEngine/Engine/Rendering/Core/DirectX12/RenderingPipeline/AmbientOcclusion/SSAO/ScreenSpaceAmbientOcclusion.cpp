@@ -85,54 +85,10 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 	DrawResource();
 
 	// 主SSAO渲染
-	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(AmbientBuffer.GetRenderTarget().get()))
-	{
-		
+	DrawSSAO(DeltaTime);
 
-		auto viewport = renderTarget->GetViewport();
-		auto rect = renderTarget->GetScissorRect();
-
-		// 设置视口
-		GetD3dGraphicsCommandList()->RSSetViewports(1, &viewport);
-		GetD3dGraphicsCommandList()->RSSetScissorRects(1, &rect);
-
-		// 将资源从一个状态转换到另一个状态
-		CD3DX12_RESOURCE_BARRIER transition = CD3DX12_RESOURCE_BARRIER::Transition(
-			renderTarget->GetRenderTarget(),	//	获取渲染目标
-			D3D12_RESOURCE_STATE_GENERIC_READ,	//	从可读状态
-			D3D12_RESOURCE_STATE_RENDER_TARGET);	//	到渲染目标状态 转换
-
-		// 清除渲染目标
-		GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition);
-
-		const float ClearColor[] = { 1.f, 1.f, 1.f, 1.f };	// 法线的默认值是(0,0,1)
-		// 清除渲染目标视图（清空画布）
-		GetD3dGraphicsCommandList()->ClearRenderTargetView(
-			renderTarget->GetCPURenderTargetView(),
-			ClearColor,
-			0,
-			nullptr);
-
-		// 清除深度模板缓冲区，但是因为我之前已经禁用了深度，所以这里不需要再清除
-
-		// 合并状态，没有深度值，传nullptr
-		GetD3dGraphicsCommandList()->OMSetRenderTargets(
-			1,
-			&renderTarget->GetCPURenderTargetView(),
-			true,
-			nullptr
-		);
-
-		// 渲染SSAO
-		RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO, DeltaTime);
-
-		CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(
-			renderTarget->GetRenderTarget(),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,	//	从渲染状态
-			D3D12_RESOURCE_STATE_GENERIC_READ);	//	到可读状态 转换
-
-		GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition2);
-	}
+	// 双边模糊
+	DrawBilateralBlur(DeltaTime, 2);
 }
 
 void FScreenSpaceAmbientOcclusion::DrawResource()
@@ -166,6 +122,54 @@ void FScreenSpaceAmbientOcclusion::DrawResource()
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
 		5,	// 根签名的1号位置
 		NoiseBuffer.GetRenderTarget()->GetGPUShaderResourceView());
+}
+
+void FScreenSpaceAmbientOcclusion::DrawSSAO(float DeltaTime)
+{
+	auto viewport = AmbientBuffer.GetRenderTarget().get()->GetViewport();
+	auto rect = AmbientBuffer.GetRenderTarget().get()->GetScissorRect();
+
+	// 设置视口
+	GetD3dGraphicsCommandList()->RSSetViewports(1, &viewport);
+	GetD3dGraphicsCommandList()->RSSetScissorRects(1, &rect);
+
+	// 将资源从一个状态转换到另一个状态
+	CD3DX12_RESOURCE_BARRIER transition = CD3DX12_RESOURCE_BARRIER::Transition(
+		AmbientBuffer.GetRenderTarget().get()->GetRenderTarget(),	//	获取渲染目标
+		D3D12_RESOURCE_STATE_GENERIC_READ,	//	从可读状态
+		D3D12_RESOURCE_STATE_RENDER_TARGET);	//	到渲染目标状态 转换
+
+	// 清除渲染目标
+	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition);
+
+	const float ClearColor[] = { 1.f, 1.f, 1.f, 1.f };	// 法线的默认值是(0,0,1)
+	// 清除渲染目标视图（清空画布）
+	GetD3dGraphicsCommandList()->ClearRenderTargetView(
+		AmbientBuffer.GetRenderTarget().get()->GetCPURenderTargetView(),
+		ClearColor,
+		0,
+		nullptr);
+
+	// 清除深度模板缓冲区，但是因为我之前已经禁用了深度，所以这里不需要再清除
+
+	// 合并状态，没有深度值，传nullptr
+	GetD3dGraphicsCommandList()->OMSetRenderTargets(
+		1,
+		&AmbientBuffer.GetRenderTarget().get()->GetCPURenderTargetView(),
+		true,
+		nullptr
+	);
+
+	// 渲染SSAO
+	RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO, DeltaTime);
+
+	CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(
+		AmbientBuffer.GetRenderTarget().get()->GetRenderTarget(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET,	//	从渲染状态
+		D3D12_RESOURCE_STATE_GENERIC_READ);	//	到可读状态 转换
+
+	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition2);
+	
 }
 
 void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info)
@@ -203,6 +207,97 @@ void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FVi
 	NoiseBuffer.UpdateCalculations(DeltaTime, viewport_info);
 
 	DrawSSAOConstantBuffer(DeltaTime, viewport_info);
+}
+
+void FScreenSpaceAmbientOcclusion::DrawBilateralBlur(float DeltaTime, const UINT DrawTimes)
+{
+	for (UINT i = 0; i < DrawTimes; ++i)
+	{
+		DrawBilateralBlurHorizontal(DeltaTime);
+		DrawBilateralBlurVertical(DeltaTime);
+	}
+}
+
+void FScreenSpaceAmbientOcclusion::DrawBilateralBlurHorizontal(float DeltaTime)
+{
+	DrawBlur(DeltaTime, true);
+}
+
+void FScreenSpaceAmbientOcclusion::DrawBilateralBlurVertical(float DeltaTime)
+{
+	DrawBlur(DeltaTime, false);
+}
+
+void FScreenSpaceAmbientOcclusion::DrawBlur(float DeltaTime, bool bHorizontal)
+{
+	SetRoot32BitConstants(bHorizontal);	// 通知shader是水平还是垂直模糊
+
+	ID3D12Resource* resource = GetDrawResource(bHorizontal);	// 获取资源
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE* rtv = GetDrawRTVResource(bHorizontal);	// 获取RTV资源
+
+	// 将资源从一个状态转换到另一个状态
+	CD3DX12_RESOURCE_BARRIER transition = CD3DX12_RESOURCE_BARRIER::Transition(
+		resource,	//	获取渲染目标
+		D3D12_RESOURCE_STATE_GENERIC_READ,	//	从可读状态
+		D3D12_RESOURCE_STATE_RENDER_TARGET);	//	到渲染目标状态 转换
+
+	// 清除渲染目标
+	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition);
+
+	const float ClearColor[] = { 1.f, 1.f, 1.f, 1.f };	// 法线的默认值是(0,0,1)
+	// 清除渲染目标视图（清空画布）
+	GetD3dGraphicsCommandList()->ClearRenderTargetView(
+		*rtv,
+		ClearColor,
+		0,
+		nullptr);
+
+	// 清除深度模板缓冲区，但是因为我之前已经禁用了深度，所以这里不需要再清除
+
+	// 合并状态，没有深度值，传nullptr
+	GetD3dGraphicsCommandList()->OMSetRenderTargets(
+		1,
+		rtv,
+		true,
+		nullptr
+	);
+
+	//绑定接受的缓冲区 绑定srv (shader寄存器接收资源的编号）
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+		6,	// 根签名的6号位置
+		*GetDrawSRVResource(bHorizontal));
+
+	// 渲染SSAO
+	RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO_BILATERAL_BLUR, DeltaTime);
+
+	CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(
+		resource,
+		D3D12_RESOURCE_STATE_RENDER_TARGET,	//	从渲染状态
+		D3D12_RESOURCE_STATE_GENERIC_READ);	//	到可读状态 转换
+
+	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition2);
+
+}
+
+ID3D12Resource* FScreenSpaceAmbientOcclusion::GetDrawResource(bool bHorizontal)
+{
+	return bHorizontal ? BilateralBlur.GetRenderTarget()->GetRenderTarget() : AmbientBuffer.GetRenderTarget()->GetRenderTarget();
+}
+
+CD3DX12_GPU_DESCRIPTOR_HANDLE* FScreenSpaceAmbientOcclusion::GetDrawSRVResource(bool bHorizontal)
+{
+	return &(bHorizontal ? AmbientBuffer.GetRenderTarget()->GetGPUShaderResourceView() : BilateralBlur.GetRenderTarget()->GetGPUShaderResourceView());
+}
+
+CD3DX12_CPU_DESCRIPTOR_HANDLE* FScreenSpaceAmbientOcclusion::GetDrawRTVResource(bool bHorizontal)
+{
+	return &(bHorizontal ? BilateralBlur.GetRenderTarget()->GetCPURenderTargetView() : AmbientBuffer.GetRenderTarget()->GetCPURenderTargetView());
+}
+
+void FScreenSpaceAmbientOcclusion::SetRoot32BitConstants(bool bHorizontal)
+{
+	GetD3dGraphicsCommandList()->SetGraphicsRoot32BitConstant(1, static_cast<UINT>(bHorizontal), 0);
 }
 
 void FScreenSpaceAmbientOcclusion::BuildDescriptor()

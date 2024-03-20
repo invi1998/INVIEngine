@@ -15,6 +15,7 @@ enum EMeshRenderLayerType : int
 
 	RENDER_LAYER_SCREEN_NORMAL = 20,	// 屏幕法线层
 	RENDER_LAYER_SSAO = 21,				// 屏幕空间环境光遮蔽层
+	RENDER_LAYER_SSAO_BILATERAL_BLUR = 22,	// 屏幕空间环境光遮蔽双边模糊层
 };
 
 
