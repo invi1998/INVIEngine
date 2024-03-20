@@ -37,6 +37,10 @@ public:
 
 	void BuildDepthBuffer();	// 构建深度缓冲
 
+	UINT GetAmbientSRVOffset() const;	// 获取环境光SRV偏移
+
+	UINT GetAmbientRTVOffset() const;	// 获取环境光RTV偏移
+
 protected:
 	FNormalBuffer NormalBuffer;						// 法线缓冲
 	FAmbientBuffer AmbientBuffer;					// 环境光缓冲

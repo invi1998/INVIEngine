@@ -21,6 +21,18 @@ public:
 	virtual void Draw(float deltaTime);
 	virtual void ResetView(int wid, int hei);
 
+	virtual void CalculateSRVOffset();
+	virtual void CalculateRTVOffset();
+
+	UINT GetWidth() const { return Width; }
+	UINT GetHeight() const { return Height; }
+
+	UINT GetSRVOffset() const { return SRVOffset; }
+	UINT GetRTVOffset() const { return RTVOffset; }
+
+	void SetSRVOffset(UINT inSRVOffset) { SRVOffset = inSRVOffset; }
+	void SetRTVOffset(UINT inRTVOffset) { RTVOffset = inRTVOffset; }
+
 	std::shared_ptr<FRenderTarget>& GetRenderTarget() { return RenderTarget; }
 
 	template<typename T>
@@ -42,6 +54,9 @@ protected:
 
 	UINT Width = 256;										// 宽度
 	UINT Height = 256;										// 高度
+
+	UINT SRVOffset = 0;	// SRV偏移 用于绑定到管线上 ShaderResourceView
+	UINT RTVOffset = 0;	// RTV偏移 用于绑定到管线上 RenderTargetView
 
 };
 

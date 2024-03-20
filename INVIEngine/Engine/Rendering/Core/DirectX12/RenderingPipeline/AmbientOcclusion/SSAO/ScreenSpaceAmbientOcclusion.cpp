@@ -3,6 +3,7 @@
 
 #include "SSAOConstant.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
+#include "Config/EngineRenderConfig.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderBuffer/DepthBuffer.h"
@@ -204,6 +205,9 @@ void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 	NoiseBuffer.BuildSRVDescriptor();
 	NoiseBuffer.BuildRTVDescriptor();
 
+	AmbientBuffer.SetSRVOffset(GetAmbientSRVOffset());		// 设置环境光SRV偏移
+	AmbientBuffer.SetRTVOffset(GetAmbientRTVOffset());		// 设置环境光RTV偏移
+
 	AmbientBuffer.BuildDescriptor();
 	AmbientBuffer.BuildRenderTargetRTVOffset();
 	AmbientBuffer.BuildSRVDescriptor();
@@ -262,3 +266,30 @@ void FScreenSpaceAmbientOcclusion::BuildDepthBuffer()
 	// 构建深度缓冲（这里我们使用的深度资源是我们之前创建的深度资源，也就是主视口的深度信息）
 	DepthBuffer::CreateDepthBuffer(GetD3dDevice().Get(), GetDepthBufferResource());
 }
+
+UINT FScreenSpaceAmbientOcclusion::GetAmbientSRVOffset() const
+{
+	UINT offset = GeometryMap->GetDrawTexture2DCount() + // 纹理贴图数量
+		GeometryMap->GetDrawCubeMapCount() +	// CubeMap数量
+		1 + // 反射Cubemap 动态反射
+		1 +	// 阴影贴图 直射灯，聚光灯
+		1 + // shadowCubeMap 6个面 (点光源阴影）
+		1 + // UI
+		1 + // 法线
+		1 + // 深度
+		1	// 噪波
+		;
+
+	return offset;
+}
+
+UINT FScreenSpaceAmbientOcclusion::GetAmbientRTVOffset() const
+{
+	UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// 获取偏移量 交换链
+		6 +	// 反射的CubeMap
+		6 + // shadowCubeMap 6个面 (点光源阴影）
+		1;	// 法线
+
+	return offset;
+}
+
