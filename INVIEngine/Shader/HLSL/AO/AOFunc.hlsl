@@ -8,7 +8,7 @@ float DepthNDCToView(float DepthNdc)
 {
 	float A = ProjectionMatrix[2][2];
 	float B = ProjectionMatrix[3][2];
-	
+
 	return B / (DepthNdc - A);
 }
 
@@ -19,9 +19,11 @@ float OcclusionFuncion(float DepthDistance)
 	{
 		return 0.f;
 	}
-	
+
 	float OcclusionLen = OcclusionFadeEnd - OcclusionFadeStart;
-	return saturate((OcclusionFadeEnd - DepthDistance) / OcclusionLen);	// 不该有负值
+
+	// 不该有负值
+	return saturate((OcclusionFadeEnd - DepthDistance) / OcclusionLen);
 }
 
 #endif

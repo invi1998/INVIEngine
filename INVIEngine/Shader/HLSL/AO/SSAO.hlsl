@@ -1,5 +1,5 @@
 #include "AOCommon.hlsl"
-#include "AOFunction.hlsl"
+#include "AOFunc.hlsl"
 
 // `SV_VertexID` 是在着色器程序中使用的系统内置变量，它用于表示当前顶点在顶点缓冲区中的索引。这个变量通常用于计算每个顶点的唯一标识符或执行与顶点相关的操作。
 
@@ -119,6 +119,4 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	// return float4(DepthNdc.rrr, 1.f);
 	// return float4(NoiseSampleValue, 1.f);
 	return float4(saturate(pow(Accessibility, 6.f)), saturate(pow(Accessibility, 6.f)), saturate(pow(Accessibility, 6.f)), 1.f);
-
 }
-
