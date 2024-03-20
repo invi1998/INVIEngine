@@ -44,6 +44,8 @@ void FScreenSpaceAmbientOcclusion::Build()
 
 	BuildSSAOConstantBufferView();	// 构建SSAO常量缓冲视图
 
+	BuildSSAOBlurConstantBuffer();	// 构建SSAO模糊常量缓冲视图
+
 	// 绑定PSO构建代理
 	BindBuildPso();
 }
@@ -77,36 +79,13 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 	// GetD3dGraphicsCommandList()->SetGraphicsRootSignature(SSAORootSignature.GetRootSignature());
 	SSAORootSignature.PreDraw(DeltaTime);
 
+	// 渲染资源
+	DrawResource();
+
 	// 主SSAO渲染
 	if (FBufferRenderTarget* renderTarget = dynamic_cast<FBufferRenderTarget*>(AmbientBuffer.GetRenderTarget().get()))
 	{
-		// 刷新绑定常量缓冲区（SSAO常量缓冲区）
-		auto SSAOConstantBuffer = SSAOConstantBufferView.GetBuffer()->GetGPUVirtualAddress();
-		GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(
-			0,		// 根签名的0号位置
-			SSAOConstantBuffer);	// 常量缓冲区地址
-
-		// 绑定法线（我们之前的 NormalBuffer.Draw(DeltaTime); 已经渲染好我们需要的法线，这里只需要绑定）
-		if (std::shared_ptr<FRenderTarget> NormalBufferRenderTarget = NormalBuffer.GetRenderTarget())
-		{
-			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-				1,	// 根签名的1号位置
-				NormalBufferRenderTarget->GetGPUShaderResourceView());
-		}
-
-		// 深度
-		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-			2,	// 根签名的9号位置
-			DepthBufferRenderTarget->GetGPUShaderResourceView()
-		);
-
-		// 噪波
-		if (std::shared_ptr<FRenderTarget> NoiseBufferRenderTarget = NoiseBuffer.GetRenderTarget())
-		{
-			GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-				3,	// 根签名的1号位置
-				NoiseBufferRenderTarget->GetGPUShaderResourceView());
-		}
+		
 
 		auto viewport = renderTarget->GetViewport();
 		auto rect = renderTarget->GetScissorRect();
@@ -152,6 +131,39 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 
 		GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition2);
 	}
+}
+
+void FScreenSpaceAmbientOcclusion::DrawResource()
+{
+	// 刷新绑定常量缓冲区（SSAO常量缓冲区）
+	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(
+		0,		// 根签名的0号位置
+		SSAOConstantBufferView.GetBuffer()->GetGPUVirtualAddress());	// 常量缓冲区地址
+
+	GetD3dGraphicsCommandList()->SetGraphicsRoot32BitConstant(
+		1, // 根签名的1号位置
+		0, // 0号位置
+		0);	// 值设置为0
+
+	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(
+		2,		// 根签名的2号位置
+		SSAOBlurConstantBufferView.GetBuffer()->GetGPUVirtualAddress());	// 常量缓冲区地址
+
+	// 绑定法线（我们之前的 NormalBuffer.Draw(DeltaTime); 已经渲染好我们需要的法线，这里只需要绑定）
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+		3,	// 根签名的3号位置
+		NormalBuffer.GetRenderTarget()->GetGPUShaderResourceView());
+
+	// 深度
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+		4,	// 根签名的9号位置
+		DepthBufferRenderTarget->GetGPUShaderResourceView()
+	);
+
+	// 噪波
+	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
+		5,	// 根签名的1号位置
+		NoiseBuffer.GetRenderTarget()->GetGPUShaderResourceView());
 }
 
 void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info)
@@ -226,6 +238,14 @@ void FScreenSpaceAmbientOcclusion::BuildSSAOConstantBufferView()
 {
 	SSAOConstantBufferView.CreateConstant(
 		sizeof(FSSAOConstant),	// 常量缓冲大小
+		1	// 因为我们是一个新的常量缓冲, 所以我们的对象数量是1
+	);
+}
+
+void FScreenSpaceAmbientOcclusion::BuildSSAOBlurConstantBuffer()
+{
+	SSAOBlurConstantBufferView.CreateConstant(
+		sizeof(FSSAOBlurParam),	// 常量缓冲大小
 		1	// 因为我们是一个新的常量缓冲, 所以我们的对象数量是1
 	);
 }

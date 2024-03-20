@@ -16,3 +16,10 @@ struct FSSAOConstant
 	XMFLOAT4 SampleVolumeData[14]{};	// 14个随机向量
 };
 
+struct FSSAOBlurParam
+{
+	FSSAOBlurParam();
+
+	XMFLOAT4 BlurWeight[3]{};	// 3个模糊权重
+};
+

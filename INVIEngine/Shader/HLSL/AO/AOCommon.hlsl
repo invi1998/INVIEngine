@@ -51,13 +51,13 @@ cbuffer CBufferSSAOView : register(b0)
 // 模糊参数
 cbuffer CBufferBlurConstants : register(b1)
 {
-	float4 BlurParam1; // 模糊参数
+	bool BlurParam1; // 模糊参数
 };
 
 // 模糊算子，由CPU定义并传入
 cbuffer CBufferSSAOBlurParam : register(b2)
 {
-	float4 BlurParam2; // 模糊参数
+	float4 BlurWeight[3];	// 模糊权重
 };
 
 #endif

@@ -26,12 +26,15 @@ public:
 	void BindBuildPso();	// 绑定构建PSO
 
 	void Draw(float DeltaTime);
+	void DrawResource();	// 绘制资源
 	void DrawSSAOConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info);	// 绘制SSAO常量buffer
 	void UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info);
 
 	void BuildDescriptor();		// 构建描述符 用于绑定到管线上 RenderTargetView ShaderResourceView
 
 	void BuildSSAOConstantBufferView();	// 构建SSAO常量缓冲视图
+
+	void BuildSSAOBlurConstantBuffer();	// 构建SSAO模糊常量缓冲视图
 
 	void SaveSSAOToBuffer();	// 保存SSAO到帧缓冲（渲染留存）
 
@@ -51,6 +54,7 @@ protected:
 	FSSAODirectXRootSignature SSAORootSignature;	// SSAO根签名
 
 	FConstantBufferViews SSAOConstantBufferView;		// SSAO常量缓冲视图
+	FConstantBufferViews SSAOBlurConstantBufferView;	// SSAO模糊常量缓冲视图
 
 	FRenderLayerManage* RenderLayer;	// 渲染层级
 
