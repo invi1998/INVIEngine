@@ -13,6 +13,7 @@ SamplerState DepthSampler : register(s3); // 深度信息采样器
 Texture2D SampleNormalMap : register(t0); // 法线
 Texture2D SampleDepthMap : register(t1); // 深度
 Texture2D SampleNoiseMap : register(t2); // 噪波
+Texture2D SampleAcceptMap : register(t3); // 采样接受，传入的是随机的SSAO噪波图还是双边滤波的图
 
 static const float2 TextureCoordinates[6] =
 {
@@ -32,6 +33,7 @@ struct MeshVertexOut
 	float2 Texcoord : TEXCOORD; // UV
 };
 
+// SSAO采样参数
 cbuffer CBufferSSAOView : register(b0)
 {
 	float4x4 InversiveProjectionMatrix; // 求逆后的投影矩阵
@@ -44,6 +46,18 @@ cbuffer CBufferSSAOView : register(b0)
 	float ObscurationThreshold; // 遮蔽阈值
 	
 	float4 SampleVolumeData[SAMPLE_VOLUME_NUM]; // 采样体数据
+};
+
+// 模糊参数
+cbuffer CBufferBlurConstants : register(b1)
+{
+	float4 BlurParam1; // 模糊参数
+};
+
+// 模糊算子，由CPU定义并传入
+cbuffer CBufferSSAOBlurParam : register(b2)
+{
+	float4 BlurParam2; // 模糊参数
 };
 
 #endif
