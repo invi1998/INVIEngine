@@ -44,6 +44,8 @@ cbuffer ViewportConstBuffer : register(b1)
 	float4 CameraPosition;
 	// 视口投影矩阵
 	float4x4 ViewportProjectionMatrix;
+	// 视口视图矩阵
+	float4x4 TexViewProjectionMatrix;
     
 }
 

@@ -14,7 +14,8 @@ struct MeshVertexIn
 
 struct MeshVertexOut
 {
-	float4 WorldPosition : POSITION;
+	float4 WorldPosition : POSITION0;	// 世界坐标
+	float4 TexPositionHome : POSITION1;		// 纹理坐标
 	float4 Position : SV_POSITION;
 	float4 Color : COLOR;
 	float3 Normal : NORMAL;
@@ -34,6 +35,9 @@ MeshVertexOut VSMain(MeshVertexIn mv)
     
     // 将模型转到其次裁剪空间
     outV.Position = mul(outV.WorldPosition, ViewportProjectionMatrix);
+	
+	// 传入世界坐标，将其转换到纹理坐标（屏幕空间）
+	outV.TexPositionHome = mul(outV.WorldPosition, TexViewProjectionMatrix);
     
 	if (MatConstbuffer.MaterialType == 13)
     {
@@ -76,6 +80,11 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
 	MaterialConstBuffer MatConstbuffer = Materials[MaterialID];
+	
+	mvOut.TexPositionHome /= mvOut.TexPositionHome.w;
+	
+	// 环境光可及率 （这里采样不能用纹理坐标，因为纹理坐标是世界坐标，这里需要屏幕空间坐标）
+	float Accessibility = SimpleSSAOMap.Sample(TextureSampler, mvOut.TexPositionHome.xy).r;
 
 	if (MatConstbuffer.MaterialType == 101)
 	{
@@ -83,7 +92,10 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 		// return float4(SimpleShadowMap.Sample(TextureSampler, mvOut.Texcoord).rrr, 1.0f);
 		
 		// 渲染AO贴图
-		return float4(SimpleSSAOMap.Sample(TextureSampler, mvOut.Texcoord).rgb, 1.0f);
+		// return float4(SimpleSSAOMap.Sample(TextureSampler, mvOut.Texcoord).rgb, 1.0f);
+		
+		return float4(Accessibility, Accessibility, Accessibility, 1.f);
+
 	}
 	
     FMaterial material;
@@ -458,11 +470,12 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 			
 		}
     }
+	
+	float4 Ambient = AmbientLight * material.BaseColor * Accessibility;
 
     // 最终颜色贡献
 	// material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    mvOut.Color = FinalColor
-        + material.BaseColor * AmbientLight;  // 间接光（环境光）
+    mvOut.Color = FinalColor + Ambient; // 间接光（环境光）
 	
 	// 计算cube map反射
 	switch (MatConstbuffer.MaterialType)

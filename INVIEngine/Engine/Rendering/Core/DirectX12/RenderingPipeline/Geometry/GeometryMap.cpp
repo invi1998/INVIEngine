@@ -469,9 +469,21 @@ void FGeometryMap::UpdateCalculationViewport(const FViewportInfo& viewport_info,
 
 	// 更新视口
 	XMMATRIX ViewProjection = XMMatrixMultiply(ViewMatrix, ProjectionMatrix);
+	
+	// 半兰伯特矩阵
+	XMMATRIX halfLambertMatrix = {
+			0.5f, 0.0f, 0.0f, 0.0f,
+			0.0f, -0.5f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f };
+
+	// 纹理空间矩阵【0,1】
+	XMMATRIX TexViewProjection = XMMatrixMultiply(ViewProjection, halfLambertMatrix);
+
 	FViewportTransformation ViewportTransformation;
 	ViewportTransformation.CameraPosition = viewport_info.CameraPosition;
 	XMStoreFloat4x4(&ViewportTransformation.ViewProjectionMatrix, XMMatrixTranspose(ViewProjection));	// 存储之前记得对矩阵进行转置
+	XMStoreFloat4x4(&ViewportTransformation.TexViewProjectionMatrix, XMMatrixTranspose(TexViewProjection));	// 存储之前记得对矩阵进行转置
 
 	ViewportConstantBufferViews.Update(constBufferOffset, &ViewportTransformation);
 }
