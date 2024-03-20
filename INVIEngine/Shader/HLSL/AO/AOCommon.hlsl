@@ -3,6 +3,7 @@
 
 #ifndef SAMPLE_VOLUME_NUM		// 这个采样点的数量可以由外部传入，如果没有传入则默认为14个采样点，因为我们引擎的SSAO采样点数量是14个
 #define SAMPLE_VOLUME_NUM 14
+#endif
 
 // 采样状态
 SamplerState TextureSampler : register(s0); // 贴图采样器
