@@ -69,8 +69,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 	
 	float3 AViewPos = A_ViewDepth * mvOut.ViewPosition.xyz / mvOut.ViewPosition.z;
 	
-	// 从噪波中采样环境光，获得环境光的方向，这里得到的值是[0,1]
-	float3 AmbientLightDirection = SampleNoiseMap.SampleLevel(TextureSampler, mvOut.Texcoord, 0.f);
+	// 从噪波中采样环境光，获得环境光的方向，这里得到的值是[0,1]，4倍UV是为了缩小噪波图的尺寸（缩小采样点颗粒大小）
+	float3 AmbientLightDirection = SampleNoiseMap.SampleLevel(TextureSampler, 4.f * mvOut.Texcoord, 0.f);
 	
 	// 将 [0,1] 映射到 [-1, 1]
 	AmbientLightDirection = AmbientLightDirection * 2.f - 1.f;
@@ -111,6 +111,8 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 		Occlusion += NDotAC * OcclusionFuncion(DepthDistance);
 
 	}
+	
+	Occlusion /= SAMPLE_VOLUME_NUM;		// 遮蔽值除以采样点的数量，求平均值
 	
 	// 可及率，这个值越大，表示这个点越亮，越小表示这个点越暗，表示光能到达这个点的可能性
 	float Accessibility = 1.f - Occlusion;
