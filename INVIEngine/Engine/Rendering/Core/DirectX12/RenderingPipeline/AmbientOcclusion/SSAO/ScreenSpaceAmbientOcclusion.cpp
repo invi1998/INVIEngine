@@ -50,6 +50,8 @@ void FScreenSpaceAmbientOcclusion::Build()
 
 	// 绑定PSO构建代理
 	BindBuildPso();
+
+	BuildBlurWeight(2.5f);	// 构建模糊权重
 }
 
 void FScreenSpaceAmbientOcclusion::BuildPSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& OutPSODesc)
@@ -200,6 +202,17 @@ void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const
 	SSAOConstantBufferView.Update(0, &SSAOConstant);	// 更新常量缓冲
 }
 
+void FScreenSpaceAmbientOcclusion::DrawBlurConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info)
+{
+	FSSAOBlurParam SSAOBlurParam;
+
+	SSAOBlurParam.BlurWeight[0] = XMFLOAT4(&BlurWeights[0]);
+	SSAOBlurParam.BlurWeight[1] = XMFLOAT4(&BlurWeights[4]);
+	SSAOBlurParam.BlurWeight[2] = XMFLOAT4(&BlurWeights[8]);
+
+	SSAOBlurConstantBufferView.Update(0, &SSAOBlurParam);	// 更新常量缓冲
+}
+
 void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info)
 {
 	NormalBuffer.UpdateCalculations(DeltaTime, viewport_info);
@@ -208,6 +221,7 @@ void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FVi
 	BilateralBlur.UpdateCalculations(DeltaTime, viewport_info);
 
 	DrawSSAOConstantBuffer(DeltaTime, viewport_info);
+	DrawBlurConstantBuffer(DeltaTime, viewport_info);
 }
 
 void FScreenSpaceAmbientOcclusion::DrawBilateralBlur(float DeltaTime, const UINT DrawTimes)
@@ -476,5 +490,36 @@ UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurRTVOffset() const
 		1	// SSAO 环境光遮蔽
 		;
 	return offset;
+}
+
+void FScreenSpaceAmbientOcclusion::BuildBlurWeight(float sigam, bool bRebuild)
+{
+	if (bRebuild)
+	{
+		BlurWeights.clear();
+	}
+
+	if (BlurWeights.empty())
+	{
+		// 构建正态分布的模糊权重
+		const int blurRadius = ceil(2.0f * sigam);		// 模糊半径
+
+		BlurWeights.resize(2 * blurRadius + 1);	// 重新设置大小, 2 * blurRadius + 1，因为我们需要左右两边的权重，所以是2 * blurRadius + 1，+1是因为我们是从0开始的，所以需要+1
+
+		float Weights = 0.0f;	// 权重
+		for (int i = -blurRadius; i <= blurRadius; ++i)
+		{
+			const float x = static_cast<float>(i);
+			BlurWeights[i + blurRadius] = expf(-x * x / (2.0f * sigam * sigam));	// 正态分布
+			// expf(-x * x / (2.0f * sigam * sigam)) 为正态分布的公式， x为距离，sigam为标准差，expf为e的x次方,返回值是一个浮点数
+			Weights += BlurWeights[i + blurRadius];	// 权重累加
+		}
+
+		// 权重映射到[0, 1]
+		for (int i = 0; i < BlurWeights.size(); ++i)
+		{
+			BlurWeights[i] /= Weights;
+		}
+	}
 }
 

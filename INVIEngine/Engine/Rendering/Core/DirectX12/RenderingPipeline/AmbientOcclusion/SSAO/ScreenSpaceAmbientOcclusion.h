@@ -30,8 +30,8 @@ public:
 	void Draw(float DeltaTime);
 	
 	void DrawSSAOConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info);	// 绘制SSAO常量buffer
-	void UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info);
-	
+	void DrawBlurConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info);	// 绘制模糊常量buffer
+	void UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info);	// 更新计算
 
 	void BuildDescriptor();		// 构建描述符 用于绑定到管线上 RenderTargetView ShaderResourceView
 
@@ -55,6 +55,8 @@ public:
 
 	UINT GetBilateralBlurSRVOffset() const;	// 获取双边模糊SRV偏移
 	UINT GetBilateralBlurRTVOffset() const;	// 获取双边模糊RTV偏移
+
+	void BuildBlurWeight(float sigam, bool bRebuild = false);	// 构建模糊权重 sigam 用来控制模糊半径
 
 protected:
 	void DrawResource();	// 绘制资源
@@ -87,5 +89,7 @@ protected:
 
 	FSampleVolume SampleVolume;	// 采样体积
 	FNoiseBuffer NoiseBuffer;	// 噪声缓冲
+
+	std::vector<float> BlurWeights;	// 模糊权重
 };
 
