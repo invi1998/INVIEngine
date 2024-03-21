@@ -60,7 +60,7 @@ cbuffer CBufferBlurConstants : register(b1)
 cbuffer CBufferSSAOBlurParam : register(b2)
 {
 	// 模糊权重
-	float BlurWeight[12];
+	float4 Float4BlurWeights[3];
 	float2 InversionTextureSize; // 纹理尺寸的倒数
 	float BlurRadius; // 模糊半径
 }

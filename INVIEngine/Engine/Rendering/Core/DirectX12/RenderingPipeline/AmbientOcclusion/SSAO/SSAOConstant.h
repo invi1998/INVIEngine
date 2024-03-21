@@ -20,7 +20,7 @@ struct FSSAOBlurParam
 {
 	FSSAOBlurParam();
 
-	float BlurWeight[12]{0};	// 3个模糊权重
+	XMFLOAT4 BlurWeight[3]{};	// 3个模糊权重
 	XMFLOAT2 InversionTextureSize{};	// 纹理尺寸的倒数(1.0f / width, 1.0f / height)
 	float BlurRadius = 5.f; // 模糊半径
 };

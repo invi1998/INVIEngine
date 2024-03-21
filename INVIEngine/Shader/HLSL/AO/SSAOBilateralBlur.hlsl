@@ -20,6 +20,13 @@ MeshVertexOutBlur VSMain(uint VertexID : SV_VertexID)
 
 float4 PSMain(MeshVertexOutBlur mvOut) : SV_TARGET
 {
+	float BlurWeight[12] =
+	{
+		Float4BlurWeights[0].x, Float4BlurWeights[0].y, Float4BlurWeights[0].z, Float4BlurWeights[0].w,
+		Float4BlurWeights[1].x, Float4BlurWeights[1].y, Float4BlurWeights[1].z, Float4BlurWeights[1].w,
+		Float4BlurWeights[2].x, Float4BlurWeights[2].y, Float4BlurWeights[2].z, Float4BlurWeights[2].w,
+	};
+	
 	float2 TexOffset;
 	if (bHorizontalBlur)
 	{
