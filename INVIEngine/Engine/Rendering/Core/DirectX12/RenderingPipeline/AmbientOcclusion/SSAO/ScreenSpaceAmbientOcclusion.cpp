@@ -209,7 +209,7 @@ void FScreenSpaceAmbientOcclusion::DrawBlurConstantBuffer(float DeltaTime, const
 	// memcpy(SSAOBlurParam.BlurWeight, BlurWeights.data(), sizeof(float) * BlurWeights.size());
 	SSAOBlurParam.BlurWeight[0] = XMFLOAT4(BlurWeights[0], BlurWeights[1], BlurWeights[2], BlurWeights[3]);
 	SSAOBlurParam.BlurWeight[1] = XMFLOAT4(BlurWeights[4], BlurWeights[5], BlurWeights[6], BlurWeights[7]);
-	SSAOBlurParam.BlurWeight[2] = XMFLOAT4(BlurWeights[8], BlurWeights[9], BlurWeights[10], BlurWeights[11]);
+	SSAOBlurParam.BlurWeight[2] = XMFLOAT4(BlurWeights[8], BlurWeights[9], BlurWeights[10], 0.f);
 
 	SSAOBlurParam.InversionTextureSize = XMFLOAT2(1.0f / BilateralBlur.GetWidth(), 1.0f / BilateralBlur.GetHeight());
 
