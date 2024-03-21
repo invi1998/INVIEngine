@@ -144,11 +144,11 @@ void FRenderingPipeline::PreDraw(float DeltaTime)
 	// 重新绑定贴图
 	GeometryMap.DrawTexture2D(DeltaTime);
 
-	// 渲染阴影
-	GeometryMap.DrawShadow(DeltaTime);
-
 	// 渲染ShadowCubeMap
 	GeometryMap.DynamicShadowCubeMap.PreDraw(DeltaTime);
+
+	// 渲染阴影
+	GeometryMap.DrawShadow(DeltaTime);
 
 	// 判断是否存在动态反射组件
 	if (DynamicCubeMap.IsExitDynamicReflectionMesh())
