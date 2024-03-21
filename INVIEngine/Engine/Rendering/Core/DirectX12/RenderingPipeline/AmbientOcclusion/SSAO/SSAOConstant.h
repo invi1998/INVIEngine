@@ -21,5 +21,6 @@ struct FSSAOBlurParam
 	FSSAOBlurParam();
 
 	XMFLOAT4 BlurWeight[3]{};	// 3个模糊权重
+	XMFLOAT2 InversionTextureSize{};	// 纹理尺寸的倒数(1.0f / width, 1.0f / height)
 };
 

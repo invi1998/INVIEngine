@@ -210,6 +210,8 @@ void FScreenSpaceAmbientOcclusion::DrawBlurConstantBuffer(float DeltaTime, const
 	SSAOBlurParam.BlurWeight[1] = XMFLOAT4(&BlurWeights[4]);
 	SSAOBlurParam.BlurWeight[2] = XMFLOAT4(&BlurWeights[8]);
 
+	SSAOBlurParam.InversionTextureSize = XMFLOAT2(1.0f / BilateralBlur.GetWidth(), 1.0f / BilateralBlur.GetHeight());
+
 	SSAOBlurConstantBufferView.Update(0, &SSAOBlurParam);	// 更新常量缓冲
 }
 
