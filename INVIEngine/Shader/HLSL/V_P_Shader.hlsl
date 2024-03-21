@@ -472,7 +472,7 @@ float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 		}
     }
 	
-	float4 Ambient = AmbientLight * material.BaseColor * Accessibility;
+	float4 Ambient = (AmbientLight + 0.1f) * material.BaseColor * Accessibility;
 
     // ×îÖÕÑÕÉ«¹±Ï×
 	// material.BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
