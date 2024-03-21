@@ -91,5 +91,6 @@ protected:
 	FNoiseBuffer NoiseBuffer;	// 噪声缓冲
 
 	std::vector<float> BlurWeights;	// 模糊权重
+	float BlurRadius = 5.f; // 模糊半径
 };
 

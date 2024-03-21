@@ -205,12 +205,12 @@ void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const
 void FScreenSpaceAmbientOcclusion::DrawBlurConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info)
 {
 	FSSAOBlurParam SSAOBlurParam;
-
-	SSAOBlurParam.BlurWeight[0] = XMFLOAT4(&BlurWeights[0]);
-	SSAOBlurParam.BlurWeight[1] = XMFLOAT4(&BlurWeights[4]);
-	SSAOBlurParam.BlurWeight[2] = XMFLOAT4(&BlurWeights[8]);
+	
+	memcpy(SSAOBlurParam.BlurWeight, BlurWeights.data(), sizeof(float) * BlurWeights.size());
 
 	SSAOBlurParam.InversionTextureSize = XMFLOAT2(1.0f / BilateralBlur.GetWidth(), 1.0f / BilateralBlur.GetHeight());
+
+	SSAOBlurParam.BlurRadius = 5.0f;
 
 	SSAOBlurConstantBufferView.Update(0, &SSAOBlurParam);	// 更新常量缓冲
 }
@@ -504,7 +504,8 @@ void FScreenSpaceAmbientOcclusion::BuildBlurWeight(float sigam, bool bRebuild)
 	if (BlurWeights.empty())
 	{
 		// 构建正态分布的模糊权重
-		const int blurRadius = ceil(2.0f * sigam);		// 模糊半径
+		BlurRadius = ceil(2.0f * sigam);		// 模糊半径
+		const int blurRadius = BlurRadius;		// 模糊半径
 
 		BlurWeights.resize(2 * blurRadius + 1);	// 重新设置大小, 2 * blurRadius + 1，因为我们需要左右两边的权重，所以是2 * blurRadius + 1，+1是因为我们是从0开始的，所以需要+1
 

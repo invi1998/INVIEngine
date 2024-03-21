@@ -52,14 +52,17 @@ cbuffer CBufferSSAOView : register(b0)
 // 模糊参数
 cbuffer CBufferBlurConstants : register(b1)
 {
-	bool BlurParam1; // 模糊参数
+	bool bHorizontalBlur; // 是否是水平模糊（水平模糊用于SSAO，垂直模糊用于SSR）
+	
 }
 
 // 模糊算子，由CPU定义并传入
 cbuffer CBufferSSAOBlurParam : register(b2)
 {
 	// 模糊权重
-	float4 BlurWeight[3];
+	float BlurWeight[12];
+	float2 InversionTextureSize; // 纹理尺寸的倒数
+	float BlurRadius; // 模糊半径
 }
 
 #endif
