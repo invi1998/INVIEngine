@@ -22,75 +22,75 @@ public:
 	void Init(FGeometryMap* inGeometryMap, FDirectXPipelineState* inDirectXPipelineState, FRenderLayerManage* inRenderLayer);
 	void SetBufferSize(int wid, int hei);
 
-	void Build();	// ¹¹½¨AO¹ÜÏß
-	void BuildPSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& OutPSODesc);	// ¹¹½¨PSO
+	void Build();	// æ„å»ºAOç®¡çº¿
+	void BuildPSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& OutPSODesc);	// æ„å»ºPSO
 
-	void BindBuildPso();	// °ó¶¨¹¹½¨PSO
+	void BindBuildPso();	// ç»‘å®šæ„å»ºPSO
 
 	void Draw(float DeltaTime);
 	
-	void DrawSSAOConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info);	// »æÖÆSSAO³£Á¿buffer
-	void DrawBlurConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info);	// »æÖÆÄ£ºı³£Á¿buffer
-	void UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info);	// ¸üĞÂ¼ÆËã
+	void DrawSSAOConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info);	// ç»˜åˆ¶SSAOå¸¸é‡buffer
+	void DrawBlurConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info);	// ç»˜åˆ¶æ¨¡ç³Šå¸¸é‡buffer
+	void UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info);	// æ›´æ–°è®¡ç®—
 
-	void BuildDescriptor();		// ¹¹½¨ÃèÊö·û ÓÃÓÚ°ó¶¨µ½¹ÜÏßÉÏ RenderTargetView ShaderResourceView
+	void BuildDescriptor();		// æ„å»ºæè¿°ç¬¦ ç”¨äºç»‘å®šåˆ°ç®¡çº¿ä¸Š RenderTargetView ShaderResourceView
 
-	void BuildSSAOConstantBufferView();	// ¹¹½¨SSAO³£Á¿»º³åÊÓÍ¼
+	void BuildSSAOConstantBufferView();	// æ„å»ºSSAOå¸¸é‡ç¼“å†²è§†å›¾
 
-	void BuildSSAOBlurConstantBuffer();	// ¹¹½¨SSAOÄ£ºı³£Á¿»º³åÊÓÍ¼
+	void BuildSSAOBlurConstantBuffer();	// æ„å»ºSSAOæ¨¡ç³Šå¸¸é‡ç¼“å†²è§†å›¾
 
-	void SaveSSAOToBuffer();	// ±£´æSSAOµ½Ö¡»º³å£¨äÖÈ¾Áô´æ£©
+	void SaveSSAOToBuffer();	// ä¿å­˜SSAOåˆ°å¸§ç¼“å†²ï¼ˆæ¸²æŸ“ç•™å­˜ï¼‰
 
-	void BuildDepthBuffer();	// ¹¹½¨Éî¶È»º³å
+	void BuildDepthBuffer();	// æ„å»ºæ·±åº¦ç¼“å†²
 
-	UINT GetAmbientSRVOffset() const;	// »ñÈ¡»·¾³¹âSRVÆ«ÒÆ
-	UINT GetAmbientRTVOffset() const;	// »ñÈ¡»·¾³¹âRTVÆ«ÒÆ
+	UINT GetAmbientSRVOffset() const;	// è·å–ç¯å¢ƒå…‰SRVåç§»
+	UINT GetAmbientRTVOffset() const;	// è·å–ç¯å¢ƒå…‰RTVåç§»
 
-	UINT GetDepthBufferSRVOffset() const;	// »ñÈ¡Éî¶È»º³åSRVÆ«ÒÆ
+	UINT GetDepthBufferSRVOffset() const;	// è·å–æ·±åº¦ç¼“å†²SRVåç§»
 
-	UINT GetNoiseBufferSRVOffset() const;	// »ñÈ¡ÔëÉù»º³åSRVÆ«ÒÆ
+	UINT GetNoiseBufferSRVOffset() const;	// è·å–å™ªå£°ç¼“å†²SRVåç§»
 
-	UINT GetNormalBufferSRVOffset() const;	// »ñÈ¡·¨Ïß»º³åSRVÆ«ÒÆ
-	UINT GetNormalBufferRTVOffset() const;	// »ñÈ¡·¨Ïß»º³åRTVÆ«ÒÆ
+	UINT GetNormalBufferSRVOffset() const;	// è·å–æ³•çº¿ç¼“å†²SRVåç§»
+	UINT GetNormalBufferRTVOffset() const;	// è·å–æ³•çº¿ç¼“å†²RTVåç§»
 
-	UINT GetBilateralBlurSRVOffset() const;	// »ñÈ¡Ë«±ßÄ£ºıSRVÆ«ÒÆ
-	UINT GetBilateralBlurRTVOffset() const;	// »ñÈ¡Ë«±ßÄ£ºıRTVÆ«ÒÆ
+	UINT GetBilateralBlurSRVOffset() const;	// è·å–åŒè¾¹æ¨¡ç³ŠSRVåç§»
+	UINT GetBilateralBlurRTVOffset() const;	// è·å–åŒè¾¹æ¨¡ç³ŠRTVåç§»
 
-	void BuildBlurWeight(float sigam, bool bRebuild = false);	// ¹¹½¨Ä£ºıÈ¨ÖØ sigam ÓÃÀ´¿ØÖÆÄ£ºı°ë¾¶
+	void BuildBlurWeight(float sigam, bool bRebuild = false);	// æ„å»ºæ¨¡ç³Šæƒé‡ sigam ç”¨æ¥æ§åˆ¶æ¨¡ç³ŠåŠå¾„
 
 protected:
-	void DrawResource();	// »æÖÆ×ÊÔ´
-	void DrawSSAO(float DeltaTime);	// »æÖÆSSAO
-	void DrawBilateralBlur(float DeltaTime, const UINT DrawTimes);	// »æÖÆË«±ßÄ£ºı
+	void DrawResource();	// ç»˜åˆ¶èµ„æº
+	void DrawSSAO(float DeltaTime);	// ç»˜åˆ¶SSAO
+	void DrawBilateralBlur(float DeltaTime, const UINT DrawTimes);	// ç»˜åˆ¶åŒè¾¹æ¨¡ç³Š
 
-	void DrawBilateralBlurHorizontal(float DeltaTime);		// »æÖÆË®Æ½Ë«±ßÄ£ºı 
-	void DrawBilateralBlurVertical(float DeltaTime);		// »æÖÆ´¹Ö±Ë«±ßÄ£ºı
+	void DrawBilateralBlurHorizontal(float DeltaTime);		// ç»˜åˆ¶æ°´å¹³åŒè¾¹æ¨¡ç³Š 
+	void DrawBilateralBlurVertical(float DeltaTime);		// ç»˜åˆ¶å‚ç›´åŒè¾¹æ¨¡ç³Š
 
-	void DrawBlur(float DeltaTime, bool bHorizontal);	// »æÖÆÄ£ºı
+	void DrawBlur(float DeltaTime, bool bHorizontal);	// ç»˜åˆ¶æ¨¡ç³Š
 
 	ID3D12Resource* GetDrawResource(bool bHorizontal);
 	CD3DX12_GPU_DESCRIPTOR_HANDLE* GetDrawSRVResource(bool bHorizontal);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE* GetDrawRTVResource(bool bHorizontal);
 
-	void SetRoot32BitConstants(bool bHorizontal);	// ÉèÖÃ¸ù32Î»³£Á¿
+	void SetRoot32BitConstants(bool bHorizontal);	// è®¾ç½®æ ¹32ä½å¸¸é‡
 
 protected:
-	FNormalBuffer NormalBuffer;						// ·¨Ïß»º³å
-	FAmbientBuffer AmbientBuffer;					// »·¾³¹â»º³å
-	FAmbientBuffer BilateralBlur;					// Ë«±ßÄ£ºı
-	FSSAODirectXRootSignature SSAORootSignature;	// SSAO¸ùÇ©Ãû
+	FNormalBuffer NormalBuffer;						// æ³•çº¿ç¼“å†²
+	FAmbientBuffer AmbientBuffer;					// ç¯å¢ƒå…‰ç¼“å†²
+	FAmbientBuffer BilateralBlur;					// åŒè¾¹æ¨¡ç³Š
+	FSSAODirectXRootSignature SSAORootSignature;	// SSAOæ ¹ç­¾å
 
-	FConstantBufferViews SSAOConstantBufferView;		// SSAO³£Á¿»º³åÊÓÍ¼
-	FConstantBufferViews SSAOBlurConstantBufferView;	// SSAOÄ£ºı³£Á¿»º³åÊÓÍ¼
+	FConstantBufferViews SSAOConstantBufferView;		// SSAOå¸¸é‡ç¼“å†²è§†å›¾
+	FConstantBufferViews SSAOBlurConstantBufferView;	// SSAOæ¨¡ç³Šå¸¸é‡ç¼“å†²è§†å›¾
 
-	FRenderLayerManage* RenderLayer;	// äÖÈ¾²ã¼¶
+	FRenderLayerManage* RenderLayer;	// æ¸²æŸ“å±‚çº§
 
-	FGeometryMap* GeometryMap;	// ¼¸ºÎÍ¼
+	FGeometryMap* GeometryMap;	// å‡ ä½•å›¾
 
-	FSampleVolume SampleVolume;	// ²ÉÑùÌå»ı
-	FNoiseBuffer NoiseBuffer;	// ÔëÉù»º³å
+	FSampleVolume SampleVolume;	// é‡‡æ ·ä½“ç§¯
+	FNoiseBuffer NoiseBuffer;	// å™ªå£°ç¼“å†²
 
-	std::vector<float> BlurWeights;	// Ä£ºıÈ¨ÖØ
-	float BlurRadius = 5.f; // Ä£ºı°ë¾¶
+	std::vector<float> BlurWeights{};	// æ¨¡ç³Šæƒé‡
+	float BlurRadius = 5.f; // æ¨¡ç³ŠåŠå¾„
 };
 

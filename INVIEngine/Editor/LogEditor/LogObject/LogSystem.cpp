@@ -31,10 +31,10 @@ void FLogSystem::Clear()
 
 void FLogSystem::AddLog(const char* fmt, ...)
 {
-	//»ñÈ¡ÉÏÒ»´Î×ÖÌå¶àÉÙ
+	//è·å–ä¸Šä¸€æ¬¡å­—ä½“å¤šå°‘
 	int TextSize = LogBuf.size();
 
-	//¿É±ä²ÎÊı
+	//å¯å˜å‚æ•°
 	va_list Args;
 	va_start(Args, fmt);
 	LogBuf.appendfv(fmt, Args);
@@ -92,7 +92,7 @@ void FLogSystem::Draw()
 		return;
 	}
 
-	//°´Å¥²¼¾Ö
+	//æŒ‰é’®å¸ƒå±€
 	{
 		if (ImGui::BeginPopup("LogOptions"))
 		{
@@ -102,7 +102,7 @@ void FLogSystem::Draw()
 
 		ImGui::SameLine();
 
-		//ĞèÒªÒ»¸ö°´Å¥²Ù×÷ÈÕÖ¾
+		//éœ€è¦ä¸€ä¸ªæŒ‰é’®æ“ä½œæ—¥å¿—
 		if (ImGui::Button("LogOptions"))
 		{
 			ImGui::OpenPopup("LogOptions");
@@ -134,7 +134,7 @@ void FLogSystem::Draw()
 
 	ImGui::BeginChild("LogScrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-	//ÈÕÖ¾É¸Ñ¡Æ÷
+	//æ—¥å¿—ç­›é€‰å™¨
 	if (LogFilter.IsActive())
 	{
 		for (int i = 0; i < LineOffsets.Size; i++)
@@ -170,7 +170,7 @@ void FLogSystem::Draw()
 		Clipper.End();
 	}
 
-	//ÄÜ¿´µ½×îĞÂµÄÈÕÖ¾
+	//èƒ½çœ‹åˆ°æœ€æ–°çš„æ—¥å¿—
 	if (AutoScroll &&
 		ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
 	{
@@ -196,7 +196,7 @@ void FLogSystem::ResetLineOffsets(e_error InColor, int InOldSize)
 		{
 			LineOffsets.push_back(InOldSize + 1);
 
-			//Ìí¼Ó¶ÔÓÚÀàĞÍ×Ö·û
+			//æ·»åŠ å¯¹äºç±»å‹å­—ç¬¦
 			AddLineColor(InColor);
 		}
 	}
@@ -221,14 +221,14 @@ ImVec4 FLogSystem::GetColor(e_error InColorID)
 
 void FLogSystem::HandleBackstageLog(e_error InColorID, int InOldSize)
 {
-	//»ñÈ¡ÈÕÖ¾ÀàĞÍ
+	//è·å–æ—¥å¿—ç±»å‹
 	char error_str[64] = { 0 };
 	get_error_str(InColorID, error_str);
 
-	//ºÏ²¢×Ö·û´®
+	//åˆå¹¶å­—ç¬¦ä¸²
 	// LogBuf.append(error_str);
 
-	//ÖØÖÃ×Ö·û´®
+	//é‡ç½®å­—ç¬¦ä¸²
 	ResetLineOffsets(InColorID, InOldSize);
 }
 

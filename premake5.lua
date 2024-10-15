@@ -38,3 +38,10 @@ group "Editor"
 
 group "BuildTool"
 	include "INVIBuildTool"
+
+filter "action:vs"
+	buildoptions
+	{
+		"/utf-8"
+	}
+

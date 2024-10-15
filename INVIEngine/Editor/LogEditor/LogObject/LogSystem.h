@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 
-// µ¥ÀıÄ£Ê½ ÈÕÖ¾ÏµÍ³
+// å•ä¾‹æ¨¡å¼ æ—¥å¿—ç³»ç»Ÿ
 class FLogSystem
 {
 	friend class FLogEditor;
@@ -19,23 +19,23 @@ public:
 protected:
 	void Draw();
 
-	//Ìí¼ÓÃ¿Ò»ĞĞµÄÑÕÉ«×´Ì¬
+	//æ·»åŠ æ¯ä¸€è¡Œçš„é¢œè‰²çŠ¶æ€
 	void AddLineColor(e_error InColor);
 
-	//ÖØÖÃĞĞÆ«ÒÆ
+	//é‡ç½®è¡Œåç§»
 	void ResetLineOffsets(e_error InColor, int InOldSize);
 
-	//»ñÈ¡e_error¶ÔÓ¦µÄÑÕÉ«Êı¾İ
+	//è·å–e_errorå¯¹åº”çš„é¢œè‰²æ•°æ®
 	ImVec4 GetColor(e_error InColorID);
 
 	void HandleBackstageLog(e_error InColorID, int InOldSize);
 
 protected:
-	ImGuiTextBuffer LogBuf;		   // ÈÕÖ¾»º³åÇø
-	ImGuiTextFilter LogFilter;		   // ÈÕÖ¾¹ıÂËÆ÷
+	ImGuiTextBuffer LogBuf;		   // æ—¥å¿—ç¼“å†²åŒº
+	ImGuiTextFilter LogFilter;		   // æ—¥å¿—è¿‡æ»¤å™¨
 	ImVector<int> LineOffsets;        // Index to lines offset
-	ImVector<e_error> PreLineColor;	  // Ã¿Ò»ĞĞµÄÑÕÉ«
-	bool AutoScroll = true;				// ÊÇ·ñ×Ô¶¯¹ö¶¯µ½µ×²¿
+	ImVector<e_error> PreLineColor;	  // æ¯ä¸€è¡Œçš„é¢œè‰²
+	bool AutoScroll = true;				// æ˜¯å¦è‡ªåŠ¨æ»šåŠ¨åˆ°åº•éƒ¨
 
 protected:
 	static FLogSystem* LogSys;

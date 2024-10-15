@@ -42,21 +42,21 @@ void FScreenSpaceAmbientOcclusion::SetBufferSize(int wid, int hei)
 
 void FScreenSpaceAmbientOcclusion::Build()
 {
-	SSAORootSignature.BuildRootSignature(1);		// ¹¹½¨¸ùÇ©Ãû
+	SSAORootSignature.BuildRootSignature(1);		// æ„å»ºæ ¹ç­¾å
 
-	BuildSSAOConstantBufferView();	// ¹¹½¨SSAO³£Á¿»º³åÊÓÍ¼
+	BuildSSAOConstantBufferView();	// æ„å»ºSSAOå¸¸é‡ç¼“å†²è§†å›¾
 
-	BuildSSAOBlurConstantBuffer();	// ¹¹½¨SSAOÄ£ºı³£Á¿»º³åÊÓÍ¼
+	BuildSSAOBlurConstantBuffer();	// æ„å»ºSSAOæ¨¡ç³Šå¸¸é‡ç¼“å†²è§†å›¾
 
-	// °ó¶¨PSO¹¹½¨´úÀí
+	// ç»‘å®šPSOæ„å»ºä»£ç†
 	BindBuildPso();
 
-	BuildBlurWeight(2.5f);	// ¹¹½¨Ä£ºıÈ¨ÖØ
+	BuildBlurWeight(2.5f);	// æ„å»ºæ¨¡ç³Šæƒé‡
 }
 
 void FScreenSpaceAmbientOcclusion::BuildPSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& OutPSODesc)
 {
-	// °ó¶¨¸ùÇ©Ãû
+	// ç»‘å®šæ ¹ç­¾å
 	OutPSODesc.pRootSignature = SSAORootSignature.GetRootSignature();
 }
 
@@ -66,7 +66,7 @@ void FScreenSpaceAmbientOcclusion::BindBuildPso()
 	{
 		if (std::shared_ptr<FRenderLayer> layer = RenderLayer->FindByRenderLayer(EMeshRenderLayerType::RENDER_LAYER_SSAO))
 		{
-			// °ó¶¨Î¯ÍĞ
+			// ç»‘å®šå§”æ‰˜
 			layer->BuildPsoDelegate.Bind(this, &FScreenSpaceAmbientOcclusion::BuildPSO);
 		}
 		
@@ -79,50 +79,50 @@ void FScreenSpaceAmbientOcclusion::Draw(float DeltaTime)
 	AmbientBuffer.Draw(DeltaTime);
 	NoiseBuffer.Draw(DeltaTime);
 
-	// ¹¹½¨SSAO
+	// æ„å»ºSSAO
 	// GetD3dGraphicsCommandList()->SetGraphicsRootSignature(SSAORootSignature.GetRootSignature());
 	SSAORootSignature.PreDraw(DeltaTime);
 
-	// äÖÈ¾×ÊÔ´
+	// æ¸²æŸ“èµ„æº
 	DrawResource();
 
-	// Ö÷SSAOäÖÈ¾
+	// ä¸»SSAOæ¸²æŸ“
 	DrawSSAO(DeltaTime);
 
-	// Ë«±ßÄ£ºı
+	// åŒè¾¹æ¨¡ç³Š
 	DrawBilateralBlur(DeltaTime, 2);
 }
 
 void FScreenSpaceAmbientOcclusion::DrawResource()
 {
-	// Ë¢ĞÂ°ó¶¨³£Á¿»º³åÇø£¨SSAO³£Á¿»º³åÇø£©
+	// åˆ·æ–°ç»‘å®šå¸¸é‡ç¼“å†²åŒºï¼ˆSSAOå¸¸é‡ç¼“å†²åŒºï¼‰
 	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(
-		0,		// ¸ùÇ©ÃûµÄ0ºÅÎ»ÖÃ
-		SSAOConstantBufferView.GetBuffer()->GetGPUVirtualAddress());	// ³£Á¿»º³åÇøµØÖ·
+		0,		// æ ¹ç­¾åçš„0å·ä½ç½®
+		SSAOConstantBufferView.GetBuffer()->GetGPUVirtualAddress());	// å¸¸é‡ç¼“å†²åŒºåœ°å€
 
 	GetD3dGraphicsCommandList()->SetGraphicsRoot32BitConstant(
-		1, // ¸ùÇ©ÃûµÄ1ºÅÎ»ÖÃ
-		0, // 0ºÅÎ»ÖÃ
-		0);	// ÖµÉèÖÃÎª0
+		1, // æ ¹ç­¾åçš„1å·ä½ç½®
+		0, // 0å·ä½ç½®
+		0);	// å€¼è®¾ç½®ä¸º0
 
 	GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(
-		2,		// ¸ùÇ©ÃûµÄ2ºÅÎ»ÖÃ
-		SSAOBlurConstantBufferView.GetBuffer()->GetGPUVirtualAddress());	// ³£Á¿»º³åÇøµØÖ·
+		2,		// æ ¹ç­¾åçš„2å·ä½ç½®
+		SSAOBlurConstantBufferView.GetBuffer()->GetGPUVirtualAddress());	// å¸¸é‡ç¼“å†²åŒºåœ°å€
 
-	// °ó¶¨·¨Ïß£¨ÎÒÃÇÖ®Ç°µÄ NormalBuffer.Draw(DeltaTime); ÒÑ¾­äÖÈ¾ºÃÎÒÃÇĞèÒªµÄ·¨Ïß£¬ÕâÀïÖ»ĞèÒª°ó¶¨£©
+	// ç»‘å®šæ³•çº¿ï¼ˆæˆ‘ä»¬ä¹‹å‰çš„ NormalBuffer.Draw(DeltaTime); å·²ç»æ¸²æŸ“å¥½æˆ‘ä»¬éœ€è¦çš„æ³•çº¿ï¼Œè¿™é‡Œåªéœ€è¦ç»‘å®šï¼‰
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-		3,	// ¸ùÇ©ÃûµÄ3ºÅÎ»ÖÃ
+		3,	// æ ¹ç­¾åçš„3å·ä½ç½®
 		NormalBuffer.GetRenderTarget()->GetGPUShaderResourceView());
 
-	// Éî¶È
+	// æ·±åº¦
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-		4,	// ¸ùÇ©ÃûµÄ9ºÅÎ»ÖÃ
+		4,	// æ ¹ç­¾åçš„9å·ä½ç½®
 		DepthBufferRenderTarget->GetGPUShaderResourceView()
 	);
 
-	// Ôë²¨
+	// å™ªæ³¢
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-		5,	// ¸ùÇ©ÃûµÄ1ºÅÎ»ÖÃ
+		5,	// æ ¹ç­¾åçš„1å·ä½ç½®
 		NoiseBuffer.GetRenderTarget()->GetGPUShaderResourceView());
 }
 
@@ -131,30 +131,30 @@ void FScreenSpaceAmbientOcclusion::DrawSSAO(float DeltaTime)
 	auto viewport = AmbientBuffer.GetRenderTarget().get()->GetViewport();
 	auto rect = AmbientBuffer.GetRenderTarget().get()->GetScissorRect();
 
-	// ÉèÖÃÊÓ¿Ú
+	// è®¾ç½®è§†å£
 	GetD3dGraphicsCommandList()->RSSetViewports(1, &viewport);
 	GetD3dGraphicsCommandList()->RSSetScissorRects(1, &rect);
 
-	// ½«×ÊÔ´´ÓÒ»¸ö×´Ì¬×ª»»µ½ÁíÒ»¸ö×´Ì¬
+	// å°†èµ„æºä»ä¸€ä¸ªçŠ¶æ€è½¬æ¢åˆ°å¦ä¸€ä¸ªçŠ¶æ€
 	CD3DX12_RESOURCE_BARRIER transition = CD3DX12_RESOURCE_BARRIER::Transition(
-		AmbientBuffer.GetRenderTarget().get()->GetRenderTarget(),	//	»ñÈ¡äÖÈ¾Ä¿±ê
-		D3D12_RESOURCE_STATE_GENERIC_READ,	//	´Ó¿É¶Á×´Ì¬
-		D3D12_RESOURCE_STATE_RENDER_TARGET);	//	µ½äÖÈ¾Ä¿±ê×´Ì¬ ×ª»»
+		AmbientBuffer.GetRenderTarget().get()->GetRenderTarget(),	//	è·å–æ¸²æŸ“ç›®æ ‡
+		D3D12_RESOURCE_STATE_GENERIC_READ,	//	ä»å¯è¯»çŠ¶æ€
+		D3D12_RESOURCE_STATE_RENDER_TARGET);	//	åˆ°æ¸²æŸ“ç›®æ ‡çŠ¶æ€ è½¬æ¢
 
-	// Çå³ıäÖÈ¾Ä¿±ê
+	// æ¸…é™¤æ¸²æŸ“ç›®æ ‡
 	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition);
 
-	const float ClearColor[] = { 1.f, 1.f, 1.f, 1.f };	// ·¨ÏßµÄÄ¬ÈÏÖµÊÇ(0,0,1)
-	// Çå³ıäÖÈ¾Ä¿±êÊÓÍ¼£¨Çå¿Õ»­²¼£©
+	const float ClearColor[] = { 1.f, 1.f, 1.f, 1.f };	// æ³•çº¿çš„é»˜è®¤å€¼æ˜¯(0,0,1)
+	// æ¸…é™¤æ¸²æŸ“ç›®æ ‡è§†å›¾ï¼ˆæ¸…ç©ºç”»å¸ƒï¼‰
 	GetD3dGraphicsCommandList()->ClearRenderTargetView(
 		AmbientBuffer.GetRenderTarget().get()->GetCPURenderTargetView(),
 		ClearColor,
 		0,
 		nullptr);
 
-	// Çå³ıÉî¶ÈÄ£°å»º³åÇø£¬µ«ÊÇÒòÎªÎÒÖ®Ç°ÒÑ¾­½ûÓÃÁËÉî¶È£¬ËùÒÔÕâÀï²»ĞèÒªÔÙÇå³ı
+	// æ¸…é™¤æ·±åº¦æ¨¡æ¿ç¼“å†²åŒºï¼Œä½†æ˜¯å› ä¸ºæˆ‘ä¹‹å‰å·²ç»ç¦ç”¨äº†æ·±åº¦ï¼Œæ‰€ä»¥è¿™é‡Œä¸éœ€è¦å†æ¸…é™¤
 
-	// ºÏ²¢×´Ì¬£¬Ã»ÓĞÉî¶ÈÖµ£¬´«nullptr
+	// åˆå¹¶çŠ¶æ€ï¼Œæ²¡æœ‰æ·±åº¦å€¼ï¼Œä¼ nullptr
 	GetD3dGraphicsCommandList()->OMSetRenderTargets(
 		1,
 		&AmbientBuffer.GetRenderTarget().get()->GetCPURenderTargetView(),
@@ -162,13 +162,13 @@ void FScreenSpaceAmbientOcclusion::DrawSSAO(float DeltaTime)
 		nullptr
 	);
 
-	// äÖÈ¾SSAO
+	// æ¸²æŸ“SSAO
 	RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO, DeltaTime);
 
 	CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(
 		AmbientBuffer.GetRenderTarget().get()->GetRenderTarget(),
-		D3D12_RESOURCE_STATE_RENDER_TARGET,	//	´ÓäÖÈ¾×´Ì¬
-		D3D12_RESOURCE_STATE_GENERIC_READ);	//	µ½¿É¶Á×´Ì¬ ×ª»»
+		D3D12_RESOURCE_STATE_RENDER_TARGET,	//	ä»æ¸²æŸ“çŠ¶æ€
+		D3D12_RESOURCE_STATE_GENERIC_READ);	//	åˆ°å¯è¯»çŠ¶æ€ è½¬æ¢
 
 	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition2);
 	
@@ -177,14 +177,14 @@ void FScreenSpaceAmbientOcclusion::DrawSSAO(float DeltaTime)
 void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info)
 {
 	FSSAOConstant SSAOConstant;
-	// ´ÓÊÓ¿ÚĞÅÏ¢ÖĞ»ñÈ¡Í¶Ó°¾ØÕó
+	// ä»è§†å£ä¿¡æ¯ä¸­è·å–æŠ•å½±çŸ©é˜µ
 
-	// Í¶Ó°¾ØÕóµÄÄæ¾ØÕó
-	XMMATRIX invProjection = XMLoadFloat4x4(&SSAOConstant.ProjectionMatrix);	// ¼ÓÔØÍ¶Ó°¾ØÕó
-	XMVECTOR det = XMMatrixDeterminant(invProjection);	// ¼ÆËãĞĞÁĞÊ½
-	XMMATRIX invView = XMMatrixInverse(&det, invProjection);	// ¼ÆËãÄæ¾ØÕó
-	XMStoreFloat4x4(&SSAOConstant.InversiveProjectionMatrix, XMMatrixTranspose(invView));		// ×ªÖÃÄæ¾ØÕó²¢´æÈë³£Á¿»º³å
-	XMStoreFloat4x4(&SSAOConstant.ProjectionMatrix, XMMatrixTranspose(invProjection));		// ×ªÖÃÍ¶Ó°¾ØÕó²¢´æÈë³£Á¿»º³å
+	// æŠ•å½±çŸ©é˜µçš„é€†çŸ©é˜µ
+	XMMATRIX invProjection = XMLoadFloat4x4(&SSAOConstant.ProjectionMatrix);	// åŠ è½½æŠ•å½±çŸ©é˜µ
+	XMVECTOR det = XMMatrixDeterminant(invProjection);	// è®¡ç®—è¡Œåˆ—å¼
+	XMMATRIX invView = XMMatrixInverse(&det, invProjection);	// è®¡ç®—é€†çŸ©é˜µ
+	XMStoreFloat4x4(&SSAOConstant.InversiveProjectionMatrix, XMMatrixTranspose(invView));		// è½¬ç½®é€†çŸ©é˜µå¹¶å­˜å…¥å¸¸é‡ç¼“å†²
+	XMStoreFloat4x4(&SSAOConstant.ProjectionMatrix, XMMatrixTranspose(invProjection));		// è½¬ç½®æŠ•å½±çŸ©é˜µå¹¶å­˜å…¥å¸¸é‡ç¼“å†²
 
 	// [-1, 1] -> [0. 1]
 	XMMATRIX halfLambertMatrix = {
@@ -193,13 +193,13 @@ void FScreenSpaceAmbientOcclusion::DrawSSAOConstantBuffer(float DeltaTime, const
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f };
 
-	XMMATRIX textureMatrix = XMMatrixMultiply(invProjection, halfLambertMatrix);	// Í¶Ó°¾ØÕóºÍ°ëÀ¼²®ÌØ¾ØÕóÏà³ËµÃµ½ÎÆÀí¿Õ¼ä¾ØÕó£¨NDC)
-	XMStoreFloat4x4(&SSAOConstant.TextureProjectionMatrix, textureMatrix);			// ´æÈë³£Á¿»º³å
+	XMMATRIX textureMatrix = XMMatrixMultiply(invProjection, halfLambertMatrix);	// æŠ•å½±çŸ©é˜µå’ŒåŠå…°ä¼¯ç‰¹çŸ©é˜µç›¸ä¹˜å¾—åˆ°çº¹ç†ç©ºé—´çŸ©é˜µï¼ˆNDC)
+	XMStoreFloat4x4(&SSAOConstant.TextureProjectionMatrix, textureMatrix);			// å­˜å…¥å¸¸é‡ç¼“å†²
 
-	// Ëæ»úÏòÁ¿
-	SampleVolume.UpdateVolumeData(SSAOConstant.SampleVolumeData);	// ¸üĞÂ²ÉÑùÌå»ıÊı¾İ
+	// éšæœºå‘é‡
+	SampleVolume.UpdateVolumeData(SSAOConstant.SampleVolumeData);	// æ›´æ–°é‡‡æ ·ä½“ç§¯æ•°æ®
 
-	SSAOConstantBufferView.Update(0, &SSAOConstant);	// ¸üĞÂ³£Á¿»º³å
+	SSAOConstantBufferView.Update(0, &SSAOConstant);	// æ›´æ–°å¸¸é‡ç¼“å†²
 }
 
 void FScreenSpaceAmbientOcclusion::DrawBlurConstantBuffer(float DeltaTime, const FViewportInfo& viewport_info)
@@ -215,7 +215,7 @@ void FScreenSpaceAmbientOcclusion::DrawBlurConstantBuffer(float DeltaTime, const
 
 	SSAOBlurParam.BlurRadius = 5.0f;
 
-	SSAOBlurConstantBufferView.Update(0, &SSAOBlurParam);	// ¸üĞÂ³£Á¿»º³å
+	SSAOBlurConstantBufferView.Update(0, &SSAOBlurParam);	// æ›´æ–°å¸¸é‡ç¼“å†²
 }
 
 void FScreenSpaceAmbientOcclusion::UpdateCalculations(float DeltaTime, const FViewportInfo& viewport_info)
@@ -250,32 +250,32 @@ void FScreenSpaceAmbientOcclusion::DrawBilateralBlurVertical(float DeltaTime)
 
 void FScreenSpaceAmbientOcclusion::DrawBlur(float DeltaTime, bool bHorizontal)
 {
-	SetRoot32BitConstants(bHorizontal);	// Í¨ÖªshaderÊÇË®Æ½»¹ÊÇ´¹Ö±Ä£ºı
+	SetRoot32BitConstants(bHorizontal);	// é€šçŸ¥shaderæ˜¯æ°´å¹³è¿˜æ˜¯å‚ç›´æ¨¡ç³Š
 
-	ID3D12Resource* resource = GetDrawResource(bHorizontal);	// »ñÈ¡×ÊÔ´
+	ID3D12Resource* resource = GetDrawResource(bHorizontal);	// è·å–èµ„æº
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE* rtv = GetDrawRTVResource(bHorizontal);	// »ñÈ¡RTV×ÊÔ´
+	CD3DX12_CPU_DESCRIPTOR_HANDLE* rtv = GetDrawRTVResource(bHorizontal);	// è·å–RTVèµ„æº
 
-	// ½«×ÊÔ´´ÓÒ»¸ö×´Ì¬×ª»»µ½ÁíÒ»¸ö×´Ì¬
+	// å°†èµ„æºä»ä¸€ä¸ªçŠ¶æ€è½¬æ¢åˆ°å¦ä¸€ä¸ªçŠ¶æ€
 	CD3DX12_RESOURCE_BARRIER transition = CD3DX12_RESOURCE_BARRIER::Transition(
-		resource,	//	»ñÈ¡äÖÈ¾Ä¿±ê
-		D3D12_RESOURCE_STATE_GENERIC_READ,	//	´Ó¿É¶Á×´Ì¬
-		D3D12_RESOURCE_STATE_RENDER_TARGET);	//	µ½äÖÈ¾Ä¿±ê×´Ì¬ ×ª»»
+		resource,	//	è·å–æ¸²æŸ“ç›®æ ‡
+		D3D12_RESOURCE_STATE_GENERIC_READ,	//	ä»å¯è¯»çŠ¶æ€
+		D3D12_RESOURCE_STATE_RENDER_TARGET);	//	åˆ°æ¸²æŸ“ç›®æ ‡çŠ¶æ€ è½¬æ¢
 
-	// Çå³ıäÖÈ¾Ä¿±ê
+	// æ¸…é™¤æ¸²æŸ“ç›®æ ‡
 	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition);
 
-	const float ClearColor[] = { 1.f, 1.f, 1.f, 1.f };	// ·¨ÏßµÄÄ¬ÈÏÖµÊÇ(0,0,1)
-	// Çå³ıäÖÈ¾Ä¿±êÊÓÍ¼£¨Çå¿Õ»­²¼£©
+	const float ClearColor[] = { 1.f, 1.f, 1.f, 1.f };	// æ³•çº¿çš„é»˜è®¤å€¼æ˜¯(0,0,1)
+	// æ¸…é™¤æ¸²æŸ“ç›®æ ‡è§†å›¾ï¼ˆæ¸…ç©ºç”»å¸ƒï¼‰
 	GetD3dGraphicsCommandList()->ClearRenderTargetView(
 		*rtv,
 		ClearColor,
 		0,
 		nullptr);
 
-	// Çå³ıÉî¶ÈÄ£°å»º³åÇø£¬µ«ÊÇÒòÎªÎÒÖ®Ç°ÒÑ¾­½ûÓÃÁËÉî¶È£¬ËùÒÔÕâÀï²»ĞèÒªÔÙÇå³ı
+	// æ¸…é™¤æ·±åº¦æ¨¡æ¿ç¼“å†²åŒºï¼Œä½†æ˜¯å› ä¸ºæˆ‘ä¹‹å‰å·²ç»ç¦ç”¨äº†æ·±åº¦ï¼Œæ‰€ä»¥è¿™é‡Œä¸éœ€è¦å†æ¸…é™¤
 
-	// ºÏ²¢×´Ì¬£¬Ã»ÓĞÉî¶ÈÖµ£¬´«nullptr
+	// åˆå¹¶çŠ¶æ€ï¼Œæ²¡æœ‰æ·±åº¦å€¼ï¼Œä¼ nullptr
 	GetD3dGraphicsCommandList()->OMSetRenderTargets(
 		1,
 		rtv,
@@ -283,18 +283,18 @@ void FScreenSpaceAmbientOcclusion::DrawBlur(float DeltaTime, bool bHorizontal)
 		nullptr
 	);
 
-	//°ó¶¨½ÓÊÜµÄ»º³åÇø °ó¶¨srv (shader¼Ä´æÆ÷½ÓÊÕ×ÊÔ´µÄ±àºÅ£©
+	//ç»‘å®šæ¥å—çš„ç¼“å†²åŒº ç»‘å®šsrv (shaderå¯„å­˜å™¨æ¥æ”¶èµ„æºçš„ç¼–å·ï¼‰
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-		6,	// ¸ùÇ©ÃûµÄ6ºÅÎ»ÖÃ
+		6,	// æ ¹ç­¾åçš„6å·ä½ç½®
 		*GetDrawSRVResource(bHorizontal));
 
-	// äÖÈ¾SSAO
+	// æ¸²æŸ“SSAO
 	RenderLayer->Draw(EMeshRenderLayerType::RENDER_LAYER_SSAO_BILATERAL_BLUR, DeltaTime);
 
 	CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(
 		resource,
-		D3D12_RESOURCE_STATE_RENDER_TARGET,	//	´ÓäÖÈ¾×´Ì¬
-		D3D12_RESOURCE_STATE_GENERIC_READ);	//	µ½¿É¶Á×´Ì¬ ×ª»»
+		D3D12_RESOURCE_STATE_RENDER_TARGET,	//	ä»æ¸²æŸ“çŠ¶æ€
+		D3D12_RESOURCE_STATE_GENERIC_READ);	//	åˆ°å¯è¯»çŠ¶æ€ è½¬æ¢
 
 	GetD3dGraphicsCommandList()->ResourceBarrier(1, &transition2);
 
@@ -322,30 +322,30 @@ void FScreenSpaceAmbientOcclusion::SetRoot32BitConstants(bool bHorizontal)
 
 void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 {
-	BuildDepthBuffer();		// ÏÈ¹¹½¨Éî¶È»º³å£¬±£Ö¤CPUºÍGPU¶¼ÄÜ·ÃÎÊµ½Éî¶È»º³å£¬ÒÔ¼°SRVÊÇÓĞĞ§µÄ
+	BuildDepthBuffer();		// å…ˆæ„å»ºæ·±åº¦ç¼“å†²ï¼Œä¿è¯CPUå’ŒGPUéƒ½èƒ½è®¿é—®åˆ°æ·±åº¦ç¼“å†²ï¼Œä»¥åŠSRVæ˜¯æœ‰æ•ˆçš„
 
-	NormalBuffer.SetSRVOffset(GetNormalBufferSRVOffset());		// ÉèÖÃ»·¾³¹âSRVÆ«ÒÆ
-	NormalBuffer.SetRTVOffset(GetNormalBufferRTVOffset());		// ÉèÖÃ»·¾³¹âRTVÆ«ÒÆ
+	NormalBuffer.SetSRVOffset(GetNormalBufferSRVOffset());		// è®¾ç½®ç¯å¢ƒå…‰SRVåç§»
+	NormalBuffer.SetRTVOffset(GetNormalBufferRTVOffset());		// è®¾ç½®ç¯å¢ƒå…‰RTVåç§»
 	NormalBuffer.BuildDescriptor();
 	NormalBuffer.BuildRenderTargetRTVOffset();
 	NormalBuffer.BuildSRVDescriptor();
 	NormalBuffer.BuildRTVDescriptor();
 
-	NoiseBuffer.SetSRVOffset(GetNoiseBufferSRVOffset());		// ÉèÖÃÔë²¨SRVÆ«ÒÆ
+	NoiseBuffer.SetSRVOffset(GetNoiseBufferSRVOffset());		// è®¾ç½®å™ªæ³¢SRVåç§»
 	NoiseBuffer.BuildDescriptor();
 	NoiseBuffer.BuildRenderTargetRTVOffset();
 	NoiseBuffer.BuildSRVDescriptor();
 	NoiseBuffer.BuildRTVDescriptor();
 
-	AmbientBuffer.SetSRVOffset(GetAmbientSRVOffset());		// ÉèÖÃ»·¾³¹âSRVÆ«ÒÆ
-	AmbientBuffer.SetRTVOffset(GetAmbientRTVOffset());		// ÉèÖÃ»·¾³¹âRTVÆ«ÒÆ
+	AmbientBuffer.SetSRVOffset(GetAmbientSRVOffset());		// è®¾ç½®ç¯å¢ƒå…‰SRVåç§»
+	AmbientBuffer.SetRTVOffset(GetAmbientRTVOffset());		// è®¾ç½®ç¯å¢ƒå…‰RTVåç§»
 	AmbientBuffer.BuildDescriptor();
 	AmbientBuffer.BuildRenderTargetRTVOffset();
 	AmbientBuffer.BuildSRVDescriptor();
 	AmbientBuffer.BuildRTVDescriptor();
 
-	BilateralBlur.SetSRVOffset(GetBilateralBlurSRVOffset());		// ÉèÖÃË«±ßÄ£ºıSRVÆ«ÒÆ
-	BilateralBlur.SetRTVOffset(GetBilateralBlurRTVOffset());		// ÉèÖÃË«±ßÄ£ºıRTVÆ«ÒÆ
+	BilateralBlur.SetSRVOffset(GetBilateralBlurSRVOffset());		// è®¾ç½®åŒè¾¹æ¨¡ç³ŠSRVåç§»
+	BilateralBlur.SetRTVOffset(GetBilateralBlurRTVOffset());		// è®¾ç½®åŒè¾¹æ¨¡ç³ŠRTVåç§»
 	BilateralBlur.BuildDescriptor();
 	BilateralBlur.BuildRenderTargetRTVOffset();
 	BilateralBlur.BuildSRVDescriptor();
@@ -355,50 +355,50 @@ void FScreenSpaceAmbientOcclusion::BuildDescriptor()
 void FScreenSpaceAmbientOcclusion::BuildSSAOConstantBufferView()
 {
 	SSAOConstantBufferView.CreateConstant(
-		sizeof(FSSAOConstant),	// ³£Á¿»º³å´óĞ¡
-		1	// ÒòÎªÎÒÃÇÊÇÒ»¸öĞÂµÄ³£Á¿»º³å, ËùÒÔÎÒÃÇµÄ¶ÔÏóÊıÁ¿ÊÇ1
+		sizeof(FSSAOConstant),	// å¸¸é‡ç¼“å†²å¤§å°
+		1	// å› ä¸ºæˆ‘ä»¬æ˜¯ä¸€ä¸ªæ–°çš„å¸¸é‡ç¼“å†², æ‰€ä»¥æˆ‘ä»¬çš„å¯¹è±¡æ•°é‡æ˜¯1
 	);
 }
 
 void FScreenSpaceAmbientOcclusion::BuildSSAOBlurConstantBuffer()
 {
 	SSAOBlurConstantBufferView.CreateConstant(
-		sizeof(FSSAOBlurParam),	// ³£Á¿»º³å´óĞ¡
-		1	// ÒòÎªÎÒÃÇÊÇÒ»¸öĞÂµÄ³£Á¿»º³å, ËùÒÔÎÒÃÇµÄ¶ÔÏóÊıÁ¿ÊÇ1
+		sizeof(FSSAOBlurParam),	// å¸¸é‡ç¼“å†²å¤§å°
+		1	// å› ä¸ºæˆ‘ä»¬æ˜¯ä¸€ä¸ªæ–°çš„å¸¸é‡ç¼“å†², æ‰€ä»¥æˆ‘ä»¬çš„å¯¹è±¡æ•°é‡æ˜¯1
 	);
 }
 
 void FScreenSpaceAmbientOcclusion::SaveSSAOToBuffer()
 {
-	// ½«NormalBuffer±£´æµ½Ö¡»º³å£¨äÖÈ¾Áô´æ£©¿ªÆôÕâ¸ö¿ÉÒÔ¼ì²éNormalBufferµÄäÖÈ¾½á¹û
+	// å°†NormalBufferä¿å­˜åˆ°å¸§ç¼“å†²ï¼ˆæ¸²æŸ“ç•™å­˜ï¼‰å¼€å¯è¿™ä¸ªå¯ä»¥æ£€æŸ¥NormalBufferçš„æ¸²æŸ“ç»“æœ
 	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-	//	9,	// ¸ùÇ©ÃûµÄ9ºÅÎ»ÖÃ
+	//	9,	// æ ¹ç­¾åçš„9å·ä½ç½®
 	//	NormalBuffer.GetRenderTarget()->GetGPUShaderResourceView()
 	//);
 
-	// ½«DepthBuffer±£´æµ½Ö¡»º³å£¨äÖÈ¾Áô´æ£©¿ªÆôÕâ¸ö¿ÉÒÔ¼ì²éDepthBufferµÄäÖÈ¾½á¹û
+	// å°†DepthBufferä¿å­˜åˆ°å¸§ç¼“å†²ï¼ˆæ¸²æŸ“ç•™å­˜ï¼‰å¼€å¯è¿™ä¸ªå¯ä»¥æ£€æŸ¥DepthBufferçš„æ¸²æŸ“ç»“æœ
 	//GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-	//	9,	// ¸ùÇ©ÃûµÄ9ºÅÎ»ÖÃ
+	//	9,	// æ ¹ç­¾åçš„9å·ä½ç½®
 	//	DepthBufferRenderTarget->GetGPUShaderResourceView()
 	//);
 
-	// SSAO±£´æµ½Ö¡»º³å£¨äÖÈ¾Áô´æ£©
+	// SSAOä¿å­˜åˆ°å¸§ç¼“å†²ï¼ˆæ¸²æŸ“ç•™å­˜ï¼‰
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-		9,	// ¸ùÇ©ÃûµÄ9ºÅÎ»ÖÃ
+		9,	// æ ¹ç­¾åçš„9å·ä½ç½®
 		AmbientBuffer.GetRenderTarget()->GetGPUShaderResourceView()
 	);
 }
 
 void FScreenSpaceAmbientOcclusion::BuildDepthBuffer()
 {
-	// ¹¹½¨Éî¶È»º³åÃèÊö¶Ñ
+	// æ„å»ºæ·±åº¦ç¼“å†²æè¿°å †
 	DepthBuffer::BuildDepthBufferDescriptorHeap(
-		GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart(),	// »ñÈ¡CPUÃèÊö·û¾ä±ú
-		GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart(),	// »ñÈ¡GPUÃèÊö·û¾ä±ú
-		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV),	// »ñÈ¡CBV/SRV/UAVÃèÊö·û´óĞ¡
-		GetDepthBufferSRVOffset());	// »ñÈ¡Éî¶È»º³åSRVÆ«ÒÆ
+		GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart(),	// è·å–CPUæè¿°ç¬¦å¥æŸ„
+		GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart(),	// è·å–GPUæè¿°ç¬¦å¥æŸ„
+		GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV),	// è·å–CBV/SRV/UAVæè¿°ç¬¦å¤§å°
+		GetDepthBufferSRVOffset());	// è·å–æ·±åº¦ç¼“å†²SRVåç§»
 
-	// ¹¹½¨Éî¶È»º³å£¨ÕâÀïÎÒÃÇÊ¹ÓÃµÄÉî¶È×ÊÔ´ÊÇÎÒÃÇÖ®Ç°´´½¨µÄÉî¶È×ÊÔ´£¬Ò²¾ÍÊÇÖ÷ÊÓ¿ÚµÄÉî¶ÈĞÅÏ¢£©
+	// æ„å»ºæ·±åº¦ç¼“å†²ï¼ˆè¿™é‡Œæˆ‘ä»¬ä½¿ç”¨çš„æ·±åº¦èµ„æºæ˜¯æˆ‘ä»¬ä¹‹å‰åˆ›å»ºçš„æ·±åº¦èµ„æºï¼Œä¹Ÿå°±æ˜¯ä¸»è§†å£çš„æ·±åº¦ä¿¡æ¯ï¼‰
 	DepthBuffer::CreateDepthBuffer(GetD3dDevice().Get(), GetDepthBufferResource());
 }
 
@@ -406,20 +406,20 @@ void FScreenSpaceAmbientOcclusion::BuildDepthBuffer()
 UINT FScreenSpaceAmbientOcclusion::GetNormalBufferSRVOffset() const
 {
 	return  GeometryMap->GetDrawTexture2DCount() + //Texture2D
-		GeometryMap->GetDrawCubeMapCount() + //¾²Ì¬CubeÌùÍ¼ ±³¾° Ìì¿ÕÇò
-		1 + //¶¯Ì¬CubeÌùÍ¼ ·´Éä
-		1 + //Shadow Ö±ÉäµÆ ¾Û¹âµÆ Shadow
-		1 + //ShadowCubeMap µã¹âÔ´µÄ Shadow
+		GeometryMap->GetDrawCubeMapCount() + //é™æ€Cubeè´´å›¾ èƒŒæ™¯ å¤©ç©ºçƒ
+		1 + //åŠ¨æ€Cubeè´´å›¾ åå°„
+		1 + //Shadow ç›´å°„ç¯ èšå…‰ç¯ Shadow
+		1 + //ShadowCubeMap ç‚¹å…‰æºçš„ Shadow
 		1;//UI
 }
 
 UINT FScreenSpaceAmbientOcclusion::GetDepthBufferSRVOffset() const
 {
-	return	GeometryMap->GetDrawTexture2DCount() + // ÎÆÀíÌùÍ¼ÊıÁ¿
-		GeometryMap->GetDrawCubeMapCount() +	// CubeMapÊıÁ¿
-		1 + //¶¯Ì¬CubeÌùÍ¼ ·´Éä
-		1 + //Shadow Ö±ÉäµÆ ¾Û¹âµÆ Shadow
-		1 + //ShadowCubeMap µã¹âÔ´µÄ Shadow
+	return	GeometryMap->GetDrawTexture2DCount() + // çº¹ç†è´´å›¾æ•°é‡
+		GeometryMap->GetDrawCubeMapCount() +	// CubeMapæ•°é‡
+		1 + //åŠ¨æ€Cubeè´´å›¾ åå°„
+		1 + //Shadow ç›´å°„ç¯ èšå…‰ç¯ Shadow
+		1 + //ShadowCubeMap ç‚¹å…‰æºçš„ Shadow
 		1 + //UI
 		1;  //Nor
 }
@@ -427,26 +427,26 @@ UINT FScreenSpaceAmbientOcclusion::GetDepthBufferSRVOffset() const
 UINT FScreenSpaceAmbientOcclusion::GetNoiseBufferSRVOffset() const
 {
 	return  GeometryMap->GetDrawTexture2DCount() + //Texture2D
-		GeometryMap->GetDrawCubeMapCount() + //¾²Ì¬CubeÌùÍ¼ ±³¾° Ìì¿ÕÇò
-		1 + //¶¯Ì¬CubeÌùÍ¼ ·´Éä
-		1 + //Shadow Ö±ÉäµÆ ¾Û¹âµÆ Shadow
-		1 + //ShadowCubeMap µã¹âÔ´µÄ Shadow
+		GeometryMap->GetDrawCubeMapCount() + //é™æ€Cubeè´´å›¾ èƒŒæ™¯ å¤©ç©ºçƒ
+		1 + //åŠ¨æ€Cubeè´´å›¾ åå°„
+		1 + //Shadow ç›´å°„ç¯ èšå…‰ç¯ Shadow
+		1 + //ShadowCubeMap ç‚¹å…‰æºçš„ Shadow
 		1 + //UI
-		1 + //·¨Ïß
-		1; //Éî¶È 
+		1 + //æ³•çº¿
+		1; //æ·±åº¦ 
 }
 
 UINT FScreenSpaceAmbientOcclusion::GetAmbientSRVOffset() const
 {
-	const UINT offset = GeometryMap->GetDrawTexture2DCount() + // ÎÆÀíÌùÍ¼ÊıÁ¿
-		GeometryMap->GetDrawCubeMapCount() +	// CubeMapÊıÁ¿
-		1 + // ·´ÉäCubemap ¶¯Ì¬·´Éä
-		1 +	// ÒõÓ°ÌùÍ¼ Ö±ÉäµÆ£¬¾Û¹âµÆ
-		1 + // shadowCubeMap 6¸öÃæ (µã¹âÔ´ÒõÓ°£©
+	const UINT offset = GeometryMap->GetDrawTexture2DCount() + // çº¹ç†è´´å›¾æ•°é‡
+		GeometryMap->GetDrawCubeMapCount() +	// CubeMapæ•°é‡
+		1 + // åå°„Cubemap åŠ¨æ€åå°„
+		1 +	// é˜´å½±è´´å›¾ ç›´å°„ç¯ï¼Œèšå…‰ç¯
+		1 + // shadowCubeMap 6ä¸ªé¢ (ç‚¹å…‰æºé˜´å½±ï¼‰
 		1 + // UI
-		1 + // ·¨Ïß
-		1 + // Éî¶È
-		1	// Ôë²¨
+		1 + // æ³•çº¿
+		1 + // æ·±åº¦
+		1	// å™ªæ³¢
 		;
 
 	return offset;
@@ -454,16 +454,16 @@ UINT FScreenSpaceAmbientOcclusion::GetAmbientSRVOffset() const
 
 UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurSRVOffset() const
 {
-	const UINT offset = GeometryMap->GetDrawTexture2DCount() + // ÎÆÀíÌùÍ¼ÊıÁ¿
-		GeometryMap->GetDrawCubeMapCount() +	// CubeMapÊıÁ¿
-		1 + // ·´ÉäCubemap ¶¯Ì¬·´Éä
-		1 +	// ÒõÓ°ÌùÍ¼ Ö±ÉäµÆ£¬¾Û¹âµÆ
-		1 + // shadowCubeMap 6¸öÃæ (µã¹âÔ´ÒõÓ°£©
+	const UINT offset = GeometryMap->GetDrawTexture2DCount() + // çº¹ç†è´´å›¾æ•°é‡
+		GeometryMap->GetDrawCubeMapCount() +	// CubeMapæ•°é‡
+		1 + // åå°„Cubemap åŠ¨æ€åå°„
+		1 +	// é˜´å½±è´´å›¾ ç›´å°„ç¯ï¼Œèšå…‰ç¯
+		1 + // shadowCubeMap 6ä¸ªé¢ (ç‚¹å…‰æºé˜´å½±ï¼‰
 		1 + // UI
-		1 + // ·¨Ïß
-		1 + // Éî¶È
-		1 +	// Ôë²¨
-		1;	// SSAO »·¾³¹âÕÚ±Î
+		1 + // æ³•çº¿
+		1 + // æ·±åº¦
+		1 +	// å™ªæ³¢
+		1;	// SSAO ç¯å¢ƒå…‰é®è”½
 		;
 
 	return offset;
@@ -471,28 +471,28 @@ UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurSRVOffset() const
 
 UINT FScreenSpaceAmbientOcclusion::GetNormalBufferRTVOffset() const
 {
-	return	FEngineRenderConfig::GetRenderConfig()->SwapChainCount +//½»»»Á´
-		6 +//·´ÉäµÄCubeMap RTV
+	return	FEngineRenderConfig::GetRenderConfig()->SwapChainCount +//äº¤æ¢é“¾
+		6 +//åå°„çš„CubeMap RTV
 		6; //ShadowCubeMap RTV Point Light
 }
 
 UINT FScreenSpaceAmbientOcclusion::GetAmbientRTVOffset() const
 {
-	const UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// »ñÈ¡Æ«ÒÆÁ¿ ½»»»Á´
-		6 +	// ·´ÉäµÄCubeMap
-		6 + // shadowCubeMap 6¸öÃæ (µã¹âÔ´ÒõÓ°£©
-		1;	// ·¨Ïß
+	const UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// è·å–åç§»é‡ äº¤æ¢é“¾
+		6 +	// åå°„çš„CubeMap
+		6 + // shadowCubeMap 6ä¸ªé¢ (ç‚¹å…‰æºé˜´å½±ï¼‰
+		1;	// æ³•çº¿
 
 	return offset;
 }
 
 UINT FScreenSpaceAmbientOcclusion::GetBilateralBlurRTVOffset() const
 {
-	const UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// »ñÈ¡Æ«ÒÆÁ¿ ½»»»Á´
-		6 +	// ·´ÉäµÄCubeMap
-		6 + // shadowCubeMap 6¸öÃæ (µã¹âÔ´ÒõÓ°£©
-		1 +	// ·¨Ïß
-		1	// SSAO »·¾³¹âÕÚ±Î
+	const UINT offset = FEngineRenderConfig::GetRenderConfig()->SwapChainCount +	// è·å–åç§»é‡ äº¤æ¢é“¾
+		6 +	// åå°„çš„CubeMap
+		6 + // shadowCubeMap 6ä¸ªé¢ (ç‚¹å…‰æºé˜´å½±ï¼‰
+		1 +	// æ³•çº¿
+		1	// SSAO ç¯å¢ƒå…‰é®è”½
 		;
 	return offset;
 }
@@ -506,22 +506,22 @@ void FScreenSpaceAmbientOcclusion::BuildBlurWeight(float sigam, bool bRebuild)
 
 	if (BlurWeights.empty())
 	{
-		// ¹¹½¨ÕıÌ¬·Ö²¼µÄÄ£ºıÈ¨ÖØ
-		BlurRadius = ceil(2.0f * sigam);		// Ä£ºı°ë¾¶
-		const int blurRadius = BlurRadius;		// Ä£ºı°ë¾¶
+		// æ„å»ºæ­£æ€åˆ†å¸ƒçš„æ¨¡ç³Šæƒé‡
+		BlurRadius = ceil(2.0f * sigam);		// æ¨¡ç³ŠåŠå¾„
+		const int blurRadius = BlurRadius;		// æ¨¡ç³ŠåŠå¾„
 
-		BlurWeights.resize(2 * blurRadius + 1);	// ÖØĞÂÉèÖÃ´óĞ¡, 2 * blurRadius + 1£¬ÒòÎªÎÒÃÇĞèÒª×óÓÒÁ½±ßµÄÈ¨ÖØ£¬ËùÒÔÊÇ2 * blurRadius + 1£¬+1ÊÇÒòÎªÎÒÃÇÊÇ´Ó0¿ªÊ¼µÄ£¬ËùÒÔĞèÒª+1
+		BlurWeights.resize(2 * blurRadius + 1);	// é‡æ–°è®¾ç½®å¤§å°, 2 * blurRadius + 1ï¼Œå› ä¸ºæˆ‘ä»¬éœ€è¦å·¦å³ä¸¤è¾¹çš„æƒé‡ï¼Œæ‰€ä»¥æ˜¯2 * blurRadius + 1ï¼Œ+1æ˜¯å› ä¸ºæˆ‘ä»¬æ˜¯ä»0å¼€å§‹çš„ï¼Œæ‰€ä»¥éœ€è¦+1
 
-		float Weights = 0.0f;	// È¨ÖØ
+		float Weights = 0.0f;	// æƒé‡
 		for (int i = -blurRadius; i <= blurRadius; ++i)
 		{
 			const float x = static_cast<float>(i);
-			BlurWeights[i + blurRadius] = expf(-x * x / (2.0f * sigam * sigam));	// ÕıÌ¬·Ö²¼
-			// expf(-x * x / (2.0f * sigam * sigam)) ÎªÕıÌ¬·Ö²¼µÄ¹«Ê½£¬ xÎª¾àÀë£¬sigamÎª±ê×¼²î£¬expfÎªeµÄx´Î·½,·µ»ØÖµÊÇÒ»¸ö¸¡µãÊı
-			Weights += BlurWeights[i + blurRadius];	// È¨ÖØÀÛ¼Ó
+			BlurWeights[i + blurRadius] = expf(-x * x / (2.0f * sigam * sigam));	// æ­£æ€åˆ†å¸ƒ
+			// expf(-x * x / (2.0f * sigam * sigam)) ä¸ºæ­£æ€åˆ†å¸ƒçš„å…¬å¼ï¼Œ xä¸ºè·ç¦»ï¼Œsigamä¸ºæ ‡å‡†å·®ï¼Œexpfä¸ºeçš„xæ¬¡æ–¹,è¿”å›å€¼æ˜¯ä¸€ä¸ªæµ®ç‚¹æ•°
+			Weights += BlurWeights[i + blurRadius];	// æƒé‡ç´¯åŠ 
 		}
 
-		// È¨ÖØÓ³Éäµ½[0, 1]
+		// æƒé‡æ˜ å°„åˆ°[0, 1]
 		for (int i = 0; i < BlurWeights.size(); ++i)
 		{
 			BlurWeights[i] /= Weights;
