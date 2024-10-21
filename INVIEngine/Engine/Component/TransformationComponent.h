@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Core/Component.h"
-
 class CTransformationComponent : public CComponent
 {
 public:
@@ -10,20 +8,20 @@ public:
 
 	virtual void SetPosition(const XMFLOAT3& InPosition);
 	virtual void SetRotation(const XMFLOAT3& InRotation);
-	virtual void SetRotation(const frotator& InRotation);	// ÉèÖÃĞı×ªĞÅÏ¢£¬Ê¹ÓÃfrotator
+	virtual void SetRotation(const frotator& InRotation);	// è®¾ç½®æ—‹è½¬ä¿¡æ¯ï¼Œä½¿ç”¨frotator
 	virtual void SetScale(const XMFLOAT3& InScale);
 
 	virtual void SetForwardVector(const XMFLOAT3& InForward);
 	virtual void SetRightVector(const XMFLOAT3& InRight);
 	virtual void SetUpVector(const XMFLOAT3& InUp);
 
-	XMVECTOR GetRotationQuat() const;	// »ñÈ¡Ğı×ªËÄÔªÊı DXMath
-	frotator GetRotationFRotator() const;	// »ñÈ¡Ğı×ªĞÅÏ¢ frotator
-	fquat GetRotationFQuat() const;	// »ñÈ¡Ğı×ªĞÅÏ¢ fquat
+	XMVECTOR GetRotationQuat() const;	// è·å–æ—‹è½¬å››å…ƒæ•° DXMath
+	frotator GetRotationFRotator() const;	// è·å–æ—‹è½¬ä¿¡æ¯ frotator
+	fquat GetRotationFQuat() const;	// è·å–æ—‹è½¬ä¿¡æ¯ fquat
 
 
-	void SetRotationQuat(const XMVECTOR& InQuat);	// ÉèÖÃĞı×ªËÄÔªÊı
-	void SetRotationFQuat(const fquat& quat);	// ÉèÖÃĞı×ªĞÅÏ¢ fquat
+	void SetRotationQuat(const XMVECTOR& InQuat);	// è®¾ç½®æ—‹è½¬å››å…ƒæ•°
+	void SetRotationFQuat(const fquat& quat);	// è®¾ç½®æ—‹è½¬ä¿¡æ¯ fquat
 
 	FORCEINLINE XMFLOAT3& GetPosition() { return Position; }
 	FORCEINLINE XMFLOAT3& GetScale() { return Scale; }
@@ -32,7 +30,7 @@ public:
 	FORCEINLINE XMFLOAT3& GetUpVector() { return UpVector; }
 
 public:
-	// Ğ£Õı Up, Right, Look(Forward)
+	// æ ¡æ­£ Up, Right, Look(Forward)
 	void CorrectionVector();
 
 	fvector_3d GetCorrectionPosition();
@@ -42,11 +40,11 @@ public:
 
 private:
 
-	XMFLOAT3 Position;			// Î»ÖÃĞÅÏ¢
-	XMFLOAT3 Scale;				// Ëõ·ÅĞÅÏ¢
+	XMFLOAT3 Position;			// ä½ç½®ä¿¡æ¯
+	XMFLOAT3 Scale;				// ç¼©æ”¾ä¿¡æ¯
 
-	XMFLOAT3 ForwardVector;		// forward	Õı·½ÏòÏòÁ¿ µÈÍ¬ÓÚÁúÊéÀïµÄlookÏòÁ¿
-	XMFLOAT3 RightVector;		// right	ÓÒ·½ÏòÏòÁ¿
-	XMFLOAT3 UpVector;			// up		ÉÏ·½ÏòÏòÁ¿
+	XMFLOAT3 ForwardVector;		// forward	æ­£æ–¹å‘å‘é‡ ç­‰åŒäºé¾™ä¹¦é‡Œçš„lookå‘é‡
+	XMFLOAT3 RightVector;		// right	å³æ–¹å‘å‘é‡
+	XMFLOAT3 UpVector;			// up		ä¸Šæ–¹å‘å‘é‡
 };
 

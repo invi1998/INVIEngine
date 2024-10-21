@@ -1,8 +1,7 @@
-#include "EngineMinimal.h"
+#include "CoreObjectPch.h"
 #include "ConstructionComponent.h"
-#include "Actor/Core/ActorObject.h"
-#include "Component/TransformationComponent.h"
-#include "Component/Core/Component.h"
+// #include "Component/TransformationComponent.h"
+#include "Component/Component.h"
 
 namespace ConstructionComponent
 {
@@ -12,19 +11,19 @@ namespace ConstructionComponent
 		{
 			if (InOwner)
 			{
-				// 如果InOwner是一个Component
+				// 濡傛灉InOwner鏄竴涓狢omponent
 				if (CComponent* comp = dynamic_cast<CComponent*>(InOwner))
 				{
 					UpdateComponent(component, comp);
 				}
-				// 如果InOwner是一个ActorObject
-				else if (GActorObject* actor = dynamic_cast<GActorObject*>(InOwner))
+				// 濡傛灉InOwner鏄竴涓狝ctorObject
+				/*else if (GActorObject* actor = dynamic_cast<GActorObject*>(InOwner))
 				{
 					if (actor->GetRootComponent())
 					{
 						UpdateComponent(component, actor->GetRootComponent());
 					}
-				}
+				}*/
 			}
 		}
 	}

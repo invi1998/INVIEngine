@@ -1,7 +1,6 @@
 #pragma once
 
 #include "EngineMinimal.h"
-#include "Core/CoreObject/CoreMinimalObject.h"
 
 
 class CTransformationComponent;
@@ -10,14 +9,14 @@ class CTransformationComponent;
 class GActorObject : public CCoreMinimalObject
 {
 	CVARIABLE()
-		CTransformationComponent* RootComponent = nullptr;	// 空指针异常会导致程序崩溃
+		CTransformationComponent* RootComponent = nullptr;	// 绌烘寚閽堝紓甯镐細瀵艰嚧绋嬪簭宕╂簝
 
 public:
 	GActorObject();
 
 	FORCEINLINE CTransformationComponent* GetRootComponent() const { return RootComponent; }
 
-	// 获取BoundingBox
+	// 鑾峰彇BoundingBox
 	void GetBoundingBox(BoundingBox& OutBoundingBox) const;
 	BoundingBox GetBoundingBox() const;
 

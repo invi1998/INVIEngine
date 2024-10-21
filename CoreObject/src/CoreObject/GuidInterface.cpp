@@ -1,4 +1,4 @@
-#include "EngineMinimal.h"
+#include "CoreObjectPch.h"
 
 #include "GuidInterface.h"
 

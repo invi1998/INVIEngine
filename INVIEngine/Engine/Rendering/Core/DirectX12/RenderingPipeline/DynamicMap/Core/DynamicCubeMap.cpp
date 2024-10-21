@@ -2,7 +2,6 @@
 #include "DynamicCubeMap.h"
 
 #include "Config/EngineRenderConfig.h"
-#include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/RenderTarget/CubeMapRenderTarget.h"
@@ -15,7 +14,7 @@ FTempViewportCapture::FTempViewportCapture(const XMFLOAT3& InCenterPoint)
 void FTempViewportCapture::BuildViewportCapture(const XMFLOAT3& InCenterPoint)
 {
 	// +x, -x, +y, -y, +z, -z
-	// ²¶»ñÉãÏñ»úµÄ6¸öÃæ
+	// æ•è·æ‘„åƒæœºçš„6ä¸ªé¢
 	TargetPoint[0] = XMFLOAT3{ InCenterPoint.x + 1.0f, InCenterPoint.y, InCenterPoint.z };
 	TargetPoint[1] = XMFLOAT3{ InCenterPoint.x - 1.0f, InCenterPoint.y, InCenterPoint.z };
 	TargetPoint[2] = XMFLOAT3{ InCenterPoint.x, InCenterPoint.y + 1.0f, InCenterPoint.z };
@@ -66,7 +65,7 @@ void FDynamicCubeMap::Draw(float deltaTime)
 {
 	FDynamicMap::Draw(deltaTime);
 
-	// ¸üĞÂCubeMap
+	// æ›´æ–°CubeMap
 	if (FCubeMapRenderTarget* inRenderTarget = dynamic_cast<FCubeMapRenderTarget*>(RenderTarget.get()))
 	{
 		GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(6, inRenderTarget->GPUShaderResourceView);
@@ -140,15 +139,15 @@ void FDynamicCubeMap::BuildDepthStencilDescriptor()
 	UINT DescriptorHandleIncrementSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	DSVCubeMapCPUDesc = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(),	// DSVµÄÆğÊ¼µØÖ·
-		1,	// Æ«ÒÆ1 µÚÒ»¸öÊÇ¸øÖ÷äÖÈ¾Ä¿±êÓÃµÄ(³¡¾°£©ºóÃæµÄ²ÅÊÇ¸øcubeMapÓÃµÄ
-		DescriptorHandleIncrementSize	// DSVÆ«ÒÆÁ¿
+		GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(),	// DSVçš„èµ·å§‹åœ°å€
+		1,	// åç§»1 ç¬¬ä¸€ä¸ªæ˜¯ç»™ä¸»æ¸²æŸ“ç›®æ ‡ç”¨çš„(åœºæ™¯ï¼‰åé¢çš„æ‰æ˜¯ç»™cubeMapç”¨çš„
+		DescriptorHandleIncrementSize	// DSVåç§»é‡
 	);
 }
 
 void FDynamicCubeMap::BuildCubeMapRenderTargetDescriptor()
 {
-	BuildRenderTargetRTV();	// ÊÓÍ¼
+	BuildRenderTargetRTV();	// è§†å›¾
 	BuildRenderTargetSRV();	// shader
 
 	RenderTarget->Init(Width, Height, DXGI_FORMAT_R8G8B8A8_UNORM);

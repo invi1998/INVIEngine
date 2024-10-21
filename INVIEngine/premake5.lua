@@ -34,6 +34,7 @@ project "INVIEngine"
 		"Engine",
 		"Editor",
 		"Common",
+		"%{wks.location}/CoreObject/src",
         "%{IncludeDir.simple_library}",
 		"%{IncludeDir.FBX_SDK}",
 		"%{IncludeDir.imgui}",
@@ -41,6 +42,7 @@ project "INVIEngine"
 
 	links
 	{
+		"CoreObject",
 		"d3dcompiler.lib",
 		"D3D12.lib",
 		"dxgi.lib",

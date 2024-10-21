@@ -3,7 +3,6 @@
 
 #include "Component/Light/Core/LightComponent.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
-#include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Manage/LightManager.h"
@@ -47,7 +46,7 @@ void FDynamicShadowMap::UpdateCalculations(float delta_time, const FViewportInfo
 				ShadowViewInfo.ProjectionMatrix = GetProjectionMatrix();
 				XMFLOAT3 pos = ShadowViewPort->GetPosition();
 				ShadowViewInfo.CameraPosition = XMFLOAT4(pos.x, pos.y, pos.z, 1.0f);
-				// ¸üĞÂÊÓ¿Ú£¬Æ«ÒÆÁ¿Îª¶¯Ì¬·´ÉäµÄÉãÏñ»úÊı+Ö÷ÊÓ¿ÚµÄÉãÏñ»ú
+				// æ›´æ–°è§†å£ï¼Œåç§»é‡ä¸ºåŠ¨æ€åå°„çš„æ‘„åƒæœºæ•°+ä¸»è§†å£çš„æ‘„åƒæœº
 				GeometryMap->UpdateCalculationViewport(ShadowViewInfo, GeometryMap->GetDynamicReflectionViewportNum() + 1);
 			}
 		}
@@ -74,15 +73,15 @@ void FDynamicShadowMap::Draw(float deltaTime)
 					continue;
 				}
 
-				// ÉèÖÃ×ÊÔ´×´Ì¬Îª¿ÉĞ´
+				// è®¾ç½®èµ„æºçŠ¶æ€ä¸ºå¯å†™
 				CD3DX12_RESOURCE_BARRIER ResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-					innerRenderTarget->GetRenderTarget(), // ×ÊÔ´
-					D3D12_RESOURCE_STATE_GENERIC_READ,	  // ×ÊÔ´×´Ì¬ ¿É¶Á
-					D3D12_RESOURCE_STATE_DEPTH_WRITE);	  // ×ÊÔ´×´Ì¬ ×ªÎª ¿ÉĞ´
+					innerRenderTarget->GetRenderTarget(), // èµ„æº
+					D3D12_RESOURCE_STATE_GENERIC_READ,	  // èµ„æºçŠ¶æ€ å¯è¯»
+					D3D12_RESOURCE_STATE_DEPTH_WRITE);	  // èµ„æºçŠ¶æ€ è½¬ä¸º å¯å†™
 
 				GetD3dGraphicsCommandList()->ResourceBarrier(1, &ResourceBarrier);
 
-				// ĞèÒªÃ¿Ö¡¸üĞÂµÄÊı¾İ °ó¶¨¾ØĞÎ¿ò
+				// éœ€è¦æ¯å¸§æ›´æ–°çš„æ•°æ® ç»‘å®šçŸ©å½¢æ¡†
 				auto RenderTargetViewPort = innerRenderTarget->GetViewport();
 				auto RenderTargetScissorRect = innerRenderTarget->GetScissorRect();
 
@@ -91,29 +90,29 @@ void FDynamicShadowMap::Draw(float deltaTime)
 
 				UINT CBVDescriptorSize = GeometryMap->ViewportConstantBufferViews.GetConstantBufferByteSize();
 
-				// Çå³ıÉî¶ÈÄ£°å»º³åÇø
+				// æ¸…é™¤æ·±åº¦æ¨¡æ¿ç¼“å†²åŒº
 				GetD3dGraphicsCommandList()->ClearDepthStencilView(
-					innerRenderTarget->CPUDepthStencilView,			   // DSV ÃèÊö·û
-					D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, // Çå³ıÉî¶ÈÄ£°å»º³åÇø
-					1.0f,											   // Éî¶ÈÖµ
-					0,												   // Ä£°åÖµ
-					0,												   // Çå³ıÇøÓòÊıÁ¿
-					nullptr);										   // Çå³ıÇøÓò)
+					innerRenderTarget->CPUDepthStencilView,			   // DSV æè¿°ç¬¦
+					D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, // æ¸…é™¤æ·±åº¦æ¨¡æ¿ç¼“å†²åŒº
+					1.0f,											   // æ·±åº¦å€¼
+					0,												   // æ¨¡æ¿å€¼
+					0,												   // æ¸…é™¤åŒºåŸŸæ•°é‡
+					nullptr);										   // æ¸…é™¤åŒºåŸŸ)
 
-				// Êä³öºÏ²¢ÒõÓ°ÌùÍ¼ £¨ÒòÎªÕâÀï²»¿¼ÂÇ½øĞĞÏñËØ×ÅÉ«£¬ËùÒÔ²»ĞèÒªÉèÖÃäÖÈ¾Ä¿±ê£¨äÖÈ¾Ä¿±êÉèÖÃÎª0£©£©
+				// è¾“å‡ºåˆå¹¶é˜´å½±è´´å›¾ ï¼ˆå› ä¸ºè¿™é‡Œä¸è€ƒè™‘è¿›è¡Œåƒç´ ç€è‰²ï¼Œæ‰€ä»¥ä¸éœ€è¦è®¾ç½®æ¸²æŸ“ç›®æ ‡ï¼ˆæ¸²æŸ“ç›®æ ‡è®¾ç½®ä¸º0ï¼‰ï¼‰
 				GetD3dGraphicsCommandList()->OMSetRenderTargets(
-					0,										  // äÖÈ¾Ä¿±êÊıÁ¿
-					nullptr,								  // Æ«ÒÆ
-					false,									  // ÊÇ·ñ²ÉÓÃµ¥¸ö¾ä±úÀ´°ó¶¨äÖÈ¾Ä¿±êÊÓÍ¼ºÍÉî¶ÈÄ£°åÊÓÍ¼
-					&innerRenderTarget->CPUDepthStencilView); // Ö¸¶¨Éî¶ÈÄ£°åÊÓÍ¼
+					0,										  // æ¸²æŸ“ç›®æ ‡æ•°é‡
+					nullptr,								  // åç§»
+					false,									  // æ˜¯å¦é‡‡ç”¨å•ä¸ªå¥æŸ„æ¥ç»‘å®šæ¸²æŸ“ç›®æ ‡è§†å›¾å’Œæ·±åº¦æ¨¡æ¿è§†å›¾
+					&innerRenderTarget->CPUDepthStencilView); // æŒ‡å®šæ·±åº¦æ¨¡æ¿è§†å›¾
 
-				// °ó¶¨ÉãÏñ»ú
+				// ç»‘å®šæ‘„åƒæœº
 				auto ViewportAddr = GeometryMap->ViewportConstantBufferViews.GetBuffer()->GetGPUVirtualAddress();
 				ViewportAddr += (1 + GeometryMap->GetDynamicReflectionViewportNum()) * CBVDescriptorSize;
 
 				GetD3dGraphicsCommandList()->SetGraphicsRootShaderResourceView(
-					1,			 // ¸ù²ÎÊıµÄÆğÊ¼Ë÷Òı
-					ViewportAddr // GPU×ÊÔ´ÊÓÍ¼
+					1,			 // æ ¹å‚æ•°çš„èµ·å§‹ç´¢å¼•
+					ViewportAddr // GPUèµ„æºè§†å›¾
 				);
 
 				DrawShadowMapTexture(deltaTime);
@@ -142,11 +141,11 @@ void FDynamicShadowMap::Draw(float deltaTime)
 				RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_TRANSPARENT, ERenderCondition::RC_Shadow);
 				RenderLayers->DrawMesh(deltaTime, RENDER_LAYER_OPAQUE_REFLECT, ERenderCondition::RC_Shadow);
 
-				// ½«×ÊÔ´×´Ì¬ÓÉ¿ÉĞ´×ª»»Îª¿É¶Á
+				// å°†èµ„æºçŠ¶æ€ç”±å¯å†™è½¬æ¢ä¸ºå¯è¯»
 				CD3DX12_RESOURCE_BARRIER ResourceBarrier2 = CD3DX12_RESOURCE_BARRIER::Transition(
-					innerRenderTarget->GetRenderTarget(), // ×ÊÔ´
-					D3D12_RESOURCE_STATE_DEPTH_WRITE,	  // ×ÊÔ´×´Ì¬ ¿ÉĞ´
-					D3D12_RESOURCE_STATE_GENERIC_READ);	  // ×ÊÔ´×´Ì¬ ×ªÎª ¿É¶Á
+					innerRenderTarget->GetRenderTarget(), // èµ„æº
+					D3D12_RESOURCE_STATE_DEPTH_WRITE,	  // èµ„æºçŠ¶æ€ å¯å†™
+					D3D12_RESOURCE_STATE_GENERIC_READ);	  // èµ„æºçŠ¶æ€ è½¬ä¸º å¯è¯»
 
 				GetD3dGraphicsCommandList()->ResourceBarrier(1, &ResourceBarrier2);
 			}
@@ -214,7 +213,7 @@ void FDynamicShadowMap::BuildOrthoProjectionMatrix(const XMFLOAT3 &targetPositio
 	XMVECTOR targetPositionVEC = XMLoadFloat3(&targetPosition);
 	XMVECTOR directionVEC = XMLoadFloat3(&direction);
 
-	// ÄÃµ½µÆ¹âÎ»ÖÃ
+	// æ‹¿åˆ°ç¯å…‰ä½ç½®
 	XMVECTOR viewPositionVEC = directionVEC * -radius;
 	ShadowViewPort->SetPosition(viewPositionVEC);
 
@@ -233,10 +232,10 @@ void FDynamicShadowMap::BuildPerspectiveProjectionMatrix(const XMFLOAT3 &positio
 	XMVECTOR positionVEC = XMLoadFloat3(&position);
 	XMVECTOR directionVEC = XMLoadFloat3(&direction);
 
-	// ÄÃµ½µÆ¹âÎ»ÖÃ
+	// æ‹¿åˆ°ç¯å…‰ä½ç½®
 	ShadowViewPort->SetPosition(positionVEC);
 
-	// ÄÃµ½Ä¿±êÎ»ÖÃ
+	// æ‹¿åˆ°ç›®æ ‡ä½ç½®
 	XMVECTOR viewTargetPositionVEC = directionVEC * -radius;
 	XMFLOAT3 viewTargetPosition{};
 	XMStoreFloat3(&viewTargetPosition, viewTargetPositionVEC);
@@ -252,15 +251,15 @@ void FDynamicShadowMap::BuildPerspectiveProjectionMatrix(const XMFLOAT3 &positio
 
 void FDynamicShadowMap::BuildDepthStencilViewDesc()
 {
-	// ÄÃµ½DSVµÄÃèÊö·ûÆ«ÒÆÖµ
+	// æ‹¿åˆ°DSVçš„æè¿°ç¬¦åç§»å€¼
 	UINT DescriptorHandleIncrementSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	if (FShadowMapRenderTarget *innerRenderTarget = dynamic_cast<FShadowMapRenderTarget *>(RenderTarget.get()))
 	{
 		innerRenderTarget->CPUDepthStencilView = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-			GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(), // Ö÷ÊÓ¿ÚDSV£¬ÔÚ´Ë»ù´¡ÉÏÆ«ÒÆ
-			1 + 1,												// 1¸öÖ÷ÊÓ¿ÚDSV + 1¸öCubeMapµÄDSV£¬Æ«ÒÆ¹ıÕâÁ½¸öÖ®ºó£¬²ÅÊÇÒõÓ°µÄDSV
-			DescriptorHandleIncrementSize);						// ÃèÊö·ûÆ«ÒÆÖµ
+			GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(), // ä¸»è§†å£DSVï¼Œåœ¨æ­¤åŸºç¡€ä¸Šåç§»
+			1 + 1,												// 1ä¸ªä¸»è§†å£DSV + 1ä¸ªCubeMapçš„DSVï¼Œåç§»è¿‡è¿™ä¸¤ä¸ªä¹‹åï¼Œæ‰æ˜¯é˜´å½±çš„DSV
+			DescriptorHandleIncrementSize);						// æè¿°ç¬¦åç§»å€¼
 	}
 }
 
@@ -274,8 +273,8 @@ void FDynamicShadowMap::BuildShadowMapRenderTargetDescriptor()
 void FDynamicShadowMap::DrawShadowMapTexture(float DeltaTime)
 {
 	GetD3dGraphicsCommandList()->SetGraphicsRootDescriptorTable(
-		7,										 // ¸ù²ÎÊıµÄÆğÊ¼Ë÷Òı
-		RenderTarget->GetGPUShaderResourceView() // GPU×ÊÔ´ÊÓÍ¼
+		7,										 // æ ¹å‚æ•°çš„èµ·å§‹ç´¢å¼•
+		RenderTarget->GetGPUShaderResourceView() // GPUèµ„æºè§†å›¾
 	);
 }
 
@@ -290,18 +289,18 @@ void FDynamicShadowMap::BuildRenderTargetSRV()
 
 		int ShadowMapOffset = GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount() + 1;
 
-		// ÎªCubeMap´´½¨CPU shader×ÊÔ´ÊÓÍ¼ Ö÷ÒªÊÇ´´½¨Shadow³£Á¿»º³åÇø
+		// ä¸ºCubeMapåˆ›å»ºCPU shaderèµ„æºè§†å›¾ ä¸»è¦æ˜¯åˆ›å»ºShadowå¸¸é‡ç¼“å†²åŒº
 		inRenderTarget->CPUShaderResourceView = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-			CPUSRVDesHeapStart, // CPU SRVµÄÆğÊ¼µØÖ·
-			ShadowMapOffset,	// Æ«ÒÆÁ¿
-			CBVDescriptorSize	// SRVÆ«ÒÆÁ¿
+			CPUSRVDesHeapStart, // CPU SRVçš„èµ·å§‹åœ°å€
+			ShadowMapOffset,	// åç§»é‡
+			CBVDescriptorSize	// SRVåç§»é‡
 		);
 
-		// ÎªCubeMap´´½¨GPU shader×ÊÔ´ÊÓÍ¼ ºóÆÚÎÒÃÇäÖÈ¾ÒõÓ°ÌùÍ¼µÄÊ±ºò£¬ĞèÒª½«Õâ¸ö×ÊÔ´ÊÓÍ¼°ó¶¨µ½×ÅÉ«Æ÷ÉÏ
+		// ä¸ºCubeMapåˆ›å»ºGPU shaderèµ„æºè§†å›¾ åæœŸæˆ‘ä»¬æ¸²æŸ“é˜´å½±è´´å›¾çš„æ—¶å€™ï¼Œéœ€è¦å°†è¿™ä¸ªèµ„æºè§†å›¾ç»‘å®šåˆ°ç€è‰²å™¨ä¸Š
 		inRenderTarget->GPUShaderResourceView = CD3DX12_GPU_DESCRIPTOR_HANDLE(
-			GPUSRVDesHeapStart, // GPU SRVµÄÆğÊ¼µØÖ·
-			ShadowMapOffset,	// Æ«ÒÆÁ¿
-			CBVDescriptorSize	// SRVÆ«ÒÆÁ¿
+			GPUSRVDesHeapStart, // GPU SRVçš„èµ·å§‹åœ°å€
+			ShadowMapOffset,	// åç§»é‡
+			CBVDescriptorSize	// SRVåç§»é‡
 		);
 	}
 }

@@ -1,14 +1,13 @@
 #pragma once
-#include "Core/Component.h"
 
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureKeyboardInfoDelegate, void);			// 键盘消息单播定义
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureMouseInfoDelegate, void);			// 鼠标消息单播定义
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseWheelDelegate, void, int, int, float);		// 鼠标滚轮事件
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseDelegate, void, int, int);		// 鼠标移动事件
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseRightDownDelegate, void, int, int);	// 鼠标右键按下事件
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseLeftDownDelegate, void, int, int);		// 鼠标左键按下事件
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseRightUpDelegate, void, int, int);		// 鼠标右键抬起事件
-DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseLeftUpDelegate, void, int, int);		// 鼠标左键抬起事件
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureKeyboardInfoDelegate, void);			// 閿洏娑堟伅鍗曟挱瀹氫箟
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureMouseInfoDelegate, void);			// 榧犳爣娑堟伅鍗曟挱瀹氫箟
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseWheelDelegate, void, int, int, float);		// 榧犳爣婊氳疆浜嬩欢
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseDelegate, void, int, int);		// 榧犳爣绉诲姩浜嬩欢
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseRightDownDelegate, void, int, int);	// 榧犳爣鍙抽敭鎸変笅浜嬩欢
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseLeftDownDelegate, void, int, int);		// 榧犳爣宸﹂敭鎸変笅浜嬩欢
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseRightUpDelegate, void, int, int);		// 榧犳爣鍙抽敭鎶捣浜嬩欢
+DEFINITION_SIMPLE_SINGLE_DELEGATE(FCaptureOnMouseLeftUpDelegate, void, int, int);		// 榧犳爣宸﹂敭鎶捣浜嬩欢
 
 class CInputComponent : public CComponent
 {

@@ -1,8 +1,8 @@
-#include "EngineMinimal.h"
+#include "CoreObjectPch.h"
 
 #include "CoreMinimalObject.h"
 
-std::vector<CCoreMinimalObject*> GObjects;		// 全局对象
+std::vector<CCoreMinimalObject*> GObjects;		// 鍏ㄥ眬瀵硅薄
 
 CCoreMinimalObject::CCoreMinimalObject()
 	: bTick(true)

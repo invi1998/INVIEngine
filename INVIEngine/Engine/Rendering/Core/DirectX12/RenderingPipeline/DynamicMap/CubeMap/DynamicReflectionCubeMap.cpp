@@ -4,7 +4,6 @@
 #include "Component/Mesh/Core/MeshComponent.h"
 #include "Component/Mesh/Core/MeshComponentType.h"
 #include "Config/EngineRenderConfig.h"
-#include "Core/Construction/ObjectConstruction.h"
 #include "Core/Viewport/ClientViewPort.h"
 #include "Core/Viewport/ViewportInfo.h"
 #include "Rendering/Core/DirectX12/RenderingPipeline/Geometry/GeometryMap.h"
@@ -29,11 +28,11 @@ void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 	{
 		for (int j = 0; j < GeometryMap->GetDynamicReflectionMeshComponents().size(); j++)
 		{
-			// Ö¸ÏòÄÄ¸ö×ÊÔ´£¬×ª»»Æ÷×´Ì¬£¬ÒòÎªÎÒÃÇÓĞÁ½¸öbuffer£¬ËûÁ½ÔÚ²»¶Ï½»»»
+			// æŒ‡å‘å“ªä¸ªèµ„æºï¼Œè½¬æ¢å™¨çŠ¶æ€ï¼Œå› ä¸ºæˆ‘ä»¬æœ‰ä¸¤ä¸ªbufferï¼Œä»–ä¸¤åœ¨ä¸æ–­äº¤æ¢
 			CD3DX12_RESOURCE_BARRIER ResourceBarrierPresent = CD3DX12_RESOURCE_BARRIER::Transition(
-				inRenderTarget->GetRenderTarget(),				// µ±Ç°buffer»º³åÇø
-				D3D12_RESOURCE_STATE_GENERIC_READ,		// µ±Ç°×´Ì¬ ±íÊ¾×ÊÔ´¼´½«±»ÓÃ×÷³ÊÏÖÄ¿±ê
-				D3D12_RESOURCE_STATE_RENDER_TARGET	// Ä¿±ê×´Ì¬ Õâ½«Ê¹×ÊÔ´¿ÉÒÔÓÃ×÷äÖÈ¾Ä¿±ê£¬²¢ÔÊĞíÄú¶Ô¸Ã×ÊÔ´Ö´ĞĞ³ÊÏÖ²Ù×÷£¨Ğ´Èë×´Ì¬£©
+				inRenderTarget->GetRenderTarget(),				// å½“å‰bufferç¼“å†²åŒº
+				D3D12_RESOURCE_STATE_GENERIC_READ,		// å½“å‰çŠ¶æ€ è¡¨ç¤ºèµ„æºå³å°†è¢«ç”¨ä½œå‘ˆç°ç›®æ ‡
+				D3D12_RESOURCE_STATE_RENDER_TARGET	// ç›®æ ‡çŠ¶æ€ è¿™å°†ä½¿èµ„æºå¯ä»¥ç”¨ä½œæ¸²æŸ“ç›®æ ‡ï¼Œå¹¶å…è®¸æ‚¨å¯¹è¯¥èµ„æºæ‰§è¡Œå‘ˆç°æ“ä½œï¼ˆå†™å…¥çŠ¶æ€ï¼‰
 			);
 			GetD3dGraphicsCommandList()->ResourceBarrier(
 				1,
@@ -43,7 +42,7 @@ void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 			D3D12_VIEWPORT Viewport = inRenderTarget->GetViewport();
 			D3D12_RECT Rect = inRenderTarget->GetScissorRect();
 
-			// ÖØÖÃ£¨¸üĞÂ£©ÊÓ¿ÚĞÅÏ¢£¬²Ã¼ô¾ØÕóĞÅÏ¢
+			// é‡ç½®ï¼ˆæ›´æ–°ï¼‰è§†å£ä¿¡æ¯ï¼Œè£å‰ªçŸ©é˜µä¿¡æ¯
 			GetD3dGraphicsCommandList()->RSSetViewports(1, &Viewport);
 			GetD3dGraphicsCommandList()->RSSetScissorRects(1, &Rect);
 
@@ -51,40 +50,40 @@ void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 
 			for (size_t i = 0; i < 6; i++)
 			{
-				// Çå³ı»­²¼
+				// æ¸…é™¤ç”»å¸ƒ
 				constexpr float ColorBG[] = { 0.1f, 0.105f, 0.11f, 1.0f };
 				GetD3dGraphicsCommandList()->ClearRenderTargetView(
-					inRenderTarget->GetCPURenderTargetView(i),		// ÒªÇå³ıµÄäÖÈ¾Ä¿±êÊÓÍ¼
-					ColorBG,		// »­²¼ÑÕÉ«
-					0,		// ºóÃæÕâÁ½¸ö²ÎÊıÊÇºÍÊÓ¿ÚÏà¹ØµÄ£¬ÕâÀï²»ÔÚÕâÀïÉèÖÃ£¬ºóÃæ»áÓĞ×¨ÃÅµÄÉèÖÃ·½·¨
+					inRenderTarget->GetCPURenderTargetView(i),		// è¦æ¸…é™¤çš„æ¸²æŸ“ç›®æ ‡è§†å›¾
+					ColorBG,		// ç”»å¸ƒé¢œè‰²
+					0,		// åé¢è¿™ä¸¤ä¸ªå‚æ•°æ˜¯å’Œè§†å£ç›¸å…³çš„ï¼Œè¿™é‡Œä¸åœ¨è¿™é‡Œè®¾ç½®ï¼Œåé¢ä¼šæœ‰ä¸“é—¨çš„è®¾ç½®æ–¹æ³•
 					nullptr
 				);
 
-				// Çå³ıÉî¶ÈºÍÄ£°å»º³åÇø
+				// æ¸…é™¤æ·±åº¦å’Œæ¨¡æ¿ç¼“å†²åŒº
 				GetD3dGraphicsCommandList()->ClearDepthStencilView(
-					DSVCubeMapCPUDesc,	// ´«ÈëCPUÄÚ´æ£¨ÒªÇå³ıµÄÉî¶ÈÄ£°å»º³åÇøÄÚ´æ£©
-					D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,		// Çå³ıÉî¶ÈºÍÄ£°å»º³åÇø
-					1.f,	// ÓÃ1À´Çå³ıÎÒÃÇµÄÉî¶È»º³åÇø£¨½«Éî¶È»º³åÇøÉèÖÃÎª1
-					0,		// ÓÃ0À´Çå³ıÎÒÃÇµÄÄ£°å»º³åÇø£¨Ä£°å»º³åÇøÉèÖÃÎª0
+					DSVCubeMapCPUDesc,	// ä¼ å…¥CPUå†…å­˜ï¼ˆè¦æ¸…é™¤çš„æ·±åº¦æ¨¡æ¿ç¼“å†²åŒºå†…å­˜ï¼‰
+					D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,		// æ¸…é™¤æ·±åº¦å’Œæ¨¡æ¿ç¼“å†²åŒº
+					1.f,	// ç”¨1æ¥æ¸…é™¤æˆ‘ä»¬çš„æ·±åº¦ç¼“å†²åŒºï¼ˆå°†æ·±åº¦ç¼“å†²åŒºè®¾ç½®ä¸º1
+					0,		// ç”¨0æ¥æ¸…é™¤æˆ‘ä»¬çš„æ¨¡æ¿ç¼“å†²åŒºï¼ˆæ¨¡æ¿ç¼“å†²åŒºè®¾ç½®ä¸º0
 					0,
 					nullptr
 				);
 
-				// Ö¸¶¨äÖÈ¾»º³åÇø£¨Êä³öºÏ²¢½×¶Î£©ÉèÖÃäÖÈ¾Ä¿±êÊÓÍ¼
+				// æŒ‡å®šæ¸²æŸ“ç¼“å†²åŒºï¼ˆè¾“å‡ºåˆå¹¶é˜¶æ®µï¼‰è®¾ç½®æ¸²æŸ“ç›®æ ‡è§†å›¾
 				GetD3dGraphicsCommandList()->OMSetRenderTargets(
-					1,									// Ö¸¶¨äÖÈ¾Ä¿±êÊı 1
-					&inRenderTarget->GetCPURenderTargetView(i),		// Ö¸¶¨äÖÈ¾Ä¿±ê
-					true,								// true±íÃ÷ÎÒÃÇ´«ÈëµÄ¾ä±úÊÇÒ»¸öÄÚ´æÁ¬ĞøµÄÃèÊö·ûÖ¸Õë
-					&DSVCubeMapCPUDesc		// ´«ÈëÉî¶È
+					1,									// æŒ‡å®šæ¸²æŸ“ç›®æ ‡æ•° 1
+					&inRenderTarget->GetCPURenderTargetView(i),		// æŒ‡å®šæ¸²æŸ“ç›®æ ‡
+					true,								// trueè¡¨æ˜æˆ‘ä»¬ä¼ å…¥çš„å¥æŸ„æ˜¯ä¸€ä¸ªå†…å­˜è¿ç»­çš„æè¿°ç¬¦æŒ‡é’ˆ
+					&DSVCubeMapCPUDesc		// ä¼ å…¥æ·±åº¦
 				);
 
-				// ¸üĞÂ²¢ÇÒ°ó¶¨6¸öÊÓ¿Ú
+				// æ›´æ–°å¹¶ä¸”ç»‘å®š6ä¸ªè§†å£
 				auto ViewportAddress = GeometryMap->GetViewportConstantBufferViews().GetBuffer()->GetGPUVirtualAddress();
-				// 1 Ö÷ÉãÏñ»ú£¬i RenderTargetµÄcubeMapÊÓ¿Ú£¬j ÊÇÎÒÃÇ³¡¾°ÀïµÄ¶¯Ì¬·´ÉäµÄ×é¼ş£¬Ã¿¸ö×é¼şÓĞ6¸öÉãÏñ»ú
+				// 1 ä¸»æ‘„åƒæœºï¼Œi RenderTargetçš„cubeMapè§†å£ï¼Œj æ˜¯æˆ‘ä»¬åœºæ™¯é‡Œçš„åŠ¨æ€åå°„çš„ç»„ä»¶ï¼Œæ¯ä¸ªç»„ä»¶æœ‰6ä¸ªæ‘„åƒæœº
 				ViewportAddress += (1 + i + j * 6) * CBVOffsetSize;
 				GetD3dGraphicsCommandList()->SetGraphicsRootConstantBufferView(1, ViewportAddress);
 
-				// äÖÈ¾²ã¼¶£¬¶ÔÏóÄ£ĞÍ
+				// æ¸²æŸ“å±‚çº§ï¼Œå¯¹è±¡æ¨¡å‹
 				RenderLayers->Draw(RENDER_LAYER_BACKGROUND, DeltaTime);
 				RenderLayers->Draw(RENDER_LAYER_OPAQUE, DeltaTime);
 				RenderLayers->Draw(RENDER_LAYER_TRANSPARENT, DeltaTime);
@@ -92,7 +91,7 @@ void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 
 
 
-			// ÉèÖÃµ±Ç°½»»»Á´buffer×´Ì¬
+			// è®¾ç½®å½“å‰äº¤æ¢é“¾bufferçŠ¶æ€
 			CD3DX12_RESOURCE_BARRIER ResourceBarrierRenderTarget = CD3DX12_RESOURCE_BARRIER::Transition(
 				inRenderTarget->GetRenderTarget(),
 				D3D12_RESOURCE_STATE_RENDER_TARGET,
@@ -104,21 +103,21 @@ void FDynamicReflectionCubeMap::PreDraw(float DeltaTime)
 				&ResourceBarrierRenderTarget
 			);
 
-			// ×¼±¸Ö÷ÊÓ¿Ú
+			// å‡†å¤‡ä¸»è§†å£
 			StartSetMainViewportRenderTarget();
 
-			// äÖÈ¾Ö÷ÊÓ¿Ú
+			// æ¸²æŸ“ä¸»è§†å£
 			GeometryMap->DrawViewport(DeltaTime);
 
 			Draw(DeltaTime);
 
-			// ´ÓäÖÈ¾²ã¼¶ÖĞÕë¶ÔÖ¸¶¨µÄÄ£ĞÍ½øĞĞäÖÈ¾£¨ÒòÎª¶¯Ì¬·´Éä²»ÊÇ¶ÔËùÓĞµÄÄ£ĞÍ¶¼½øĞĞ¶¯Ì¬·´Éä¼ÆËãµÄ£¬Ö»¶Ô¶¯Ì¬·´Éä²ÄÖÊµÄÄ£ĞÍ½øĞĞäÖÈ¾£©
+			// ä»æ¸²æŸ“å±‚çº§ä¸­é’ˆå¯¹æŒ‡å®šçš„æ¨¡å‹è¿›è¡Œæ¸²æŸ“ï¼ˆå› ä¸ºåŠ¨æ€åå°„ä¸æ˜¯å¯¹æ‰€æœ‰çš„æ¨¡å‹éƒ½è¿›è¡ŒåŠ¨æ€åå°„è®¡ç®—çš„ï¼Œåªå¯¹åŠ¨æ€åå°„æè´¨çš„æ¨¡å‹è¿›è¡Œæ¸²æŸ“ï¼‰
 			RenderLayers->FindObjectDraw(DeltaTime, RENDER_LAYER_OPAQUE_REFLECT, GeometryMap->GetDynamicReflectionMeshComponents()[j]);
 
-			// ÖØÖÃCubeMap
+			// é‡ç½®CubeMap
 			GeometryMap->DrawCubeMapTexture(DeltaTime);
 
-			// ½áÊøµ±Ç°Ö÷ÊÓ¿ÚäÖÈ¾
+			// ç»“æŸå½“å‰ä¸»è§†å£æ¸²æŸ“
 			EndSetMainViewportRenderTarget();
 		}
 	}
@@ -135,7 +134,7 @@ void FDynamicReflectionCubeMap::UpdateCalculations(float delta_time, const FView
 			XMFLOAT3 position = meshComponent->GetPosition();
 
 			SetViewportPosition(position);
-			// ¸üĞÂÊÓ¿Ú
+			// æ›´æ–°è§†å£
 			for (size_t i = 0; i < 6; i++)
 			{
 				FViewportInfo tempViewport{};
@@ -145,7 +144,7 @@ void FDynamicReflectionCubeMap::UpdateCalculations(float delta_time, const FView
 				tempViewport.ProjectionMatrix = CubeMapViewPorts[i]->GetProjectionMatrix();
 
 				GeometryMap->UpdateCalculationViewport(tempViewport, 
-					i + k*6	// ¶¯Ì¬·´ÉäµÄ6¸öÉãÏñ»ú
+					i + k*6	// åŠ¨æ€åå°„çš„6ä¸ªæ‘„åƒæœº
 					+1);
 			}
 		}
@@ -156,13 +155,13 @@ void FDynamicReflectionCubeMap::UpdateCalculations(float delta_time, const FView
 
 void FDynamicReflectionCubeMap::Build(const XMFLOAT3& center)
 {
-	BuildViewPort(center);		// ¹¹½¨ÊÓ¿Ú
+	BuildViewPort(center);		// æ„å»ºè§†å£
 
-	BuildCubeMapRenderTargetDescriptor();		// ¹¹½¨CubeMapäÖÈ¾Ä¿±êÃèÊö
+	BuildCubeMapRenderTargetDescriptor();		// æ„å»ºCubeMapæ¸²æŸ“ç›®æ ‡æè¿°
 
-	BuildDepthStencilDescriptor();		// ¹¹½¨Éî¶ÈÄ£°åÃèÊö
+	BuildDepthStencilDescriptor();		// æ„å»ºæ·±åº¦æ¨¡æ¿æè¿°
 
-	BuildDepthStencil();		// ¹¹½¨Éî¶ÈÄ£°å
+	BuildDepthStencil();		// æ„å»ºæ·±åº¦æ¨¡æ¿
 }
 
 void FDynamicReflectionCubeMap::BuildDepthStencilDescriptor()
@@ -170,9 +169,9 @@ void FDynamicReflectionCubeMap::BuildDepthStencilDescriptor()
 	UINT DescriptorHandleIncrementSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	DSVCubeMapCPUDesc = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(),	// DSVµÄÆğÊ¼µØÖ·
-		1,	// Æ«ÒÆ1 µÚÒ»¸öÊÇ¸øÖ÷äÖÈ¾Ä¿±êÓÃµÄ(³¡¾°£©ºóÃæµÄ²ÅÊÇ¸øcubeMapÓÃµÄ
-		DescriptorHandleIncrementSize	// DSVÆ«ÒÆÁ¿
+		GetDSVHeap()->GetCPUDescriptorHandleForHeapStart(),	// DSVçš„èµ·å§‹åœ°å€
+		1,	// åç§»1 ç¬¬ä¸€ä¸ªæ˜¯ç»™ä¸»æ¸²æŸ“ç›®æ ‡ç”¨çš„(åœºæ™¯ï¼‰åé¢çš„æ‰æ˜¯ç»™cubeMapç”¨çš„
+		DescriptorHandleIncrementSize	// DSVåç§»é‡
 	);
 }
 
@@ -182,13 +181,13 @@ void FDynamicReflectionCubeMap::BuildRenderTargetRTV()
 	{
 		UINT RTVSize = GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 		auto RTVStart = GetRTVHeap()->GetCPUDescriptorHandleForHeapStart();
-		// ÎªCubeMap´´½¨äÖÈ¾Ä¿±êÊÓÍ¼
+		// ä¸ºCubeMapåˆ›å»ºæ¸²æŸ“ç›®æ ‡è§†å›¾
 		for (size_t i = 0; i < 6; i++)
 		{
 			inRenderTarget->GetCPURenderTargetView(i) = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-				RTVStart,		// RTVµÄÆğÊ¼µØÖ·
-				FEngineRenderConfig::GetRenderConfig()->SwapChainCount + i,	// ½»»»Á´ Ç°ÃæµÄÊÇ¸øÖ÷äÖÈ¾Ä¿±êÓÃµÄ(³¡¾°£©ºóÃæµÄ²ÅÊÇ¸øcubeMapÓÃµÄ
-				RTVSize	// RTVÆ«ÒÆÁ¿
+				RTVStart,		// RTVçš„èµ·å§‹åœ°å€
+				FEngineRenderConfig::GetRenderConfig()->SwapChainCount + i,	// äº¤æ¢é“¾ å‰é¢çš„æ˜¯ç»™ä¸»æ¸²æŸ“ç›®æ ‡ç”¨çš„(åœºæ™¯ï¼‰åé¢çš„æ‰æ˜¯ç»™cubeMapç”¨çš„
+				RTVSize	// RTVåç§»é‡
 			);
 		}
 	}
@@ -203,18 +202,18 @@ void FDynamicReflectionCubeMap::BuildRenderTargetSRV()
 		auto CPUSRVDesHeapStart = GeometryMap->GetHeap()->GetCPUDescriptorHandleForHeapStart();
 		auto GPUSRVDesHeapStart = GeometryMap->GetHeap()->GetGPUDescriptorHandleForHeapStart();
 
-		// ÎªCubeMap´´½¨CPU shader×ÊÔ´ÊÓÍ¼
+		// ä¸ºCubeMapåˆ›å»ºCPU shaderèµ„æºè§†å›¾
 		inRenderTarget->GetCPUShaderResourceView() = CD3DX12_CPU_DESCRIPTOR_HANDLE(
-			CPUSRVDesHeapStart,		// CPU SRVµÄÆğÊ¼µØÖ·
-			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// Æ«ÒÆÁ¿
-			CBVDescriptorSize	// SRVÆ«ÒÆÁ¿
+			CPUSRVDesHeapStart,		// CPU SRVçš„èµ·å§‹åœ°å€
+			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// åç§»é‡
+			CBVDescriptorSize	// SRVåç§»é‡
 		);
 
-		// ÎªCubeMap´´½¨GPU shader×ÊÔ´ÊÓÍ¼
+		// ä¸ºCubeMapåˆ›å»ºGPU shaderèµ„æºè§†å›¾
 		inRenderTarget->GetGPUShaderResourceView() = CD3DX12_GPU_DESCRIPTOR_HANDLE(
-			GPUSRVDesHeapStart,		// GPU SRVµÄÆğÊ¼µØÖ·
-			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// Æ«ÒÆÁ¿
-			CBVDescriptorSize	// SRVÆ«ÒÆÁ¿
+			GPUSRVDesHeapStart,		// GPU SRVçš„èµ·å§‹åœ°å€
+			GeometryMap->GetDrawTexture2DCount() + GeometryMap->GetDrawCubeMapCount(),	// åç§»é‡
+			CBVDescriptorSize	// SRVåç§»é‡
 		);
 	}
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include "Component/Core/Component.h"
 
 class CFogComponent : public CComponent
 {
@@ -22,14 +21,14 @@ public:
 	FORCEINLINE bool IsDirty() const { return bDirty; }
 
 protected:
-	XMFLOAT4 FogColor;	// ÎíµÄÑÕÉ«
+	XMFLOAT4 FogColor;	// é›¾çš„é¢œè‰²
 
-	float FogStart;		// ÎíÉú³ÉµÄÆğÊ¼µã
-	float FogRange;		// ÎíµÄ·¶Î§
+	float FogStart;		// é›¾ç”Ÿæˆçš„èµ·å§‹ç‚¹
+	float FogRange;		// é›¾çš„èŒƒå›´
 
-	float FogHeight;	// ÎíµÄ¸ß¶È
+	float FogHeight;	// é›¾çš„é«˜åº¦
 
-	float FogTransparentCoefficient;		// ÎíµÄÍ¸Ã÷ÏµÊı
+	float FogTransparentCoefficient;		// é›¾çš„é€æ˜ç³»æ•°
 
 	bool bDirty;
 

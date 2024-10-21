@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/CoreObject/CoreMinimalObject.h"
+#include "CoreObject/CoreMinimalObject.h"
 
 class CComponent : public CCoreMinimalObject
 {
@@ -11,8 +11,8 @@ public:
 
 	void AddChildComponent(CComponent* component);
 
-	FORCEINLINE CComponent* GetParentComponents() const { return ParentComponent; }	// ·µ»Ø¸¸×é¼ş
-	FORCEINLINE std::vector<CComponent*>& GetChildComponents() { return ChildComponents; }	// ·µ»Ø×Ó×é¼şÁĞ±íµÄÒıÓÃ
+	FORCEINLINE CComponent* GetParentComponents() const { return ParentComponent; }	// è¿”å›çˆ¶ç»„ä»¶
+	FORCEINLINE std::vector<CComponent*>& GetChildComponents() { return ChildComponents; }	// è¿”å›å­ç»„ä»¶åˆ—è¡¨çš„å¼•ç”¨
 
 protected:
 	CComponent* ParentComponent = nullptr;

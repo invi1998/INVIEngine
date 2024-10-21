@@ -1,7 +1,6 @@
 #pragma once
 
 #include "MaterialType.h"
-#include "Core/CoreObject/CoreMinimalObject.h"
 
 class CMaterial : public CCoreMinimalObject
 {
@@ -52,34 +51,34 @@ public:
 	float GetParam(int index) const;
 
 private:
-	// ²ÄÖÊÔà±êÖ¾£¬ÓÃÓÚ±êÖ¾µ±Ç°²ÄÖÊÊÇ·ñ±»¶¯Ì¬ĞŞ¸Ä¹ı£¬Èç¹û±»¶¯Ì¬ĞŞ¸Ä¹ı£¬¸ÃÖµÎªtrue£¬Îªtrue£¬ÄÇÃ´ÎÒÃÇ²ÅÖØĞÂÌá½»¸Ã²ÄÖÊ
+	// æè´¨è„æ ‡å¿—ï¼Œç”¨äºæ ‡å¿—å½“å‰æè´¨æ˜¯å¦è¢«åŠ¨æ€ä¿®æ”¹è¿‡ï¼Œå¦‚æœè¢«åŠ¨æ€ä¿®æ”¹è¿‡ï¼Œè¯¥å€¼ä¸ºtrueï¼Œä¸ºtrueï¼Œé‚£ä¹ˆæˆ‘ä»¬æ‰é‡æ–°æäº¤è¯¥æè´¨
 	bool bDirty;
 
-	int MaterialID;		// ²ÄÖÊid
+	int MaterialID;		// æè´¨id
 
 	XMFLOAT4 BaseColor;
-	XMFLOAT3 SpecularColor;		// ¸ß¹âÑÕÉ«
-	float Roughness;		// ²ÄÖÊ´Ö²Ú¶È
+	XMFLOAT3 SpecularColor;		// é«˜å…‰é¢œè‰²
+	float Roughness;		// æè´¨ç²—ç³™åº¦
 	EMaterialType MaterialType = EMaterialType::Lambert;
 	EMaterialDisplayStatusType MaterialDisplayType = EMaterialDisplayStatusType::TriangleDisplay;
 	XMFLOAT4X4 MaterialTransformation;
 
-	XMFLOAT3 FresnelF0;				// ·ÆÄá¶ûF0
+	XMFLOAT3 FresnelF0;				// è²å°¼å°”F0
 
-	std::string BaseColorIndexKey;	// ÎÆÀíÌùÍ¼
-	std::string NormalIndexKey;		// ·¨ÏßÌùÍ¼
-	std::string SpecularIndexKey;	// ¸ß¹âÌùÍ¼
+	std::string BaseColorIndexKey;	// çº¹ç†è´´å›¾
+	std::string NormalIndexKey;		// æ³•çº¿è´´å›¾
+	std::string SpecularIndexKey;	// é«˜å…‰è´´å›¾
 
-	float Transparency;				// Í¸Ã÷¶È
+	float Transparency;				// é€æ˜åº¦
 
-	bool bDynamicReflection = false;		// ÊÇ·ñÊÇ¶¯Ì¬·´Éä²ÄÖÊ
+	bool bDynamicReflection = false;		// æ˜¯å¦æ˜¯åŠ¨æ€åå°„æè´¨
 
-	float RefractiveValue;			// ÕÛÉäÂÊ
+	float RefractiveValue;			// æŠ˜å°„ç‡
 
-	//½ğÊô¶È
+	//é‡‘å±åº¦
 	XMFLOAT3 Metallicity;
 
-	float Param0 = 0.f;		// ×Ô¶¨Òå²ÎÊı
+	float Param0 = 0.f;		// è‡ªå®šä¹‰å‚æ•°
 	float Param1 = 0.f;
 	float Param2 = 0.f;
 

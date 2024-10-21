@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GuidInterface.h"
-#include "Core/Construction/ObjectConstruction.h"
+#include "Construction/ObjectConstruction.h"
 
 class CCoreMinimalObject;
 
@@ -16,21 +16,21 @@ public:
 
 	bool IsTick() const { return bTick; }
 
-	void SetOwner(CCoreMinimalObject* InOwner) { Owner = InOwner; }		// ÉèÖÃËùÓĞÕß
-	void SetName(std::string InName) { Name = InName; }					// ÉèÖÃÃû×Ö
+	void SetOwner(CCoreMinimalObject* InOwner) { Owner = InOwner; }		// è®¾ç½®æ‰€æœ‰è€…
+	void SetName(std::string InName) { Name = InName; }					// è®¾ç½®åå­—
 
-	// »ñÈ¡ËùÓĞÕß
+	// è·å–æ‰€æœ‰è€…
 	FORCEINLINE CCoreMinimalObject* GetOwner() const { return Owner; }
 	FORCEINLINE std::string GetName() const { return Name; }
 
 protected:
 	bool bTick;
 
-	// owner ËùÓĞÕß, Ò»°ãÊÇÒ»¸ö×é¼ş, µ«ÊÇÒ²ÓĞ¿ÉÄÜÊÇÒ»¸ö¶ÔÏó
+	// owner æ‰€æœ‰è€…, ä¸€èˆ¬æ˜¯ä¸€ä¸ªç»„ä»¶, ä½†æ˜¯ä¹Ÿæœ‰å¯èƒ½æ˜¯ä¸€ä¸ªå¯¹è±¡
 	CCoreMinimalObject* Owner;
 	std::string Name;
 };
 
-extern std::vector<CCoreMinimalObject*> GObjects;		// È«¾Ö¶ÔÏó
+extern std::vector<CCoreMinimalObject*> GObjects;		// å…¨å±€å¯¹è±¡
 
 

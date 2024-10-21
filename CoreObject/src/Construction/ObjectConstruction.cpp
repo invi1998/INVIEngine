@@ -1,2 +1,2 @@
-#include "EngineMinimal.h"
+#include "CoreObjectPch.h"
 #include "ObjectConstruction.h"

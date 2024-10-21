@@ -1,7 +1,6 @@
 #pragma once
-#include "Core/CoreObject/CoreMinimalObject.h"
 
-// Ê±¼äÖáµ¥²¥´úÀí ·µ»ØÖµÎªvoid ²ÎÊıÎªfloat£¨³ÖĞøÊ±¼ä£©ºÍfloat£¨µ±Ç°Ö¡Ê±¼ä£©
+// æ—¶é—´è½´å•æ’­ä»£ç† è¿”å›å€¼ä¸ºvoid å‚æ•°ä¸ºfloatï¼ˆæŒç»­æ—¶é—´ï¼‰å’Œfloatï¼ˆå½“å‰å¸§æ—¶é—´ï¼‰
 DEFINITION_SIMPLE_SINGLE_DELEGATE(FTimelineDelegate, void, float, float);
 
 class FTimeline
@@ -26,13 +25,13 @@ public:
 	void BindTimelineDelegate(const FTimelineDelegate& InDelegate, float InDuration, bool InLoop, bool InReverse);
 
 private:
-	float CurrentTime = 0.0f;	// µ±Ç°Ê±¼ä
-	float Duration = 0.0f;		// ³ÖĞøÊ±¼ä
-	bool bLoop = false;			// ÊÇ·ñÑ­»·
-	bool bPlaying = true;		// ÊÇ·ñ²¥·ÅÖĞ
-	bool bReverse = false;		// ÊÇ·ñ·´Ïò²¥·Å
+	float CurrentTime = 0.0f;	// å½“å‰æ—¶é—´
+	float Duration = 0.0f;		// æŒç»­æ—¶é—´
+	bool bLoop = false;			// æ˜¯å¦å¾ªç¯
+	bool bPlaying = true;		// æ˜¯å¦æ’­æ”¾ä¸­
+	bool bReverse = false;		// æ˜¯å¦åå‘æ’­æ”¾
 
 private:
-	FTimelineDelegate TimelineDelegate;	// Ê±¼äÖá´úÀí
+	FTimelineDelegate TimelineDelegate;	// æ—¶é—´è½´ä»£ç†
 };
 

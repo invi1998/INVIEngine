@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Core/CoreObject/CoreMinimalObject.h"
-
-
 class CLightComponent;
 
 class CLightManager : public CCoreMinimalObject

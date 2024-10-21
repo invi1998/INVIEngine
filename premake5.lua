@@ -29,6 +29,8 @@ group "Dependencies"
 	include "INVIEngine/vendor/simple_library"
 	include "INVIEngine/vendor/imgui"
 
+group "Object"
+	include "CoreObject"
 
 group "Core"
 	include "INVIEngine"
