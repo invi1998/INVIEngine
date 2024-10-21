@@ -2,6 +2,7 @@
 #include "ImGuiPipeline.h"
 
 #include "EditorEngine.h"
+#include "Config/EngineRenderConfig.h"
 
 FImGuiPipeline::FImGuiPipeline()
 {
@@ -10,13 +11,13 @@ FImGuiPipeline::FImGuiPipeline()
 
 void FImGuiPipeline::Initialize(ID3D12DescriptorHeap* heap, UINT offset)
 {
-	// ¼ì²é°æ±¾
+	// æ£€æŸ¥ç‰ˆæœ¬
 	IMGUI_CHECKVERSION();
 
-	// ³õÊ¼»¯ÉÏÏÂÎÄ
+	// åˆå§‹åŒ–ä¸Šä¸‹æ–‡
 	ImGui::CreateContext();
 
-	// ¿ªÆôDocking
+	// å¼€å¯Docking
 	ImGuiIO& io = ImGui::GetIO();
 	(void)io;
 
@@ -32,11 +33,32 @@ void FImGuiPipeline::Initialize(ID3D12DescriptorHeap* heap, UINT offset)
 	io.Fonts->AddFontFromFileTTF("Asserts/fonts/pingfang/pingfangtc-medium.otf", 18.0f);
 	io.FontDefault = io.Fonts->AddFontFromFileTTF("Asserts/fonts/pingfang/pingfangtc-regular.otf", 18.0f);
 
-	// ³õÊ¼»¯Win32Æ½Ì¨
+	// åˆå§‹åŒ–Win32å¹³å°
 	ImGui_ImplWin32_Init(GetMainWindowsHandle());
 
-	// ÉèÖÃÑùÊ½
+	// è®¾ç½®æ ·å¼
 	ImGui::StyleColorsDark();
+
+	static bool p_open = true;
+	static bool opt_fullscreen = true;
+	static bool opt_padding = false;
+	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	if (opt_fullscreen)
+	{
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->WorkPos);
+		ImGui::SetNextWindowSize(viewport->WorkSize);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	}
+
+	// io.DisplaySize = ImVec2((float)FEngineRenderConfig::GetRenderConfig()->ScreenWidth, (float)FEngineRenderConfig::GetRenderConfig()->ScreenHeight);
+
+	// DPIç¼©æ”¾
+	// io.FontGlobalScale = 1.f;
 
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -48,30 +70,30 @@ void FImGuiPipeline::Initialize(ID3D12DescriptorHeap* heap, UINT offset)
 
 	SetDarkThemeColors();
 
-	// »ñÈ¡Æ«ÒÆºóµÄCPU/GPU¾ä±ú
+	// èŽ·å–åç§»åŽçš„CPU/GPUå¥æŸ„
 	const auto cpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(heap->GetCPUDescriptorHandleForHeapStart(), offset, GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 	const auto gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(heap->GetGPUDescriptorHandleForHeapStart(), offset, GetD3dDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 
-	// ³õÊ¼»¯DX12Æ½Ì¨
+	// åˆå§‹åŒ–DX12å¹³å°
 	ImGui_ImplDX12_Init(GetD3dDevice().Get(), 3, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);
 
-	// ¹¹½¨Editor¿Ø¼þ
+	// æž„å»ºEditoræŽ§ä»¶
 	GetEditorEngine()->BuildEditor();
 
 }
 
 void FImGuiPipeline::Draw(float deltaTime)
 {
-	// ¿ªÊ¼ÐÂÖ¡
+	// å¼€å§‹æ–°å¸§
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
 	ImGui::NewFrame();
 
-	// »æÖÆUI
+	// ç»˜åˆ¶UI
 	Tick(deltaTime);
 
-	// äÖÈ¾
+	// æ¸²æŸ“
 	ImGui::Render();
 
 	ImGuiIO& io = ImGui::GetIO();
@@ -83,19 +105,19 @@ void FImGuiPipeline::Draw(float deltaTime)
 		ImGui::RenderPlatformWindowsDefault(nullptr, (void*)GetD3dGraphicsCommandList().Get());
 	}
 
-	// »­µ½ÆÁÄ»ÉÏ ×¢²áµ½DX12µÄÃüÁîÁÐ±íÖÐ
+	// ç”»åˆ°å±å¹•ä¸Š æ³¨å†Œåˆ°DX12çš„å‘½ä»¤åˆ—è¡¨ä¸­
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), GetD3dGraphicsCommandList().Get());
 }
 
 void FImGuiPipeline::Exit()
 {
-	// ÊÍ·ÅDX12Æ½Ì¨
+	// é‡Šæ”¾DX12å¹³å°
 	ImGui_ImplDX12_Shutdown();
 
-	// ÊÍ·ÅWin32Æ½Ì¨
+	// é‡Šæ”¾Win32å¹³å°
 	ImGui_ImplWin32_Shutdown();
 
-	// ÊÍ·ÅÉÏÏÂÎÄ
+	// é‡Šæ”¾ä¸Šä¸‹æ–‡
 	ImGui::DestroyContext();
 
 	GetEditorEngine()->ExitEditor();
@@ -137,6 +159,6 @@ void FImGuiPipeline::SetDarkThemeColors()
 
 void FImGuiPipeline::Tick(float deltaTime)
 {
-	// »æÖÆUI
+	// ç»˜åˆ¶UI
 	GetEditorEngine()->DrawEditor();
 }

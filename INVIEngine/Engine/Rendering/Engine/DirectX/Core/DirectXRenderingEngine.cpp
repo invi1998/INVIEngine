@@ -121,29 +121,29 @@ int CDirectXRenderingEngine::PostInit()
 		}*/
 
 		//平行灯光生成
-		/*if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
+		if (GParallelLight* ParallelLight = World->CreateActorObject<GParallelLight>())
 		{
 			ParallelLight->SetPosition(XMFLOAT3(10.f, -10.f, 10.f));
-			ParallelLight->SetRotation({ 30.f, 0.f, 0.f });
+			ParallelLight->SetRotation({ 0.f, 0.f, 0.f });
 			ParallelLight->SetScale({ 1.f, 1.f, 1.f });
 			ParallelLight->SetLightIntensity(XMFLOAT3(1.1f,1.1f,1.1f));
-		}*/
-
-		//点灯光生成
-		if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
-		{
-			PointLight->SetPosition(XMFLOAT3(0.f, -6.f, 10.f));
-			PointLight->SetRotation(XMFLOAT3(0.f, 0.f, 0.f));
-
-			PointLight->SetLightIntensity(XMFLOAT3(0.9f, 0.9f, 0.9f));
-			PointLight->SetEndAttenuation(190.f);
 		}
+
+		////点灯光生成
+		//if (GPointLight* PointLight = World->CreateActorObject<GPointLight>())
+		//{
+		//	PointLight->SetPosition(XMFLOAT3(0.f, -6.f, 10.f));
+		//	PointLight->SetRotation(XMFLOAT3(0.f, 0.f, 0.f));
+
+		//	PointLight->SetLightIntensity(XMFLOAT3(0.9f, 0.9f, 0.9f));
+		//	PointLight->SetEndAttenuation(190.f);
+		//}
 
 		////聚灯光生成
 		//if (GSpotLight* SpotLight = World->CreateActorObject<GSpotLight>())
 		//{
 		//	SpotLight->SetPosition(XMFLOAT3(0.f,0.f, -10.f));
-		//	SpotLight->SetRotation(fvector_3d(15.f, 180.f, 0.f));
+		//	SpotLight->SetRotation(XMFLOAT3(15.f, 180.f, 0.f));
 		//
 		//	SpotLight->SetLightIntensity(XMFLOAT3(1.1f, 1.1f, 0.9f));
 		//	//SpotLight->SetStartAttenuation(1.f);
@@ -257,12 +257,26 @@ int CDirectXRenderingEngine::PostInit()
 			}
 		}
 
-		if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
+		/*if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{
 			InPlaneMesh->CreateMesh(4.f, 3.f, 20, 20);
 
 			InPlaneMesh->SetPosition(XMFLOAT3(0.f, -12.f, 0.f));
-			InPlaneMesh->SetScale({ 50.f, 1.f, 50.f });
+			InPlaneMesh->SetScale({ 50.f, 2.f, 50.f });
+			InPlaneMesh->SetPickUp(false);
+			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
+			{
+				InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
+				InMaterial->SetMaterialType(EMaterialType::Lambert);
+			}
+		}*/
+
+		if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
+		{
+			InPlaneMesh->CreateMesh(4.f, 3.f, 200, 200);
+
+			InPlaneMesh->SetPosition(XMFLOAT3(0.f, -12.f, 0.f));
+			InPlaneMesh->SetScale(XMFLOAT3(500.f, 1.f, 500.f));
 			InPlaneMesh->SetPickUp(false);
 			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
 			{
@@ -270,19 +284,6 @@ int CDirectXRenderingEngine::PostInit()
 				InMaterial->SetMaterialType(EMaterialType::Lambert);
 			}
 		}
-
-		//if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
-		//{
-		//	InPlaneMesh->CreateMesh(4.f, 3.f, 20, 20);
-
-		//	InPlaneMesh->SetPosition(XMFLOAT3(0.f, 22.f, 0.f));
-		//	InPlaneMesh->SetScale(fvector_3d(50.f, 1.f, 50.f));
-		//	if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
-		//	{
-		//		InMaterial->SetBaseColor(XMFLOAT4(1.f, 1.f, 1.f, 1.f));
-		//		InMaterial->SetMaterialType(EMaterialType::Lambert);
-		//	}
-		//}
 
 		//兰伯特
 		if (GSphereMesh* SphereMesh = World->CreateActorObject<GSphereMesh>())
@@ -799,8 +800,8 @@ int CDirectXRenderingEngine::PostInit()
 		if (GPlaneMesh* InPlaneMesh = World->CreateActorObject<GPlaneMesh>())
 		{
 			InPlaneMesh->CreateMesh(7.f, 7.f, 2, 2);
-			InPlaneMesh->SetPosition(XMFLOAT3(0.f, 0.f, 40.f));
-			InPlaneMesh->SetRotation({ 90.f, 0.f, 0.f });
+			InPlaneMesh->SetPosition(XMFLOAT3(0.f, 40.f, -40.f));
+			InPlaneMesh->SetRotation({ -90.f, 0.f, 0.f });
 			if (CMaterial* InMaterial = (*InPlaneMesh->GetMaterial())[0])
 			{
 				InMaterial->SetMaterialType(ShadowTexture);

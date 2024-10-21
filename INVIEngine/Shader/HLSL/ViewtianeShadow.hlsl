@@ -1,10 +1,10 @@
-// ÍòÏòÒõÓ°ÌùÍ¼£¨µã¹âÔ´ÒõÓ°ÌùÍ¼£©
+// ä¸‡å‘é˜´å½±è´´å›¾ï¼ˆç‚¹å…‰æºé˜´å½±è´´å›¾ï¼‰
 
 #include "Material.hlsl"
 
 struct MeshVertexIn
 {
-	float3 Position : POSITION; // Î»ÖÃ
+	float3 Position : POSITION; // ä½ç½®
 	float2 Texcoord : TEXCOORD; // UV
 };
 
@@ -20,16 +20,16 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 	
 	MeshVertexOut Out = (MeshVertexOut) 0;
 	
-	// ½«Ä£ĞÍµÄ¶¥µã×ø±ê×ªÎªÊÀ½ç×ø±ê
+	// å°†æ¨¡å‹çš„é¡¶ç‚¹åæ ‡è½¬ä¸ºä¸–ç•Œåæ ‡
 	float4 PositionWorld = mul(float4(mv.Position, 1.f), WorldMatrix);
 	
-	// ½«ÊÀ½ç×ø±ê×ªÎªÊÓ¿Ú²Ã¼ô¿Õ¼ä×ø±ê
+	// å°†ä¸–ç•Œåæ ‡è½¬ä¸ºè§†å£è£å‰ªç©ºé—´åæ ‡
 	Out.PositionH = mul(PositionWorld, ViewportProjectionMatrix);
 	
 	// UV
-    // ÏÈ½«´«ÈëµÄuv×ø±êºÍÄ£ĞÍµÄÎÆÀí±ä»»Ïà³Ë£¬µÃµ½ÎÆÀí±ä»»ºóµÄUV
+    // å…ˆå°†ä¼ å…¥çš„uvåæ ‡å’Œæ¨¡å‹çš„çº¹ç†å˜æ¢ç›¸ä¹˜ï¼Œå¾—åˆ°çº¹ç†å˜æ¢åçš„UV
 	float4 TextureTexcoord = mul(float4(mv.Texcoord, 0.f, 1.f), TextureTransformationMatrix);
-    // È»ºóÔÙÓë²ÄÖÊµÄ±ä»»¾ØÕóÏà³Ë£¬µÃµ½²ÄÖÊ±ä»»ºóµÄUV£¬¾ÍÊÇÎÒÃÇ×îÖÕµÄ¶¥µãUVÁË
+    // ç„¶åå†ä¸æè´¨çš„å˜æ¢çŸ©é˜µç›¸ä¹˜ï¼Œå¾—åˆ°æè´¨å˜æ¢åçš„UVï¼Œå°±æ˜¯æˆ‘ä»¬æœ€ç»ˆçš„é¡¶ç‚¹UVäº†
 	Out.Texcoord = mul(TextureTexcoord, MatConstBuffer.MaterialProjectionMatrix).xy;
 	
 	return Out;
@@ -39,7 +39,7 @@ MeshVertexOut VSMain(MeshVertexIn mv)
 
 float4 PSMain(MeshVertexOut mvOut) : SV_TARGET
 {
-	// ²É¼¯Éî¶ÈÍ¼
+	// é‡‡é›†æ·±åº¦å›¾
 	float Depth = 1.f - (mvOut.PositionH.z / mvOut.PositionH.w);
 
 	Depth = pow(Depth, 5);

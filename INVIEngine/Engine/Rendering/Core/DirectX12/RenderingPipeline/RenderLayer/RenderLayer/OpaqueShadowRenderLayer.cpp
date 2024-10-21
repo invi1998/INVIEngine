@@ -33,7 +33,7 @@ void FOpaqueShadowRenderLayer::PostDraw(float deltaTime)
 void FOpaqueShadowRenderLayer::BuildShader()
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///ππΩ®shader HLSL
+	///ÊûÑÂª∫shader HLSL
 	///
 
 	std::vector<ShaderType::FShaderMacro> ShaderMacro;
@@ -44,18 +44,18 @@ void FOpaqueShadowRenderLayer::BuildShader()
 
 	VertexShader.BuildShader(L"Shader/HLSL/Shadow.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
 	PixelShader.BuildShader(L"Shader/HLSL/Shadow.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
-	// ∞Û∂®shader
+	// ÁªëÂÆöshader
 	DirectXPipelineState->BindShader(VertexShader, PixelShader);
 
-	//  ‰»Î≤ºæ÷
+	// ËæìÂÖ•Â∏ÉÂ±Ä
 	InputElementDesc =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}	// uv◊¯±Í£¨’‚¿Ô’‚∏ˆ∆´“∆ «52◊÷Ω⁄£¨“ÚŒ™Œ“√«…œ√ÊŒª÷√ «3∏ˆ‘™Àÿ£¨√ø∏ˆ‘™Àÿ «4◊÷Ω⁄£®32Œª£©£¨µΩ¡Àuv’‚¿Ô£¨æÕµ√∆´“∆ £®3£©*4 = 12◊÷Ω⁄µƒ∆´“∆¡À
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}	// uvÂùêÊ†áÔºåËøôÈáåËøô‰∏™ÂÅèÁßªÊòØ52Â≠óËäÇÔºåÂõ†‰∏∫Êàë‰ª¨‰∏äÈù¢‰ΩçÁΩÆÊòØ3‰∏™ÂÖÉÁ¥†ÔºåÊØè‰∏™ÂÖÉÁ¥†ÊòØ4Â≠óËäÇÔºà32‰ΩçÔºâÔºåÂà∞‰∫ÜuvËøôÈáåÔºåÂ∞±ÂæóÂÅèÁßª Ôºà3Ôºâ*4 = 12Â≠óËäÇÁöÑÂÅèÁßª‰∫Ü
 
 	};
 
-	// ∞Û∂® ‰»Î≤ºæ÷
+	// ÁªëÂÆöËæìÂÖ•Â∏ÉÂ±Ä
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
 
@@ -66,26 +66,26 @@ void FOpaqueShadowRenderLayer::BuildPSO()
 	
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC& GPSDesc = DirectXPipelineState->GetGPSDesc();
 
-	// ∆´“∆≤π≥• Œ™¡ÀΩ‚æˆ“ı”∞ ß’ÊŒ Ã‚
+	// ÂÅèÁßªË°•ÂÅø ‰∏∫‰∫ÜËß£ÂÜ≥Èò¥ÂΩ±Â§±ÁúüÈóÆÈ¢ò
 	// d = 1 / pow(2, 24);  2^24
-	// b£®∆´“∆¡ø£© = DepthBias£®πÃ∂®∆´“∆¡ø£© * d + SlopeScaledDepthBias£®Àı∑≈“Ú◊”£© * MaxDepthSlope£®◊Ó¥Û…Ó∂»£©
-	GPSDesc.RasterizerState.DepthBias = 100000;				// –±¬  πÃ∂®∆´“∆¡ø
-	GPSDesc.RasterizerState.DepthBiasClamp = 0.0f;			// Àı∑≈	∆´“∆¡øµƒœﬁ÷∆£¨∆´“∆¡ø…œœﬁ£¨◊Ó¥Û∆´“∆¡ø
-	GPSDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;	// ∆´“∆¡ø ∏˘æ›∂‡±ﬂ–Œ–±¬ ¿¥øÿ÷∆µƒ“ª∏ˆÀı∑≈“Ú◊”
+	// bÔºàÂÅèÁßªÈáèÔºâ = DepthBiasÔºàÂõ∫ÂÆöÂÅèÁßªÈáèÔºâ * d + SlopeScaledDepthBiasÔºàÁº©ÊîæÂõ†Â≠êÔºâ * MaxDepthSlopeÔºàÊúÄÂ§ßÊ∑±Â∫¶Ôºâ
+	GPSDesc.RasterizerState.DepthBias = 100000;				// ÊñúÁéá Âõ∫ÂÆöÂÅèÁßªÈáè
+	GPSDesc.RasterizerState.DepthBiasClamp = 0.0f;			// Áº©Êîæ	ÂÅèÁßªÈáèÁöÑÈôêÂà∂ÔºåÂÅèÁßªÈáè‰∏äÈôêÔºåÊúÄÂ§ßÂÅèÁßªÈáè
+	GPSDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;	// ÂÅèÁßªÈáè Ê†πÊçÆÂ§öËæπÂΩ¢ÊñúÁéáÊù•ÊéßÂà∂ÁöÑ‰∏Ä‰∏™Áº©ÊîæÂõ†Â≠ê
 
-	// πÿ±’RenderTarget£®Ω´∏Ò Ω…Ë÷√Œ™Œª÷√£¨»ª∫ÛrenderTarget ˝¡ø…Ë÷√Œ™0£©
+	// ÂÖ≥Èó≠RenderTargetÔºàÂ∞ÜÊ†ºÂºèËÆæÁΩÆ‰∏∫‰ΩçÁΩÆÔºåÁÑ∂ÂêérenderTargetÊï∞ÈáèËÆæÁΩÆ‰∏∫0Ôºâ
 	GPSDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
 	GPSDesc.NumRenderTargets = 0;
-	DirectXPipelineState->BuildPipelineState(EPipelineState::OrthographicShadow);		// ππΩ®’˝Ωª“ı”∞pso
+	DirectXPipelineState->BuildPipelineState(EPipelineState::OrthographicShadow);		// ÊûÑÂª∫Ê≠£‰∫§Èò¥ÂΩ±pso
 
-	// Õ∏ ”“ı”∞
-	GPSDesc.RasterizerState.DepthBias = 800;				// –±¬  πÃ∂®∆´“∆¡ø
-	DirectXPipelineState->BuildPipelineState(EPipelineState::PerspectiveShadow);		// ππΩ®Õ∏ ”“ı”∞pso
+	// ÈÄèËßÜÈò¥ÂΩ±
+	GPSDesc.RasterizerState.DepthBias = 1000;				// ÊñúÁéá Âõ∫ÂÆöÂÅèÁßªÈáè
+	DirectXPipelineState->BuildPipelineState(EPipelineState::PerspectiveShadow);		// ÊûÑÂª∫ÈÄèËßÜÈò¥ÂΩ±pso
 
-	// ÕÚœÚ“ı”∞
+	// ‰∏áÂêëÈò¥ÂΩ±
 	DirectXPipelineState->BuildParam();
 	BuildViewtianeShadowShader();
-	DirectXPipelineState->BuildPipelineState(EPipelineState::ViewtianeShadow);			// ππΩ®ÕÚœÚ“ı”∞pso
+	DirectXPipelineState->BuildPipelineState(EPipelineState::ViewtianeShadow);			// ÊûÑÂª∫‰∏áÂêëÈò¥ÂΩ±pso
 
 	
 }
@@ -110,7 +110,7 @@ void FOpaqueShadowRenderLayer::DrawMesh(float DeltaTime, ERenderCondition rc)
 void FOpaqueShadowRenderLayer::BuildViewtianeShadowShader()
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///ππΩ®shader HLSL
+	///ÊûÑÂª∫shader HLSL
 	///
 
 	std::vector<ShaderType::FShaderMacro> ShaderMacro;
@@ -121,17 +121,17 @@ void FOpaqueShadowRenderLayer::BuildViewtianeShadowShader()
 
 	VertexShader.BuildShader(L"Shader/HLSL/ViewtianeShadow.hlsl", "VSMain", "vs_5_1", D3dShaderMacro.data());
 	PixelShader.BuildShader(L"Shader/HLSL/ViewtianeShadow.hlsl", "PSMain", "ps_5_1", D3dShaderMacro.data());
-	// ∞Û∂®shader
+	// ÁªëÂÆöshader
 	DirectXPipelineState->BindShader(VertexShader, PixelShader);
 
-	//  ‰»Î≤ºæ÷
+	// ËæìÂÖ•Â∏ÉÂ±Ä
 	InputElementDesc =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}	// uv◊¯±Í£¨’‚¿Ô’‚∏ˆ∆´“∆ «52◊÷Ω⁄£¨“ÚŒ™Œ“√«…œ√ÊŒª÷√ «3∏ˆ‘™Àÿ£¨√ø∏ˆ‘™Àÿ «4◊÷Ω⁄£®32Œª£©£¨µΩ¡Àuv’‚¿Ô£¨æÕµ√∆´“∆ £®3£©*4 = 12◊÷Ω⁄µƒ∆´“∆¡À
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}	// uvÂùêÊ†áÔºåËøôÈáåËøô‰∏™ÂÅèÁßªÊòØ52Â≠óËäÇÔºåÂõ†‰∏∫Êàë‰ª¨‰∏äÈù¢‰ΩçÁΩÆÊòØ3‰∏™ÂÖÉÁ¥†ÔºåÊØè‰∏™ÂÖÉÁ¥†ÊòØ4Â≠óËäÇÔºà32‰ΩçÔºâÔºåÂà∞‰∫ÜuvËøôÈáåÔºåÂ∞±ÂæóÂÅèÁßª Ôºà3Ôºâ*4 = 12Â≠óËäÇÁöÑÂÅèÁßª‰∫Ü
 
 	};
 
-	// ∞Û∂® ‰»Î≤ºæ÷
+	// ÁªëÂÆöËæìÂÖ•Â∏ÉÂ±Ä
 	DirectXPipelineState->BindInputLayout(InputElementDesc.data(), InputElementDesc.size());
 }
