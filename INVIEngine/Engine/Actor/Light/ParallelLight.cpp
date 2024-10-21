@@ -6,6 +6,7 @@ GParallelLight::GParallelLight()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 
 	CLight::SetLightComponent(CreateObject<CParallelLightComponent>(params, new CParallelLightComponent()));
 }

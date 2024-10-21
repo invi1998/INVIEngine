@@ -10,11 +10,12 @@ CSpotLightComponent::CSpotLightComponent(): CRangeLightComponent()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = this;
 
-	// ¶ÁÈ¡µã¹âÄ£ĞÍ
+	// è¯»å–ç‚¹å…‰æ¨¡å‹
 	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent(params, "Asserts/Mesh/SpotMesh.obj"));
 
-	// ÉèÖÃ¾Û¹âÄ£ĞÍÎªÏß¿òÄ£Ê½ÏÔÊ¾
+	// è®¾ç½®èšå…‰æ¨¡å‹ä¸ºçº¿æ¡†æ¨¡å¼æ˜¾ç¤º
 	if (GetLightMesh())
 	{
 		if (CMaterial* material = (*GetLightMesh()->GetMaterial())[0])

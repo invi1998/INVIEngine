@@ -11,25 +11,26 @@
 #include "Material/Core/Material.h"
 #include "Misc/RaycastSystemLibrary.h"
 
-extern CMeshComponent* SelectedAxisComponent;	// ±»Ñ¡ÖĞµÄÖáÏò
-extern GActorObject* SelectedActor;	// ±»Ñ¡ÖĞµÄÎïÌå
+extern CMeshComponent* SelectedAxisComponent;	// è¢«é€‰ä¸­çš„è½´å‘
+extern GActorObject* SelectedActor;	// è¢«é€‰ä¸­çš„ç‰©ä½“
 
 GRotateArrow::GRotateArrow()
 	: GOperationHandle()
 {
 	FCreateObjectParams Params;
 	Params.Owner = this;
+	Params.ParentComponent = GetRootComponent();
 
 	XPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
 	YPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
 	ZPlaneComponent = ConstructionObject<CPlaneMeshComponent>(Params);
 
-	// ½«ÃæÆ¬Ìí¼Ó½øÉäÏß¼ì²âµÄºöÂÔÁĞ±í
+	// å°†é¢ç‰‡æ·»åŠ è¿›å°„çº¿æ£€æµ‹çš„å¿½ç•¥åˆ—è¡¨
 	AddIgnoreComponent(XPlaneComponent);
 	AddIgnoreComponent(YPlaneComponent);
 	AddIgnoreComponent(ZPlaneComponent);
 
-	// ÉèÖÃäÖÈ¾²ã
+	// è®¾ç½®æ¸²æŸ“å±‚
 	XPlaneComponent->SetRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_ROT_PLANE);
 	YPlaneComponent->SetRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_ROT_PLANE);
 	ZPlaneComponent->SetRenderLayerType(EMeshRenderLayerType::RENDER_LAYER_ROT_PLANE);
@@ -41,28 +42,28 @@ GRotateArrow::GRotateArrow()
 
 void GRotateArrow::SetMesh()
 {
-	// ´´½¨²Ù×÷ÊÖ±úµÄÍø¸ñ
+	// åˆ›å»ºæ“ä½œæ‰‹æŸ„çš„ç½‘æ ¼
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, XAxisComponent, "Asserts/Mesh/Handle/RotateHandleX.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, YAxisComponent, "Asserts/Mesh/Handle/RotateHandleY.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, ZAxisComponent, "Asserts/Mesh/Handle/RotateHandleZ.fbx");
 	CREATE_RENDER_DATA_BY_COMPONENT(CCustomMeshComponent, AnyAxisComponent, "Asserts/Mesh/Handle/RotateHandleZ.fbx");
 
-	// ´´½¨ÖáÆ½Ãæ£¨CDÃæÆ¬£¬ÓÃÓÚÏÔÊ¾ÖáµÄÆ½Ãæ£©
-	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, XPlaneComponent, 5.2f, 5.2f, 2, 2);	// ´´½¨xÖáµÄÆ½Ãæ£¬¿í¸ßÎª5.2£¬Ï¸·ÖÎª2
-	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, YPlaneComponent, 5.2f, 5.2f, 2, 2);	// ´´½¨yÖáµÄÆ½Ãæ£¬¿í¸ßÎª5.2£¬Ï¸·ÖÎª2
-	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, ZPlaneComponent, 5.2f, 5.2f, 2, 2);	// ´´½¨zÖáµÄÆ½Ãæ£¬¿í¸ßÎª5.2£¬Ï¸·ÖÎª2
+	// åˆ›å»ºè½´å¹³é¢ï¼ˆCDé¢ç‰‡ï¼Œç”¨äºæ˜¾ç¤ºè½´çš„å¹³é¢ï¼‰
+	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, XPlaneComponent, 5.2f, 5.2f, 2, 2);	// åˆ›å»ºxè½´çš„å¹³é¢ï¼Œå®½é«˜ä¸º5.2ï¼Œç»†åˆ†ä¸º2
+	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, YPlaneComponent, 5.2f, 5.2f, 2, 2);	// åˆ›å»ºyè½´çš„å¹³é¢ï¼Œå®½é«˜ä¸º5.2ï¼Œç»†åˆ†ä¸º2
+	CREATE_RENDER_DATA_BY_COMPONENT(CPlaneMeshComponent, ZPlaneComponent, 5.2f, 5.2f, 2, 2);	// åˆ›å»ºzè½´çš„å¹³é¢ï¼Œå®½é«˜ä¸º5.2ï¼Œç»†åˆ†ä¸º2
 
-	// ÈÃÆ½ÃæÏà»¥´¹Ö±
+	// è®©å¹³é¢ç›¸äº’å‚ç›´
 	XPlaneComponent->SetRotation(XMFLOAT3{ 0.0f, 0.0f, 0.0f });
 	YPlaneComponent->SetRotation(XMFLOAT3{ 90.0f, 0.0f, 0.0f });
 	ZPlaneComponent->SetRotation(XMFLOAT3{ 0.0f, 0.0f, -90.0f });
 
-	// ¸øÆ½ÃæÌí¼Ó²ÄÖÊ
+	// ç»™å¹³é¢æ·»åŠ æè´¨
 	SetMaterial(XPlaneComponent, "Asserts/Texture/Rot_Handle_Plane.dds");
 	SetMaterial(ZPlaneComponent, "Asserts/Texture/Rot_Handle_Plane.dds");
 	SetMaterial(YPlaneComponent, "Asserts/Texture/Rot_Handle_Plane.dds");
 
-	// Ğı×ªÄ£ĞÍ£¬Ê¹Æä³ÉÎªÕıÈ·µÄ×ø±êÏµÖ¸Ïò
+	// æ—‹è½¬æ¨¡å‹ï¼Œä½¿å…¶æˆä¸ºæ­£ç¡®çš„åæ ‡ç³»æŒ‡å‘
 	/*XAxisComponent->SetRotation({ 0.0f, 90.0f, 0.0f });
 	YAxisComponent->SetRotation({ -90.0f, 0.0f, 0.0f });*/
 }
@@ -132,8 +133,8 @@ void GRotateArrow::OnMouseLeftDown(int x, int y)
 
 	if (SelectedAxisComponent)
 	{
-		XMVECTOR ActorLocation{};		// ÎïÌåµÄÎ»ÖÃ
-		XMVECTOR DragDirection{};		// Êó±êÍÏ×§µÄÖáµÄ·½Ïò
+		XMVECTOR ActorLocation{};		// ç‰©ä½“çš„ä½ç½®
+		XMVECTOR DragDirection{};		// é¼ æ ‡æ‹–æ‹½çš„è½´çš„æ–¹å‘
 		float t = GetMouseMoveDistance(x, y, ActorLocation, DragDirection);
 		if (t != 0)
 		{
@@ -183,7 +184,7 @@ float GRotateArrow::GetSymbol(float value, bool flip)
 float GRotateArrow::GetSymbolMaterialByCubeIndex(float offset)
 {
 	float symbol = 1.f;
-	// »ñÈ¡ÖáÏò
+	// è·å–è½´å‘
 	ESelectedAxis SelectedAxis = GetSelectedAxis();
 
 	switch (Sample8CubeIndex)
@@ -254,8 +255,8 @@ void GRotateArrow::OnMousePressed(int x, int y)
 {
 	if (SelectedActor && SelectedAxisComponent && IsCurrentSelectedHandle())
 	{
-		XMVECTOR ActorLocation{};		// ÎïÌåµÄÎ»ÖÃ
-		XMVECTOR DragDirection{};		// Êó±êÍÏ×§µÄÖáµÄ·½Ïò
+		XMVECTOR ActorLocation{};		// ç‰©ä½“çš„ä½ç½®
+		XMVECTOR DragDirection{};		// é¼ æ ‡æ‹–æ‹½çš„è½´çš„æ–¹å‘
 		float t = GetMouseMoveDistance(x, y, ActorLocation, DragDirection);
 
 		XMVECTOR tempNull{};
@@ -266,44 +267,44 @@ void GRotateArrow::OnMousePressed(int x, int y)
 
 			float CameraAndSelectedActorDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&GetWorld()->GetQuaternionCamera()->GetPosition()) - XMLoadFloat3(&SelectedActor->GetPosition())));
 
-			float DeltaRadio = (t - StartDragT2Value) / CameraAndSelectedActorDistance;	// Ö®ËùÒÔÒª³ıÒÔÉãÏñ»úºÍÎïÌåµÄ¾àÀë£¬ÊÇÒòÎªÎÒÃÇĞèÒª½«Êó±êÍÏ×§µÄ¾àÀë×ª»»ÎªĞı×ªµÄ½Ç¶È£¬ÎÒÃÇÏ£ÍûÉãÏñ»úºÍÎïÌåµÄ¾àÀëÔ½Ô¶£¬Ğı×ªµÄ½Ç¶ÈÔ½Ğ¡
+			float DeltaRadio = (t - StartDragT2Value) / CameraAndSelectedActorDistance;	// ä¹‹æ‰€ä»¥è¦é™¤ä»¥æ‘„åƒæœºå’Œç‰©ä½“çš„è·ç¦»ï¼Œæ˜¯å› ä¸ºæˆ‘ä»¬éœ€è¦å°†é¼ æ ‡æ‹–æ‹½çš„è·ç¦»è½¬æ¢ä¸ºæ—‹è½¬çš„è§’åº¦ï¼Œæˆ‘ä»¬å¸Œæœ›æ‘„åƒæœºå’Œç‰©ä½“çš„è·ç¦»è¶Šè¿œï¼Œæ—‹è½¬çš„è§’åº¦è¶Šå°
 
-			// »ñÈ¡Êó±êÍÏ×§µÄĞı×ª¼ä¾à£¨½Ç¶È£©
+			// è·å–é¼ æ ‡æ‹–æ‹½çš„æ—‹è½¬é—´è·ï¼ˆè§’åº¦ï¼‰
 			float offset = DeltaRadio - RotateRadio;
-			// Ğ£ÕıĞı×ª·ûºÅ
+			// æ ¡æ­£æ—‹è½¬ç¬¦å·
 			float symbol = GetSymbolByCubeIndex(offset);
 
 			float symbolMaterial = GetSymbolMaterialByCubeIndex(offset);
 
 			SetCDValue(symbolMaterial * DeltaRadio);
 
-			// TODO:ÕâÀïÏÈÓÃsimple_library¿âµÄËÄÔªÊı£¬ºóĞø¿¼ÂÇÊ¹ÓÃDX12¿âµÄËÄÔªÊı
-			// ¶¨ÒåĞı×ª
+			// TODO:è¿™é‡Œå…ˆç”¨simple_libraryåº“çš„å››å…ƒæ•°ï¼Œåç»­è€ƒè™‘ä½¿ç”¨DX12åº“çš„å››å…ƒæ•°
+			// å®šä¹‰æ—‹è½¬
 			fvector_3d deltaVector;
 			XMFLOAT3 ActorDirFloat3;
 			XMStoreFloat3(&ActorDirFloat3, DragDirection);
 			fvector_3d dragDirection = EngineMath::ToVector3d(ActorDirFloat3);
-			deltaVector = dragDirection * symbol * fabsf(offset) * 360.f;	// Ğı×ªµÄ½Ç¶È
+			deltaVector = dragDirection * symbol * fabsf(offset) * 360.f;	// æ—‹è½¬çš„è§’åº¦
 
-			// »ñÈ¡ÎïÌåµÄÅ·À­½Ç
+			// è·å–ç‰©ä½“çš„æ¬§æ‹‰è§’
 			frotator rotationRotator = SelectedActor->GetRotationFrotator();
 
-			// ½«ÎÒÃÇµÄĞı×ª½Ç¶ÈÒ²×ªÎªÅ·À­½Ç½á¹¹
+			// å°†æˆ‘ä»¬çš„æ—‹è½¬è§’åº¦ä¹Ÿè½¬ä¸ºæ¬§æ‹‰è§’ç»“æ„
 			frotator deltaRotator(deltaVector.y, deltaVector.z, deltaVector.x);
 
-			// ½«ÎïÌåµÄÅ·À­½Ç½á¹¹×ª»»ÎªËÄÔªÊı
+			// å°†ç‰©ä½“çš„æ¬§æ‹‰è§’ç»“æ„è½¬æ¢ä¸ºå››å…ƒæ•°
 			fquat rotationQuat;
-			// ½«ÎÒÃÇµÄĞı×ª½Ç¶ÈÒ²×ªÎªËÄÔªÊı
+			// å°†æˆ‘ä»¬çš„æ—‹è½¬è§’åº¦ä¹Ÿè½¬ä¸ºå››å…ƒæ•°
 			fquat deltaQuat;
 
-			// ´ËÊ±ÎÒÃÇµÃµ½µÄÊÇÎïÌåµÄ¹ßĞÔ×ø±êÏµÏÂµÄĞı×ªËÄÔªÊı£¨ÊÀ½ç×ø±êÏµÏÂµÄĞı×ªËÄÔªÊı£©£¬ÎÒÃÇĞèÒª½«ÆäÓÉÎïÌå×ø±êÏµÏÂµÄĞı×ªËÄÔªÊı×ª»»Îª¹ßĞÔ×ø±êÏµ
+			// æ­¤æ—¶æˆ‘ä»¬å¾—åˆ°çš„æ˜¯ç‰©ä½“çš„æƒ¯æ€§åæ ‡ç³»ä¸‹çš„æ—‹è½¬å››å…ƒæ•°ï¼ˆä¸–ç•Œåæ ‡ç³»ä¸‹çš„æ—‹è½¬å››å…ƒæ•°ï¼‰ï¼Œæˆ‘ä»¬éœ€è¦å°†å…¶ç”±ç‰©ä½“åæ ‡ç³»ä¸‹çš„æ—‹è½¬å››å…ƒæ•°è½¬æ¢ä¸ºæƒ¯æ€§åæ ‡ç³»
 			rotationQuat.object_to_inertia(rotationRotator);
 			deltaQuat.object_to_inertia(deltaRotator);
 
-			// ½«ÎïÌåµÄĞı×ªËÄÔªÊıºÍ¼ÆËã³öµÄĞı×ªËÄÔªÊıÏà³Ë£¬µÃµ½ĞÂµÄĞı×ªËÄÔªÊı£¬Õâ¸öĞÂµÄĞı×ªËÄÔªÊıÊÇÎïÌå×ø±êÏµÏÂµÄ
+			// å°†ç‰©ä½“çš„æ—‹è½¬å››å…ƒæ•°å’Œè®¡ç®—å‡ºçš„æ—‹è½¬å››å…ƒæ•°ç›¸ä¹˜ï¼Œå¾—åˆ°æ–°çš„æ—‹è½¬å››å…ƒæ•°ï¼Œè¿™ä¸ªæ–°çš„æ—‹è½¬å››å…ƒæ•°æ˜¯ç‰©ä½“åæ ‡ç³»ä¸‹çš„
 			fquat newRotationQuat = rotationQuat * deltaQuat;
 
-			// ½«ĞÂµÄĞı×ªËÄÔªÊı×ª»»ÎªÅ·À­½Ç£¬ÉèÖÃÎïÌåµÄĞı×ª£¨×¢ÒâÏÈÒª½«ÎïÌå×ø±êÏµÏÂµÄĞı×ªËÄÔªÊı×ª»»ÎªÊÀ½ç×ø±êÏµÏÂµÄĞı×ªËÄÔªÊı£©
+			// å°†æ–°çš„æ—‹è½¬å››å…ƒæ•°è½¬æ¢ä¸ºæ¬§æ‹‰è§’ï¼Œè®¾ç½®ç‰©ä½“çš„æ—‹è½¬ï¼ˆæ³¨æ„å…ˆè¦å°†ç‰©ä½“åæ ‡ç³»ä¸‹çš„æ—‹è½¬å››å…ƒæ•°è½¬æ¢ä¸ºä¸–ç•Œåæ ‡ç³»ä¸‹çš„æ—‹è½¬å››å…ƒæ•°ï¼‰
 			frotator newRotationRotator;
 			newRotationRotator.inertia_to_object(newRotationQuat);
 
@@ -312,11 +313,11 @@ void GRotateArrow::OnMousePressed(int x, int y)
 			if (IsWorldOperate())
 			{
 				XMMATRIX WorldInverseMatrix{};
-				EngineMath::BuildInverseMatrix(WorldInverseMatrix, SelectedActor->GetPosition(), SelectedActor->GetScale(), SelectedActor->GetRightVector(), SelectedActor->GetUpVector(), SelectedActor->GetForwardVector());	// ÎïÌåµÄÊÀ½ç¾ØÕóµÄÄæ¾ØÕó
+				EngineMath::BuildInverseMatrix(WorldInverseMatrix, SelectedActor->GetPosition(), SelectedActor->GetScale(), SelectedActor->GetRightVector(), SelectedActor->GetUpVector(), SelectedActor->GetForwardVector());	// ç‰©ä½“çš„ä¸–ç•ŒçŸ©é˜µçš„é€†çŸ©é˜µ
 
-				FXMVECTOR ResultRotation = XMLoadFloat3(&resultRotation);	// ĞÂµÄĞı×ª½Ç¶È
+				FXMVECTOR ResultRotation = XMLoadFloat3(&resultRotation);	// æ–°çš„æ—‹è½¬è§’åº¦
 
-				XMVECTOR ResultRotationInWorld = XMVector3TransformNormal(ResultRotation, WorldInverseMatrix);	// ĞÂµÄĞı×ª½Ç¶È×ª»»ÎªÊÀ½ç×ø±êÏµÏÂµÄĞı×ª½Ç¶È
+				XMVECTOR ResultRotationInWorld = XMVector3TransformNormal(ResultRotation, WorldInverseMatrix);	// æ–°çš„æ—‹è½¬è§’åº¦è½¬æ¢ä¸ºä¸–ç•Œåæ ‡ç³»ä¸‹çš„æ—‹è½¬è§’åº¦
 
 				XMStoreFloat3(&resultRotation, ResultRotationInWorld);
 			}
@@ -403,13 +404,13 @@ void GRotateArrow::Tick(float DeltaTime)
 
 	if (IsCurrentSelectedHandle())
 	{
-		// ÎÒÃÇĞèÒª½«ÉãÏñ»úµÄÎ»ÖÃ×ª»»Îª²Ù×÷ÊÖ±úµÄ×ø±êÏµÏÂµÄÎ»ÖÃ
+		// æˆ‘ä»¬éœ€è¦å°†æ‘„åƒæœºçš„ä½ç½®è½¬æ¢ä¸ºæ“ä½œæ‰‹æŸ„çš„åæ ‡ç³»ä¸‹çš„ä½ç½®
 		XMMATRIX ArrowMatrixInverse{};
-		EngineMath::BuildInverseMatrix(ArrowMatrixInverse, GetPosition(), GetScale(), GetRightVector(), GetUpVector(), GetForwardVector());	// ²Ù×÷ÊÖ±úµÄÊÀ½ç¾ØÕóµÄÄæ¾ØÕó
+		EngineMath::BuildInverseMatrix(ArrowMatrixInverse, GetPosition(), GetScale(), GetRightVector(), GetUpVector(), GetForwardVector());	// æ“ä½œæ‰‹æŸ„çš„ä¸–ç•ŒçŸ©é˜µçš„é€†çŸ©é˜µ
 
-		XMVECTOR CameraLocation = XMLoadFloat3(&GetWorld()->GetQuaternionCamera()->GetPosition());	// ÉãÏñ»úµÄÎ»ÖÃ
+		XMVECTOR CameraLocation = XMLoadFloat3(&GetWorld()->GetQuaternionCamera()->GetPosition());	// æ‘„åƒæœºçš„ä½ç½®
 
-		XMVECTOR ArrowMatrixInverseLocation = XMVector3TransformCoord(CameraLocation, ArrowMatrixInverse);	// ÉãÏñ»úµÄÎ»ÖÃ×ª»»Îª²Ù×÷ÊÖ±úµÄ×ø±êÏµÏÂµÄÎ»ÖÃ
+		XMVECTOR ArrowMatrixInverseLocation = XMVector3TransformCoord(CameraLocation, ArrowMatrixInverse);	// æ‘„åƒæœºçš„ä½ç½®è½¬æ¢ä¸ºæ“ä½œæ‰‹æŸ„çš„åæ ‡ç³»ä¸‹çš„ä½ç½®
 
 		XMFLOAT3 ArrowMatrixInverseLocationFloat3{};
 		XMStoreFloat3(&ArrowMatrixInverseLocationFloat3, ArrowMatrixInverseLocation);
@@ -421,14 +422,14 @@ void GRotateArrow::Tick(float DeltaTime)
 		switch (Sample8CubeIndex)
 		{
 		case 0:
-			YAxisComponent->SetRotation(frotator(0.f, 90.f, 0.f));//ÂÌ
-			XAxisComponent->SetRotation(frotator(-90.f, 0, 0.f));//ºìÉ«
+			YAxisComponent->SetRotation(frotator(0.f, 90.f, 0.f));//ç»¿
+			XAxisComponent->SetRotation(frotator(-90.f, 0, 0.f));//çº¢è‰²
 			AnyAxisComponent->SetRotation(frotator());
 			ZAxisComponent->SetRotation(frotator());
 			break;
 		case 1:
-			YAxisComponent->SetRotation(frotator(0.f, -180.f, 0.f));//ÂÌ
-			XAxisComponent->SetRotation(frotator(-90.f, 0, 0.f));//ºìÉ«
+			YAxisComponent->SetRotation(frotator(0.f, -180.f, 0.f));//ç»¿
+			XAxisComponent->SetRotation(frotator(-90.f, 0, 0.f));//çº¢è‰²
 			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -90.f));
 			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -90.f));
 			break;
@@ -439,34 +440,34 @@ void GRotateArrow::Tick(float DeltaTime)
 			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -90.f));
 			break;
 		case 3:
-			YAxisComponent->SetRotation(frotator());//ÂÌ
-			XAxisComponent->SetRotation(frotator());//ºìÉ«
-			AnyAxisComponent->SetRotation(frotator());//ÇàÉ«
-			ZAxisComponent->SetRotation(frotator());//À¶É«
+			YAxisComponent->SetRotation(frotator());//ç»¿
+			XAxisComponent->SetRotation(frotator());//çº¢è‰²
+			AnyAxisComponent->SetRotation(frotator());//é’è‰²
+			ZAxisComponent->SetRotation(frotator());//è“è‰²
 			break;
 		case 4:
-			YAxisComponent->SetRotation(frotator(0.f, 90.f, 0.f));//ÂÌ
-			XAxisComponent->SetRotation(frotator(-180.f, 0, 0.f));//ºìÉ«
-			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//ÇàÉ«
-			ZAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//À¶É«
+			YAxisComponent->SetRotation(frotator(0.f, 90.f, 0.f));//ç»¿
+			XAxisComponent->SetRotation(frotator(-180.f, 0, 0.f));//çº¢è‰²
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//é’è‰²
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//è“è‰²
 			break;
 		case 5:
-			YAxisComponent->SetRotation(frotator(0.f, 180.f, 0.f));//ÂÌ
-			XAxisComponent->SetRotation(frotator(-180.f, 0, 0.f));//ºìÉ«
-			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//ÇàÉ«
-			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//À¶É«
+			YAxisComponent->SetRotation(frotator(0.f, 180.f, 0.f));//ç»¿
+			XAxisComponent->SetRotation(frotator(-180.f, 0, 0.f));//çº¢è‰²
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//é’è‰²
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//è“è‰²
 			break;
 		case 6:
-			YAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//ÂÌ
-			XAxisComponent->SetRotation(frotator(0.f, 0.f, 180.f));//ºìÉ«
-			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//ÇàÉ«
-			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//À¶É«
+			YAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//ç»¿
+			XAxisComponent->SetRotation(frotator(0.f, 0.f, 180.f));//çº¢è‰²
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//é’è‰²
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, -180.f));//è“è‰²
 			break;
 		case 7:
-			YAxisComponent->SetRotation(frotator());//ÂÌ
-			XAxisComponent->SetRotation(frotator(0.f, 0.f, 180.f));//ºìÉ«
-			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//ÇàÉ«
-			ZAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//À¶É«
+			YAxisComponent->SetRotation(frotator());//ç»¿
+			XAxisComponent->SetRotation(frotator(0.f, 0.f, 180.f));//çº¢è‰²
+			AnyAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//é’è‰²
+			ZAxisComponent->SetRotation(frotator(0.f, 0.f, 90.f));//è“è‰²
 			break;
 		default: break;
 		}
@@ -514,33 +515,33 @@ void GRotateArrow::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECT
 {
 	if (IsWorldOperate())
 	{
-		// ÊÀ½ç×ø±êÏµÏÂ»ñÈ¡·½Ïò
+		// ä¸–ç•Œåæ ‡ç³»ä¸‹è·å–æ–¹å‘
 		switch (GetSelectedAxis())
 		{
 		case AXIS_X:
 		{
-			// Êó±êÍÏ×§µÄÊÇXÖá£¬Ò²¾ÍÊÇÎïÌåµÄRight·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Xè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Rightæ–¹å‘
 			XMFLOAT3 DirVector = XMFLOAT3{ 0.0f, 1.0f, 0.0f };
 			DragDirection = XMLoadFloat3(&DirVector);
 			break;
 		};
 		case AXIS_Y:
 		{
-			// Êó±êÍÏ×§µÄÊÇYÖá£¬Ò²¾ÍÊÇÎïÌåµÄUp·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Yè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Upæ–¹å‘
 			XMFLOAT3 DirVector = XMFLOAT3{ 1.0f, 0.0f, 0.0f };
 			DragDirection = XMLoadFloat3(&DirVector);
 			break;
 		};
 		case AXIS_Z:
 		{
-			// Êó±êÍÏ×§µÄÊÇZÖá£¬Ò²¾ÍÊÇÎïÌåµÄForward·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Zè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Forwardæ–¹å‘
 			XMFLOAT3 DirVector = XMFLOAT3{ 1.0f, 0.0f, 0.0f };
 			DragDirection = XMLoadFloat3(&DirVector);
 			break;
 		};
 		case AXIS_ANY:
 		{
-			// Êó±êÍÏ×§µÄÊÇÈÎÒâÖá
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯ä»»æ„è½´
 			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
 			break;
 		}
@@ -549,33 +550,33 @@ void GRotateArrow::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECT
 	}
 	else
 	{
-		// ¸ù¾İÑ¡ÖĞµÄÖáÏò£¬»ñÈ¡ÉäÏßµÄ·½Ïò
+		// æ ¹æ®é€‰ä¸­çš„è½´å‘ï¼Œè·å–å°„çº¿çš„æ–¹å‘
 		switch (GetSelectedAxis())
 		{
 		case AXIS_X:
 		{
-			// Êó±êÍÏ×§µÄÊÇXÖá£¬Ò²¾ÍÊÇÎïÌåµÄRight·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Xè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Rightæ–¹å‘
 			XMFLOAT3 DirVector = SelectedActor->GetUpVector();
 			DragDirection = XMLoadFloat3(&DirVector);
 			break;
 		};
 		case AXIS_Y:
 		{
-			// Êó±êÍÏ×§µÄÊÇYÖá£¬Ò²¾ÍÊÇÎïÌåµÄUp·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Yè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Upæ–¹å‘
 			XMFLOAT3 DirVector = SelectedActor->GetRightVector();
 			DragDirection = XMLoadFloat3(&DirVector);
 			break;
 		};
 		case AXIS_Z:
 		{
-			// Êó±êÍÏ×§µÄÊÇZÖá£¬Ò²¾ÍÊÇÎïÌåµÄForward·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Zè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Forwardæ–¹å‘
 			XMFLOAT3 DirVector = SelectedActor->GetForwardVector();
 			DragDirection = XMLoadFloat3(&DirVector);
 			break;
 		};
 		case AXIS_ANY:
 		{
-			// Êó±êÍÏ×§µÄÊÇÈÎÒâÖá
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯ä»»æ„è½´
 			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
 			break;
 		}
@@ -587,7 +588,7 @@ void GRotateArrow::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XMVECT
 float GRotateArrow::GetSymbolByCubeIndex(float offset)
 {
 	float symbol = 1.f;
-	// »ñÈ¡ÖáÏò
+	// è·å–è½´å‘
 	ESelectedAxis SelectedAxis = GetSelectedAxis();
 
 	switch (Sample8CubeIndex)

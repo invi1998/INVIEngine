@@ -10,6 +10,7 @@ CMeshComponent::CMeshComponent()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = this;
 
 	Materials.push_back(CreateObject<CMaterial>(params, new CMaterial()));
 }

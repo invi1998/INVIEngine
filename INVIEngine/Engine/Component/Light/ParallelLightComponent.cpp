@@ -9,11 +9,12 @@ CParallelLightComponent::CParallelLightComponent()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = this;
 
-	// ¶ÁÈ¡Æ½ĞĞ¹âÄ£ĞÍ
+	// è¯»å–å¹³è¡Œå…‰æ¨¡å‹
 	SetLightMesh(GetMeshManage()->CreateCustomMeshComponent(params, "Asserts/Mesh/SunMesh.obj"));
 
-	// ÉèÖÃÆ½ĞĞ¹âÎªÏß¿òÄ£Ê½ÏÔÊ¾
+	// è®¾ç½®å¹³è¡Œå…‰ä¸ºçº¿æ¡†æ¨¡å¼æ˜¾ç¤º
 	if (GetLightMesh())
 	{
 		if (CMaterial* material = (*GetLightMesh()->GetMaterial())[0])

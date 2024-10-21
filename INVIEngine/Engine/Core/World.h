@@ -33,7 +33,7 @@ public:
 		return InArray;
 	}
 
-	// µ•…‰œﬂºÏ≤‚
+	// ÂçïÂ∞ÑÁ∫øÊ£ÄÊµã
 	bool LineTraceSingle(EngineType::FHitResult& hitResult, XMFLOAT3 start, XMFLOAT3 end);
 	const std::vector<GActorObject*>& GetActors() const;
 
@@ -45,6 +45,6 @@ private:
 	GQuaternionCamera* QuaternionCamera;
 
 	CVARIABLE()
-		vector<GActorObject*> ActorObjects;
+		vector<GActorObject*> ActorObjects{};
 };
 

@@ -2,10 +2,19 @@
 #include "ConstructionComponent.h"
 
 class CCoreMinimalObject;
+class CComponent;
 
 struct FCreateObjectParams
 {
+	FCreateObjectParams(CCoreMinimalObject* InOwner, CComponent* InParentComponent)
+		: Owner(InOwner)
+		, ParentComponent(InParentComponent)
+	{}
+
+	FCreateObjectParams() = default;
+
 	CCoreMinimalObject* Owner = nullptr;
+	CComponent* ParentComponent = nullptr;
 };
 
 template <typename T>

@@ -10,22 +10,23 @@ GActorObject::GActorObject()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 	RootComponent = CreateObject<CTransformationComponent>(params, new CTransformationComponent());
 }
 
 void GActorObject::GetBoundingBox(BoundingBox& OutBoundingBox) const
 {
-	if (RootComponent)	// Èç¹ûRootComponent²»Îª¿Õ
+	if (RootComponent)	// å¦‚æœRootComponentä¸ä¸ºç©º
 	{
-		for (auto& child : RootComponent->GetChildComponents())	// ±éÀúRootComponentµÄ×Ó×é¼ş
+		for (auto& child : RootComponent->GetChildComponents())	// éå†RootComponentçš„å­ç»„ä»¶
 		{
-			if (CMeshComponent* mesh = dynamic_cast<CMeshComponent*>(child))	// Èç¹û×Ó×é¼şÊÇMeshComponent£¨ÒòÎªÎÒÃÇµÄBoundingBoxĞÅÏ¢ÊÇ´æ´¢ÔÚMeshComponentÖĞµÄ£©
+			if (CMeshComponent* mesh = dynamic_cast<CMeshComponent*>(child))	// å¦‚æœå­ç»„ä»¶æ˜¯MeshComponentï¼ˆå› ä¸ºæˆ‘ä»¬çš„BoundingBoxä¿¡æ¯æ˜¯å­˜å‚¨åœ¨MeshComponentä¸­çš„ï¼‰
 			{
-				// »ñÈ¡BoundingBox
+				// è·å–BoundingBox
 				BoundingBox box{};
 				mesh->GetBoundingBox(box);
-				// ºÏ²¢BoundingBox£¬µÃµ½×îÖÕµÄBoundingBox£¨Ò»¸öActorObject¿ÉÄÜÓĞ¶à¸öMeshComponent£¬ËùÒÔĞèÒªºÏ²¢£©
-				// ºÏ²¢BoundingBoxµÄ·½·¨ÊÇ£º½«Á½¸öBoundingBoxµÄ×îĞ¡µãºÍ×î´óµã·Ö±ğÈ¡×îĞ¡ÖµºÍ×î´óÖµ
+				// åˆå¹¶BoundingBoxï¼Œå¾—åˆ°æœ€ç»ˆçš„BoundingBoxï¼ˆä¸€ä¸ªActorObjectå¯èƒ½æœ‰å¤šä¸ªMeshComponentï¼Œæ‰€ä»¥éœ€è¦åˆå¹¶ï¼‰
+				// åˆå¹¶BoundingBoxçš„æ–¹æ³•æ˜¯ï¼šå°†ä¸¤ä¸ªBoundingBoxçš„æœ€å°ç‚¹å’Œæœ€å¤§ç‚¹åˆ†åˆ«å–æœ€å°å€¼å’Œæœ€å¤§å€¼
 				// min = center - extent, max = center + extent
 				BoundingBox::CreateMerged(OutBoundingBox, OutBoundingBox, box);
 			}

@@ -9,6 +9,7 @@ CWorld::CWorld()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = nullptr;
 
 	Camera = CreateObject<CCamera>(params, new CCamera());
 

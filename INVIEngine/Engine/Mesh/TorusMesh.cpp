@@ -9,6 +9,7 @@ GTorusMesh::GTorusMesh()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 
 	GMesh::SetMeshComponent(ConstructionObject<CTorusMeshComponent>(params));
 }

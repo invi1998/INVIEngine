@@ -9,16 +9,17 @@ CCamera::CCamera()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 
 	InputComponent = CreateObject<CInputComponent>(params, new CInputComponent());
 }
 
 void CCamera::BeginInit()
 {
-	// ³õÊ¼»¯Í¶Ó°¾ØÕó
+	// åˆå§‹åŒ–æŠ•å½±çŸ©é˜µ
 	ViewPortInit();
 
-	// °ó¶¨¼üÅÌÊó±êÊÂ¼þ
+	// ç»‘å®šé”®ç›˜é¼ æ ‡äº‹ä»¶
 	InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &CCamera::ExecuteInput);
 }
 
@@ -31,27 +32,27 @@ void CCamera::ExecuteInput()
 {
 	if (FInput::IsKeyPressed(Key::W))
 	{
-		// W°´ÏÂ
+		// WæŒ‰ä¸‹
 		MoveForward(1.f);
 	}
 	else if (FInput::IsKeyPressed(Key::S))
 	{
-		// S°´ÏÂ
+		// SæŒ‰ä¸‹
 		MoveForward(-1.f);
 	}
 	else if (FInput::IsKeyPressed(Key::D))
 	{
-		// D°´ÏÂ
+		// DæŒ‰ä¸‹
 		MoveRight(1.f);
 	}
 	else if (FInput::IsKeyPressed(Key::A))
 	{
-		// A°´ÏÂ
+		// AæŒ‰ä¸‹
 		MoveRight(-1.f);
 	}
 	else if (FInput::IsKeyPressed(VK_LMENU))
 	{
-		// ×óalt°´ÏÂ£¬½øÈëÊó±êÒÆ¶¯ÉãÏñ»úÊÓ½ÇÊÂ¼þ
+		// å·¦altæŒ‰ä¸‹ï¼Œè¿›å…¥é¼ æ ‡ç§»åŠ¨æ‘„åƒæœºè§†è§’äº‹ä»¶
 		const XMFLOAT2 &mouse{ FInput::GetMouseX(), FInput::GetMouseY() };
 
 		XMVECTOR VMouse = XMLoadFloat2(&mouse);
@@ -124,10 +125,10 @@ void CCamera::RotateAroundYAxis(float InRotateDegrees)
 	XMFLOAT3 UpVector = GetRootComponent()->GetUpVector();
 	XMFLOAT3 ForwardVector = GetRootComponent()->GetForwardVector();
 
-	// ´«Èë»¡¶È»òµÃÈÆyÖáµÄÐý×ª¾ØÕó
+	// ä¼ å…¥å¼§åº¦æˆ–å¾—ç»•yè½´çš„æ—‹è½¬çŸ©é˜µ
 	XMMATRIX RotationY = XMMatrixRotationY(InRotateDegrees);
 
-	// ½«ÉãÏñ»úµÄ3¸ö·½ÏòÏòÁ¿³ËÒÔÐý×ª¾ØÕó£¬»òµÃ¼ÆËã»úÈÆzÖáÐý×ªµÄÏòÁ¿½á¹û
+	// å°†æ‘„åƒæœºçš„3ä¸ªæ–¹å‘å‘é‡ä¹˜ä»¥æ—‹è½¬çŸ©é˜µï¼Œæˆ–å¾—è®¡ç®—æœºç»•zè½´æ—‹è½¬çš„å‘é‡ç»“æžœ
 
 	XMStoreFloat3(&GetRootComponent()->GetRightVector(), XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationY));
 
@@ -145,10 +146,10 @@ void CCamera::RotateAroundZAxis(float InRotateDegrees)
 	XMFLOAT3 UpVector = GetRootComponent()->GetUpVector();
 	XMFLOAT3 ForwardVector = GetRootComponent()->GetForwardVector();
 
-	// ´«Èë»¡¶È»òµÃÈÆZÖáµÄÐý×ª¾ØÕó
+	// ä¼ å…¥å¼§åº¦æˆ–å¾—ç»•Zè½´çš„æ—‹è½¬çŸ©é˜µ
 	XMMATRIX RotationZ = XMMatrixRotationZ(InRotateDegrees);
 
-	// ½«ÉãÏñ»úµÄ3¸ö·½ÏòÏòÁ¿³ËÒÔÐý×ª¾ØÕó£¬»òµÃ¼ÆËã»úÈÆzÖáÐý×ªµÄÏòÁ¿½á¹û
+	// å°†æ‘„åƒæœºçš„3ä¸ªæ–¹å‘å‘é‡ä¹˜ä»¥æ—‹è½¬çŸ©é˜µï¼Œæˆ–å¾—è®¡ç®—æœºç»•zè½´æ—‹è½¬çš„å‘é‡ç»“æžœ
 
 	XMStoreFloat3(&GetRootComponent()->GetRightVector(), XMVector3TransformNormal(XMLoadFloat3(&RightVector), RotationZ));
 

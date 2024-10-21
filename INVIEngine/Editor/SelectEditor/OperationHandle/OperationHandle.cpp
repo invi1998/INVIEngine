@@ -11,29 +11,30 @@
 
 
 FCaptureOnMousesMoveDelegate MouseMoveDelegate;
-FCaptureOnLMousesButtonDownDelegate LeftMouseDownDelegate;	// ×ó¼üÊó±êÊÂ¼ş
-FCaptureOnLMousesButtonUpDelegate LeftMouseUpDelegate;		// ×ó¼üÊó±êÌ§ÆğÊÂ¼ş
-FCaptureOnRMousesButtonDownDelegate RightMouseDownDelegate;	// ÓÒ¼üÊó±êÊÂ¼ş
-FCaptureOnRMousesButtonUpDelegate RightMouseUpDelegate;		// ÓÒ¼üÊó±êÌ§ÆğÊÂ¼ş
+FCaptureOnLMousesButtonDownDelegate LeftMouseDownDelegate;	// å·¦é”®é¼ æ ‡äº‹ä»¶
+FCaptureOnLMousesButtonUpDelegate LeftMouseUpDelegate;		// å·¦é”®é¼ æ ‡æŠ¬èµ·äº‹ä»¶
+FCaptureOnRMousesButtonDownDelegate RightMouseDownDelegate;	// å³é”®é¼ æ ‡äº‹ä»¶
+FCaptureOnRMousesButtonUpDelegate RightMouseUpDelegate;		// å³é”®é¼ æ ‡æŠ¬èµ·äº‹ä»¶
 
-extern CMeshComponent* SelectedAxisComponent;	// ±»Ñ¡ÖĞµÄÖáÏò
-extern GActorObject* SelectedActor;	// ±»Ñ¡ÖĞµÄÎïÌå
+extern CMeshComponent* SelectedAxisComponent;	// è¢«é€‰ä¸­çš„è½´å‘
+extern GActorObject* SelectedActor;	// è¢«é€‰ä¸­çš„ç‰©ä½“
 
 GOperationHandle::GOperationHandle()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 
 	InputComponent = CreateObject<CInputComponent>(params, new CInputComponent());
 	// InputComponent->OnMouseWheelDelegate.Bind(this, &GOperationHandle::OnMouseMoved);
-	// °ó¶¨¼üÅÌÊó±êÊÂ¼ş
+	// ç»‘å®šé”®ç›˜é¼ æ ‡äº‹ä»¶
 	InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GOperationHandle::ExecuteInput);
 	InputComponent->OnMouseMoveDelegate.Bind(this, &GOperationHandle::OnMouseMoved);
 
 	InputComponent->OnMouseLeftDownDelegate.Bind(this, &GOperationHandle::OnMouseLeftDown);
 	InputComponent->OnMouseLeftUpDelegate.Bind(this, &GOperationHandle::OnMouseLeftUp);
 
-	// ´´½¨ÊµÀı
+	// åˆ›å»ºå®ä¾‹
 	XAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
 	YAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
 	ZAxisComponent = ConstructionObject<CCustomMeshComponent>(params);
@@ -85,7 +86,7 @@ void GOperationHandle::Tick(float DeltaTime)
 	{
 		if (GetWorld()->GetQuaternionCamera())
 		{
-			// ÉãÏñ»úÎ»ÖÃ
+			// æ‘„åƒæœºä½ç½®
 			fvector_3d New3Value = EngineMath::ToVector3d(GetWorld()->GetQuaternionCamera()->GetPosition()) - EngineMath::ToVector3d(GetPosition());
 			fvector_3d Scale{ New3Value.len() / FixedZoom };
 
@@ -197,8 +198,8 @@ void GOperationHandle::AddIgnoreComponent(CComponent* component)
 
 void GOperationHandle::OnMouseMoved(int x, int y)
 {
-	if (!IsCurrentSelectedHandle()) return;		// Èç¹û²»ÊÇµ±Ç°Ñ¡ÖĞµÄ²Ù×÷¾ä±ú£¬¾Í²»½øĞĞ²Ù×÷
-	if (SelectedAxisComponent) return;			// Èç¹ûÑ¡ÖĞµÄÖáÏò²»Îª¿Õ£¬¾Í²»½øĞĞ²Ù×÷
+	if (!IsCurrentSelectedHandle()) return;		// å¦‚æœä¸æ˜¯å½“å‰é€‰ä¸­çš„æ“ä½œå¥æŸ„ï¼Œå°±ä¸è¿›è¡Œæ“ä½œ
+	if (SelectedAxisComponent) return;			// å¦‚æœé€‰ä¸­çš„è½´å‘ä¸ä¸ºç©ºï¼Œå°±ä¸è¿›è¡Œæ“ä½œ
 	
 	XMFLOAT2 mousePos(x, y);
 
@@ -249,32 +250,32 @@ void GOperationHandle::OnMouseLeftUp(int x, int y)
 
 float GOperationHandle::GetMouseMoveDistance(int x, int y, XMVECTOR& ActorLocation, XMVECTOR& DragDirection)
 {
-	XMVECTOR ViewOriginPoint{};		// ÊÓ¿ÚÏÂÉäÏßÔ­µã£¨·ÇÆÁÄ»×ø±ê£©
-	XMVECTOR ViewDirection{};		// ÊÓ¿ÚÏÂÉäÏß·½Ïò
-	XMMATRIX InverseViewMatrix{};	// ÊÓ¿Ú±ä»»¾ØÕóµÄÄæ¾ØÕó
+	XMVECTOR ViewOriginPoint{};		// è§†å£ä¸‹å°„çº¿åŸç‚¹ï¼ˆéå±å¹•åæ ‡ï¼‰
+	XMVECTOR ViewDirection{};		// è§†å£ä¸‹å°„çº¿æ–¹å‘
+	XMMATRIX InverseViewMatrix{};	// è§†å£å˜æ¢çŸ©é˜µçš„é€†çŸ©é˜µ
 
 	if (FRayCastSystemLibrary::GetRayCastParamByScreen(GetWorld(), XMFLOAT2(x, y), ViewOriginPoint, ViewDirection, InverseViewMatrix))
 	{
-		// »ñÈ¡ÊÀ½ç¿Õ¼äÏÂµÄÉäÏß²ÎÊı
+		// è·å–ä¸–ç•Œç©ºé—´ä¸‹çš„å°„çº¿å‚æ•°
 		XMVECTOR WorldOriginPoint = XMVector3TransformCoord(ViewOriginPoint, InverseViewMatrix);
 		XMVECTOR WorldDirection = XMVector3TransformNormal(ViewDirection, InverseViewMatrix);
 
-		// ¶Ô·½Ïò½øĞĞ¹éÒ»»¯
+		// å¯¹æ–¹å‘è¿›è¡Œå½’ä¸€åŒ–
 		WorldDirection = XMVector3Normalize(WorldDirection);
 
-		// »ñÈ¡Ñ¡ÖĞÎïÌåµÄÎ»ÖÃ
+		// è·å–é€‰ä¸­ç‰©ä½“çš„ä½ç½®
 		ActorLocation = XMLoadFloat3(&SelectedActor->GetPosition());
 
-		// Êó±êÍÏ×§µÄÖáµÄ·½Ïò
+		// é¼ æ ‡æ‹–æ‹½çš„è½´çš„æ–¹å‘
 
-		// ¸ù¾İÑ¡ÖĞµÄÖáÏò£¬»ñÈ¡ÉäÏßµÄ·½Ïò
+		// æ ¹æ®é€‰ä¸­çš„è½´å‘ï¼Œè·å–å°„çº¿çš„æ–¹å‘
 		GetSelectedObjectDirection(WorldOriginPoint, WorldDirection, ActorLocation, DragDirection);
 
 		XMVECTOR WorldDirectionCrossDragDirection = XMVector3Cross(WorldDirection, DragDirection);
-		// ¼ÆËãÁ½¸öÉäÏß·½ÏòÏòÁ¿µÄ²æ³ËµÄÄ£
+		// è®¡ç®—ä¸¤ä¸ªå°„çº¿æ–¹å‘å‘é‡çš„å‰ä¹˜çš„æ¨¡
 		float len = XMVectorGetX(XMVector3Length(WorldDirectionCrossDragDirection));
 
-		// ¼ÆËãÉäÏßµÄ·½ÏòÏòÁ¿ºÍÊó±êÍÏ×§µÄÖáµÄ·½ÏòÏòÁ¿µÄÏà½»µãµÄÊ±¼ä
+		// è®¡ç®—å°„çº¿çš„æ–¹å‘å‘é‡å’Œé¼ æ ‡æ‹–æ‹½çš„è½´çš„æ–¹å‘å‘é‡çš„ç›¸äº¤ç‚¹çš„æ—¶é—´
 		const float t = XMVectorGetX(XMVector3Dot(XMVector3Cross(ActorLocation - WorldOriginPoint, WorldDirection), WorldDirectionCrossDragDirection) / (len * len));
 
 		return t;
@@ -293,33 +294,33 @@ void GOperationHandle::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XM
 {
 	if (IsWorldOperate())
 	{
-		// ÊÀ½ç×ø±êÏµÏÂ»ñÈ¡·½Ïò
+		// ä¸–ç•Œåæ ‡ç³»ä¸‹è·å–æ–¹å‘
 		switch (GetSelectedAxis())
 		{
 		case AXIS_X:
 		{
-			// Êó±êÍÏ×§µÄÊÇXÖá£¬Ò²¾ÍÊÇÎïÌåµÄRight·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Xè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Rightæ–¹å‘
 			XMFLOAT3 RightVector = XMFLOAT3{ 1.0f, 0.0f, 0.0f };
 			DragDirection = XMLoadFloat3(&RightVector);
 			break;
 		};
 		case AXIS_Y:
 		{
-			// Êó±êÍÏ×§µÄÊÇYÖá£¬Ò²¾ÍÊÇÎïÌåµÄUp·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Yè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Upæ–¹å‘
 			XMFLOAT3 UpVector = XMFLOAT3{ 0.0f, 1.0f, 0.0f };
 			DragDirection = XMLoadFloat3(&UpVector);
 			break;
 		};
 		case AXIS_Z:
 		{
-			// Êó±êÍÏ×§µÄÊÇZÖá£¬Ò²¾ÍÊÇÎïÌåµÄForward·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Zè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Forwardæ–¹å‘
 			XMFLOAT3 ForwardVector = XMFLOAT3{ 0.0f, 0.0f, 1.0f };
 			DragDirection = XMLoadFloat3(&ForwardVector);
 			break;
 		};
 		case AXIS_ANY:
 		{
-			// Êó±êÍÏ×§µÄÊÇÈÎÒâÖá
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯ä»»æ„è½´
 			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
 			break;
 		}
@@ -328,33 +329,33 @@ void GOperationHandle::GetSelectedObjectDirection(XMVECTOR& WorldOriginPoint, XM
 	}
 	else
 	{
-		// ¸ù¾İÑ¡ÖĞµÄÖáÏò£¬»ñÈ¡ÉäÏßµÄ·½Ïò
+		// æ ¹æ®é€‰ä¸­çš„è½´å‘ï¼Œè·å–å°„çº¿çš„æ–¹å‘
 		switch (GetSelectedAxis())
 		{
 		case AXIS_X:
 		{
-			// Êó±êÍÏ×§µÄÊÇXÖá£¬Ò²¾ÍÊÇÎïÌåµÄRight·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Xè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Rightæ–¹å‘
 			XMFLOAT3 RightVector = SelectedActor->GetRightVector();
 			DragDirection = XMLoadFloat3(&RightVector);
 			break;
 		};
 		case AXIS_Y:
 		{
-			// Êó±êÍÏ×§µÄÊÇYÖá£¬Ò²¾ÍÊÇÎïÌåµÄUp·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Yè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Upæ–¹å‘
 			XMFLOAT3 UpVector = SelectedActor->GetUpVector();
 			DragDirection = XMLoadFloat3(&UpVector);
 			break;
 		};
 		case AXIS_Z:
 		{
-			// Êó±êÍÏ×§µÄÊÇZÖá£¬Ò²¾ÍÊÇÎïÌåµÄForward·½Ïò
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯Zè½´ï¼Œä¹Ÿå°±æ˜¯ç‰©ä½“çš„Forwardæ–¹å‘
 			XMFLOAT3 ForwardVector = SelectedActor->GetForwardVector();
 			DragDirection = XMLoadFloat3(&ForwardVector);
 			break;
 		};
 		case AXIS_ANY:
 		{
-			// Êó±êÍÏ×§µÄÊÇÈÎÒâÖá
+			// é¼ æ ‡æ‹–æ‹½çš„æ˜¯ä»»æ„è½´
 			DragDirection = GetAnyAxisDirection(WorldOriginPoint, WorldDirection, ActorLocation);
 			break;
 		}

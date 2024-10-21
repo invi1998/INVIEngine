@@ -8,6 +8,7 @@ GPointLight::GPointLight()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 
 	CLight::SetLightComponent(CreateObject<CPointLightComponent>(params, new CPointLightComponent()));
 }

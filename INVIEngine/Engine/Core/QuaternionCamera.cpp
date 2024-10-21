@@ -18,9 +18,9 @@ FCaptureOnMousesWheelsDelegate MousesWheelsDelegate;
 // const XMVECTOR GQuaternionCamera::DefaultUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 // const XMVECTOR GQuaternionCamera::DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
-extern CMeshComponent *SelectedAxisComponent; // ±»Ñ¡ÖĞµÄÖáÏò
-extern GActorObject* SelectedActor; // ±»Ñ¡ÖĞµÄÎïÌå
-extern GMoveArrow* MoveArrow; // ÒÆ¶¯¼ıÍ·
+extern CMeshComponent *SelectedAxisComponent; // è¢«é€‰ä¸­çš„è½´å‘
+extern GActorObject* SelectedActor; // è¢«é€‰ä¸­çš„ç‰©ä½“
+extern GMoveArrow* MoveArrow; // ç§»åŠ¨ç®­å¤´
 
 GQuaternionCamera::GQuaternionCamera()
 	: GClientViewPort()
@@ -30,10 +30,11 @@ GQuaternionCamera::GQuaternionCamera()
 
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 
 	InputComponent = CreateObject<CInputComponent>(params, new CInputComponent());
 	InputComponent->OnMouseWheelDelegate.Bind(this, &GQuaternionCamera::OnMouseScroll);
-	// °ó¶¨¼üÅÌÊó±êÊÂ¼ş
+	// ç»‘å®šé”®ç›˜é¼ æ ‡äº‹ä»¶
 	InputComponent->CaptureKeyboardInfoDelegate.Bind(this, &GQuaternionCamera::ExecuteInput);
 	CameraType = ECameraType::CameraRoaming;
 
@@ -80,7 +81,7 @@ void GQuaternionCamera::MouseStrafe(const XMFLOAT2 &delta)
 void GQuaternionCamera::OnUpdate(float ts)
 {
 
-	if (FInput::IsKeyPressed(VK_LMENU)) // °´×¡alt¼ü
+	if (FInput::IsKeyPressed(VK_LMENU)) // æŒ‰ä½alté”®
 	{
 		const XMFLOAT2 &mouse{FInput::GetMouseX(), FInput::GetMouseY()};
 		// ENGINE_LOG_WARNING("IsKeyPressed:(%f, %f)", mouse.x, mouse.y);
@@ -98,22 +99,22 @@ void GQuaternionCamera::OnUpdate(float ts)
 				RotateAroundXAxis(YRadians);
 				RotateAroundYAxis(XRadians);
 			}
-			// Êó±ê×ó¼ü
+			// é¼ æ ‡å·¦é”®
 			MouseRotate(delta);
 		}
 		else if (FInput::IsMouseButtonPressed(VK_MBUTTON))
 		{
-			// Êó±êÖĞ¼ü
+			// é¼ æ ‡ä¸­é”®
 			MousePan(delta);
 		}
 		else if (FInput::IsMouseButtonPressed(VK_RBUTTON))
 		{
-			// Êó±êÓÒ¼ü
+			// é¼ æ ‡å³é”®
 			MouseZoom(delta.y);
 		}
 	}
-	// °´×¡ctrl¼ü
-	else if (FInput::IsKeyPressed(VK_LCONTROL) && CameraType==ECameraType::CameraRoaming) // °´×¡×óctrl
+	// æŒ‰ä½ctrlé”®
+	else if (FInput::IsKeyPressed(VK_LCONTROL) && CameraType==ECameraType::CameraRoaming) // æŒ‰ä½å·¦ctrl
 	{
 		const XMFLOAT2 &mouse{FInput::GetMouseX(), FInput::GetMouseY()};
 		// ENGINE_LOG_WARNING("IsKeyPressed:(%f, %f)", mouse.x, mouse.y);
@@ -123,8 +124,8 @@ void GQuaternionCamera::OnUpdate(float ts)
 
 		if (FInput::IsMouseButtonPressed(VK_LBUTTON))
 		{
-			// Êó±ê×ó¼ü
-			MouseStrafe(delta); // ÉÏÏÂ×óÓÒÆ½ÒÆÉãÏñ»ú
+			// é¼ æ ‡å·¦é”®
+			MouseStrafe(delta); // ä¸Šä¸‹å·¦å³å¹³ç§»æ‘„åƒæœº
 		}
 
 		if (FInput::IsKeyReleased(Key::W))
@@ -156,14 +157,14 @@ void GQuaternionCamera::OnUpdate(float ts)
 	}
 	else if (FInput::IsKeyReleased(VK_TAB))
 	{
-		// ÇĞ»»ÉãÏñ»úÀàĞÍ
+		// åˆ‡æ¢æ‘„åƒæœºç±»å‹
 		CameraType = CameraType == ECameraType::CameraRoaming ? ECameraType::ObservationObject : CameraRoaming;
 	}
 	else if (FInput::IsKeyReleased(VK_F1))
 	{
 		if (SelectedActor)
 		{
-			// ÏÈÈÃÉãÏñ»ú¿´ÏòÑ¡ÖĞµÄÎïÌå
+			// å…ˆè®©æ‘„åƒæœºçœ‹å‘é€‰ä¸­çš„ç‰©ä½“
 			// FaceTarget(GetPosition(), SelectedActor->GetPosition());
 
 			FTimelineDelegate TimelineDelegate{};
@@ -173,7 +174,7 @@ void GQuaternionCamera::OnUpdate(float ts)
 	}
 	else
 	{
-		// Èç¹ûÊÇÊó±ê×ó¼üµã»÷
+		// å¦‚æœæ˜¯é¼ æ ‡å·¦é”®ç‚¹å‡»
 		if (FInput::IsMouseButtonClicked(VK_LBUTTON))
 		{
 			if (!SelectedAxisComponent)
@@ -294,7 +295,7 @@ void GQuaternionCamera::RotateAroundXAxis(float rotateDegrees)
 
 	XMMATRIX RotationY = XMMatrixRotationAxis(right, rotateDegrees);
 
-	// ¼ÆËã¸÷¸ö·½ÏòºÍ°´ÕÕzÖáĞı×ªºóµÄ×îÖÕĞ§¹û
+	// è®¡ç®—å„ä¸ªæ–¹å‘å’ŒæŒ‰ç…§zè½´æ—‹è½¬åçš„æœ€ç»ˆæ•ˆæœ
 	XMVECTOR upVector = XMVector3TransformNormal(up, RotationY);
 	SetUpVector(upVector);
 
@@ -311,7 +312,7 @@ void GQuaternionCamera::RotateAroundYAxis(float rotateDegrees)
 
 	XMMATRIX RotationZ = XMMatrixRotationY(rotateDegrees);
 
-	// ¼ÆËã¸÷¸ö·½ÏòºÍ°´ÕÕzÖáĞı×ªºóµÄ×îÖÕĞ§¹û
+	// è®¡ç®—å„ä¸ªæ–¹å‘å’ŒæŒ‰ç…§zè½´æ—‹è½¬åçš„æœ€ç»ˆæ•ˆæœ
 	XMVECTOR rightVector = XMVector3TransformNormal(right, RotationZ);
 	SetUpVector(rightVector);
 
@@ -342,8 +343,8 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2 &mousePos)
 
 		if (FRenderLayerManage *renderLayerManage = GetRenderLayerManager())
 		{
-			// renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// Çå¿ÕÖ®Ç°µÄÑ¡ÖĞ
-			// renderLayerManage->Add(HitResult.HitRenderingData, static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// Ìí¼ÓÑ¡ÖĞ
+			// renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// æ¸…ç©ºä¹‹å‰çš„é€‰ä¸­
+			// renderLayerManage->Add(HitResult.HitRenderingData, static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT));	// æ·»åŠ é€‰ä¸­
 			SelectedActor = HitResult.HitActor;
 			renderLayerManage->HighlightObject(HitResult.HitRenderingData);
 
@@ -354,14 +355,14 @@ void GQuaternionCamera::OnClickScene(const XMFLOAT2 &mousePos)
 			}*/
 		}
 
-		FOperationHandleSelectManage::Get()->SetNewSelectedObject(HitResult.HitActor); // ÉèÖÃÑ¡ÖĞµÄ²Ù×÷¾ä±ú
-		FOperationHandleSelectManage::Get()->DisplaySelectedHandle();				   // ÏÔÊ¾
+		FOperationHandleSelectManage::Get()->SetNewSelectedObject(HitResult.HitActor); // è®¾ç½®é€‰ä¸­çš„æ“ä½œå¥æŸ„
+		FOperationHandleSelectManage::Get()->DisplaySelectedHandle();				   // æ˜¾ç¤º
 	}
 	else
 	{
 		if (FRenderLayerManage *renderLayerManage = GetRenderLayerManager())
 		{
-			renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT)); // Çå¿ÕÖ®Ç°µÄÑ¡ÖĞ
+			renderLayerManage->Clear(static_cast<int>(EMeshRenderLayerType::RENDER_LAYER_SELECT)); // æ¸…ç©ºä¹‹å‰çš„é€‰ä¸­
 		}
 		SelectedActor = nullptr;
 		FOperationHandleSelectManage::Get()->SetNewSelectedObject(nullptr);
@@ -413,60 +414,60 @@ void GQuaternionCamera::LookAtAndMoveToSelectedObject(float currentTime, float d
 		XMVECTOR CameraPos = XMLoadFloat3(&CameraPosition);
 		XMVECTOR ActorPos = XMLoadFloat3(&SelectedActor->GetPosition());
 
-		// »ñÈ¡Ñ¡ÖĞÎïÌåµÄAABBºĞ×Ó
+		// è·å–é€‰ä¸­ç‰©ä½“çš„AABBç›’å­
 		BoundingBox boundingBox = SelectedActor->GetBoundingBox();
-		// »ñÈ¡ºĞ×ÓµÄ°ë¾¶£¬È»ºó¼ÆËãÉãÏñ»úµÄ°ë¾¶
+		// è·å–ç›’å­çš„åŠå¾„ï¼Œç„¶åè®¡ç®—æ‘„åƒæœºçš„åŠå¾„
 		XMFLOAT3 extents = boundingBox.Extents;
-		XMVECTOR boundingBoxSize = XMLoadFloat3(&extents);	// ×ªÎªÏòÁ¿
-		float R = XMVectorGetX(XMVector3Length(boundingBoxSize));	// ºĞ×ÓµÄ°ë¾¶
-		float H = 20.f;		// ÉãÏñ»úÊÓ×µµÄ¸ß¶ÈµÈÓÚºĞ×ÓµÄ°ë¾¶¼ÓÉÏH£¬ÕâÀïHÈ¡ÖµÊÇÒ»¸ö¾­ÑéÖµ£¬¿ÉÒÔ¸ù¾İÊµ¼ÊÇé¿öµ÷Õû
-		float L = (R + H) / tan(FOV);	// ÉãÏñ»úµ½Ä¿±êµÄ¾àÀë
+		XMVECTOR boundingBoxSize = XMLoadFloat3(&extents);	// è½¬ä¸ºå‘é‡
+		float R = XMVectorGetX(XMVector3Length(boundingBoxSize));	// ç›’å­çš„åŠå¾„
+		float H = 20.f;		// æ‘„åƒæœºè§†æ¤çš„é«˜åº¦ç­‰äºç›’å­çš„åŠå¾„åŠ ä¸ŠHï¼Œè¿™é‡ŒHå–å€¼æ˜¯ä¸€ä¸ªç»éªŒå€¼ï¼Œå¯ä»¥æ ¹æ®å®é™…æƒ…å†µè°ƒæ•´
+		float L = (R + H) / tan(FOV);	// æ‘„åƒæœºåˆ°ç›®æ ‡çš„è·ç¦»
 
-		// »ñÈ¡ÉãÏñ»úµÄForwardÏòÁ¿£¬Í¬Ê±µ¥Î»»¯ÏòÁ¿£¨ÕâÀïÕâ¸öForwardÏòÁ¿ÊÇÉãÏñ»úµÄÎ»ÖÃµ½Ñ¡ÖĞÎïÌåµÄÎ»ÖÃµÄÏòÁ¿£¬ËùÒÔÕâÀïÊÇ¸ºµÄ£¬ ÎÒÃÇÖ±½ÓÓÃÎïÌåµÄÎ»ÖÃ¼õÈ¥ÉãÏñ»úµÄÎ»ÖÃ£©
+		// è·å–æ‘„åƒæœºçš„Forwardå‘é‡ï¼ŒåŒæ—¶å•ä½åŒ–å‘é‡ï¼ˆè¿™é‡Œè¿™ä¸ªForwardå‘é‡æ˜¯æ‘„åƒæœºçš„ä½ç½®åˆ°é€‰ä¸­ç‰©ä½“çš„ä½ç½®çš„å‘é‡ï¼Œæ‰€ä»¥è¿™é‡Œæ˜¯è´Ÿçš„ï¼Œ æˆ‘ä»¬ç›´æ¥ç”¨ç‰©ä½“çš„ä½ç½®å‡å»æ‘„åƒæœºçš„ä½ç½®ï¼‰
 		XMVECTOR CameraForward = XMVector3Normalize(ActorPos - CameraPos);
 
-		XMVECTOR CameraEnd = ActorPos - L * CameraForward;	// ÉãÏñ»úµÄ×îÖÕÎ»ÖÃ
+		XMVECTOR CameraEnd = ActorPos - L * CameraForward;	// æ‘„åƒæœºçš„æœ€ç»ˆä½ç½®
 
-		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, CameraEnd, currentTime * 2 / duration);		// ²åÖµ¼ÆËãÉãÏñ»úµÄÎ»ÖÃ
+		XMVECTOR NewCameraPos = XMVectorLerp(CameraPos, CameraEnd, currentTime * 2 / duration);		// æ’å€¼è®¡ç®—æ‘„åƒæœºçš„ä½ç½®
 		XMStoreFloat3(&CameraPosition, NewCameraPos);
 		SetPosition(CameraPosition);
 
-		// ÀûÓÃËÄÔªÊı²îÖµËã·¨½«ÉãÏñ»ú´Óµ±Ç°³¯Ïò²åÖµµ½Ä¿±ê³¯Ïò£¨ËÄÔªÊı²îÖµĞı×ª£©
-		// ÏÈÊ¹ÓÃForwardÏòÁ¿ºÍUpÏòÁ¿ºÍRightÏòÁ¿¹¹½¨Ğı×ª¾ØÕó£¬È»ºó½«Ğı×ª¾ØÕó×ªÎªËÄÔªÊı£¬È»ºóÎÒÃÇÔÙµÃµ½Ä¿±êµÄĞı×ª¾ØÕó£¬È»ºó½«Ä¿±êµÄĞı×ª¾ØÕó×ªÎªËÄÔªÊı£¬È»ºóÎÒÃÇÔÙÊ¹ÓÃËÄÔªÊı²îÖµËã·¨½«ÉãÏñ»úµÄĞı×ª²åÖµµ½Ä¿±êµÄĞı×ª
-		// ËÄÔªÊı²îÖµËã·¨ÓĞºÜ¶àÖÖ£¬µÚÒ»ÖÖÊÇÏßĞÔ²åÖµ£¬µÚ¶şÖÖÊÇÇòÃæ²åÖµ£¬µÚÈıÖÖÊÇSLERP²åÖµ£¬µÚËÄÖÖÊÇNLERP²åÖµ£¬ÕâÀïÎÒÃÇ²ÉÓÃSLERP²åÖµ£¨ÇòÃæÏßĞÔ²åÖµ£©
-		// Í¬Ê±ÎÒÃÇ»¹ĞèÒª×¢ÒâµÄÊÇËÄÔªÊıµÄ²åÖµÊÇÓĞ·½ÏòµÄ£¬ËùÒÔÎÒÃÇĞèÒªÅĞ¶ÏÒ»ÏÂÉãÏñ»úµÄ³¯ÏòºÍÄ¿±ê³¯ÏòµÄ¼Ğ½Ç£¬Èç¹û¼Ğ½Ç´óÓÚ180¶È£¬ÎÒÃÇĞèÒª½«Ä¿±ê³¯ÏòÈ¡·´£¨±ÜÃâËÄÔªÊıµÄ²åÖµ·½Ïò´íÎó£¬Ë«±¶¸²¸ÇÎÊÌâ£©
+		// åˆ©ç”¨å››å…ƒæ•°å·®å€¼ç®—æ³•å°†æ‘„åƒæœºä»å½“å‰æœå‘æ’å€¼åˆ°ç›®æ ‡æœå‘ï¼ˆå››å…ƒæ•°å·®å€¼æ—‹è½¬ï¼‰
+		// å…ˆä½¿ç”¨Forwardå‘é‡å’ŒUpå‘é‡å’ŒRightå‘é‡æ„å»ºæ—‹è½¬çŸ©é˜µï¼Œç„¶åå°†æ—‹è½¬çŸ©é˜µè½¬ä¸ºå››å…ƒæ•°ï¼Œç„¶åæˆ‘ä»¬å†å¾—åˆ°ç›®æ ‡çš„æ—‹è½¬çŸ©é˜µï¼Œç„¶åå°†ç›®æ ‡çš„æ—‹è½¬çŸ©é˜µè½¬ä¸ºå››å…ƒæ•°ï¼Œç„¶åæˆ‘ä»¬å†ä½¿ç”¨å››å…ƒæ•°å·®å€¼ç®—æ³•å°†æ‘„åƒæœºçš„æ—‹è½¬æ’å€¼åˆ°ç›®æ ‡çš„æ—‹è½¬
+		// å››å…ƒæ•°å·®å€¼ç®—æ³•æœ‰å¾ˆå¤šç§ï¼Œç¬¬ä¸€ç§æ˜¯çº¿æ€§æ’å€¼ï¼Œç¬¬äºŒç§æ˜¯çƒé¢æ’å€¼ï¼Œç¬¬ä¸‰ç§æ˜¯SLERPæ’å€¼ï¼Œç¬¬å››ç§æ˜¯NLERPæ’å€¼ï¼Œè¿™é‡Œæˆ‘ä»¬é‡‡ç”¨SLERPæ’å€¼ï¼ˆçƒé¢çº¿æ€§æ’å€¼ï¼‰
+		// åŒæ—¶æˆ‘ä»¬è¿˜éœ€è¦æ³¨æ„çš„æ˜¯å››å…ƒæ•°çš„æ’å€¼æ˜¯æœ‰æ–¹å‘çš„ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦åˆ¤æ–­ä¸€ä¸‹æ‘„åƒæœºçš„æœå‘å’Œç›®æ ‡æœå‘çš„å¤¹è§’ï¼Œå¦‚æœå¤¹è§’å¤§äº180åº¦ï¼Œæˆ‘ä»¬éœ€è¦å°†ç›®æ ‡æœå‘å–åï¼ˆé¿å…å››å…ƒæ•°çš„æ’å€¼æ–¹å‘é”™è¯¯ï¼ŒåŒå€è¦†ç›–é—®é¢˜ï¼‰
 
-		// CameraForward = -CameraForward;	// È¡·´
+		// CameraForward = -CameraForward;	// å–å
 		XMFLOAT3 TargetForward{};
 		XMStoreFloat3(&TargetForward, CameraForward);
 		fvector_3d forwardFV = EngineMath::ToVector3d(TargetForward);
 
 		if (IsQuatAnimationMode())
 		{
-			//// »ñÈ¡µ±Ç°ÏÂÉãÏñ»úµÄĞı×ªËÄÔªÊı
+			//// è·å–å½“å‰ä¸‹æ‘„åƒæœºçš„æ—‹è½¬å››å…ƒæ•°
 			//XMVECTOR CameraQuat = GetRotationQuat();
-			//// ¹éÒ»»¯ËÄÔªÊı
+			//// å½’ä¸€åŒ–å››å…ƒæ•°
 			//CameraQuat = XMQuaternionNormalize(CameraQuat);
-			//// »ñÈ¡Ä¿±êµÄĞı×ªËÄÔªÊı
+			//// è·å–ç›®æ ‡çš„æ—‹è½¬å››å…ƒæ•°
 			//XMVECTOR TargetQuat = EngineMath::BuildQuaternion(TargetForward);
 			//TargetQuat = XMQuaternionNormalize(TargetQuat);
-			//// ÀûÓÃËÄÔªÊıSLERP²åÖµËã·¨²åÖµÉãÏñ»úµÄĞı×ª
+			//// åˆ©ç”¨å››å…ƒæ•°SLERPæ’å€¼ç®—æ³•æ’å€¼æ‘„åƒæœºçš„æ—‹è½¬
 			//XMVECTOR NewCameraQuat = XMQuaternionSlerp(CameraQuat, TargetQuat, (currentTime / duration)*4);
 			//SetRoationQuat(NewCameraQuat);
 
-			// »ñÈ¡µ±Ç°ÏÂÉãÏñ»úµÄĞı×ªËÄÔªÊı
+			// è·å–å½“å‰ä¸‹æ‘„åƒæœºçš„æ—‹è½¬å››å…ƒæ•°
 			fquat Q1 = GetRotationFQuat();
 			fquat Q2 = EngineMath::BuildQuaternionFQuat(forwardFV);
 			fquat Q = fquat::lerp(Q1, Q2, (currentTime / duration)*4);
 			SetRoationFQuat(Q);
 		}
-		else  // Å·À­½Ç²åÖµ
+		else  // æ¬§æ‹‰è§’æ’å€¼
 		{
-			// »ñÈ¡µ±Ç°ÏÂÉãÏñ»úµÄĞı×ªÅ·À­½Ç
+			// è·å–å½“å‰ä¸‹æ‘„åƒæœºçš„æ—‹è½¬æ¬§æ‹‰è§’
 			frotator CameraRotation = GetRotationFrotator();
-			// »ñÈ¡Ä¿±êµÄĞı×ªÅ·À­½Ç
+			// è·å–ç›®æ ‡çš„æ—‹è½¬æ¬§æ‹‰è§’
 			frotator TargetRotation = EngineMath::BuildRotationMatrix(forwardFV);
-			// ÀûÓÃÅ·À­½Ç²åÖµËã·¨²åÖµÉãÏñ»úµÄĞı×ª
+			// åˆ©ç”¨æ¬§æ‹‰è§’æ’å€¼ç®—æ³•æ’å€¼æ‘„åƒæœºçš„æ—‹è½¬
 			frotator NewCameraRotation = EngineMath::Lerp(CameraRotation, TargetRotation, (currentTime / duration)*4.f);
 			SetRotation(NewCameraRotation);
 		}

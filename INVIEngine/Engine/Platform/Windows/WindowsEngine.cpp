@@ -31,22 +31,22 @@ CWindowsEngine::~CWindowsEngine()
 
 int CWindowsEngine::PreInit(FWinMainCommandParameters InParameters)
 {
-	// ´¦ÀíÈÕÖ¾
+	// å¤„ç†æ—¥å¿—
 	constexpr char LogPath[] = "../log";
 	init_log_system(LogPath);
 	ENGINE_LOG("Log init.");
 
-	// ´¦ÀíÃüÁî
+	// å¤„ç†å‘½ä»¤
 
 
-	ENGINE_LOG("ÒıÇæÔ¤³õÊ¼»¯Íê³É");
+	ENGINE_LOG("Engine PreInit success.");
 
 	return 0;
 }
 
 int CWindowsEngine::Init(FWinMainCommandParameters InParameters)
 {
-	// ´¦ÀíÊÓ¿Ú
+	// å¤„ç†è§†å£
 	InitWindows(InParameters);
 
 	RenderingEngine->SetMainWindowsHandle(MainWindowsHandle);
@@ -55,11 +55,12 @@ int CWindowsEngine::Init(FWinMainCommandParameters InParameters)
 
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = nullptr;
 
 	World = CreateObject<CWorld>(params, new CWorld());
 	RenderingEngine->World = World;
 
-	ENGINE_LOG("ÒıÇæ³õÊ¼»¯Íê³É");
+	ENGINE_LOG("Engine Init success.");
 
 	return 0;
 }
@@ -134,23 +135,23 @@ int CWindowsEngine::PostExit()
 
 bool CWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 {
-	// °ó¶¨´°¿Ú²ÎÊı
+	// ç»‘å®šçª—å£å‚æ•°
 	WNDCLASSEX WindowsClass;
-	WindowsClass.cbSize = sizeof(WNDCLASSEX);	// ¸Ã¶ÔÏóÊµ¼ÊÕ¼ÓÃµÄÄÚ´æ
-	WindowsClass.cbClsExtra = 0;				// ÊÇ·ñĞèÒª¶îÍâ¿Õ¼ä ±íÊ¾´°¿ÚÀà¶îÍâÄÚ´æ´óĞ¡£¬¼´Ã¿¸ö´°¿Ú´´½¨Ê±½«·ÖÅä¸ø¸Ã´°¿ÚÀàµÄ¶îÍâÄÚ´æ´óĞ¡
-	WindowsClass.cbWndExtra = 0;				// ÊÇ·ñĞèÒª¶îÍâÄÚ´æ ±íÊ¾´°¿ÚÊµÀı¶îÍâÄÚ´æ´óĞ¡£¬¼´ÎªÃ¿¸ö´°¿ÚÊµÀı·ÖÅäµÄ¶îÍâÄÚ´æ´óĞ¡
-	// cbClsExtraÊÇÓÃÓÚ¶¨ÒåÒ»¸ö´°¿ÚÀàµÄ¶îÍâÊı¾İµÄ´óĞ¡£¬¶øcbWndExtraÊÇÓÃÓÚ¶¨ÒåÒ»¸ö´°¿ÚÊµÀıµÄ¶îÍâÊı¾İµÄ´óĞ¡¡£Í¨³££¬¿ª·¢Õß¿ÉÒÔÊ¹ÓÃÕâĞ©¶îÍâµÄÄÚ´æÀ´´æ´¢Ò»Ğ©×Ô¶¨ÒåÊı¾İ»òÖ¸Õë£¬ÒÔ±ãÔÚ´¦ÀíÏûÏ¢ºÍÆäËû²Ù×÷Ê±½øĞĞ·ÃÎÊ¡£
-	WindowsClass.hbrBackground = nullptr;		// ÓÃÓÚÖ¸¶¨´°¿Ú±³¾°ËùÊ¹ÓÃµÄ»­Ë¢¾ä±ú£¬Èç¹ûÃ»ÓĞ¾ÍÊÇÉèÖÃGDI²Á³ı
-	WindowsClass.hCursor = LoadCursor(nullptr, IDC_ARROW);	// ÉèÖÃ¼ıÍ·¹â±ê
-	WindowsClass.hIcon = nullptr;				// (ÎÒÃÇÓ¦ÓÃ³ÌĞò·ÅÔÚ´ÅÅÌµÄÒ»¸öÍ¼±ê£©
-	WindowsClass.hIconSm = nullptr;				// Ó¦ÓÃ³ÌĞòÏÔÊ¾ÔÚ×óÉÏ½ÇµÄÍ¼±ê
-	WindowsClass.hInstance = InParameters.HInstance;	// ´°¿ÚÊµÀı
-	WindowsClass.lpszClassName = L"INVIEngine";	// ´°¿ÚÃû×Ö
-	WindowsClass.lpszMenuName = nullptr;		// ²Ëµ¥Ãû×Ö
-	WindowsClass.style = CS_VREDRAW | CS_HREDRAW;	// ÈçºÎ»æÖÆµ±Ç°´°¿Ú£¨´¹Ö±ºÍË®Æ½»æÖÆ£©
-	WindowsClass.lpfnWndProc = EngineWidowProc;		// ÏûÏ¢´¦Àíº¯Êı
+	WindowsClass.cbSize = sizeof(WNDCLASSEX);	// è¯¥å¯¹è±¡å®é™…å ç”¨çš„å†…å­˜
+	WindowsClass.cbClsExtra = 0;				// æ˜¯å¦éœ€è¦é¢å¤–ç©ºé—´ è¡¨ç¤ºçª—å£ç±»é¢å¤–å†…å­˜å¤§å°ï¼Œå³æ¯ä¸ªçª—å£åˆ›å»ºæ—¶å°†åˆ†é…ç»™è¯¥çª—å£ç±»çš„é¢å¤–å†…å­˜å¤§å°
+	WindowsClass.cbWndExtra = 0;				// æ˜¯å¦éœ€è¦é¢å¤–å†…å­˜ è¡¨ç¤ºçª—å£å®ä¾‹é¢å¤–å†…å­˜å¤§å°ï¼Œå³ä¸ºæ¯ä¸ªçª—å£å®ä¾‹åˆ†é…çš„é¢å¤–å†…å­˜å¤§å°
+	// cbClsExtraæ˜¯ç”¨äºå®šä¹‰ä¸€ä¸ªçª—å£ç±»çš„é¢å¤–æ•°æ®çš„å¤§å°ï¼Œè€ŒcbWndExtraæ˜¯ç”¨äºå®šä¹‰ä¸€ä¸ªçª—å£å®ä¾‹çš„é¢å¤–æ•°æ®çš„å¤§å°ã€‚é€šå¸¸ï¼Œå¼€å‘è€…å¯ä»¥ä½¿ç”¨è¿™äº›é¢å¤–çš„å†…å­˜æ¥å­˜å‚¨ä¸€äº›è‡ªå®šä¹‰æ•°æ®æˆ–æŒ‡é’ˆï¼Œä»¥ä¾¿åœ¨å¤„ç†æ¶ˆæ¯å’Œå…¶ä»–æ“ä½œæ—¶è¿›è¡Œè®¿é—®ã€‚
+	WindowsClass.hbrBackground = nullptr;		// ç”¨äºæŒ‡å®šçª—å£èƒŒæ™¯æ‰€ä½¿ç”¨çš„ç”»åˆ·å¥æŸ„ï¼Œå¦‚æœæ²¡æœ‰å°±æ˜¯è®¾ç½®GDIæ“¦é™¤
+	WindowsClass.hCursor = LoadCursor(nullptr, IDC_ARROW);	// è®¾ç½®ç®­å¤´å…‰æ ‡
+	WindowsClass.hIcon = nullptr;				// (æˆ‘ä»¬åº”ç”¨ç¨‹åºæ”¾åœ¨ç£ç›˜çš„ä¸€ä¸ªå›¾æ ‡ï¼‰
+	WindowsClass.hIconSm = nullptr;				// åº”ç”¨ç¨‹åºæ˜¾ç¤ºåœ¨å·¦ä¸Šè§’çš„å›¾æ ‡
+	WindowsClass.hInstance = InParameters.HInstance;	// çª—å£å®ä¾‹
+	WindowsClass.lpszClassName = L"INVIEngine";	// çª—å£åå­—
+	WindowsClass.lpszMenuName = nullptr;		// èœå•åå­—
+	WindowsClass.style = CS_VREDRAW | CS_HREDRAW;	// å¦‚ä½•ç»˜åˆ¶å½“å‰çª—å£ï¼ˆå‚ç›´å’Œæ°´å¹³ç»˜åˆ¶ï¼‰
+	WindowsClass.lpfnWndProc = EngineWidowProc;		// æ¶ˆæ¯å¤„ç†å‡½æ•°
 
-	// ×¢²á´°¿Ú
+	// æ³¨å†Œçª—å£
 	ATOM RegisterAtom = RegisterClassEx(&WindowsClass);
 
 	if (!RegisterAtom)
@@ -158,7 +159,7 @@ bool CWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 		MessageBox(NULL, L"Register fail,", L"Error", MB_OK);
 	}
 
-	// ÊÓ¿Ú£¬ÊÓ¿Ú·ç¸ñ£¬Ã»ÓĞ²Ëµ¥
+	// è§†å£ï¼Œè§†å£é£æ ¼ï¼Œæ²¡æœ‰èœå•
 	RECT Rect = { 0, 0, FEngineRenderConfig::GetRenderConfig()->ScreenWidth, FEngineRenderConfig::GetRenderConfig()->ScreenHeight };
 	AdjustWindowRect(&Rect, WS_OVERLAPPEDWINDOW, NULL);
 
@@ -166,30 +167,30 @@ bool CWindowsEngine::InitWindows(FWinMainCommandParameters InParameters)
 	int windowHeight = Rect.bottom - Rect.top;
 
 	MainWindowsHandle = CreateWindowEx(
-		NULL,						// ´°¿Ú¶îÍâ·ç¸ñ
-		L"INVIEngine",				// ´°¿ÚÃû³Æ
-		L"INVI Engine",				// ÏÔÊ¾µ½±êÌâÀ¸ÉÏµÄ´°¿ÚÃû³Æ
-		WS_OVERLAPPEDWINDOW,		// ÊÓ¿Ú·ç¸ñ
-		CW_USEDEFAULT, CW_USEDEFAULT,		// ´°¿Ú×ø±ê£¬ÉèÖÃÎªCW_USEDEFAULTÈÃ´°¿Ú×ÔÊÊÓ¦´óĞ¡²¢ÇÒÏÔÊ¾ÔÚÆÁÄ»ÖĞĞÄ
-		windowWidth,				// ´°¿Ú¿í¶È
-		windowHeight,				// ´°¿Ú¸ß¶È
-		nullptr,					// ¸¸´°¿Ú¾ä±ú
-		nullptr,					// ²Ëµ¥¾ä±ú
-		InParameters.HInstance,		// ´°¿ÚÊµÀı
-		NULL						// ´«µİ½ø´°¿ÚµÄ¶îÍâ²ÎÊı
+		NULL,						// çª—å£é¢å¤–é£æ ¼
+		L"INVIEngine",				// çª—å£åç§°
+		L"INVI Engine",				// æ˜¾ç¤ºåˆ°æ ‡é¢˜æ ä¸Šçš„çª—å£åç§°
+		WS_OVERLAPPEDWINDOW,		// è§†å£é£æ ¼
+		CW_USEDEFAULT, CW_USEDEFAULT,		// çª—å£åæ ‡ï¼Œè®¾ç½®ä¸ºCW_USEDEFAULTè®©çª—å£è‡ªé€‚åº”å¤§å°å¹¶ä¸”æ˜¾ç¤ºåœ¨å±å¹•ä¸­å¿ƒ
+		windowWidth,				// çª—å£å®½åº¦
+		windowHeight,				// çª—å£é«˜åº¦
+		nullptr,					// çˆ¶çª—å£å¥æŸ„
+		nullptr,					// èœå•å¥æŸ„
+		InParameters.HInstance,		// çª—å£å®ä¾‹
+		NULL						// ä¼ é€’è¿›çª—å£çš„é¢å¤–å‚æ•°
 	);
 
 	if (!MainWindowsHandle)
 	{
-		// ´°¿Ú´´½¨Ê§°Ü
-		MessageBox(0, L"´°¿Ú´´½¨Ê§°Ü", 0, 0);
+		// çª—å£åˆ›å»ºå¤±è´¥
+		MessageBox(0, L"çª—å£åˆ›å»ºå¤±è´¥", 0, 0);
 		return false;
 	}
 
-	// ÏÔÊ¾´°¿Ú
+	// æ˜¾ç¤ºçª—å£
 	ShowWindow(MainWindowsHandle, SW_SHOW);
 
-	// Ë¢ĞÂ´°¿Ú
+	// åˆ·æ–°çª—å£
 	UpdateWindow(MainWindowsHandle);
 }
 

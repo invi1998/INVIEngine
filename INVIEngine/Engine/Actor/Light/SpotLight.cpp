@@ -10,6 +10,7 @@ GSpotLight::GSpotLight()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
 
 	CLight::SetLightComponent(CreateObject<CSpotLightComponent>(params, new CSpotLightComponent()));
 	index_test = 0.f;

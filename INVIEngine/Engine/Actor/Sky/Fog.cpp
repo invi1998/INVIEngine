@@ -1,12 +1,15 @@
 #include "EngineMinimal.h"
 #include "Fog.h"
 
+#include "Component/TransformationComponent.h"
 #include "Component/Sky/FogComponent.h"
 
 GFog::GFog()
 {
 	FCreateObjectParams params{};
 	params.Owner = this;
+	params.ParentComponent = GetRootComponent();
+
 	FogComponent = CreateObject<CFogComponent>(params, new CFogComponent());
 }
 
